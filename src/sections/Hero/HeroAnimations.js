@@ -34,9 +34,6 @@ export function setupHeroAnimations({
 
   const waveLengths = waves.map(prepareSVG);
 
-  const videoScale = gsap.quickSetter(videoWrap, "scale");
-  const videoOpacity = gsap.quickSetter(videoWrap, "opacity");
-
   const marqueeOpacity = gsap.quickSetter(marquee, "opacity");
 
   const labelOpacity = gsap.quickSetter(label, "opacity");
