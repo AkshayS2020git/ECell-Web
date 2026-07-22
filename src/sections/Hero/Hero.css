@@ -1,0 +1,16 @@
+.hero {
+  position: relative;
+  height: 220vh;
+  background: var(--bg);
+}
+
+.hero__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}

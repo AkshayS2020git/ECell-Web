@@ -1,0 +1,43 @@
+.loader-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+.loader-squiggle {
+  width: 320px;
+  height: 320px;
+}
+
+.loader-squiggle path {
+  fill: none;
+  stroke: #f4f4f2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 15;
+}
+
+.wordmark-title {
+  fill: #f4f4f2;
+  font-family: "Archivo", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.wordmark-sub {
+  fill: #9a9a95;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  .loader-squiggle {
+    width: 240px;
+    height: 240px;
+  }
+}

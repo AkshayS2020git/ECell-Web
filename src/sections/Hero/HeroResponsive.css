@@ -1,0 +1,18 @@
+@media (max-width: 768px) {
+  .hero__heading {
+    font-size: clamp(32px, 11vw, 52px);
+  }
+
+  .hero__label {
+    top: 12%;
+  }
+
+  .hero__marquee-line {
+    font-size: clamp(46px, 18vw, 86px);
+  }
+
+  .hero__logo {
+    width: 230px;
+    height: 230px;
+  }
+}

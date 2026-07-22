@@ -1,0 +1,102 @@
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  mix-blend-mode: difference;
+}
+
+.logo {
+  font-family: "Archivo", sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chapters-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  color: var(--fg);
+  font: inherit;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.menu-icon {
+  position: relative;
+  width: 22px;
+  height: 14px;
+}
+
+.menu-icon span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--fg);
+}
+
+.menu-icon span:first-child {
+  top: 0;
+}
+
+.menu-icon span:last-child {
+  bottom: 0;
+}
+
+.chapters-dropdown {
+  position: fixed;
+  top: 64px;
+  right: 32px;
+  z-index: 49;
+  display: none;
+  min-width: 200px;
+  padding: 8px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+}
+
+.chapters-dropdown.open {
+  display: block;
+}
+
+.chapters-dropdown a {
+  display: block;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+
+.chapters-dropdown a:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 768px) {
+  nav {
+    padding: 18px 20px;
+  }
+
+  .nav-right {
+    gap: 18px;
+    font-size: 12px;
+  }
+}

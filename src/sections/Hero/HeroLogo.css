@@ -1,0 +1,33 @@
+.hero__logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 300px;
+  height: 300px;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.hero__logo path {
+  fill: none;
+  stroke: white;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 15;
+}
+
+.hero__logo-title {
+  fill: white;
+  font-family: "Archivo", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.hero__logo-sub {
+  fill: #adada8;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+}
