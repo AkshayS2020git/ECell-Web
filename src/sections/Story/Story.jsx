@@ -174,13 +174,6 @@ export default function Story({
           </h2>
         </div>
       </div>
-
-      <div className="story-scroll-hint">
-        <div className="track">
-          <i></i>
-        </div>
-        <span>Scroll</span>
-      </div>
     </section>
   );
 }

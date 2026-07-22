@@ -19,6 +19,7 @@ export function setupHeroAnimations({
   wave3Ref,
   titleRef,
   subtitleRef,
+  scrollHintRef,
 }) {
   const video = videoRef.current;
   const videoWrap = videoWrapRef.current;
@@ -28,6 +29,7 @@ export function setupHeroAnimations({
   const logo = logoRef.current;
   const title = titleRef.current;
   const subtitle = subtitleRef.current;
+  const scrollHint = scrollHintRef?.current;
   const waves = [wave3Ref.current, wave2Ref.current, wave1Ref.current].filter(
     Boolean,
   );
@@ -46,6 +48,10 @@ export function setupHeroAnimations({
 
   const subtitleOpacity = gsap.quickSetter(subtitle, "opacity");
 
+  const scrollHintOpacity = scrollHint
+    ? gsap.quickSetter(scrollHint, "opacity")
+    : null;
+
   gsap.set(videoWrap, {
     scale: 1,
     opacity: 1,
@@ -56,6 +62,7 @@ export function setupHeroAnimations({
   gsap.set([marquee, label, logo], { opacity: 0 });
   gsap.set([title, subtitle], { opacity: 0 });
   gsap.set(heading, { opacity: 1 });
+  if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
 
   let targetProgress = 0;
   let heroSmoothed = 0;
@@ -90,6 +97,9 @@ export function setupHeroAnimations({
     marqueeOpacity(reveal);
     labelOpacity(reveal);
     headingOpacity(1 - smoothstep(0.05, 0.35, progress));
+    if (scrollHintOpacity) {
+      scrollHintOpacity(1 - smoothstep(0.02, 0.2, progress));
+    }
     logoOpacity(logoReveal);
 
     waves.forEach((path, i) => {

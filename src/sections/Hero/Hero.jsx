@@ -23,6 +23,7 @@ export default function Hero() {
   const wave3Ref = useRef(null);
   const titleRef = useRef(null);
   const subtitleRef = useRef(null);
+  const scrollHintRef = useRef(null);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -41,6 +42,7 @@ export default function Hero() {
       wave3Ref,
       titleRef,
       subtitleRef,
+      scrollHintRef,
     });
   }, []);
 
@@ -135,6 +137,13 @@ export default function Hero() {
             RV University
           </text>
         </svg>
+
+        <div ref={scrollHintRef} className="hero__scroll-hint">
+          <div className="hero__scroll-track">
+            <i />
+          </div>
+          <span>SCROLL</span>
+        </div>
       </div>
     </section>
   );
