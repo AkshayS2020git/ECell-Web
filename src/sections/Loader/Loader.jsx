@@ -4,7 +4,6 @@ import "./Loader.css";
 
 export default function Loader({ onComplete }) {
   const loaderRef = useRef(null);
-
   const squiggleSvgRef = useRef(null);
 
   const wave1Ref = useRef(null);
@@ -18,7 +17,6 @@ export default function Loader({ onComplete }) {
     document.body.style.overflow = "hidden";
 
     const loader = loaderRef.current;
-
     const squiggleSvg = squiggleSvgRef.current;
 
     const wave1 = wave1Ref.current;
@@ -28,135 +26,104 @@ export default function Loader({ onComplete }) {
     const title = wordmarkTitleRef.current;
     const subtitle = wordmarkSubRef.current;
 
-    // Prepare SVG paths
-    [wave1, wave2, wave3].forEach((path) => {
+    const waves = [wave1, wave2, wave3];
+
+    // Prepare SVG paths stroke & fill states
+    waves.forEach((path) => {
+      if (!path) return;
       const length = path.getTotalLength();
 
       gsap.set(path, {
         strokeDasharray: length,
         strokeDashoffset: length,
-        opacity: 0.35,
+        fillOpacity: 0,
+        strokeOpacity: 1,
       });
     });
 
     gsap.set(squiggleSvg, {
-      opacity: 0,
-      scale: 0.75,
-      rotate: -6,
+      opacity: 1,
+      scale: 0.96,
     });
 
     gsap.set([title, subtitle], {
       opacity: 0,
-      y: 8,
+      y: 16,
     });
 
     const tl = gsap.timeline({
       onComplete: () => {
         document.body.style.overflow = "";
-
         onComplete?.();
       },
     });
 
-    // -----------------------------
-    // Logo appears
-    // -----------------------------
-
-    tl.to(squiggleSvg, {
-      opacity: 1,
-      scale: 1,
-      rotate: 0,
-      duration: 0.55,
-      ease: "back.out(2)",
-    });
-
-    // -----------------------------
-    // Draw first wave
-    // -----------------------------
-
+    // 1. The three main strokes draw in with a light stagger
     tl.to(
-      wave1,
+      waves,
       {
         strokeDashoffset: 0,
-        opacity: 1,
-        duration: 0.45,
+        duration: 1.1,
+        stagger: 0.18,
         ease: "power2.inOut",
+      },
+      0.15
+    );
+
+    // 2. Crossfade from stroke outline to solid white fill
+    tl.to(
+      waves,
+      {
+        fillOpacity: 1,
+        duration: 0.5,
+        ease: "power2.out",
       },
       "-=0.15"
     );
 
-    // -----------------------------
-    // Draw second wave
-    // -----------------------------
-
     tl.to(
-      wave2,
+      waves,
       {
-        strokeDashoffset: 0,
-        opacity: 1,
-        duration: 0.45,
-        ease: "power2.inOut",
+        strokeOpacity: 0,
+        duration: 0.5,
+        ease: "power2.out",
       },
-      "-=0.20"
+      "<"
     );
 
-    // -----------------------------
-    // Draw third wave
-    // -----------------------------
-
+    // 3. Settle scale & reveal wordmark
     tl.to(
-      wave3,
+      squiggleSvg,
       {
-        strokeDashoffset: 0,
-        opacity: 1,
-        duration: 0.45,
-        ease: "power2.inOut",
+        scale: 1,
+        duration: 0.6,
+        ease: "back.out(1.6)",
       },
-      "-=0.20"
+      "-=0.5"
     );
 
-    // -----------------------------
-    // Wordmark
-    // -----------------------------
-
     tl.to(
-      title,
+      [title, subtitle],
       {
         opacity: 1,
         y: 0,
-        duration: 0.45,
+        duration: 0.5,
+        stagger: 0.12,
         ease: "power3.out",
       },
-      "-=0.10"
+      "-=0.3"
     );
 
-    tl.to(
-      subtitle,
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power3.out",
-      },
-      "-=0.25"
-    );
-
-    // -----------------------------
-    // Small breathe
-    // -----------------------------
-
+    // 4. Small ambient breathe
     tl.to(squiggleSvg, {
-      scale: 1.04,
+      scale: 1.02,
       duration: 0.35,
       ease: "sine.inOut",
       repeat: 1,
       yoyo: true,
     });
 
-    // -----------------------------
-    // Exit
-    // -----------------------------
-
+    // 5. Exit curtain upward
     tl.to(loader, {
       yPercent: -100,
       skewY: -2,
@@ -169,33 +136,38 @@ export default function Loader({ onComplete }) {
       document.body.style.overflow = "";
       tl.kill();
     };
-  }, [onComplete]); return (
+  }, [onComplete]);
+
+  return (
     <div ref={loaderRef} className="loader-wrap">
       <svg
         ref={squiggleSvgRef}
         className="loader-squiggle"
-        viewBox="0 0 300 300"
+        viewBox="0 0 806 920"
       >
-        <path
-          ref={wave1Ref}
-          d="M52 96 L117 96 C149.5 96,149.5 72,182 72 L248 72"
-        />
-
-        <path
-          ref={wave2Ref}
-          d="M52 130 L117 130 C149.5 130,149.5 106,182 106 L248 106"
-        />
-
-        <path
-          ref={wave3Ref}
-          d="M52 164 L117 164 C149.5 164,149.5 140,182 140 L248 140"
-        />
+        <g transform="translate(0,808) scale(0.1,-0.1)">
+          <path
+            ref={wave1Ref}
+            className="logo-stroke logo-big"
+            d="M4280 5974 c-41 -19 -110 -60 -154 -91 -97 -67 -473 -364 -606 -478 -200 -172 -391 -303 -500 -345 l-35 -13 -242 -5 -243 -4 0 -304 0 -305 358 3 357 3 63 26 c135 58 309 185 642 469 347 298 503 412 633 468 l62 27 548 3 547 3 0 289 0 290 -678 0 -678 0 -74 -36z"
+          />
+          <path
+            ref={wave2Ref}
+            className="logo-stroke logo-big"
+            d="M4740 4821 c-142 -46 -296 -152 -684 -470 -133 -109 -311 -251 -396 -315 l-155 -117 -80 -40 c-44 -21 -104 -44 -134 -49 l-54 -10 -368 0 -369 0 0 -295 0 -295 518 0 517 0 46 14 c147 45 254 121 810 578 227 186 408 317 512 372 l79 41 364 3 364 3 0 299 0 300 -457 -1 -458 0 -55 -18z"
+          />
+          <path
+            ref={wave3Ref}
+            className="logo-stroke logo-big"
+            d="M5064 3631 c-133 -48 -270 -148 -762 -554 -249 -205 -437 -346 -526 -394 l-71 -38 -600 -5 -600 -5 -3 -297 -2 -298 692 0 693 0 47 15 c142 43 311 156 627 420 452 377 559 458 703 530 l90 45 179 0 179 0 0 300 0 300 -297 0 -298 -1 -51 -18z"
+          />
+        </g>
 
         <text
           ref={wordmarkTitleRef}
           className="wordmark-title"
-          x="150"
-          y="216"
+          x="403"
+          y="720"
           textAnchor="middle"
         >
           Entrepreneurship Cell
@@ -204,8 +176,8 @@ export default function Loader({ onComplete }) {
         <text
           ref={wordmarkSubRef}
           className="wordmark-sub"
-          x="150"
-          y="240"
+          x="403"
+          y="770"
           textAnchor="middle"
         >
           RV University

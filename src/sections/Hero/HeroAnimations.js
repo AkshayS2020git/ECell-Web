@@ -30,11 +30,21 @@ export function setupHeroAnimations({
   const title = titleRef.current;
   const subtitle = subtitleRef.current;
   const scrollHint = scrollHintRef?.current;
-  const waves = [wave3Ref.current, wave2Ref.current, wave1Ref.current].filter(
+  const waves = [wave1Ref.current, wave2Ref.current, wave3Ref.current].filter(
     Boolean,
   );
 
-  const waveLengths = waves.map(prepareSVG);
+  const waveLengths = waves.map((path) => {
+    if (!path) return 0;
+    const len = path.getTotalLength();
+    gsap.set(path, {
+      strokeDasharray: len,
+      strokeDashoffset: len,
+      fillOpacity: 0,
+      strokeOpacity: 1,
+    });
+    return len;
+  });
 
   const marqueeOpacity = gsap.quickSetter(marquee, "opacity");
 
@@ -102,12 +112,15 @@ export function setupHeroAnimations({
     }
     logoOpacity(logoReveal);
 
+    const fillP = smoothstep(0.50, 0.72, progress);
+
     waves.forEach((path, i) => {
-      const winStart = 0.2 + i * 0.1;
-      const dp = smoothstep(winStart, winStart + 0.35, progress);
+      const winStart = 0.18 + i * 0.10;
+      const dp = smoothstep(winStart, winStart + 0.30, progress);
       gsap.set(path, {
         strokeDashoffset: waveLengths[i] * (1 - dp),
-        opacity: 0.35 + dp * 0.65,
+        fillOpacity: fillP,
+        strokeOpacity: 1 - fillP,
       });
     });
     titleOpacity(wordmarkP);
