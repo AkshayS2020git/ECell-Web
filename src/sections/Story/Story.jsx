@@ -7,7 +7,7 @@ import "./Story.css";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Story({
-  eyebrow = "E-CELL",
+  eyebrow = "ECELL",
   baseHeading = "Our Story",
   headlineMain = "BUILDING THE FUTURE",
   headlineAccent = "ONE STARTUP AT A TIME",

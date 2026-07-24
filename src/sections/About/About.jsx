@@ -61,7 +61,7 @@ export default function About() {
 
   return (
     <section ref={aboutSectionRef} className="about wrap" id="aboutSection">
-      <div className="eyebrow">About E-Cell</div>
+      <div className="eyebrow">About ECell</div>
       <div ref={aboutStatementRef} className="about-statement" id="aboutStatement">
         <span className="line-mask">
           <span ref={line1Ref} className="line-inner">

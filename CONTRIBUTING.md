@@ -1,4 +1,4 @@
-# Contributing to E-Cell Website
+# Contributing to ECell Website
 
 First of all, thank you for contributing ❤️
 
