@@ -70,7 +70,7 @@ export default function Hero() {
         </div>
 
         <div ref={labelRef} className="hero__label">
-          <span className="hero__label-mark">E-CELL</span>
+          <span className="hero__label-mark">ECell</span>
           <span className="hero__label-cap">A note from the team</span>
         </div>
 
@@ -101,7 +101,7 @@ export default function Hero() {
             <span className="hero__heading-sub">
               It all starts from an idea
             </span>
-            <span className="hero__heading-main">E-Cell RV University</span>
+            <span className="hero__heading-main">ECell RV University</span>
           </h1>
         </div>
 
