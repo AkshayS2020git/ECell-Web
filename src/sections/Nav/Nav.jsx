@@ -25,7 +25,7 @@ export default function Nav() {
   return (
     <>
       <nav>
-        <div className="logo nav__logo-text">ECELL</div>
+        <div className="logo">ECELL</div>
         <div className="nav-right">
           <button
             ref={toggleRef}

@@ -10,4 +10,9 @@
   .hero__marquee-line {
     font-size: clamp(46px, 18vw, 86px);
   }
+
+  .hero__logo {
+    width: 230px;
+    height: 230px;
+  }
 }

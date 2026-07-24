@@ -5,7 +5,6 @@ import Nav from './sections/Nav/Nav';
 import Hero from './sections/Hero/Hero';
 import About from './sections/About/About';
 import Story from './sections/Story/Story';
-import FloatingLogo from './components/FloatingLogo/FloatingLogo';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -16,7 +15,6 @@ function App() {
       {!loading && (
         <>
           <Nav />
-          <FloatingLogo />
           <Hero />
           <About />
           <Story />
@@ -25,6 +23,5 @@ function App() {
     </>
   );
 }
-
 
 export default App;
