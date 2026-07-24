@@ -35,8 +35,9 @@ export default function FloatingLogo() {
 
     if (!logo) return;
 
-    // --- Measure the nav logo target position ---
-    const navLogoEl = document.querySelector(".nav__logo-text");
+    // --- Measure the nav logo target position & label ---
+    const iconTargetEl = document.querySelector(".nav__logo-icon-target");
+    const navLabelEl = document.querySelector(".nav__logo-label");
 
     // --- Prepare SVG strokes ---
     const waveLengths = waves.map((path) => {
@@ -130,20 +131,21 @@ export default function FloatingLogo() {
       const centerX = vw / 2;
       const centerY = vh / 2;
 
-      // --- Target position (nav logo) ---
+      // --- Target position (nav logo icon target) ---
       let targetX, targetY;
-      if (navLogoEl) {
-        const navRect = navLogoEl.getBoundingClientRect();
+      if (iconTargetEl) {
+        const navRect = iconTargetEl.getBoundingClientRect();
         targetX = navRect.left + navRect.width / 2;
-        targetY = navRect.top + navRect.height / 2;
+        // Shift targetY down slightly (+3.5px) so wave visual center matches text baseline center
+        targetY = navRect.top + navRect.height / 2 + 3.5;
       } else {
-        targetX = 52;
-        targetY = 36;
+        targetX = 54;
+        targetY = 46;
       }
 
-      // --- Size interpolation ---
+      // --- Size interpolation (Proportionate logo in nav header: 38px) ---
       const startSize = Math.min(340, vw * 0.8);
-      const endSize = 32;
+      const endSize = 38;
       const currentSize = lerp(startSize, endSize, t);
 
       // --- Position interpolation with slight arc (add a curve via Y offset) ---
@@ -164,12 +166,12 @@ export default function FloatingLogo() {
       // --- Subtle glow when logo is settling into nav ---
       const glowIntensity = smoothstep(0.7, 0.95, rawT) * (1 - smoothstep(0.95, 1, rawT));
       logo.style.filter = glowIntensity > 0.01
-        ? `drop-shadow(0 0 ${glowIntensity * 12}px rgba(255,255,255,${glowIntensity * 0.6}))`
+        ? `drop-shadow(0 0 ${glowIntensity * 14}px rgba(255,255,255,${glowIntensity * 0.7}))`
         : "none";
 
-      // --- Crossfade: hide nav "ECELL" text as logo arrives ---
-      if (navLogoEl) {
-        navLogoEl.style.opacity = 1 - smoothstep(0.5, 0.9, rawT);
+      // --- Fade in "ECELL" label text right after the logo icon as it arrives ---
+      if (navLabelEl) {
+        navLabelEl.style.opacity = smoothstep(0.35, 0.85, rawT);
       }
     };
 
@@ -179,7 +181,7 @@ export default function FloatingLogo() {
       gsap.ticker.remove(updateLogo);
       heroTrigger.kill();
       if (aboutTrigger) aboutTrigger.kill();
-      if (navLogoEl) navLogoEl.style.opacity = 1;
+      if (navLabelEl) navLabelEl.style.opacity = 0;
     };
   }, []);
 
