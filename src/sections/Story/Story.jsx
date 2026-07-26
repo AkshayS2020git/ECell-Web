@@ -3,14 +3,15 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import "./Story.css";
+import libImg from "../../assets/story/lib.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Story({
   eyebrow = "ECELL",
   baseHeading = "Our Story",
-  headlineMain = "BUILDING THE FUTURE",
-  headlineAccent = "ONE STARTUP AT A TIME",
+  headlineMain = "IT'S THE MIND",
+  headlineAccent = "THAT MAKES THE DIFFERENCE",
 }) {
   const revealRef = useRef(null);
   const baseTextRef = useRef(null);
@@ -43,6 +44,7 @@ export default function Story({
         filter: "blur(0px)",
       });
       if (image) gsap.set(image, { scale: 1 });
+      gsap.set(".story-reveal-text", { opacity: 1 });
       gsap.set(eyebrowEl, { opacity: 1, y: 0 });
       gsap.set(revealTextInner, { x: 0 });
       return;
@@ -73,8 +75,10 @@ export default function Story({
 
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
+        const textH2 = revealTextInner.querySelector("h2");
 
         gsap.set(revealTextInner, { x: containerWidth });
+        gsap.set(".story-reveal-text", { opacity: 0 });
 
         gsap.set(imagePanel, {
           x: `${travelPct}%`,
@@ -92,6 +96,30 @@ export default function Story({
             scrub: 1,
             pin: true,
             anticipatePin: 1,
+            onUpdate: (self) => {
+              const velocity = self.getVelocity();
+              const skew = velocity * 0.006;
+              const clampedSkew = gsap.utils.clamp(-14, 14, skew);
+              const dip = Math.abs(clampedSkew) * 0.5;
+
+              // Squash & Stretch for a jelly/squishy feel
+              const stretch = Math.abs(velocity) * 0.00018;
+              const clampedStretch = gsap.utils.clamp(0, 0.22, stretch);
+              const scaleX = 1 + clampedStretch;
+              const scaleY = 1 - clampedStretch;
+
+              if (textH2) {
+                gsap.to(textH2, {
+                  skewX: clampedSkew,
+                  scaleX: scaleX,
+                  scaleY: scaleY,
+                  y: dip,
+                  overwrite: "auto",
+                  duration: 0.3,
+                  ease: "power2.out",
+                });
+              }
+            },
           },
         });
 
@@ -109,11 +137,21 @@ export default function Story({
               scale: 1,
               rotate: 0,
               filter: "blur(0px)",
-              duration: 0.55,
-              ease: "power3.out",
+              duration: 0.5,
+              ease: "power2.out",
             },
             0.04,
-          )
+          );
+
+        if (image) {
+          tl.to(image, { scale: 1, duration: 0.5, ease: "power2.out" }, 0.04);
+        }
+
+        tl.to(
+          ".story-reveal-text",
+          { opacity: 1, duration: 0.1, ease: "power1.out" },
+          0.54,
+        )
 
           .to(
             revealTextInner,
@@ -122,19 +160,15 @@ export default function Story({
               duration: 1.1,
               ease: "none",
             },
-            0.04,
+            0.54,
           )
 
           .fromTo(
             eyebrowEl,
             { opacity: 0, y: 10 },
             { opacity: 1, y: 0, duration: 0.18, ease: "power1.out" },
-            0.3,
+            0.6,
           );
-
-        if (image) {
-          tl.to(image, { scale: 1, duration: 0.65, ease: "power2.out" }, 0.06);
-        }
 
         return () => {
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
@@ -161,6 +195,7 @@ export default function Story({
       </div>
 
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
+        <img ref={imageRef} src={libImg} alt="Story background" />
         <div className="grain"></div>
       </div>
 
