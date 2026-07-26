@@ -74,6 +74,10 @@ export default function Speakers() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
+      const target = e.target;
+      const isTyping = target instanceof HTMLElement &&
+        (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+      if (isTyping) return;
       if (e.key === "ArrowLeft") handlePrev();
       if (e.key === "ArrowRight") handleNext();
     };
@@ -85,6 +89,8 @@ export default function Speakers() {
   useEffect(() => {
     const section = speakersSectionRef.current;
     if (!section) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -107,22 +113,21 @@ export default function Speakers() {
     return () => ctx.revert();
   }, []);
 
-  const currentSpeaker = SPEAKERS_LIST[activeIndex];
   const pad2 = (n) => String(n).padStart(2, "0");
 
   return (
-    <section ref={speakersSectionRef} className="speakers-section" id="speakers">
+    <section ref={speakersSectionRef} className="speakers-section" id="speakers" aria-labelledby="speakers-heading">
       <div className="wrap">
         <div className="speakers-header">
           <div className="speakers-header-left">
             <span className="eyebrow">PREVIOUS SPEAKERS</span>
-            <h2 className="speakers-headline">Voices of Innovation</h2>
+            <h2 id="speakers-heading" className="speakers-headline">Voices of Innovation</h2>
           </div>
 
           {/* Navigation Controls with Arrow Buttons */}
           <div className="speakers-nav-controls">
             <span className="speakers-counter">
-              <strong>{pad2(activeIndex + 1)}</strong> / {pad2(SPEAKERS_LIST.length)}
+              <strong aria-live="polite">{pad2(activeIndex + 1)}</strong> / {pad2(SPEAKERS_LIST.length)}
             </span>
             <button
               onClick={handlePrev}
@@ -183,7 +188,17 @@ export default function Speakers() {
               <div
                 key={speaker.id}
                 onClick={() => setActiveIndex(index)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setActiveIndex(index);
+                  }
+                }}
                 className={`speaker-card-item ${isActive ? "active" : ""}`}
+                role="button"
+                tabIndex="0"
+                aria-label={`Show ${speaker.name}, ${speaker.role}`}
+                aria-pressed={isActive}
                 style={{
                   transform: `translateX(${translateX}px) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale})`,
                   opacity: opacity,

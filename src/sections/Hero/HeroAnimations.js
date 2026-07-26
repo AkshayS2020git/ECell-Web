@@ -20,6 +20,16 @@ export function setupHeroAnimations({
   const label = labelRef.current;
   const heading = headingRef.current;
   const scrollHint = scrollHintRef?.current;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduceMotion) {
+    gsap.set([videoWrap, marquee, label, heading, scrollHint].filter(Boolean), {
+      clearProps: "all",
+      opacity: 1,
+    });
+    video?.pause();
+    return () => {};
+  }
 
   const marqueeOpacity = gsap.quickSetter(marquee, "opacity");
   const labelOpacity = gsap.quickSetter(label, "opacity");
@@ -93,4 +103,3 @@ export function setupHeroAnimations({
     trigger.kill();
   };
 }
-

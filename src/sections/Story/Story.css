@@ -161,6 +161,65 @@
   color: inherit;
 }
 
+/* Visual handoff into the sponsor marquee. It appears only at the end of the
+   pinned story sequence, where it meets the sponsor section's glow. */
+.story-transition {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: -1px;
+  width: min(76vw, 920px);
+  height: clamp(86px, 13vh, 148px);
+  transform: translateX(-50%) scale(0.72);
+  transform-origin: center bottom;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.story-transition::before {
+  content: "";
+  position: absolute;
+  inset: 0 -18% -65%;
+  background: radial-gradient(ellipse at center bottom, rgba(244, 244, 242, 0.16), transparent 62%);
+  filter: blur(18px);
+}
+
+.story-transition-orbit {
+  position: absolute;
+  left: 50%;
+  bottom: -58%;
+  width: 72%;
+  aspect-ratio: 2.8 / 1;
+  border: 1px solid rgba(244, 244, 242, 0.45);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  box-shadow: 0 -8px 24px rgba(244, 244, 242, 0.08);
+}
+
+.story-transition-line {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 1px;
+  height: 42%;
+  background: linear-gradient(transparent, rgba(244, 244, 242, 0.72));
+}
+
+.story-transition-label {
+  position: absolute;
+  left: 50%;
+  bottom: 44%;
+  transform: translateX(-50%);
+  color: rgba(244, 244, 242, 0.68);
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  white-space: nowrap;
+}
+
 
 @media (max-width: 767px) {
   .story-reveal-base h2 {

@@ -34,6 +34,9 @@ export default function Nav() {
             ref={toggleRef}
             className="chapters-toggle"
             onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-controls="chapters-menu"
+            type="button"
           >
             Chapters
             <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
@@ -49,7 +52,9 @@ export default function Nav() {
 
       <div
         ref={dropdownRef}
+        id="chapters-menu"
         className={`chapters-dropdown ${isOpen ? 'open' : ''}`}
+        aria-hidden={!isOpen}
       >
         <a href="#aboutSection" onClick={() => setIsOpen(false)}>
           About — Core Mission

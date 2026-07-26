@@ -21,10 +21,19 @@ const SPONSORS_DATA = [
 export default function Sponsors() {
   const sponsorsSectionRef = useRef(null);
   const glowRef = useRef(null);
+  const marqueeRef = useRef(null);
 
   useEffect(() => {
     const section = sponsorsSectionRef.current;
     if (!section) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      gsap.set(section, { opacity: 1, y: 0, clipPath: "none" });
+      if (marqueeRef.current) gsap.set(marqueeRef.current, { opacity: 1, y: 0, scale: 1 });
+      if (glowRef.current) gsap.set(glowRef.current, { opacity: 0.35, scale: 1 });
+      return;
+    }
 
     const ctx = gsap.context(() => {
       // Clean, unified full-section reveal when scrolling into Sponsors
@@ -32,11 +41,13 @@ export default function Sponsors() {
         section,
         {
           opacity: 0,
-          y: 50,
+          y: 34,
+          clipPath: "inset(8% 0 0 round 42% 42% 0 0)",
         },
         {
           opacity: 1,
           y: 0,
+          clipPath: "inset(0% 0 0 round 0 0 0 0)",
           duration: 0.75,
           ease: "power3.out",
           scrollTrigger: {
@@ -65,6 +76,25 @@ export default function Sponsors() {
           }
         );
       }
+
+      if (marqueeRef.current) {
+        gsap.fromTo(
+          marqueeRef.current,
+          { y: 34, opacity: 0, scale: 0.97 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 70%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      }
     }, section);
 
     return () => ctx.revert();
@@ -83,7 +113,7 @@ export default function Sponsors() {
         <h2 className="sponsors-headline">Backed by Innovators & Builders</h2>
       </div>
 
-      <div className="sponsor-marquee-wrapper">
+      <div ref={marqueeRef} className="sponsor-marquee-wrapper">
         {/* Row 1 - Scroll Left */}
         <div className="sponsor-marquee-track marquee-left">
           <div className="sponsor-marquee-inner">

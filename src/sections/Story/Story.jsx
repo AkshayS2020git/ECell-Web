@@ -18,6 +18,7 @@ export default function Story({
   const imageRef = useRef(null);
   const revealTextInnerRef = useRef(null);
   const eyebrowRef = useRef(null);
+  const transitionRef = useRef(null);
 
   useEffect(() => {
     const reveal = revealRef.current;
@@ -26,6 +27,7 @@ export default function Story({
     const image = imageRef.current;
     const revealTextInner = revealTextInnerRef.current;
     const eyebrowEl = eyebrowRef.current;
+    const transition = transitionRef.current;
 
     if (!reveal || !imagePanel || !revealTextInner) return;
 
@@ -46,6 +48,7 @@ export default function Story({
       gsap.set(".story-reveal-text", { opacity: 1 });
       gsap.set(eyebrowEl, { opacity: 1, y: 0 });
       gsap.set(revealTextInner, { x: 0 });
+      if (transition) gsap.set(transition, { opacity: 1, scale: 1 });
       return;
     }
 
@@ -70,7 +73,6 @@ export default function Story({
       (context) => {
         const { isMobile } = context.conditions;
         const travelPct = isMobile ? 28 : 40;
-        const pinLength = isMobile ? "+=320%" : "+=420%";
 
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
@@ -78,6 +80,7 @@ export default function Story({
 
         gsap.set(revealTextInner, { x: containerWidth });
         gsap.set(".story-reveal-text", { opacity: 0 });
+        if (transition) gsap.set(transition, { opacity: 0, scale: 0.72, y: 24 });
 
         gsap.set(imagePanel, {
           x: `${travelPct}%`,
@@ -180,6 +183,19 @@ export default function Story({
           2.08,
         )
 
+        // A small pulse carries the eye into the next section as the story closes.
+        .to(
+          transition,
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.42,
+            ease: "power2.out",
+          },
+          2.08,
+        )
+
         // 4. Image panel exit transition AFTER text has completely gone away (time 2.22 -> 3.22, extra slow & smooth exit)
         .to(
           imagePanel,
@@ -243,6 +259,12 @@ export default function Story({
             {headlineMain} <em>{headlineAccent}</em>
           </h2>
         </div>
+      </div>
+
+      <div className="story-transition" ref={transitionRef} aria-hidden="true">
+        <span className="story-transition-label">NEXT / PARTNERS</span>
+        <span className="story-transition-orbit" />
+        <span className="story-transition-line" />
       </div>
     </section>
   );

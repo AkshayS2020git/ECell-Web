@@ -109,6 +109,12 @@ nav {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.chapters-toggle:focus-visible,
+.chapters-dropdown a:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
 @media (max-width: 768px) {
   nav {
     padding: 18px 20px;
