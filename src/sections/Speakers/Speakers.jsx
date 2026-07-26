@@ -89,17 +89,16 @@ export default function Speakers() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         section,
-        { opacity: 0, y: 60, scale: 0.96 },
+        { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          scale: 1,
-          ease: "power2.out",
+          duration: 0.75,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 88%",
-            end: "top 45%",
-            scrub: 0.8,
+            start: "top 82%",
+            toggleActions: "play none none reverse",
           },
         }
       );
@@ -210,24 +209,6 @@ export default function Speakers() {
               </div>
             );
           })}
-        </div>
-
-        {/* Active Speaker Spotlight Quote / Detail Panel */}
-        <div className="speaker-spotlight-panel">
-          <div className="spotlight-quote">
-            <span className="quote-mark">“</span>
-            <p>{currentSpeaker.quote}</p>
-          </div>
-          <div className="spotlight-footer">
-            <div>
-              <span className="spotlight-topic-label">KEYNOTE TALK</span>
-              <h4 className="spotlight-topic">{currentSpeaker.topic}</h4>
-            </div>
-            <div className="spotlight-speaker-meta">
-              <strong>{currentSpeaker.name}</strong>
-              <span>{currentSpeaker.role}, {currentSpeaker.company}</span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

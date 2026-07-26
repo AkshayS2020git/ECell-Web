@@ -27,26 +27,22 @@ export default function Sponsors() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Dynamic scrubbed entrance transition from Story section to Sponsors
+      // Clean, unified full-section reveal when scrolling into Sponsors
       gsap.fromTo(
         section,
         {
           opacity: 0,
-          y: 80,
-          scale: 0.94,
-          filter: "blur(10px)",
+          y: 50,
         },
         {
           opacity: 1,
           y: 0,
-          scale: 1,
-          filter: "blur(0px)",
-          ease: "power2.out",
+          duration: 0.75,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 88%",
-            end: "top 40%",
-            scrub: 0.8,
+            start: "top 82%",
+            toggleActions: "play none none reverse",
           },
         }
       );
@@ -92,11 +88,10 @@ export default function Sponsors() {
         <div className="sponsor-marquee-track marquee-left">
           <div className="sponsor-marquee-inner">
             {marqueeList1.map((item, index) => (
-              <div key={`m1-${index}`} className="sponsor-badge">
-                <span className="sponsor-badge-dot" />
-                <span className="sponsor-badge-name">{item.name}</span>
-                <span className="sponsor-badge-tier">{item.tier}</span>
-              </div>
+              <span key={`m1-${index}`} className="sponsor-item">
+                <span className="sponsor-name">{item.name}</span>
+                <span className="sponsor-bullet">•</span>
+              </span>
             ))}
           </div>
         </div>
@@ -105,11 +100,11 @@ export default function Sponsors() {
         <div className="sponsor-marquee-track marquee-right">
           <div className="sponsor-marquee-inner">
             {marqueeList2.map((item, index) => (
-              <div key={`m2-${index}`} className="sponsor-badge sponsor-badge-dim">
-                <span className="sponsor-badge-dot" />
-                <span className="sponsor-badge-name">{item.name}</span>
-                <span className="sponsor-badge-category">{item.category}</span>
-              </div>
+              <span key={`m2-${index}`} className="sponsor-item sponsor-item-dim">
+                <span className="sponsor-name">{item.name}</span>
+                <span className="sponsor-tag">{item.category}</span>
+                <span className="sponsor-bullet">•</span>
+              </span>
             ))}
           </div>
         </div>
