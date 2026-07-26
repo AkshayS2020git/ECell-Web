@@ -86,13 +86,14 @@ export default function Story({
           scale: isMobile ? 0.62 : 0.5,
           rotate: -4,
           filter: "blur(6px)",
+          opacity: 1,
         });
 
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: reveal,
             start: "top top",
-            end: pinLength,
+            end: isMobile ? "+=380%" : "+=480%",
             scrub: 1,
             pin: true,
             anticipatePin: 1,
@@ -123,52 +124,96 @@ export default function Story({
           },
         });
 
+        // 1. Base text fade out
         tl.to(
           baseText,
           { opacity: 0, y: -24, duration: 0.12, ease: "power1.out" },
           0,
         )
 
-          .to(
-            imagePanel,
-            {
-              x: "0%",
-              y: "0%",
-              scale: 1,
-              rotate: 0,
-              filter: "blur(0px)",
-              duration: 0.5,
-              ease: "power2.out",
-            },
-            0.04,
-          );
+        // 2. Image panel entrance from bottom-right
+        .to(
+          imagePanel,
+          {
+            x: "0%",
+            y: "0%",
+            scale: 1,
+            rotate: 0,
+            filter: "blur(0px)",
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          0.04,
+        );
 
         if (image) {
           tl.to(image, { scale: 1, duration: 0.5, ease: "power2.out" }, 0.04);
         }
 
+        // 3. Reveal headline text scroll
         tl.to(
           ".story-reveal-text",
           { opacity: 1, duration: 0.1, ease: "power1.out" },
           0.54,
         )
 
-          .to(
-            revealTextInner,
-            {
-              x: -textWidth,
-              duration: 1.1,
-              ease: "none",
-            },
-            0.54,
-          )
+        .to(
+          revealTextInner,
+          {
+            x: -textWidth,
+            duration: 1.1,
+            ease: "none",
+          },
+          0.54,
+        )
 
-          .fromTo(
-            eyebrowEl,
-            { opacity: 0, y: 10 },
-            { opacity: 1, y: 0, duration: 0.18, ease: "power1.out" },
-            0.6,
+        .fromTo(
+          eyebrowEl,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.18, ease: "power1.out" },
+          0.6,
+        )
+
+        // 4. Image panel dynamic exit transition towards top-left
+        .to(
+          imagePanel,
+          {
+            x: `-${travelPct + 10}%`,
+            y: `-${travelPct + 10}%`,
+            scale: isMobile ? 0.55 : 0.42,
+            rotate: 6,
+            filter: "blur(12px)",
+            opacity: 0,
+            duration: 0.55,
+            ease: "power2.inOut",
+          },
+          1.4,
+        );
+
+        if (image) {
+          tl.to(
+            image,
+            {
+              scale: 1.25,
+              duration: 0.55,
+              ease: "power2.inOut",
+            },
+            1.4,
           );
+        }
+
+        // Fade out text overlay during exit
+        tl.to(
+          ".story-reveal-text",
+          {
+            opacity: 0,
+            y: -30,
+            duration: 0.4,
+            ease: "power1.in",
+          },
+          1.45,
+        );
 
         return () => {
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
