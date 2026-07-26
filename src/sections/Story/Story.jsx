@@ -9,12 +9,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Story({
   eyebrow = "ECELL",
-  baseHeading = "Our Story",
   headlineMain = "IT'S THE MIND",
   headlineAccent = "THAT MAKES THE DIFFERENCE",
 }) {
   const revealRef = useRef(null);
-  const baseTextRef = useRef(null);
+
   const imagePanelRef = useRef(null);
   const imageRef = useRef(null);
   const revealTextInnerRef = useRef(null);
@@ -22,7 +21,7 @@ export default function Story({
 
   useEffect(() => {
     const reveal = revealRef.current;
-    const baseText = baseTextRef.current;
+
     const imagePanel = imagePanelRef.current;
     const image = imageRef.current;
     const revealTextInner = revealTextInnerRef.current;
@@ -35,7 +34,7 @@ export default function Story({
     ).matches;
 
     if (reduceMotion) {
-      gsap.set(baseText, { opacity: 0 });
+
       gsap.set(imagePanel, {
         x: 0,
         y: 0,
@@ -124,14 +123,8 @@ export default function Story({
           },
         });
 
-        // 1. Base text fade out
-        tl.to(
-          baseText,
-          { opacity: 0, y: -24, duration: 0.18, ease: "power1.out" },
-          0,
-        )
-
-        // 2. Image panel entrance from bottom-right to center (smooth & graceful)
+        // 1. Image panel entrance from bottom-right to center (smooth & graceful)
+        tl
         .to(
           imagePanel,
           {
@@ -234,10 +227,7 @@ export default function Story({
 
   return (
     <section className="story-reveal" ref={revealRef} id="storyReveal">
-      <div className="story-reveal-base" ref={baseTextRef}>
-        <div className="eyebrow">{eyebrow}</div>
-        <h2 id="baseHeading">{baseHeading}</h2>
-      </div>
+
 
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
         <img ref={imageRef} src={libImg} alt="Story background" />
