@@ -22,6 +22,14 @@ export default function Nav() {
     };
   }, []);
 
+  const scrollToSection = (id) => {
+    setIsOpen(false);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <nav>
@@ -30,6 +38,12 @@ export default function Nav() {
           <span className="nav__logo-label">ECELL</span>
         </div>
         <div className="nav-right">
+          <button
+            className="events-nav-btn"
+            onClick={() => scrollToSection('eventsSection')}
+          >
+            Events &or;
+          </button>
           <button
             ref={toggleRef}
             className="chapters-toggle"
@@ -43,7 +57,7 @@ export default function Nav() {
               <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </button>
-          <div className="menu-icon">
+          <div className="menu-icon" onClick={() => setIsOpen(!isOpen)} style={{ cursor: 'pointer' }}>
             <span></span>
             <span></span>
           </div>
@@ -56,8 +70,18 @@ export default function Nav() {
         className={`chapters-dropdown ${isOpen ? 'open' : ''}`}
         aria-hidden={!isOpen}
       >
-        <a href="#aboutSection" onClick={() => setIsOpen(false)}>
+        <a href="#aboutSection" onClick={(e) => { e.preventDefault(); scrollToSection('aboutSection'); }}>
           About — Core Mission
+        </a>
+        <a
+          href="#eventsSection"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('eventsSection');
+          }}
+          className="dropdown-events-link"
+        >
+          Events — 3D Virtual Gallery ✦
         </a>
       </div>
     </>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Loader from './sections/Loader/Loader';
 import Nav from './sections/Nav/Nav';
