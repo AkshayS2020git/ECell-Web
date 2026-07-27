@@ -6,6 +6,7 @@ import Hero from './sections/Hero/Hero';
 import About from './sections/About/About';
 import Story from './sections/Story/Story';
 import FloatingLogo from './components/FloatingLogo/FloatingLogo';
+import Team from "./sections/Team/Team";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,7 @@ function App() {
           <Hero />
           <About />
           <Story />
+          <Team />
         </>
       )}
     </>

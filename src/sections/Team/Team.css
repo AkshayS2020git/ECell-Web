@@ -1,0 +1,85 @@
+.team {
+  background-color: var(--bg, #0a0a0c);
+  color: var(--fg, #f4f4f2);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.team__background {
+  background: radial-gradient(circle at 50% 30%,
+      rgba(255, 255, 255, 0.03) 0%,
+      transparent 70%);
+  pointer-events: none;
+}
+
+.team__card {
+  background: var(--card-bg, #121216);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 32px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.team__label {
+  width: 85%;
+  max-width: 1240px;
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.team__label-mark {
+  font-size: 0.82rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #8e8e93;
+  font-weight: 600;
+}
+
+
+.team__card--hidden {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.team__image {
+  background-color: #16161a;
+  overflow: hidden;
+}
+
+.team__image img {
+  object-fit: cover;
+  object-position: center 15%;
+}
+
+.team__role {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-color, #8e8e93);
+}
+
+.team__title {
+  font-size: 3rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--fg, #ffffff);
+  margin: 0;
+}
+
+.team__description {
+  font-size: 1.1875rem;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--fg-dim, rgba(255, 255, 255, 0.65));
+  margin: 0;
+}
