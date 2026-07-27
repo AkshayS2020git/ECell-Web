@@ -39,12 +39,6 @@ export default function Nav() {
         </div>
         <div className="nav-right">
           <button
-            className="events-nav-btn"
-            onClick={() => scrollToSection('eventsSection')}
-          >
-            Events &or;
-          </button>
-          <button
             ref={toggleRef}
             className="chapters-toggle"
             onClick={() => setIsOpen(!isOpen)}

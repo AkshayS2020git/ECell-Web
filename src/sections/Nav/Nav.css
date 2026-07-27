@@ -46,31 +46,6 @@ nav {
   text-transform: uppercase;
 }
 
-.events-nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  background: rgba(0, 210, 255, 0.12);
-  border: 1px solid rgba(0, 210, 255, 0.35);
-  color: #00d2ff;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 20px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.events-nav-btn:hover {
-  background: rgba(0, 210, 255, 0.25);
-  border-color: #00d2ff;
-  transform: translateY(-1px);
-  box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
-}
-
 .chapters-toggle {
   display: flex;
   align-items: center;
@@ -159,8 +134,4 @@ nav {
     font-size: 12px;
   }
 
-  .events-nav-btn {
-    padding: 5px 10px;
-    font-size: 11px;
-  }
 }

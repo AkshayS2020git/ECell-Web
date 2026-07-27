@@ -83,7 +83,7 @@ export default function FloatingLogo() {
       aboutTrigger = ScrollTrigger.create({
         trigger: aboutEl,
         start: "top bottom",
-        end: "top 40%",
+        end: "top 10%",
         scrub: true,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -95,7 +95,7 @@ export default function FloatingLogo() {
     // --- Animation loop ---
     const updateLogo = () => {
       heroSmoothed = lerp(heroSmoothed, heroTarget, 0.1);
-      transSmoothed = lerp(transSmoothed, transTarget, 0.07);
+      transSmoothed = lerp(transSmoothed, transTarget, 0.05);
 
       const p = heroSmoothed;
       const rawT = transSmoothed;
