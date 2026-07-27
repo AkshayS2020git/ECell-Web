@@ -102,9 +102,7 @@ export default function Events() {
       .fromTo(intro, { autoAlpha: 0, xPercent: -18 }, { autoAlpha: 1, xPercent: 0, ease: 'none' }, 0)
       .fromTo(gallery, { autoAlpha: 0, scale: 0.82, yPercent: 12 }, { autoAlpha: 1, scale: 1, yPercent: 0, ease: 'none' }, 0.08);
 
-    const tween = gsap.to(camera, {
-      z: (GALLERY_ITEMS.length - 1) * zSpacing + 800,
-      ease: 'none',
+    const journey = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: 'top top',
@@ -113,12 +111,33 @@ export default function Events() {
         pin: true,
         anticipatePin: 1,
       },
-      onUpdate: updateScene,
     });
+
+    journey
+      .to(camera, {
+        z: (GALLERY_ITEMS.length - 1) * zSpacing + 800,
+        duration: 4,
+        ease: 'none',
+        onUpdate: updateScene,
+      })
+      .to(gallery, {
+        autoAlpha: 0,
+        scale: 0.76,
+        yPercent: -20,
+        filter: 'blur(10px)',
+        duration: 0.7,
+        ease: 'power3.in',
+      }, 3.65)
+      .to(intro, {
+        autoAlpha: 0,
+        xPercent: 12,
+        duration: 0.45,
+        ease: 'power2.in',
+      }, 3.72);
 
     return () => {
       entrance.kill();
-      tween.kill();
+      journey.kill();
     };
   }, []);
 

@@ -6,6 +6,12 @@ const FOOTER_LINKS = [
   { label: 'Speakers', href: '#speakers' },
 ];
 
+const SOCIAL_LINKS = [
+  { label: 'Instagram', href: 'https://www.instagram.com/rv.university/' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/ecell-rv-university/' },
+  { label: 'YouTube', href: 'https://www.youtube.com/@RVUniversity' },
+];
+
 export default function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -22,6 +28,15 @@ export default function Footer() {
           <span className="footer-links-label">EXPLORE</span>
           {FOOTER_LINKS.map((link) => (
             <a key={link.href} href={link.href}>{link.label}</a>
+          ))}
+        </div>
+
+        <div className="footer-socials" aria-label="Social media links">
+          <span className="footer-links-label">FOLLOW</span>
+          {SOCIAL_LINKS.map((link) => (
+            <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
+              {link.label} <span aria-hidden="true">↗</span>
+            </a>
           ))}
         </div>
 

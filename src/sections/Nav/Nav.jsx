@@ -33,10 +33,14 @@ export default function Nav() {
   return (
     <>
       <nav>
-        <div className="logo nav__logo-container">
+        <button
+          className="logo nav__logo-container nav__logo-button"
+          onClick={() => window.location.reload()}
+          type="button"
+          aria-label="Reload homepage"
+        >
           <div className="nav__logo-icon-target" />
-          <span className="nav__logo-label">ECELL</span>
-        </div>
+        </button>
         <div className="nav-right">
           <button
             ref={toggleRef}

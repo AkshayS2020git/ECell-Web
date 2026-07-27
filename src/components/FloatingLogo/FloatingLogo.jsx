@@ -143,9 +143,9 @@ export default function FloatingLogo() {
         targetY = 46;
       }
 
-      // --- Size interpolation (Proportionate logo in nav header: 38px) ---
+      // --- Size interpolation (proportionate logo in nav header: 64px) ---
       const startSize = Math.min(340, vw * 0.8);
-      const endSize = 38;
+      const endSize = 80;
       const currentSize = lerp(startSize, endSize, t);
 
       // --- Position interpolation with slight arc (add a curve via Y offset) ---
