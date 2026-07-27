@@ -35,6 +35,8 @@ const GALLERY_ITEMS = [
 
 export default function Events() {
   const sectionRef = useRef(null);
+  const introRef = useRef(null);
+  const galleryRef = useRef(null);
   const sceneRef = useRef(null);
   const captionRef = useRef(null);
   const itemsRef = useRef([]);
@@ -44,6 +46,8 @@ export default function Events() {
     const section = sectionRef.current;
     const scene = sceneRef.current;
     const caption = captionRef.current;
+    const intro = introRef.current;
+    const gallery = galleryRef.current;
     if (!section || !scene || !caption || !items.length) return undefined;
 
     const zSpacing = 1500;
@@ -85,6 +89,19 @@ export default function Events() {
     };
 
     updateScene();
+    const entrance = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 95%',
+        end: 'top 28%',
+        scrub: 0.7,
+      },
+    });
+
+    entrance
+      .fromTo(intro, { autoAlpha: 0, xPercent: -18 }, { autoAlpha: 1, xPercent: 0, ease: 'none' }, 0)
+      .fromTo(gallery, { autoAlpha: 0, scale: 0.82, yPercent: 12 }, { autoAlpha: 1, scale: 1, yPercent: 0, ease: 'none' }, 0.08);
+
     const tween = gsap.to(camera, {
       z: (GALLERY_ITEMS.length - 1) * zSpacing + 800,
       ease: 'none',
@@ -99,16 +116,19 @@ export default function Events() {
       onUpdate: updateScene,
     });
 
-    return () => tween.kill();
+    return () => {
+      entrance.kill();
+      tween.kill();
+    };
   }, []);
 
   return (
     <section className="events-section" ref={sectionRef} id="eventsSection">
-      <div className="events-intro" aria-hidden="true">
+      <div className="events-intro" ref={introRef} aria-hidden="true">
         <span>ECELL / EVENTS</span>
         <h2>Moments that move ideas forward</h2>
       </div>
-      <div className="events-3d-wrapper">
+      <div className="events-3d-wrapper" ref={galleryRef}>
       <div className="events-caption-container">
         <div className="events-caption-text" ref={captionRef} id="active-caption">
           Scroll Down to Explore

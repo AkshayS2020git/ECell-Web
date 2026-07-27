@@ -17,7 +17,6 @@ export default function Story({
   const imageRef = useRef(null);
   const revealTextInnerRef = useRef(null);
   const eyebrowRef = useRef(null);
-  const transitionRef = useRef(null);
 
   useEffect(() => {
     const reveal = revealRef.current;
@@ -25,7 +24,6 @@ export default function Story({
     const image = imageRef.current;
     const revealTextInner = revealTextInnerRef.current;
     const eyebrowEl = eyebrowRef.current;
-    const transition = transitionRef.current;
 
     if (!reveal || !imagePanel || !revealTextInner) return;
 
@@ -74,7 +72,6 @@ export default function Story({
 
         gsap.set(revealTextInner, { x: containerWidth });
         gsap.set(".story-reveal-text", { opacity: 0 });
-        if (transition) gsap.set(transition, { opacity: 0, scale: 0.72, y: 24 });
 
         gsap.set(imagePanel, {
           x: `${travelPct}%`,
@@ -171,34 +168,20 @@ export default function Story({
             2.08,
           );
 
-        if (transition) {
-          tl.to(
-            transition,
-            {
-              opacity: 1,
-              scale: 1,
-              y: 0,
-              duration: 0.42,
-              ease: "power2.out",
-            },
-            2.2,
-          );
-        }
-
-        // The image exits before the separate Events section enters the viewport.
+        // A fast, directional exit clears the stage for the separate Events section.
         tl.to(
           imagePanel,
           {
-            x: `-${travelPct + 18}%`,
-            y: `-${travelPct + 18}%`,
-            scale: isMobile ? 0.52 : 0.35,
-            rotate: 8,
-            filter: "blur(16px)",
+            x: `-${travelPct + 26}%`,
+            y: `-${travelPct + 22}%`,
+            scale: isMobile ? 0.6 : 0.48,
+            rotate: 11,
+            filter: "blur(20px)",
             opacity: 0,
-            duration: 0.8,
-            ease: "power2.inOut",
+            duration: 0.7,
+            ease: "power3.in",
           },
-          2.3,
+          2.18,
         );
 
         return () => {
@@ -234,12 +217,6 @@ export default function Story({
             {headlineMain} <em>{headlineAccent}</em>
           </h2>
         </div>
-      </div>
-
-      <div className="story-transition" ref={transitionRef} aria-hidden="true">
-        <span className="story-transition-label">NEXT / EVENTS</span>
-        <span className="story-transition-orbit" />
-        <span className="story-transition-line" />
       </div>
     </section>
   );
