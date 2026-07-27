@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './Nav.css';
 
-export default function Nav() {
+export default function Nav({ onOpenEvents }) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -28,6 +28,12 @@ export default function Nav() {
         <div className="logo">E-CELL</div>
         <div className="nav-right">
           <button
+            className="events-nav-btn"
+            onClick={() => onOpenEvents && onOpenEvents()}
+          >
+            Events &or;
+          </button>
+          <button
             ref={toggleRef}
             className="chapters-toggle"
             onClick={() => setIsOpen(!isOpen)}
@@ -37,7 +43,7 @@ export default function Nav() {
               <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </button>
-          <div className="menu-icon">
+          <div className="menu-icon" onClick={() => setIsOpen(!isOpen)} style={{ cursor: 'pointer' }}>
             <span></span>
             <span></span>
           </div>
@@ -50,6 +56,17 @@ export default function Nav() {
       >
         <a href="#aboutSection" onClick={() => setIsOpen(false)}>
           About — Core Mission
+        </a>
+        <a
+          href="#events"
+          onClick={(e) => {
+            e.preventDefault();
+            setIsOpen(false);
+            if (onOpenEvents) onOpenEvents();
+          }}
+          className="dropdown-events-link"
+        >
+          Events — 3D Virtual Gallery ✦
         </a>
       </div>
     </>
