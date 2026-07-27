@@ -1,13 +1,43 @@
+.events-section {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 30%, #20201f 0%, #101010 45%, #070707 100%);
+  color: #fff;
+}
+
+.events-intro {
+  position: absolute;
+  top: clamp(2rem, 5vw, 4.5rem);
+  left: clamp(1.5rem, 6vw, 6rem);
+  z-index: 12;
+  max-width: 28rem;
+  pointer-events: none;
+}
+
+.events-intro span {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.events-intro h2 {
+  font-family: "Bebas Neue", "Archivo", sans-serif;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  font-weight: 400;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
 /* --- 3D Scene Wrapper --- */
 .events-3d-wrapper {
   position: absolute;
   inset: 0;
   perspective: 800px;
   z-index: 10;
-  pointer-events: none;
-  opacity: 0;
-  transform: scale(0.85);
-  will-change: transform, opacity;
 }
 
 /* --- 3D Scene and Camera --- */
@@ -72,6 +102,12 @@
 }
 
 @media (max-width: 768px) {
+  .events-intro {
+    top: 2rem;
+    left: 1.5rem;
+    max-width: 17rem;
+  }
+
   .events-gallery-item {
     width: 60vw;
     height: 40vh;

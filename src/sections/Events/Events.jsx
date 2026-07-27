@@ -1,7 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './Events.css';
 
-export const GALLERY_ITEMS = [
+gsap.registerPlugin(ScrollTrigger);
+
+const GALLERY_ITEMS = [
   {
     caption: 'Ideation Workshop - Fall 2025',
     src: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?q=80&w=800&auto=format&fit=crop',
@@ -29,9 +33,19 @@ export const GALLERY_ITEMS = [
   },
 ];
 
-export default function Events3DScene({ wrapperRef, sceneRef, captionRef, itemsRef }) {
+export default function Events() {
+  const sectionRef = useRef(null);
+  const sceneRef = useRef(null);
+  const captionRef = useRef(null);
+  const itemsRef = useRef([]);
+
   useEffect(() => {
     const items = itemsRef.current.filter(Boolean);
+    const section = sectionRef.current;
+    const scene = sceneRef.current;
+    const caption = captionRef.current;
+    if (!section || !scene || !caption || !items.length) return undefined;
+
     const zSpacing = 1500;
 
     items.forEach((item, index) => {
@@ -42,10 +56,59 @@ export default function Events3DScene({ wrapperRef, sceneRef, captionRef, itemsR
       item.dataset.z = zOffset;
       item.style.transform = `translate3d(${xOffset}, 0px, ${zOffset}px)`;
     });
-  }, [itemsRef]);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      caption.textContent = GALLERY_ITEMS[0].caption;
+      return undefined;
+    }
+
+    const camera = { z: 0 };
+    let activeIndex = -1;
+    const updateScene = () => {
+      scene.style.transform = `translateZ(${camera.z}px)`;
+      let nearest = 0;
+      let nearestDistance = Infinity;
+
+      items.forEach((item, index) => {
+        const relativeZ = Number(item.dataset.z) + camera.z;
+        item.style.opacity = `${Math.max(0, Math.min(1, 1 - Math.abs(relativeZ) / 2800))}`;
+        if (relativeZ <= 300 && Math.abs(relativeZ) < nearestDistance) {
+          nearest = index;
+          nearestDistance = Math.abs(relativeZ);
+        }
+      });
+
+      if (nearest !== activeIndex) {
+        activeIndex = nearest;
+        caption.textContent = GALLERY_ITEMS[nearest].caption;
+      }
+    };
+
+    updateScene();
+    const tween = gsap.to(camera, {
+      z: (GALLERY_ITEMS.length - 1) * zSpacing + 800,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: '+=450%',
+        scrub: 0.8,
+        pin: true,
+        anticipatePin: 1,
+      },
+      onUpdate: updateScene,
+    });
+
+    return () => tween.kill();
+  }, []);
 
   return (
-    <div className="events-3d-wrapper" ref={wrapperRef} id="eventsSection">
+    <section className="events-section" ref={sectionRef} id="eventsSection">
+      <div className="events-intro" aria-hidden="true">
+        <span>ECELL / EVENTS</span>
+        <h2>Moments that move ideas forward</h2>
+      </div>
+      <div className="events-3d-wrapper">
       <div className="events-caption-container">
         <div className="events-caption-text" ref={captionRef} id="active-caption">
           Scroll Down to Explore
@@ -64,6 +127,7 @@ export default function Events3DScene({ wrapperRef, sceneRef, captionRef, itemsR
           </div>
         ))}
       </div>
-    </div>
+      </div>
+    </section>
   );
 }
