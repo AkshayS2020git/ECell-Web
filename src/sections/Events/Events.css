@@ -1,145 +1,13 @@
-/* --- Events 3D Viewport & Reset --- */
-.events-viewport {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  perspective: 800px;
-  overflow: hidden;
-  background-color: #050505;
-  color: #ffffff;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-}
-
-@keyframes eventsFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(1.04);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* --- Background Layer --- */
-.events-bg-layer {
+/* --- 3D Scene Wrapper --- */
+.events-3d-wrapper {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(5,5,5,0.7), rgba(5,5,5,0.9)),
-              url('https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
-  z-index: 1;
-  filter: blur(4px);
-}
-
-/* --- Header Navigation --- */
-.events-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 2rem 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 10;
-}
-
-.events-logo {
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.25s ease;
-}
-
-.events-logo:hover {
-  transform: scale(1.04);
-}
-
-.events-logo span {
-  color: #00d2ff;
-}
-
-.events-nav-right {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  font-size: 0.9rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.events-label {
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.events-back-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 8px 18px;
-  border-radius: 30px;
-  font-size: 0.8rem;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.events-back-btn:hover {
-  background: rgba(0, 210, 255, 0.2);
-  border-color: #00d2ff;
-  color: #00d2ff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 210, 255, 0.3);
-}
-
-.events-hamburger {
-  width: 30px;
-  height: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.events-hamburger:hover {
-  opacity: 0.7;
-}
-
-.events-hamburger span {
-  display: block;
-  height: 2px;
-  background-color: #fff;
-  width: 100%;
-}
-
-/* --- Bottom Caption --- */
-.events-caption-container {
-  position: absolute;
-  bottom: 4rem;
-  left: 0;
-  width: 100%;
-  text-align: center;
+  perspective: 800px;
   z-index: 10;
   pointer-events: none;
-}
-
-.events-caption-text {
-  font-size: 1.2rem;
-  letter-spacing: 2px;
-  font-weight: 400;
-  text-transform: uppercase;
-  transition: opacity 0.3s ease;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transform: scale(0.85);
+  will-change: transform, opacity;
 }
 
 /* --- 3D Scene and Camera --- */
@@ -168,6 +36,7 @@
   will-change: transform, opacity;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  pointer-events: auto;
 }
 
 .events-gallery-item:hover {
@@ -181,23 +50,32 @@
   object-fit: cover;
 }
 
+/* --- Bottom Caption --- */
+.events-caption-container {
+  position: absolute;
+  bottom: 3.5rem;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.events-caption-text {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
   .events-gallery-item {
     width: 60vw;
     height: 40vh;
     margin-left: -30vw;
     margin-top: -20vh;
-  }
-  .events-logo {
-    font-size: 1.5rem;
-  }
-  .events-header {
-    padding: 1.5rem 1.5rem;
-  }
-  .events-back-btn span {
-    display: none;
-  }
-  .events-back-btn {
-    padding: 8px 10px;
   }
 }

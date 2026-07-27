@@ -4,7 +4,6 @@ import Nav from './sections/Nav/Nav';
 import Hero from './sections/Hero/Hero';
 import About from './sections/About/About';
 import Story from './sections/Story/Story';
-import Events from './sections/Events/Events';
 import Sponsors from './sections/Sponsors/Sponsors';
 import Speakers from './sections/Speakers/Speakers';
 import FloatingLogo from './components/FloatingLogo/FloatingLogo';
@@ -22,7 +21,6 @@ function App() {
           <Hero />
           <About />
           <Story />
-          <Events />
           <Sponsors />
           <Speakers />
         </>
