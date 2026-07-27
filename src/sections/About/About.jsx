@@ -17,6 +17,16 @@ export default function About() {
 
     if (!aboutSection || !aboutStatement) return;
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      lines.forEach((line) => {
+        if (!line) return;
+        line.style.transform = "none";
+        line.style.opacity = "1";
+        line.style.filter = "none";
+      });
+      return;
+    }
+
     function smoothstep(edge0, edge1, x) {
       const t = Math.min(Math.max((x - edge0) / (edge1 - edge0), 0), 1);
       return t * t * (3 - 2 * t);
@@ -61,7 +71,7 @@ export default function About() {
 
   return (
     <section ref={aboutSectionRef} className="about wrap" id="aboutSection">
-      <div className="eyebrow">About E-Cell</div>
+      <div className="eyebrow">About ECell</div>
       <div ref={aboutStatementRef} className="about-statement" id="aboutStatement">
         <span className="line-mask">
           <span ref={line1Ref} className="line-inner">

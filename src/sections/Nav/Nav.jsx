@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './Nav.css';
 
-export default function Nav({ onOpenEvents }) {
+export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -22,14 +22,25 @@ export default function Nav({ onOpenEvents }) {
     };
   }, []);
 
+  const scrollToSection = (id) => {
+    setIsOpen(false);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <nav>
-        <div className="logo">E-CELL</div>
+        <div className="logo nav__logo-container">
+          <div className="nav__logo-icon-target" />
+          <span className="nav__logo-label">ECELL</span>
+        </div>
         <div className="nav-right">
           <button
             className="events-nav-btn"
-            onClick={() => onOpenEvents && onOpenEvents()}
+            onClick={() => scrollToSection('eventsSection')}
           >
             Events &or;
           </button>
@@ -37,6 +48,9 @@ export default function Nav({ onOpenEvents }) {
             ref={toggleRef}
             className="chapters-toggle"
             onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-controls="chapters-menu"
+            type="button"
           >
             Chapters
             <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
@@ -52,17 +66,18 @@ export default function Nav({ onOpenEvents }) {
 
       <div
         ref={dropdownRef}
+        id="chapters-menu"
         className={`chapters-dropdown ${isOpen ? 'open' : ''}`}
+        aria-hidden={!isOpen}
       >
-        <a href="#aboutSection" onClick={() => setIsOpen(false)}>
+        <a href="#aboutSection" onClick={(e) => { e.preventDefault(); scrollToSection('aboutSection'); }}>
           About — Core Mission
         </a>
         <a
-          href="#events"
+          href="#eventsSection"
           onClick={(e) => {
             e.preventDefault();
-            setIsOpen(false);
-            if (onOpenEvents) onOpenEvents();
+            scrollToSection('eventsSection');
           }}
           className="dropdown-events-link"
         >

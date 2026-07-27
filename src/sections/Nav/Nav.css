@@ -18,6 +18,25 @@ nav {
   letter-spacing: 0.02em;
 }
 
+.nav__logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+}
+
+.nav__logo-icon-target {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.nav__logo-label {
+  opacity: 0;
+  will-change: opacity;
+  margin-left: -8px;
+  line-height: 1;
+}
+
 .nav-right {
   display: flex;
   align-items: center;
@@ -122,6 +141,12 @@ nav {
 
 .dropdown-events-link:hover {
   background: rgba(0, 210, 255, 0.12) !important;
+}
+
+.chapters-toggle:focus-visible,
+.chapters-dropdown a:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
 }
 
 @media (max-width: 768px) {

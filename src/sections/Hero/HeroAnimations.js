@@ -4,7 +4,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 import { lerp, smoothstep } from "../../utils/math";
-import { prepareSVG } from "../../utils/animations";
 
 export function setupHeroAnimations({
   heroRef,
@@ -13,12 +12,6 @@ export function setupHeroAnimations({
   headingRef,
   marqueeRef,
   labelRef,
-  logoRef,
-  wave1Ref,
-  wave2Ref,
-  wave3Ref,
-  titleRef,
-  subtitleRef,
   scrollHintRef,
 }) {
   const video = videoRef.current;
@@ -26,28 +19,21 @@ export function setupHeroAnimations({
   const marquee = marqueeRef.current;
   const label = labelRef.current;
   const heading = headingRef.current;
-  const logo = logoRef.current;
-  const title = titleRef.current;
-  const subtitle = subtitleRef.current;
   const scrollHint = scrollHintRef?.current;
-  const waves = [wave3Ref.current, wave2Ref.current, wave1Ref.current].filter(
-    Boolean,
-  );
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const waveLengths = waves.map(prepareSVG);
+  if (reduceMotion) {
+    gsap.set([videoWrap, marquee, label, heading, scrollHint].filter(Boolean), {
+      clearProps: "all",
+      opacity: 1,
+    });
+    video?.pause();
+    return () => {};
+  }
 
   const marqueeOpacity = gsap.quickSetter(marquee, "opacity");
-
   const labelOpacity = gsap.quickSetter(label, "opacity");
-
   const headingOpacity = gsap.quickSetter(heading, "opacity");
-
-  const logoOpacity = gsap.quickSetter(logo, "opacity");
-
-  const titleOpacity = gsap.quickSetter(title, "opacity");
-
-  const subtitleOpacity = gsap.quickSetter(subtitle, "opacity");
-
   const scrollHintOpacity = scrollHint
     ? gsap.quickSetter(scrollHint, "opacity")
     : null;
@@ -59,8 +45,7 @@ export function setupHeroAnimations({
     boxShadow: "0 0 0 rgba(0,0,0,0)",
     transformOrigin: "center center",
   });
-  gsap.set([marquee, label, logo], { opacity: 0 });
-  gsap.set([title, subtitle], { opacity: 0 });
+  gsap.set([marquee, label], { opacity: 0 });
   gsap.set(heading, { opacity: 1 });
   if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
 
@@ -84,8 +69,6 @@ export function setupHeroAnimations({
     const endSqueeze = smoothstep(0.72, 1, progress) * 0.07;
     const scale = 1 - progress * 0.55 - endSqueeze;
     const reveal = smoothstep(0.12, 0.45, progress);
-    const logoReveal = smoothstep(0.15, 0.35, progress);
-    const wordmarkP = smoothstep(0.72, 0.92, progress);
     const cardP = smoothstep(0.18, 0.5, progress);
 
     gsap.set(videoWrap, {
@@ -100,18 +83,6 @@ export function setupHeroAnimations({
     if (scrollHintOpacity) {
       scrollHintOpacity(1 - smoothstep(0.02, 0.2, progress));
     }
-    logoOpacity(logoReveal);
-
-    waves.forEach((path, i) => {
-      const winStart = 0.2 + i * 0.1;
-      const dp = smoothstep(winStart, winStart + 0.35, progress);
-      gsap.set(path, {
-        strokeDashoffset: waveLengths[i] * (1 - dp),
-        opacity: 0.35 + dp * 0.65,
-      });
-    });
-    titleOpacity(wordmarkP);
-    subtitleOpacity(wordmarkP);
   };
 
   if (video) {

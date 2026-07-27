@@ -1,17 +1,13 @@
 /* --- Events 3D Viewport & Reset --- */
 .events-viewport {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100vw;
   height: 100vh;
   perspective: 800px;
-  z-index: 100;
   overflow: hidden;
   background-color: #050505;
   color: #ffffff;
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  animation: eventsFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes eventsFadeIn {

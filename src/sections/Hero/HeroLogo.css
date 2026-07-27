@@ -3,31 +3,36 @@
   left: 50%;
   top: 50%;
   z-index: 3;
-  width: 300px;
-  height: 300px;
+  width: min(340px, 80vw);
+  height: auto;
   opacity: 0;
   transform: translate(-50%, -50%);
   pointer-events: none;
+  overflow: visible;
   will-change: opacity;
 }
 
-.hero__logo path {
-  fill: none;
-  stroke: white;
+.hero__logo .logo-stroke {
+  fill: #ffffff;
+  fill-opacity: 0;
+  stroke: #ffffff;
+  stroke-width: 26;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 15;
+  stroke-opacity: 1;
 }
 
 .hero__logo-title {
   fill: white;
   font-family: "Archivo", sans-serif;
-  font-size: 24px;
+  font-size: 40px;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .hero__logo-sub {
   fill: #adada8;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 26px;
+  letter-spacing: 0.05em;
 }

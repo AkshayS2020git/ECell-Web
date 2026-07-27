@@ -10,29 +10,34 @@
 }
 
 .loader-squiggle {
-  width: 320px;
-  height: 320px;
+  width: min(340px, 80vw);
+  height: auto;
+  overflow: visible;
 }
 
-.loader-squiggle path {
-  fill: none;
-  stroke: #f4f4f2;
+.logo-stroke {
+  fill: #ffffff;
+  fill-opacity: 0;
+  stroke: #ffffff;
+  stroke-width: 26;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 15;
+  stroke-opacity: 1;
 }
 
 .wordmark-title {
-  fill: #f4f4f2;
+  fill: #ffffff;
   font-family: "Archivo", sans-serif;
-  font-size: 24px;
+  font-size: 40px;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .wordmark-sub {
   fill: #9a9a95;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 26px;
+  letter-spacing: 0.05em;
 }
 
 @media (max-width: 768px) {

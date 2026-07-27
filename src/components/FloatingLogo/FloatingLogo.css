@@ -1,0 +1,44 @@
+.floating-logo {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 100;
+  width: min(340px, 80vw);
+  height: auto;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  overflow: visible;
+  will-change: opacity, width, left, top, filter;
+}
+
+.floating-logo__stroke {
+  fill: #ffffff;
+  fill-opacity: 0;
+  stroke: #ffffff;
+  stroke-width: 26;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: 1;
+}
+
+.floating-logo__title {
+  fill: white;
+  font-family: "Archivo", sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.floating-logo__sub {
+  fill: #adada8;
+  font-family: "Inter", sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+  .floating-logo {
+    width: 230px;
+  }
+}

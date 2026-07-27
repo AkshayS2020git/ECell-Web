@@ -154,7 +154,7 @@ export default function Events({ onCloseEvents }) {
   }, [onCloseEvents]);
 
   return (
-    <div className="events-viewport">
+    <div className="events-viewport" id="eventsSection">
       <div className="events-bg-layer"></div>
 
       <header className="events-header">
