@@ -7,6 +7,7 @@ import Story from './sections/Story/Story';
 import Events from './sections/Events/Events';
 import Sponsors from './sections/Sponsors/Sponsors';
 import Speakers from './sections/Speakers/Speakers';
+import Footer from './sections/Footer/Footer';
 import FloatingLogo from './components/FloatingLogo/FloatingLogo';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Events />
           <Sponsors />
           <Speakers />
+          <Footer />
         </>
       )}
     </>
