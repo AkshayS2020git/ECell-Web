@@ -15,11 +15,30 @@
 }
 
 .team__card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
   background: var(--card-bg, #121216);
   border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   border-radius: 32px;
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
   overflow: hidden;
+
+  will-change: transform, opacity, box-shadow;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  cursor: grab;
+  touch-action: none;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: border-color 0.4s ease, background 0.4s ease;
+}
+
+.team__card:active {
+  cursor: grabbing;
 }
 
 .team__label {
@@ -38,17 +57,6 @@
   font-weight: 600;
 }
 
-
-.team__card--hidden {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-
 .team__image {
   background-color: #16161a;
   overflow: hidden;
@@ -57,6 +65,10 @@
 .team__image img {
   object-fit: cover;
   object-position: center 15%;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  will-change: transform;
 }
 
 .team__role {
@@ -65,6 +77,7 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent-color, #8e8e93);
+  will-change: transform, opacity;
 }
 
 .team__title {
@@ -74,6 +87,7 @@
   line-height: 1.1;
   color: var(--fg, #ffffff);
   margin: 0;
+  will-change: transform, opacity;
 }
 
 .team__description {
@@ -82,4 +96,5 @@
   line-height: 1.65;
   color: var(--fg-dim, rgba(255, 255, 255, 0.65));
   margin: 0;
+  will-change: transform, opacity;
 }
