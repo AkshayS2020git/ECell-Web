@@ -69,8 +69,7 @@ export default function Hero() {
             muted
             loop
             playsInline
-            preload="auto"
-            poster={heroVideo}
+            preload="metadata"
             onPlay={(e) => {
               e.currentTarget.playbackRate = 0.5;
             }}

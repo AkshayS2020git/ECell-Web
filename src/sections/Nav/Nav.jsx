@@ -55,10 +55,17 @@ export default function Nav() {
               <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </button>
-          <div className="menu-icon" onClick={() => setIsOpen(!isOpen)} style={{ cursor: 'pointer' }}>
+          <button
+            className="menu-icon"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? 'Close chapters menu' : 'Open chapters menu'}
+            aria-expanded={isOpen}
+            aria-controls="chapters-menu"
+            type="button"
+          >
             <span></span>
             <span></span>
-          </div>
+          </button>
         </div>
       </nav>
 

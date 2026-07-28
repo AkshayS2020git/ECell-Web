@@ -1,6 +1,7 @@
 .events-section {
   position: relative;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background: radial-gradient(circle at 50% 30%, #20201f 0%, #101010 45%, #070707 100%);
   color: #fff;
@@ -47,6 +48,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   transform-style: preserve-3d;
   z-index: 5;
   will-change: transform;

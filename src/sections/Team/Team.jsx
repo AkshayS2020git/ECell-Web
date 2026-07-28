@@ -60,9 +60,6 @@ export default function Team() {
     });
   };
 
-  navigateMemberRef.current = navigateMember;
-  expandedRef.current = expanded;
-
   const stopSlideshow = () => {
     slideshowPausedRef.current = true;
     if (slideshowTimerRef.current) {
@@ -96,6 +93,11 @@ export default function Team() {
       startSlideshow();
     }, 2800);
   };
+
+  useEffect(() => {
+    navigateMemberRef.current = navigateMember;
+    expandedRef.current = expanded;
+  }, [navigateMember, expanded]);
 
   useEffect(() => {
     startSlideshow();

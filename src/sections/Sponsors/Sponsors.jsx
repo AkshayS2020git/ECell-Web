@@ -128,7 +128,13 @@ export default function Sponsors() {
                 key={`sponsor-${index}`}
                 className="sponsor-item"
               >
-                <img className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ''}`} src={item.logo} alt={item.name} />
+                <img
+                  className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ''}`}
+                  src={item.logo}
+                  alt={item.name}
+                  loading="lazy"
+                  decoding="async"
+                />
                 {item.label && <span className="sponsor-label">{item.label}</span>}
               </span>
             ))}

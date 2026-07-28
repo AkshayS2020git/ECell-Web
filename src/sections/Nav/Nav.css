@@ -62,24 +62,32 @@ nav {
 
 .menu-icon {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 22px;
-  height: 14px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
 }
 
 .menu-icon span {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 11px;
+  right: 11px;
   height: 2px;
   background: var(--fg);
 }
 
 .menu-icon span:first-child {
-  top: 0;
+  top: 15px;
 }
 
 .menu-icon span:last-child {
-  bottom: 0;
+  bottom: 15px;
 }
 
 .chapters-dropdown {
@@ -120,6 +128,7 @@ nav {
 }
 
 .chapters-toggle:focus-visible,
+.menu-icon:focus-visible,
 .chapters-dropdown a:focus-visible {
   outline: 2px solid var(--fg);
   outline-offset: 3px;

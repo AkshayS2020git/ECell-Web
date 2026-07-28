@@ -1,6 +1,8 @@
 @media (max-width: 768px) {
   .hero__heading {
     font-size: clamp(32px, 11vw, 52px);
+    width: min(92vw, 30rem);
+    white-space: normal;
   }
 
   .hero__label {
