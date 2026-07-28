@@ -15,15 +15,15 @@ import "./Sponsors.css";
 gsap.registerPlugin(ScrollTrigger);
 
 const SPONSORS_DATA = [
-  { name: "TVS Prakruthi Bikes", logo: tvsLogo, label: "Prakruthi Bikes" },
-  { name: "Justvend", logo: justvendLogo },
-  { name: "Atty's Bakery & Confectionery", logo: attysLogo },
-  { name: "The Belgian Waffle Co.", logo: waffleLogo },
-  { name: "Herody", logo: herodyLogo },
-  { name: "EasyBites", logo: easyBitesLogo },
-  { name: "mile", logo: mileLogo, label: "mile" },
-  { name: "Akshaya Motors", logo: mercLogo, label: "Akshaya Motors" },
-  { name: "Nokia", logo: nokiaLogo },
+  { name: "TVS Prakruthi Bikes", logo: tvsLogo, logoKey: "tvs", label: "Prakruthi Bikes" },
+  { name: "Justvend", logo: justvendLogo, logoKey: "justvend" },
+  { name: "Atty's Bakery & Confectionery", logo: attysLogo, logoKey: "attys" },
+  { name: "The Belgian Waffle Co.", logo: waffleLogo, logoKey: "waffle" },
+  { name: "Herody", logo: herodyLogo, logoKey: "herody" },
+  { name: "EasyBites", logo: easyBitesLogo, logoKey: "easybites", label: "EasyBites" },
+  { name: "mile", logo: mileLogo, logoKey: "mile", label: "mile" },
+  { name: "Akshaya Motors", logo: mercLogo, logoKey: "merc", label: "Akshaya Motors" },
+  { name: "Nokia", logo: nokiaLogo, logoKey: "nokia" },
 ];
 
 export default function Sponsors() {
@@ -117,8 +117,7 @@ export default function Sponsors() {
       <div className="sponsors-divider-line" />
 
       <div className="wrap sponsors-header">
-        <span className="eyebrow">PARTNERS & SPONSORS</span>
-        <h2 className="sponsors-headline">Backed by Innovators & Builders</h2>
+        <h2 className="sponsors-headline">Partners &amp; Sponsors</h2>
       </div>
 
       <div ref={marqueeRef} className="sponsor-marquee-wrapper">
@@ -127,9 +126,9 @@ export default function Sponsors() {
             {marqueeList.map((item, index) => (
               <span
                 key={`sponsor-${index}`}
-                className={`sponsor-item${item.label ? " sponsor-item--with-label" : ""}`}
+                className={`sponsor-item sponsor-item--${item.logoKey}${item.label ? " sponsor-item--with-label" : ""}`}
               >
-                <img className="sponsor-logo" src={item.logo} alt={item.name} />
+                <img className={`sponsor-logo sponsor-logo--${item.logoKey}`} src={item.logo} alt={item.name} />
                 {item.label && <span className="sponsor-label">{item.label}</span>}
               </span>
             ))}

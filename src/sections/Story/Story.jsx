@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import "./Story.css";
-import libImg from "../../assets/story/lib3.jpg";
+import libImg from "../../assets/story/lib.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
