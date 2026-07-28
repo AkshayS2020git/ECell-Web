@@ -9,6 +9,7 @@ import Sponsors from './sections/Sponsors/Sponsors';
 import Speakers from './sections/Speakers/Speakers';
 import Footer from './sections/Footer/Footer';
 import FloatingLogo from './components/FloatingLogo/FloatingLogo';
+import Team from "./sections/Team/Team";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -23,10 +24,12 @@ function App() {
           <Hero />
           <About />
           <Story />
+          <Team />
           <Events />
           <Sponsors />
           <Speakers />
           <Footer />
+
         </>
       )}
     </>
