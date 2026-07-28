@@ -16,14 +16,14 @@ gsap.registerPlugin(ScrollTrigger);
 
 const SPONSORS_DATA = [
   { name: "Nokia", logo: nokiaLogo, logoKey: "nokia" },
-  { name: "Akshaya Motors", logo: mercLogo, logoKey: "merc", label: "Akshaya Motors" },
-  { name: "mile", logo: mileLogo, logoKey: "mile", label: "mile" },
-  { name: "TVS Prakruthi Bikes", logo: tvsLogo, logoKey: "tvs", label: "Prakruthi Bikes" },
-  { name: "Justvend", logo: justvendLogo, logoKey: "justvend" },
-  { name: "Atty's Bakery & Confectionery", logo: attysLogo, logoKey: "attys" },
-  { name: "The Belgian Waffle Co.", logo: waffleLogo, logoKey: "waffle" },
+  { name: "Akshaya Motors", logo: mercLogo, label: "Akshaya Motors" },
+  { name: "mile", logo: mileLogo, label: "mile" },
+  { name: "TVS Prakruthi Bikes", logo: tvsLogo, label: "Prakruthi Bikes" },
+  { name: "Justvend", logo: justvendLogo },
+  { name: "Atty's Bakery & Confectionery", logo: attysLogo },
+  { name: "The Belgian Waffle Co.", logo: waffleLogo },
   { name: "Herody", logo: herodyLogo, logoKey: "herody" },
-  { name: "EasyBites", logo: easyBitesLogo, logoKey: "easybites", label: "EasyBites" },
+  { name: "EasyBites", logo: easyBitesLogo, label: "EasyBites" },
 ];
 
 export default function Sponsors() {
@@ -126,9 +126,9 @@ export default function Sponsors() {
             {marqueeList.map((item, index) => (
               <span
                 key={`sponsor-${index}`}
-                className={`sponsor-item sponsor-item--${item.logoKey}${item.label ? " sponsor-item--with-label" : ""}`}
+                className="sponsor-item"
               >
-                <img className={`sponsor-logo sponsor-logo--${item.logoKey}`} src={item.logo} alt={item.name} />
+                <img className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ''}`} src={item.logo} alt={item.name} />
                 {item.label && <span className="sponsor-label">{item.label}</span>}
               </span>
             ))}

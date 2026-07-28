@@ -68,7 +68,7 @@ export function setupHeroAnimations({
     const progress = heroSmoothed;
     const endSqueeze = smoothstep(0.72, 1, progress) * 0.07;
     const scale = 1 - progress * 0.55 - endSqueeze;
-    const reveal = smoothstep(0.12, 0.45, progress);
+    const reveal = smoothstep(0.08, 0.35, progress);
     const cardP = smoothstep(0.18, 0.5, progress);
 
     gsap.set(videoWrap, {

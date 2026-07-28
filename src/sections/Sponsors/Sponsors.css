@@ -106,61 +106,43 @@
 
 .sponsor-item {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 0 0 220px;
-  height: 112px;
-  margin: 0 12px;
-  padding: 14px 8px;
+  flex: 0 0 200px;
+  height: 110px;
+  margin: 0 20px;
+  padding: 16px;
+  gap: 8px;
   overflow: hidden;
   cursor: default;
-  transition: transform 0.3s ease;
-}
-
-.sponsor-item--with-label {
-  flex-basis: 280px;
-  gap: 10px;
-}
-
-.sponsor-item--easybites,
-.sponsor-item--mile {
-  gap: 5px;
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.3s ease;
 }
 
 .sponsor-logo {
   display: block;
-  width: 120px;
-  height: 80px;
-  flex: 0 0 120px;
+  max-width: 140px;
+  max-height: 72px;
+  width: auto;
+  height: auto;
   object-fit: contain;
   filter: saturate(1.03) contrast(1.03);
 }
 
-/* Balance the visible artwork, since the source files use different canvas sizes. */
-.sponsor-logo--herody { transform: scale(1.55); }
-.sponsor-logo--easybites { transform: scale(1.2); }
-.sponsor-logo--mile { transform: scale(1.35); }
-.sponsor-logo--tvs { transform: scale(1.4); }
-.sponsor-logo--nokia { transform: scale(1.35); }
-.sponsor-logo--merc { transform: scale(0.9); }
-.sponsor-logo--justvend { transform: scale(1.7); }
+/* These source files have extra canvas padding — scale up to match the others visually */
+.sponsor-logo--nokia { transform: scale(1.4); }
+.sponsor-logo--herody { transform: scale(1.6); }
 
 .sponsor-label {
   color: var(--fg);
   font-family: "Archivo", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
   white-space: nowrap;
-}
-
-.sponsor-item--mile .sponsor-label {
-  font-size: 30px;
-}
-
-.sponsor-item--easybites .sponsor-label {
-  font-size: 30px;
+  text-align: center;
 }
 
 .sponsor-item:hover {
@@ -171,45 +153,26 @@
   .sponsors-section {
     padding: 80px 0 100px;
   }
+
   .sponsor-item {
-    flex-basis: 170px;
-    height: 88px;
-    margin: 0 8px;
-    padding: 12px 16px;
-  }
-
-  .sponsor-item--with-label {
-    flex-basis: 230px;
-    gap: 7px;
-  }
-
-  .sponsor-item--easybites,
-  .sponsor-item--mile {
-    gap: 4px;
+    flex-basis: 160px;
+    height: 90px;
+    margin: 0 14px;
+    padding: 12px;
+    gap: 6px;
   }
 
   .sponsor-logo {
-    width: 96px;
-    height: 80px;
-    flex-basis: 96px;
+    max-width: 110px;
+    max-height: 56px;
   }
 
   .sponsor-label {
     font-size: 13px;
   }
 
-  .sponsor-item--mile .sponsor-label {
-    font-size: 22px;
-  }
-
-  .sponsor-item--easybites .sponsor-label {
-    font-size: 22px;
-  }
-
-  .sponsor-logo--justvend { transform: scale(1.55); }
-
   .sponsor-marquee-wrapper {
-    min-height: 138px;
+    min-height: 130px;
   }
 }
 
