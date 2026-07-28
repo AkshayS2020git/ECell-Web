@@ -1,0 +1,161 @@
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.transition-shutter {
+  position: absolute;
+  top: 0;
+  width: 50vw;
+  height: 100vh;
+  background: #050505;
+  box-shadow: 0 0 50px rgba(0, 210, 255, 0.4);
+  z-index: 1;
+}
+
+.transition-shutter.left {
+  left: 0;
+  animation: shutterLeft 0.7s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+.transition-shutter.right {
+  right: 0;
+  animation: shutterRight 0.7s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes shutterLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+  45%, 55% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes shutterRight {
+  0% {
+    transform: translateX(100%);
+  }
+  45%, 55% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.transition-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #ffffff;
+  animation: contentPulse 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes contentPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  40%, 60% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+.transition-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.ring-1 {
+  border-top-color: #00d2ff;
+  animation: spin 1s linear infinite;
+}
+
+.ring-2 {
+  inset: 10px;
+  border-right-color: #ffffff;
+  animation: spinReverse 0.8s linear infinite;
+}
+
+.ring-3 {
+  inset: 20px;
+  border-bottom-color: #00d2ff;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinReverse {
+  to { transform: rotate(-360deg); }
+}
+
+.transition-title {
+  font-family: 'Archivo', 'Helvetica Neue', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #00d2ff;
+  margin-bottom: 6px;
+  text-shadow: 0 0 20px rgba(0, 210, 255, 0.8);
+}
+
+.transition-subtitle {
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.transition-beam {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00d2ff, #ffffff, #00d2ff, transparent);
+  box-shadow: 0 0 25px #00d2ff;
+  z-index: 3;
+  animation: beamFlash 0.7s ease forwards;
+}
+
+@keyframes beamFlash {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1.2);
+  }
+}

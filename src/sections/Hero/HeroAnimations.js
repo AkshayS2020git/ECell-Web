@@ -20,6 +20,16 @@ export function setupHeroAnimations({
   const label = labelRef.current;
   const heading = headingRef.current;
   const scrollHint = scrollHintRef?.current;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduceMotion) {
+    gsap.set([videoWrap, marquee, label, heading, scrollHint].filter(Boolean), {
+      clearProps: "all",
+      opacity: 1,
+    });
+    video?.pause();
+    return () => {};
+  }
 
   const marqueeOpacity = gsap.quickSetter(marquee, "opacity");
   const labelOpacity = gsap.quickSetter(label, "opacity");
@@ -58,7 +68,7 @@ export function setupHeroAnimations({
     const progress = heroSmoothed;
     const endSqueeze = smoothstep(0.72, 1, progress) * 0.07;
     const scale = 1 - progress * 0.55 - endSqueeze;
-    const reveal = smoothstep(0.12, 0.45, progress);
+    const reveal = smoothstep(0.08, 0.35, progress);
     const cardP = smoothstep(0.18, 0.5, progress);
 
     gsap.set(videoWrap, {
@@ -93,4 +103,3 @@ export function setupHeroAnimations({
     trigger.kill();
   };
 }
-

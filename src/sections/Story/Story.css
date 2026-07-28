@@ -121,6 +121,7 @@
   transform: translateY(-50%);
   overflow: hidden;
   pointer-events: none;
+  opacity: 0;
 }
 
 .story-reveal-text .eyebrow {
@@ -144,27 +145,27 @@
 }
 
 .story-reveal-text h2 {
-  font-family: var(--story-display);
-  font-weight: 500;
-  font-size: clamp(2.8rem, 9.5vw, 7.5rem);
-  letter-spacing: -0.01em;
-  line-height: 1;
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-size: clamp(5rem, 17vw, 18rem);
+  letter-spacing: 0.01em;
+  line-height: 0.85;
   color: #ffffff;
   padding: 0 4vw;
+  text-transform: uppercase;
 }
 
 .story-reveal-text h2 em {
-  font-style: italic;
-  font-weight: 400;
+  font-style: normal;
+  font-weight: inherit;
   color: inherit;
 }
-
 
 @media (max-width: 767px) {
   .story-reveal-base h2 {
     font-size: clamp(2rem, 9vw, 3.2rem);
   }
   .story-reveal-text h2 {
-    font-size: clamp(2rem, 10vw, 3.5rem);
+    font-size: clamp(3rem, 15vw, 6.5rem);
   }
 }

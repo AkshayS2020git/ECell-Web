@@ -1,0 +1,117 @@
+.events-section {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 30%, #20201f 0%, #101010 45%, #070707 100%);
+  color: #fff;
+}
+
+.events-intro {
+  position: absolute;
+  top: clamp(2rem, 5vw, 4.5rem);
+  left: clamp(1.5rem, 6vw, 6rem);
+  z-index: 12;
+  max-width: 28rem;
+  pointer-events: none;
+}
+
+.events-intro span {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.events-intro h2 {
+  font-family: "Bebas Neue", "Archivo", sans-serif;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  font-weight: 400;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+/* --- 3D Scene Wrapper --- */
+.events-3d-wrapper {
+  position: absolute;
+  inset: 0;
+  perspective: 800px;
+  z-index: 10;
+}
+
+/* --- 3D Scene and Camera --- */
+.events-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  transform-style: preserve-3d;
+  z-index: 5;
+  will-change: transform;
+}
+
+.events-gallery-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32vw;
+  height: 55vh;
+  margin-top: -27.5vh;
+  margin-left: -16vw;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 210, 255, 0.15);
+  will-change: transform, opacity;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  pointer-events: auto;
+}
+
+.events-gallery-item:hover {
+  border-color: rgba(0, 210, 255, 0.5);
+  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 210, 255, 0.3);
+}
+
+.events-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- Bottom Caption --- */
+.events-caption-container {
+  position: absolute;
+  bottom: 3.5rem;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.events-caption-text {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .events-intro {
+    top: 2rem;
+    left: 1.5rem;
+    max-width: 17rem;
+  }
+
+  .events-gallery-item {
+    width: 60vw;
+    height: 40vh;
+    margin-left: -30vw;
+    margin-top: -20vh;
+  }
+}

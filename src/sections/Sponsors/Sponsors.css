@@ -1,0 +1,183 @@
+.sponsors-section {
+  position: relative;
+  padding: 138px 0 140px;
+  background: var(--bg);
+  overflow: hidden;
+  will-change: transform, opacity, filter;
+  border-top: 0.5px solid var(--line);
+  isolation: isolate;
+}
+
+.sponsors-section::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -100px;
+  left: 50%;
+  width: min(80vw, 980px);
+  height: 220px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border-top: 1px solid rgba(244, 244, 242, 0.24);
+  background: radial-gradient(ellipse at 50% 0%, rgba(244, 244, 242, 0.11), transparent 68%);
+  filter: blur(0.2px);
+  pointer-events: none;
+}
+
+.sponsors-glow {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  width: 700px;
+  height: 400px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0) 70%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.sponsors-divider-line {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+}
+
+.sponsors-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.sponsors-header .eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.sponsors-headline {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(28px, 4.5vw, 54px);
+  color: var(--fg);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.sponsor-marquee-wrapper {
+  display: flex;
+  position: relative;
+  width: 100%;
+  min-height: 178px;
+  overflow: hidden;
+  align-items: center;
+  background: transparent;
+  will-change: transform, opacity;
+}
+
+.sponsor-marquee-track {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+}
+
+.sponsor-marquee-inner {
+  display: flex;
+  align-items: center;
+  will-change: transform;
+}
+
+.marquee-left .sponsor-marquee-inner {
+  animation: marqueeScrollLeft 36s linear infinite;
+}
+
+.sponsor-marquee-wrapper:hover .sponsor-marquee-inner {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.sponsor-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 200px;
+  height: 110px;
+  margin: 0 20px;
+  padding: 16px;
+  gap: 8px;
+  overflow: hidden;
+  cursor: default;
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.3s ease;
+}
+
+.sponsor-logo {
+  display: block;
+  max-width: 140px;
+  max-height: 72px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: saturate(1.03) contrast(1.03);
+}
+
+/* These source files have extra canvas padding — scale up to match the others visually */
+.sponsor-logo--nokia { transform: scale(1.4); }
+.sponsor-logo--herody { transform: scale(1.6); }
+
+.sponsor-label {
+  color: var(--fg);
+  font-family: "Archivo", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.sponsor-item:hover {
+  transform: translateY(-4px);
+}
+
+@media (max-width: 768px) {
+  .sponsors-section {
+    padding: 80px 0 100px;
+  }
+
+  .sponsor-item {
+    flex-basis: 160px;
+    height: 90px;
+    margin: 0 14px;
+    padding: 12px;
+    gap: 6px;
+  }
+
+  .sponsor-logo {
+    max-width: 110px;
+    max-height: 56px;
+  }
+
+  .sponsor-label {
+    font-size: 13px;
+  }
+
+  .sponsor-marquee-wrapper {
+    min-height: 130px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-marquee-inner {
+    animation: none;
+  }
+}
