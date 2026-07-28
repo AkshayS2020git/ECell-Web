@@ -16,15 +16,11 @@ export default function Team() {
   const stageRef = useRef(null);
   const stackRef = useRef(null);
   const cardRefs = useRef([]);
-  const activeCardHoverRef = useRef(false);
-  const slideshowTimerRef = useRef(null);
-  const slideshowResumeRef = useRef(null);
-  const slideshowPausedRef = useRef(false);
-  const navigateMemberRef = useRef(null);
 
   const touchStartXRef = useRef(null);
   const touchStartYRef = useRef(null);
 
+  // Always start at index 0 (Advisory Head - Vanshaj)
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -48,7 +44,6 @@ export default function Team() {
       activeIndex,
       onComplete: (newIndex) => {
         setActiveIndex(newIndex);
-        resumeSlideshow();
       },
     });
   }, [activeIndex]);
@@ -57,63 +52,14 @@ export default function Team() {
     if (targetIndex === activeIndex) return;
     if (getIsAnimating && getIsAnimating()) return;
 
-    stopSlideshow();
     selectMember(targetIndex, {
       cardRefs: cardRefs.current,
       activeIndex,
       onComplete: (newIndex) => {
         setActiveIndex(newIndex);
-        resumeSlideshow();
       },
     });
   }, [activeIndex]);
-
-  const stopSlideshow = () => {
-    slideshowPausedRef.current = true;
-    if (slideshowTimerRef.current) {
-      clearTimeout(slideshowTimerRef.current);
-      slideshowTimerRef.current = null;
-    }
-    if (slideshowResumeRef.current) {
-      clearTimeout(slideshowResumeRef.current);
-      slideshowResumeRef.current = null;
-    }
-  };
-
-  const startSlideshow = (delayMs = 8000) => {
-    if (slideshowPausedRef.current) return;
-    if (slideshowTimerRef.current) clearTimeout(slideshowTimerRef.current);
-    slideshowTimerRef.current = setTimeout(() => {
-      slideshowTimerRef.current = null;
-      if (!slideshowPausedRef.current && (!getIsAnimating || !getIsAnimating())) {
-        navigateMemberRef.current?.("next");
-      }
-      startSlideshow(8000);
-    }, delayMs);
-  };
-
-  const resumeSlideshow = () => {
-    if (slideshowResumeRef.current) clearTimeout(slideshowResumeRef.current);
-    slideshowResumeRef.current = setTimeout(() => {
-      slideshowResumeRef.current = null;
-      if (activeCardHoverRef.current) return;
-      slideshowPausedRef.current = false;
-      startSlideshow(8000);
-    }, 5000);
-  };
-
-  useEffect(() => {
-    navigateMemberRef.current = navigateMember;
-  }, [navigateMember]);
-
-  // Initial load: keep Advisory Head visible with an extended initial pause (12s)
-  useEffect(() => {
-    startSlideshow(12000);
-    return () => {
-      if (slideshowTimerRef.current) clearTimeout(slideshowTimerRef.current);
-      if (slideshowResumeRef.current) clearTimeout(slideshowResumeRef.current);
-    };
-  }, []);
 
   useEffect(() => {
     setupTeamAnimations({
@@ -126,10 +72,8 @@ export default function Team() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "ArrowLeft") {
-        stopSlideshow();
         navigateMember("prev");
       } else if (e.key === "ArrowRight") {
-        stopSlideshow();
         navigateMember("next");
       }
     };
@@ -156,7 +100,6 @@ export default function Team() {
 
     // Trigger horizontal swipe if swipe distance is > 35px and more horizontal than vertical
     if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
-      stopSlideshow();
       if (deltaX < 0) {
         navigateMember("next");
       } else {
@@ -166,16 +109,6 @@ export default function Team() {
 
     touchStartXRef.current = null;
     touchStartYRef.current = null;
-  };
-
-  const handlePointerEnter = () => {
-    activeCardHoverRef.current = true;
-    stopSlideshow();
-  };
-
-  const handlePointerLeave = () => {
-    activeCardHoverRef.current = false;
-    resumeSlideshow();
   };
 
   return (
@@ -210,10 +143,7 @@ export default function Team() {
             <div className="team__slider-nav">
               <button
                 className="team__slider-btn team__slider-btn--prev"
-                onClick={() => {
-                  stopSlideshow();
-                  navigateMember("prev");
-                }}
+                onClick={() => navigateMember("prev")}
                 aria-label="Previous team member"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -223,10 +153,7 @@ export default function Team() {
 
               <button
                 className="team__slider-btn team__slider-btn--next"
-                onClick={() => {
-                  stopSlideshow();
-                  navigateMember("next");
-                }}
+                onClick={() => navigateMember("next")}
                 aria-label="Next team member"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -241,8 +168,6 @@ export default function Team() {
           <div
             ref={stackRef}
             className="team__stack"
-            onPointerEnter={handlePointerEnter}
-            onPointerLeave={handlePointerLeave}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
