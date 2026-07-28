@@ -1,21 +1,29 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import attysLogo from "../../assets/logos/attys.png";
+import easyBitesLogo from "../../assets/logos/easybites.png";
+import herodyLogo from "../../assets/logos/herody.png";
+import justvendLogo from "../../assets/logos/justvend.png";
+import mercLogo from "../../assets/logos/merc.png";
+import mileLogo from "../../assets/logos/mile.png";
+import nokiaLogo from "../../assets/logos/nokia.png";
+import tvsLogo from "../../assets/logos/tvs.png";
+import waffleLogo from "../../assets/logos/waffle.svg";
 import "./Sponsors.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const SPONSORS_DATA = [
-  { name: "Google Cloud", tier: "Title Partner", category: "Cloud & AI" },
-  { name: "Sequoia Capital", tier: "Venture Partner", category: "Venture Capital" },
-  { name: "Microsoft for Startups", tier: "Ecosystem Partner", category: "Tech & Cloud" },
-  { name: "AWS Startups", tier: "Cloud Partner", category: "Infrastructure" },
-  { name: "Y Combinator", tier: "Knowledge Partner", category: "Accelerator" },
-  { name: "Techstars", tier: "Global Partner", category: "Accelerator" },
-  { name: "HubSpot for Startups", tier: "Growth Partner", category: "CRM & Scale" },
-  { name: "Notion", tier: "Productivity Partner", category: "Software" },
-  { name: "AngelList", tier: "Investment Network", category: "Angel Funding" },
-  { name: "Razorpay Rize", tier: "Fintech Partner", category: "Payments" },
+  { name: "TVS Prakruthi Bikes", logo: tvsLogo, label: "Prakruthi Bikes" },
+  { name: "Justvend", logo: justvendLogo },
+  { name: "Atty's Bakery & Confectionery", logo: attysLogo },
+  { name: "The Belgian Waffle Co.", logo: waffleLogo },
+  { name: "Herody", logo: herodyLogo },
+  { name: "EasyBites", logo: easyBitesLogo },
+  { name: "mile", logo: mileLogo, label: "mile" },
+  { name: "Akshaya Motors", logo: mercLogo, label: "Akshaya Motors" },
+  { name: "Nokia", logo: nokiaLogo },
 ];
 
 export default function Sponsors() {
@@ -100,8 +108,8 @@ export default function Sponsors() {
     return () => ctx.revert();
   }, []);
 
-  const marqueeList1 = [...SPONSORS_DATA, ...SPONSORS_DATA];
-  const marqueeList2 = [...SPONSORS_DATA].reverse().concat([...SPONSORS_DATA].reverse());
+  // Repeating the same list once makes the scrolling loop seamless.
+  const marqueeList = [...SPONSORS_DATA, ...SPONSORS_DATA];
 
   return (
     <section ref={sponsorsSectionRef} className="sponsors-section" id="sponsors">
@@ -114,26 +122,15 @@ export default function Sponsors() {
       </div>
 
       <div ref={marqueeRef} className="sponsor-marquee-wrapper">
-        {/* Row 1 - Scroll Left */}
         <div className="sponsor-marquee-track marquee-left">
           <div className="sponsor-marquee-inner">
-            {marqueeList1.map((item, index) => (
-              <span key={`m1-${index}`} className="sponsor-item">
-                <span className="sponsor-name">{item.name}</span>
-                <span className="sponsor-bullet">•</span>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Row 2 - Scroll Right */}
-        <div className="sponsor-marquee-track marquee-right">
-          <div className="sponsor-marquee-inner">
-            {marqueeList2.map((item, index) => (
-              <span key={`m2-${index}`} className="sponsor-item sponsor-item-dim">
-                <span className="sponsor-name">{item.name}</span>
-                <span className="sponsor-tag">{item.category}</span>
-                <span className="sponsor-bullet">•</span>
+            {marqueeList.map((item, index) => (
+              <span
+                key={`sponsor-${index}`}
+                className={`sponsor-item${item.label ? " sponsor-item--with-label" : ""}`}
+              >
+                <img className="sponsor-logo" src={item.logo} alt={item.name} />
+                {item.label && <span className="sponsor-label">{item.label}</span>}
               </span>
             ))}
           </div>
