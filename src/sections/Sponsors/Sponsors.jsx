@@ -15,15 +15,15 @@ import "./Sponsors.css";
 gsap.registerPlugin(ScrollTrigger);
 
 const SPONSORS_DATA = [
+  { name: "Nokia", logo: nokiaLogo, logoKey: "nokia" },
+  { name: "Akshaya Motors", logo: mercLogo, logoKey: "merc", label: "Akshaya Motors" },
+  { name: "mile", logo: mileLogo, logoKey: "mile", label: "mile" },
   { name: "TVS Prakruthi Bikes", logo: tvsLogo, logoKey: "tvs", label: "Prakruthi Bikes" },
   { name: "Justvend", logo: justvendLogo, logoKey: "justvend" },
   { name: "Atty's Bakery & Confectionery", logo: attysLogo, logoKey: "attys" },
   { name: "The Belgian Waffle Co.", logo: waffleLogo, logoKey: "waffle" },
   { name: "Herody", logo: herodyLogo, logoKey: "herody" },
   { name: "EasyBites", logo: easyBitesLogo, logoKey: "easybites", label: "EasyBites" },
-  { name: "mile", logo: mileLogo, logoKey: "mile", label: "mile" },
-  { name: "Akshaya Motors", logo: mercLogo, logoKey: "merc", label: "Akshaya Motors" },
-  { name: "Nokia", logo: nokiaLogo, logoKey: "nokia" },
 ];
 
 export default function Sponsors() {
