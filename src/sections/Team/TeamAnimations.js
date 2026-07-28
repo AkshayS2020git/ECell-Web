@@ -25,28 +25,64 @@ export function setupTeamScroll({ teamRef } = {}) {
     scrollTriggerInstance = null;
   }
 
-  scrollTriggerInstance = ScrollTrigger.create({
-    trigger: teamRef.current,
-    start: "top 80%",
-    onEnter: () => {
-      const activeCard = teamRef.current.querySelector('.team__card[data-active="true"]');
-      if (activeCard) {
-        gsap.fromTo(
-          activeCard,
-          { opacity: 0, y: 30, scale: 0.96 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.9,
-            ease: "power2.out",
-          }
-        );
-      }
+  const team = teamRef.current;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  if (reduceMotion) return;
+
+  const header = team.querySelector(".team__header");
+  const activeCard = team.querySelector('.team__card[data-active="true"]');
+  const image = activeCard?.querySelector(".team__image");
+  const content = activeCard?.querySelectorAll(
+    ".team__role, .team__title, .team__description",
+  );
+  const wipe = team.querySelector(".team__transition-wipe");
+
+  const entrance = gsap.timeline({
+    scrollTrigger: {
+      trigger: team,
+      start: "top 88%",
+      end: "top 38%",
+      toggleActions: "play none none reverse",
     },
   });
 
+  entrance
+    .fromTo(
+      wipe,
+      { autoAlpha: 1, scaleX: 1, transformOrigin: "right center" },
+      { autoAlpha: 0, scaleX: 0, duration: 0.72, ease: "power4.inOut" },
+      0,
+    )
+    .fromTo(
+      header,
+      { autoAlpha: 0, y: 28 },
+      { autoAlpha: 1, y: 0, duration: 0.55, ease: "power3.out" },
+      0.18,
+    )
+    .fromTo(
+      activeCard,
+      { autoAlpha: 0, y: isMobile ? 48 : 84, scale: isMobile ? 0.95 : 0.9, rotate: isMobile ? 1 : 2.5 },
+      { autoAlpha: 1, y: 0, scale: 1, rotate: 0, duration: 0.9, ease: "power4.out" },
+      0.22,
+    )
+    .fromTo(
+      image,
+      { clipPath: "inset(100% 0 0 0)", scale: isMobile ? 1.06 : 1.12 },
+      { clipPath: "inset(0% 0 0 0)", scale: 1, duration: 0.7, ease: "power3.out" },
+      0.46,
+    )
+    .fromTo(
+      content,
+      { autoAlpha: 0, x: 28 },
+      { autoAlpha: 1, x: 0, duration: 0.48, stagger: 0.08, ease: "power3.out" },
+      0.56,
+    );
+
+  scrollTriggerInstance = entrance.scrollTrigger;
+
   return () => {
+    entrance.kill();
     if (scrollTriggerInstance) {
       scrollTriggerInstance.kill();
       scrollTriggerInstance = null;

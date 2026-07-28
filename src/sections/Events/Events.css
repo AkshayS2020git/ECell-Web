@@ -7,6 +7,19 @@
   color: #fff;
 }
 
+.events-transition-wipe {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.18), transparent 32%),
+    linear-gradient(180deg, #09090a 0%, #20201f 58%, #0a0a0b 100%);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+  will-change: transform, opacity;
+}
+
 .events-intro {
   position: absolute;
   top: clamp(2rem, 5vw, 4.5rem);
@@ -104,6 +117,10 @@
 }
 
 @media (max-width: 768px) {
+  .events-3d-wrapper {
+    perspective: 600px;
+  }
+
   .events-intro {
     top: 2rem;
     left: 1.5rem;
@@ -115,5 +132,15 @@
     height: 40vh;
     margin-left: -30vw;
     margin-top: -20vh;
+  }
+
+  .events-caption-container {
+    bottom: 1.75rem;
+    padding: 0 1.25rem;
+  }
+
+  .events-caption-text {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
   }
 }

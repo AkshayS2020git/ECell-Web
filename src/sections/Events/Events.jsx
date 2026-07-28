@@ -1,24 +1,27 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import talkStartupWithMe from '../../assets/events/TalkStartupWithMe.png';
+import winterTechTalk from '../../assets/events/WinterTechTalk.png';
+import argonyx from '../../assets/events/argonyx.png';
 import './Events.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const GALLERY_ITEMS = [
   {
-    caption: 'Ideation Workshop - Fall 2025',
-    src: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?q=80&w=800&auto=format&fit=crop',
+    caption: 'Argonyx Hackathon - September 2025',
+    src: argonyx,
     alt: 'Workshop',
   },
   {
-    caption: 'Founders Panel - Winter 2025',
-    src: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=800&auto=format&fit=crop',
+    caption: 'Winter Tech Talk - Winter 2025',
+    src: winterTechTalk,
     alt: 'Founders Panel',
   },
   {
-    caption: 'Annual Hackathon - Spring 2026',
-    src: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop',
+    caption: 'Talk Startup With Me - Spring 2026',
+    src: talkStartupWithMe,
     alt: 'Hackathon',
   },
   {
@@ -39,6 +42,7 @@ export default function Events() {
   const galleryRef = useRef(null);
   const sceneRef = useRef(null);
   const captionRef = useRef(null);
+  const transitionRef = useRef(null);
   const itemsRef = useRef([]);
 
   useEffect(() => {
@@ -48,13 +52,17 @@ export default function Events() {
     const caption = captionRef.current;
     const intro = introRef.current;
     const gallery = galleryRef.current;
+    const transition = transitionRef.current;
     if (!section || !scene || !caption || !items.length) return undefined;
 
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
     const zSpacing = 1500;
 
     items.forEach((item, index) => {
       const isRightSide = index % 2 === 0;
-      const xOffset = isRightSide ? '35%' : '-35%';
+      const xOffset = isRightSide
+        ? isMobile ? '20%' : '35%'
+        : isMobile ? '-20%' : '-35%';
       const zOffset = -(index * zSpacing);
 
       item.dataset.z = zOffset;
@@ -99,6 +107,12 @@ export default function Events() {
     });
 
     entrance
+      .fromTo(
+        transition,
+        { autoAlpha: 1, scaleY: 1, transformOrigin: 'top center' },
+        { autoAlpha: 0, scaleY: 0, ease: 'power4.inOut' },
+        0,
+      )
       .fromTo(intro, { autoAlpha: 0, xPercent: -18 }, { autoAlpha: 1, xPercent: 0, ease: 'none' }, 0)
       .fromTo(gallery, { autoAlpha: 0, scale: 0.82, yPercent: 12 }, { autoAlpha: 1, scale: 1, yPercent: 0, ease: 'none' }, 0.08);
 
@@ -143,6 +157,7 @@ export default function Events() {
 
   return (
     <section className="events-section" ref={sectionRef} id="eventsSection">
+      <div className="events-transition-wipe" ref={transitionRef} aria-hidden="true" />
       <div className="events-intro" ref={introRef} aria-hidden="true">
         <span>ECELL / EVENTS</span>
         <h2>Moments that move ideas forward</h2>

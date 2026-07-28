@@ -113,6 +113,7 @@ export default function Team() {
 
   return (
     <section ref={teamRef} className="team">
+      <div className="team__transition-wipe" aria-hidden="true" />
       <div ref={containerRef} className="team__container">
         {/* Header bar with Slider Navigation Controls */}
         <div className="team__header">

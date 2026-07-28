@@ -7,6 +7,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.team__transition-wipe {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 72% 50%, rgba(255, 255, 255, 0.14), transparent 28%),
+    linear-gradient(120deg, #f2f0e9 0%, #94918a 42%, #161618 100%);
+  transform-origin: right center;
+  will-change: transform, opacity;
+}
+
 .team__card {
   position: absolute;
   top: 50%;
