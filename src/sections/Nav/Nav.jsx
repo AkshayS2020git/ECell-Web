@@ -75,79 +75,79 @@ export default function Nav() {
         className={`chapters-dropdown ${isOpen ? 'open' : ''}`}
         aria-hidden={!isOpen}
       >
-       <a
-          href="#aboutSection"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection('aboutSection');
+        <a
+          href="#aboutSection"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('aboutSection');
             document.activeElement?.blur();
-    setIsOpen(false);
-          }}
-          className="dropdown-about-link"
-        >
-          ABOUT ECELL
-        </a>
-        <a
-          href="#teamSection"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection('teamSection');
+            setIsOpen(false);
+          }}
+          className="dropdown-about-link"
+        >
+          ABOUT ECELL
+        </a>
+        <a
+          href="#teamSection"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('teamSection');
             document.activeElement?.blur();
-    setIsOpen(false);
-          }}
-          className="dropdown-team-link"
-        >
-          THE TEAM
-        </a>
-        <a
-          href="#eventsSection"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection('eventsSection');
+            setIsOpen(false);
+          }}
+          className="dropdown-team-link"
+        >
+          THE TEAM
+        </a>
+        <a
+          href="#eventsSection"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('eventsSection');
             document.activeElement?.blur();
-    setIsOpen(false);
-          }}
-          className="dropdown-events-link"
-        >
-          EVENTS
-        </a>
-         <a
-          href="#sponsors"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection('sponsors');
+            setIsOpen(false);
+          }}
+          className="dropdown-events-link"
+        >
+          EVENTS
+        </a>
+        <a
+          href="#sponsors"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('sponsors');
             document.activeElement?.blur();
-    setIsOpen(false);
-          }}
-          className="dropdown-sponsors-link"
-        >
-          PARTNERS & SPONSORS
-        </a>
-        <a
-          href="#speakers"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection('speakers');
+            setIsOpen(false);
+          }}
+          className="dropdown-sponsors-link"
+        >
+          PARTNERS & SPONSORS
+        </a>
+        <a
+          href="#speakers"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('speakers');
             document.activeElement?.blur();
-    setIsOpen(false);
-         
-          }}
-          className="dropdown-speakers-link"
-        >
-          PREVIOUS SPEAKERS
-        </a>
-        <a
-          href="#footer"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection('footer');
+            setIsOpen(false);
+
+          }}
+          className="dropdown-speakers-link"
+        >
+          PREVIOUS SPEAKERS
+        </a>
+        <a
+          href="#footer"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('footer');
             document.activeElement?.blur();
-    setIsOpen(false);
-          }}
-          className="dropdown-footer-link"
-        >
-          FOOTER
-        </a>
+            setIsOpen(false);
+          }}
+          className="dropdown-footer-link"
+        >
+          FOOTER
+        </a>
       </div>
     </>
   );
