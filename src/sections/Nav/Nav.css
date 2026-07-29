@@ -94,7 +94,7 @@ nav {
   position: fixed;
   top: 64px;
   right: 32px;
-  z-index: 49;
+  z-index: 59;
   display: none;
   min-width: 220px;
   padding: 8px;
@@ -124,6 +124,51 @@ nav {
 }
 
 .dropdown-events-link:hover {
+  background: rgba(0, 210, 255, 0.12) !important;
+}
+
+.dropdown-about-link {
+  color: #00d2ff !important;
+  font-weight: 600;
+}
+
+.dropdown-about-link:hover {
+  background: rgba(0, 210, 255, 0.12) !important;
+}
+
+.dropdown-team-link {
+  color: #00d2ff !important;
+  font-weight: 600;
+}
+
+.dropdown-team-link:hover {
+  background: rgba(0, 210, 255, 0.12) !important;
+}
+
+.dropdown-sponsors-link {
+  color: #00d2ff !important;
+  font-weight: 600;
+}
+
+.dropdown-sponsors-link:hover {
+  background: rgba(0, 210, 255, 0.12) !important;
+}
+
+.dropdown-speakers-link {
+  color: #00d2ff !important;
+  font-weight: 600;
+}
+
+.dropdown-speakers-link:hover {
+  background: rgba(0, 210, 255, 0.12) !important;
+}
+
+.dropdown-footer-link {
+  color: #00d2ff !important;
+  font-weight: 600;
+}
+
+.dropdown-footer-link:hover {
   background: rgba(0, 210, 255, 0.12) !important;
 }
 
