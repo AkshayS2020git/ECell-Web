@@ -122,9 +122,13 @@
   }
 
   .events-intro {
-    top: 2rem;
+    top: 7rem;
     left: 1.5rem;
     max-width: 17rem;
+  }
+
+  .events-scene {
+    top: 8vh;
   }
 
   .events-gallery-item {

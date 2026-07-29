@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ambikaPhoto from "../../assets/prevSpeakers/ambika.jpg";
+import arshdeepPhoto from "../../assets/prevSpeakers/arshdeep.jpg";
+import guhaPhoto from "../../assets/prevSpeakers/guha.png";
+import harpreetPhoto from "../../assets/prevSpeakers/harpreet.jpg";
+import shariffPhoto from "../../assets/prevSpeakers/shariff.jpg";
 import "./Speakers.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -8,58 +13,50 @@ gsap.registerPlugin(ScrollTrigger);
 const SPEAKERS_LIST = [
   {
     id: 1,
-    initials: "AR",
-    name: "Ananya Rao",
-    role: "Founder & CEO",
-    company: "FinFlow Technologies",
-    topic: "Scaling Fintech from 0 to 10M Users",
-    quote: "Building a company isn't about having all the answers—it's about asking the right questions faster than anyone else.",
-    tag: "Fintech",
+    name: "Harpreet Sohan",
+    role: "Product Architect",
+    company: "Decodes",
+    tag: "Product",
+    photo: harpreetPhoto,
+    photoPosition: "82% center",
   },
   {
     id: 2,
-    initials: "KI",
-    name: "Karthik Iyer",
-    role: "General Partner",
-    company: "Elevate Ventures",
-    topic: "What Early-Stage VCs Look For in 2026",
-    quote: "We don't bet on pitch decks; we bet on relentless founders who turn obstacles into leverage.",
-    tag: "Venture Capital",
-  },
-  {
-    id: 3,
-    initials: "MN",
-    name: "Meera Nair",
-    role: "VP of Product",
-    company: "ScaleGrid AI",
-    topic: "Designing Products for the Next Billion Users",
-    quote: "Great product design is invisible. It turns friction into effortless delight for every single user.",
-    tag: "Product & AI",
+    name: "Mustafa Shariff",
+    role: "Founder",
+    company: "Bengaluru Health Community",
+    tag: "Entrepreneurship",
+    photo: shariffPhoto,
   },
   {
     id: 4,
-    initials: "RD",
-    name: "Rohan Desai",
-    role: "Co-Founder",
-    company: "Kraft & Co",
-    topic: "Bootstrapping a D2C Brand to 50Cr Revenue",
-    quote: "Customer love is the single most defensible moat your brand can build.",
-    tag: "D2C & Brand",
+    name: "Arshdeep Singh",
+    role: "Founder & CEO",
+    company: "Edock, Decodes",
+    tag: "Leadership",
+    photo: arshdeepPhoto,
+    photoPosition: "78% center",
   },
   {
-    id: 5,
-    initials: "DM",
-    name: "Divya Menon",
-    role: "Head of Growth",
-    company: "CloudNative Inc.",
-    topic: "Product-Led Growth Engines for SaaS",
-    quote: "Growth is a discipline of relentless experimentation coupled with deep user empathy.",
-    tag: "SaaS & Growth",
+    id: 6,
+    name: "Ambika J",
+    role: "IEEE Senior Member, Solution Architect",
+    company: "Finastra",
+    tag: "Technology",
+    photo: ambikaPhoto,
+  },
+  {
+    id: 7,
+    name: "Biplab Guha",
+    role: "Entrepreneur",
+    company: "Stealth Mode",
+    tag: "Entrepreneurship",
+    photo: guhaPhoto,
   },
 ];
 
 export default function Speakers() {
-  const [activeIndex, setActiveIndex] = useState(2);
+  const [activeIndex, setActiveIndex] = useState(0);
   const speakersSectionRef = useRef(null);
   const cardStageRef = useRef(null);
 
@@ -194,7 +191,7 @@ export default function Speakers() {
                     setActiveIndex(index);
                   }
                 }}
-                className={`speaker-card-item ${isActive ? "active" : ""}`}
+                className={`speaker-card-item ${isActive ? "active" : ""} has-photo`}
                 role="button"
                 tabIndex="0"
                 aria-label={`Show ${speaker.name}, ${speaker.role}`}
@@ -205,14 +202,19 @@ export default function Speakers() {
                   zIndex: zIndex,
                 }}
               >
+                <img
+                  className="speaker-card-photo"
+                  src={speaker.photo}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  style={{ objectPosition: speaker.photoPosition }}
+                />
                 <div className="speaker-card-inner">
                   <div className="speaker-card-top">
                     <span className="speaker-tag">{speaker.tag}</span>
                     <span className="speaker-num">#{pad2(index + 1)}</span>
-                  </div>
-
-                  <div className="speaker-avatar-circle">
-                    {speaker.initials}
                   </div>
 
                   <div className="speaker-card-details">

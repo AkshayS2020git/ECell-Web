@@ -60,6 +60,7 @@ const teamMembers = [
     description:
       "Architecting digital products, developer platforms, and technical infrastructure powering the club's digital presence.",
     image: HeadTech,
+    imagePosition: "center center",
     linkedin: "https://www.linkedin.com/in/akash-bisht-601268322?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   },
   {

@@ -7,9 +7,8 @@ const FOOTER_LINKS = [
 ];
 
 const SOCIAL_LINKS = [
-  { label: 'Instagram', href: 'https://www.instagram.com/rv.university/' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/ecell-rv-university/' },
-  { label: 'YouTube', href: 'https://www.youtube.com/@RVUniversity' },
+  { label: 'Instagram', href: 'https://www.instagram.com/ecell_rvu/' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/search/results/all/?keywords=ECell%2C%20RV%20University&origin=RICH_QUERY_SUGGESTION&heroEntityKey=urn%3Ali%3Aorganization%3A96671040&position=1' },
 ];
 
 export default function Footer() {
@@ -40,9 +39,14 @@ export default function Footer() {
           ))}
         </div>
 
-        <a className="footer-contact" href="mailto:ecell@rvu.edu.in">
+        <a className="footer-contact" href="mailto:club_ecell@rvu.edu.in">
           <span>START A CONVERSATION</span>
-          <strong>ecell@rvu.edu.in <span aria-hidden="true">↗</span></strong>
+          <strong>
+            club_ecell@rvu.edu.in
+            <svg className="footer-contact-arrow" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M5 15 15 5M7 5h8v8" />
+            </svg>
+          </strong>
         </a>
       </div>
 

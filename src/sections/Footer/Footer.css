@@ -113,6 +113,9 @@
 }
 
 .footer-contact strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
   color: var(--fg);
   font-family: "Archivo", sans-serif;
   font-size: clamp(1rem, 1.5vw, 1.3rem);
@@ -120,11 +123,21 @@
   transition: color 180ms ease;
 }
 
-.footer-contact strong span {
-  display: inline;
-  margin: 0 0 0 0.25rem;
+.footer-contact-arrow {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
   color: inherit;
-  font-size: inherit;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  transition: transform 180ms ease;
+}
+
+.footer-contact:hover .footer-contact-arrow {
+  transform: translate(0.14rem, -0.14rem);
 }
 
 .footer-bottom {

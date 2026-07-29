@@ -47,16 +47,16 @@
 
 .sponsors-header {
   text-align: center;
-  margin-bottom: 56px;
+  margin-bottom: 48px;
 }
 
-.sponsors-header .eyebrow {
+.sponsors-kicker {
+  display: block;
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--fg-dim);
-  margin-bottom: 16px;
-  display: block;
+  margin-bottom: 14px;
 }
 
 .sponsors-headline {
@@ -68,11 +68,19 @@
   line-height: 1.05;
 }
 
+.sponsors-intro {
+  max-width: 430px;
+  margin: 15px auto 0;
+  color: var(--fg-dim);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
 .sponsor-marquee-wrapper {
   display: flex;
   position: relative;
   width: 100%;
-  min-height: 178px;
+  min-height: 158px;
   overflow: hidden;
   align-items: center;
   background: transparent;
@@ -109,21 +117,32 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 0 0 200px;
-  height: 110px;
-  margin: 0 20px;
-  padding: 16px;
-  gap: 8px;
+  flex: 0 0 204px;
+  height: 118px;
+  margin: 0 10px;
+  padding: 14px 18px;
+  gap: 7px;
   overflow: hidden;
   cursor: default;
-  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              opacity 0.3s ease;
+  border: 1px solid rgba(244, 244, 242, 0.12);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 30px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.sponsor-logo-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 68px;
 }
 
 .sponsor-logo {
   display: block;
-  max-width: 140px;
-  max-height: 72px;
+  max-width: 148px;
+  max-height: 66px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -131,8 +150,8 @@
 }
 
 /* These source files have extra canvas padding — scale up to match the others visually */
-.sponsor-logo--nokia { transform: scale(1.4); }
-.sponsor-logo--herody { transform: scale(1.6); }
+.sponsor-logo--nokia { transform: scale(1.25); }
+.sponsor-logo--herody { transform: scale(1.45); }
 
 .sponsor-label {
   color: var(--fg);
@@ -146,7 +165,9 @@
 }
 
 .sponsor-item:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  border-color: rgba(244, 244, 242, 0.32);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035));
 }
 
 @media (max-width: 768px) {
@@ -155,24 +176,27 @@
   }
 
   .sponsor-item {
-    flex-basis: 160px;
-    height: 90px;
-    margin: 0 14px;
+    flex-basis: 164px;
+    height: 98px;
+    margin: 0 8px;
     padding: 12px;
     gap: 6px;
+    border-radius: 12px;
   }
 
   .sponsor-logo {
-    max-width: 110px;
-    max-height: 56px;
+    max-width: 118px;
+    max-height: 50px;
   }
+
+  .sponsor-logo-frame { min-height: 51px; }
 
   .sponsor-label {
     font-size: 13px;
   }
 
   .sponsor-marquee-wrapper {
-    min-height: 130px;
+    min-height: 118px;
   }
 }
 

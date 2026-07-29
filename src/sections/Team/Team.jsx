@@ -188,6 +188,7 @@ export default function Team() {
                         src={member.image}
                         alt={member.name}
                         loading={isActive ? "eager" : "lazy"}
+                        style={member.imagePosition ? { objectPosition: member.imagePosition } : undefined}
                         draggable="false"
                       />
                       {/* LinkedIn overlay badge */}

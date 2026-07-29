@@ -119,7 +119,9 @@ export default function Sponsors() {
       <div className="sponsors-divider-line" />
 
       <div className="wrap sponsors-header">
+        <span className="sponsors-kicker">Supported by</span>
         <h2 className="sponsors-headline">Partners &amp; Sponsors</h2>
+        <p className="sponsors-intro">The organisations helping us turn ideas into action.</p>
       </div>
 
       <div ref={marqueeRef} className="sponsor-marquee-wrapper">
@@ -130,13 +132,15 @@ export default function Sponsors() {
                 key={`sponsor-${index}`}
                 className="sponsor-item"
               >
-                <img
-                  className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ''}`}
-                  src={item.logo}
-                  alt={item.name}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <span className="sponsor-logo-frame">
+                  <img
+                    className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ''}`}
+                    src={item.logo}
+                    alt={item.name}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
                 {item.label && <span className="sponsor-label">{item.label}</span>}
               </span>
             ))}
