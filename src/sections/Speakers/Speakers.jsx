@@ -59,6 +59,7 @@ export default function Speakers() {
   const [activeIndex, setActiveIndex] = useState(0);
   const speakersSectionRef = useRef(null);
   const cardStageRef = useRef(null);
+  const transitionLightRef = useRef(null);
 
   const handlePrev = useCallback(() => {
     setActiveIndex((prev) => (prev - 1 + SPEAKERS_LIST.length) % SPEAKERS_LIST.length);
@@ -92,7 +93,10 @@ export default function Speakers() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         section,
-        { opacity: 0, y: 50 },
+        {
+          opacity: 0,
+          y: 50,
+        },
         {
           opacity: 1,
           y: 0,
@@ -100,11 +104,32 @@ export default function Speakers() {
           ease: "power3.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 82%",
-            toggleActions: "play none none reverse",
+            start: "top 92%",
+            end: "top 42%",
+            scrub: 0.8,
           },
         }
       );
+
+      if (transitionLightRef.current) {
+        gsap.fromTo(
+          transitionLightRef.current,
+          { opacity: 0, scale: 0.45, rotate: -12, y: -40 },
+          {
+            opacity: 0.9,
+            scale: 1.2,
+            rotate: 8,
+            y: 20,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 100%",
+              end: "top 28%",
+              scrub: 0.8,
+            },
+          }
+        );
+      }
     }, section);
 
     return () => ctx.revert();
@@ -114,6 +139,7 @@ export default function Speakers() {
 
   return (
     <section ref={speakersSectionRef} className="speakers-section" id="speakers" aria-labelledby="speakers-heading">
+      <div ref={transitionLightRef} className="speakers-transition-light" aria-hidden="true" />
       <div className="wrap">
         <div className="speakers-header">
           <div className="speakers-header-left">

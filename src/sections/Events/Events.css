@@ -116,6 +116,21 @@
   color: #ffffff;
 }
 
+/* --- Exit Glow Transition --- */
+.events-exit-glow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(90vw, 1000px);
+  height: 180px;
+  background: radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, 0.16), transparent 72%);
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
 @media (max-width: 768px) {
   .events-3d-wrapper {
     perspective: 600px;
@@ -146,5 +161,9 @@
   .events-caption-text {
     font-size: 0.8rem;
     letter-spacing: 0.12em;
+  }
+
+  .events-exit-glow {
+    height: 120px;
   }
 }

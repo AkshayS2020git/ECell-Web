@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import talkStartupWithMe from '../../assets/events/TalkStartupWithMe.webp';
 import winterTechTalk from '../../assets/events/WinterTechTalk.webp';
 import argonyx from '../../assets/events/argonyx.webp';
+import argonyx2 from '../../assets/events/argoynx2.jpg';
 import './Events.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -25,14 +26,9 @@ const GALLERY_ITEMS = [
     alt: 'Hackathon',
   },
   {
-    caption: 'Startup Pitch Day - Summer 2026',
-    src: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?q=80&w=800&auto=format&fit=crop',
-    alt: 'Pitch Day',
-  },
-  {
-    caption: 'Networking Mixer - Fall 2026',
-    src: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop',
-    alt: 'Networking',
+    caption: 'Argonyx Hackathon - September 2025',
+    src: argonyx2,
+    alt: 'Argonyx 2.0 event',
   },
 ];
 
@@ -43,6 +39,7 @@ export default function Events() {
   const sceneRef = useRef(null);
   const captionRef = useRef(null);
   const transitionRef = useRef(null);
+  const exitGlowRef = useRef(null);
   const itemsRef = useRef([]);
 
   useEffect(() => {
@@ -53,6 +50,7 @@ export default function Events() {
     const intro = introRef.current;
     const gallery = galleryRef.current;
     const transition = transitionRef.current;
+    const exitGlow = exitGlowRef.current;
     if (!section || !scene || !caption || !items.length) return undefined;
 
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
@@ -120,7 +118,7 @@ export default function Events() {
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        end: '+=450%',
+        end: '+=420%',
         scrub: 0.8,
         pin: true,
         anticipatePin: 1,
@@ -134,20 +132,47 @@ export default function Events() {
         ease: 'none',
         onUpdate: updateScene,
       })
-      .to(gallery, {
-        autoAlpha: 0,
-        scale: 0.76,
-        yPercent: -20,
-        filter: 'blur(10px)',
-        duration: 0.7,
-        ease: 'power3.in',
-      }, 3.65)
-      .to(intro, {
-        autoAlpha: 0,
-        xPercent: 12,
-        duration: 0.45,
-        ease: 'power2.in',
-      }, 3.72);
+      .to(
+        gallery,
+        {
+          autoAlpha: 0,
+          scale: 0.88,
+          yPercent: -12,
+          filter: 'blur(8px)',
+          duration: 0.65,
+          ease: 'power2.in',
+        },
+        3.75
+      )
+      .to(
+        intro,
+        {
+          autoAlpha: 0,
+          yPercent: -15,
+          duration: 0.5,
+          ease: 'power2.in',
+        },
+        3.6
+      )
+      .to(
+        caption,
+        {
+          autoAlpha: 0,
+          y: 15,
+          duration: 0.5,
+          ease: 'power2.in',
+        },
+        3.6
+      );
+
+    if (exitGlow) {
+      journey.fromTo(
+        exitGlow,
+        { autoAlpha: 0, scaleX: 0.7 },
+        { autoAlpha: 1, scaleX: 1.1, duration: 0.7, ease: 'power1.out' },
+        3.5
+      );
+    }
 
     return () => {
       entrance.kill();
@@ -163,25 +188,26 @@ export default function Events() {
         <h2>Moments that move ideas forward</h2>
       </div>
       <div className="events-3d-wrapper" ref={galleryRef}>
-      <div className="events-caption-container">
-        <div className="events-caption-text" ref={captionRef} id="active-caption">
-          Scroll Down to Explore
+        <div className="events-caption-container">
+          <div className="events-caption-text" ref={captionRef} id="active-caption">
+            Scroll Down to Explore
+          </div>
+        </div>
+
+        <div className="events-scene" ref={sceneRef} id="scene">
+          {GALLERY_ITEMS.map((item, idx) => (
+            <div
+              key={idx}
+              className="events-gallery-item"
+              data-caption={item.caption}
+              ref={(el) => (itemsRef.current[idx] = el)}
+            >
+              <img src={item.src} alt={item.alt} />
+            </div>
+          ))}
         </div>
       </div>
-
-      <div className="events-scene" ref={sceneRef} id="scene">
-        {GALLERY_ITEMS.map((item, idx) => (
-          <div
-            key={idx}
-            className="events-gallery-item"
-            data-caption={item.caption}
-            ref={(el) => (itemsRef.current[idx] = el)}
-          >
-            <img src={item.src} alt={item.alt} />
-          </div>
-        ))}
-      </div>
-      </div>
+      <div className="events-exit-glow" ref={exitGlowRef} aria-hidden="true" />
     </section>
   );
 }

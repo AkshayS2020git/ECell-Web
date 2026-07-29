@@ -11,6 +11,7 @@ import mileLogo from "../../assets/logos/mile.webp";
 import nokiaLogo from "../../assets/logos/nokia.webp";
 import tvsLogo from "../../assets/logos/tvs.webp";
 import waffleLogo from "../../assets/logos/waffle.svg";
+import redbull from "../../assets/logos/redbull.png";
 import "./Sponsors.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -20,6 +21,7 @@ const SPONSORS_DATA = [
   { name: "Akshaya Motors", logo: mercLogo, label: "Akshaya Motors" },
   { name: "mile", logo: mileLogo, label: "mile" },
   { name: "TVS Prakruthi Bikes", logo: tvsLogo, label: "Prakruthi Bikes" },
+  {name: "redbull", logo: redbull},
   { name: "Justvend", logo: justvendLogo },
   { name: "Atty's Bakery & Confectionery", logo: attysLogo },
   { name: "Cube", logo: cubeLogo },
@@ -32,6 +34,7 @@ export default function Sponsors() {
   const sponsorsSectionRef = useRef(null);
   const glowRef = useRef(null);
   const marqueeRef = useRef(null);
+  const headerRef = useRef(null);
 
   useEffect(() => {
     const section = sponsorsSectionRef.current;
@@ -39,34 +42,40 @@ export default function Sponsors() {
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) {
-      gsap.set(section, { opacity: 1, y: 0, clipPath: "none" });
+      if (headerRef.current) gsap.set(headerRef.current, { opacity: 1, y: 0 });
       if (marqueeRef.current) gsap.set(marqueeRef.current, { opacity: 1, y: 0, scale: 1 });
       if (glowRef.current) gsap.set(glowRef.current, { opacity: 0.35, scale: 1 });
       return;
     }
 
     const ctx = gsap.context(() => {
-      // Clean, unified full-section reveal when scrolling into Sponsors
-      gsap.fromTo(
-        section,
-        {
-          opacity: 0,
-          y: 34,
-          clipPath: "inset(8% 0 0 round 42% 42% 0 0)",
+      // Smooth content reveal as user scrolls into Sponsors
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 85%",
+          end: "top 35%",
+          scrub: 0.8,
         },
-        {
-          opacity: 1,
-          y: 0,
-          clipPath: "inset(0% 0 0 round 0 0 0 0)",
-          duration: 0.75,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 82%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
+      });
+
+      if (headerRef.current) {
+        tl.fromTo(
+          headerRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, ease: "power2.out" },
+          0
+        );
+      }
+
+      if (marqueeRef.current) {
+        tl.fromTo(
+          marqueeRef.current,
+          { y: 40, opacity: 0, scale: 0.97 },
+          { y: 0, opacity: 1, scale: 1, ease: "power2.out" },
+          0.1
+        );
+      }
 
       // Ambient radial glow expansion on scroll
       if (glowRef.current) {
@@ -80,29 +89,10 @@ export default function Sponsors() {
             scrollTrigger: {
               trigger: section,
               start: "top 95%",
-              end: "bottom 20%",
-              scrub: 1,
+              end: "top 20%",
+              scrub: 0.8,
             },
           }
-        );
-      }
-
-      if (marqueeRef.current) {
-        gsap.fromTo(
-          marqueeRef.current,
-          { y: 34, opacity: 0, scale: 0.97 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 70%",
-              toggleActions: "play none none reverse",
-            },
-          },
         );
       }
     }, section);
@@ -118,7 +108,7 @@ export default function Sponsors() {
       <div ref={glowRef} className="sponsors-glow" />
       <div className="sponsors-divider-line" />
 
-      <div className="wrap sponsors-header">
+      <div ref={headerRef} className="wrap sponsors-header">
         <span className="sponsors-kicker">Supported by</span>
         <h2 className="sponsors-headline">Partners &amp; Sponsors</h2>
         <p className="sponsors-intro">The organisations helping us turn ideas into action.</p>
