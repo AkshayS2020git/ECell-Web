@@ -32,6 +32,7 @@ export default function FloatingLogo() {
     const title = titleRef.current;
     const subtitle = subtitleRef.current;
     const waves = [wave1Ref.current, wave2Ref.current, wave3Ref.current].filter(Boolean);
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     if (!logo) return;
 
@@ -61,6 +62,28 @@ export default function FloatingLogo() {
 
     let heroTarget = 0;
     let heroSmoothed = 0;
+    let mobileFrame = null;
+    let updateLogo = () => {};
+    let targetX = 54;
+    let targetY = 46;
+
+    const updateNavTarget = () => {
+      if (!iconTargetEl) return;
+      const navRect = iconTargetEl.getBoundingClientRect();
+      targetX = navRect.left + navRect.width / 2;
+      targetY = navRect.top + navRect.height / 2 + 3.5;
+    };
+
+    updateNavTarget();
+    window.addEventListener("resize", updateNavTarget, { passive: true });
+
+    const requestMobileUpdate = () => {
+      if (!isMobile || mobileFrame !== null) return;
+      mobileFrame = window.requestAnimationFrame(() => {
+        mobileFrame = null;
+        updateLogo();
+      });
+    };
 
     const heroTrigger = ScrollTrigger.create({
       trigger: heroEl,
@@ -70,6 +93,7 @@ export default function FloatingLogo() {
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         heroTarget = self.progress;
+        requestMobileUpdate();
       },
     });
 
@@ -88,14 +112,15 @@ export default function FloatingLogo() {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           transTarget = self.progress;
+          requestMobileUpdate();
         },
       });
     }
 
     // --- Animation loop ---
-    const updateLogo = () => {
-      heroSmoothed = lerp(heroSmoothed, heroTarget, 0.1);
-      transSmoothed = lerp(transSmoothed, transTarget, 0.05);
+    updateLogo = () => {
+      heroSmoothed = isMobile ? heroTarget : lerp(heroSmoothed, heroTarget, 0.1);
+      transSmoothed = isMobile ? transTarget : lerp(transSmoothed, transTarget, 0.05);
 
       const p = heroSmoothed;
       const rawT = transSmoothed;
@@ -132,17 +157,6 @@ export default function FloatingLogo() {
       const centerY = vh / 2;
 
       // --- Target position (nav logo icon target) ---
-      let targetX, targetY;
-      if (iconTargetEl) {
-        const navRect = iconTargetEl.getBoundingClientRect();
-        targetX = navRect.left + navRect.width / 2;
-        // Shift targetY down slightly (+3.5px) so wave visual center matches text baseline center
-        targetY = navRect.top + navRect.height / 2 + 3.5;
-      } else {
-        targetX = 54;
-        targetY = 46;
-      }
-
       // --- Size interpolation (proportionate logo in nav header: 64px) ---
       const startSize = Math.min(340, vw * 0.8);
       const endSize = 80;
@@ -175,10 +189,16 @@ export default function FloatingLogo() {
       }
     };
 
-    gsap.ticker.add(updateLogo);
+    if (isMobile) {
+      updateLogo();
+    } else {
+      gsap.ticker.add(updateLogo);
+    }
 
     return () => {
-      gsap.ticker.remove(updateLogo);
+      if (mobileFrame !== null) window.cancelAnimationFrame(mobileFrame);
+      window.removeEventListener("resize", updateNavTarget);
+      if (!isMobile) gsap.ticker.remove(updateLogo);
       heroTrigger.kill();
       if (aboutTrigger) aboutTrigger.kill();
       if (navLabelEl) navLabelEl.style.opacity = 0;

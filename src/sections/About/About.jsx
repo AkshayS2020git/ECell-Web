@@ -42,6 +42,11 @@ export default function About() {
     function updateAboutAnimations() {
       const rect = aboutStatement.getBoundingClientRect();
       const vh = window.innerHeight;
+
+      // Do not spend a frame recalculating blur/transforms while this section
+      // is well outside the viewport (especially during the hero scroll).
+      if (rect.bottom < -vh || rect.top > vh * 1.25) return;
+
       const startY = vh * 1.0;
       const endY = vh * 0.1;
       const target = Math.min(

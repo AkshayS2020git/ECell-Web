@@ -44,19 +44,26 @@ export default function Story({
       return;
     }
 
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => 1 - Math.pow(1 - t, 4),
-      smoothWheel: true,
-    });
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const lenis = isMobile
+      ? null
+      : new Lenis({
+          duration: 1.2,
+          easing: (t) => 1 - Math.pow(1 - t, 4),
+          smoothWheel: true,
+        });
 
-    lenis.on("scroll", ScrollTrigger.update);
+    const rafHandler = lenis
+      ? (time) => {
+          lenis.raf(time * 1000);
+        }
+      : null;
 
-    const rafHandler = (time) => {
-      lenis.raf(time * 1000);
-    };
-    gsap.ticker.add(rafHandler);
-    gsap.ticker.lagSmoothing(0);
+    if (lenis) {
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add(rafHandler);
+      gsap.ticker.lagSmoothing(0);
+    }
 
     const mm = gsap.matchMedia();
 
@@ -86,7 +93,7 @@ export default function Story({
           scrollTrigger: {
             trigger: reveal,
             start: "top top",
-            end: isMobile ? "+=330%" : "+=380%",
+            end: isMobile ? "+=250%" : "+=300%",
             scrub: 0.8,
             pin: true,
             anticipatePin: 1,
@@ -168,7 +175,7 @@ export default function Story({
             2.08,
           );
 
-        // A fast, directional exit clears the stage for the separate Events section.
+        // A short overlapping exit clears the stage as the headline leaves.
         tl.to(
           imagePanel,
           {
@@ -178,10 +185,10 @@ export default function Story({
             rotate: 11,
             filter: "blur(20px)",
             opacity: 0,
-            duration: 0.7,
-            ease: "power3.in",
+            duration: 0.42,
+            ease: "power4.in",
           },
-          2.18,
+          2.06,
         );
 
         return () => {
@@ -196,8 +203,8 @@ export default function Story({
 
     return () => {
       mm.revert();
-      gsap.ticker.remove(rafHandler);
-      lenis.destroy();
+      if (rafHandler) gsap.ticker.remove(rafHandler);
+      lenis?.destroy();
     };
   }, [headlineMain, headlineAccent]);
 

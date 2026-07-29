@@ -21,6 +21,7 @@ export function setupHeroAnimations({
   const heading = headingRef.current;
   const scrollHint = scrollHintRef?.current;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
   if (reduceMotion) {
     gsap.set([videoWrap, marquee, label, heading, scrollHint].filter(Boolean), {
@@ -29,6 +30,42 @@ export function setupHeroAnimations({
     });
     video?.pause();
     return () => {};
+  }
+
+  if (isMobile) {
+    gsap.set(videoWrap, {
+      scale: 1,
+      opacity: 1,
+      borderRadius: 0,
+      boxShadow: "none",
+      transformOrigin: "center center",
+    });
+    gsap.set([marquee, label], { opacity: 0 });
+    gsap.set(heading, { opacity: 1 });
+    if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
+
+    const mobileTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: heroRef.current,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.25,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    mobileTimeline
+      .to(videoWrap, { scale: 0.78, opacity: 0.94, ease: "none", duration: 1 }, 0)
+      .to(marquee, { opacity: 1, ease: "none", duration: 0.32 }, 0.12)
+      .to(label, { opacity: 1, ease: "none", duration: 0.28 }, 0.16)
+      .to(heading, { opacity: 0, ease: "none", duration: 0.25 }, 0.06)
+      .to(scrollHint, { opacity: 0, ease: "none", duration: 0.18 }, 0.02);
+
+    if (video) video.playbackRate = 0.5;
+
+    return () => {
+      mobileTimeline.kill();
+    };
   }
 
   const marqueeOpacity = gsap.quickSetter(marquee, "opacity");

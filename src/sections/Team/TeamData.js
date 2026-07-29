@@ -5,6 +5,7 @@ import HeadPr from "../../assets/team/HeadPr.jpg";
 import HeadDocumentation from "../../assets/team/HeadDocumentation.jpg";
 import Advisory from "../../assets/team/Advisory.jpeg";
 import AdvisoryHead from "../../assets/team/AdvisoryHead.jpg";
+import DirectorPr from "../../assets/team/DirectorPr.jpeg";
 
 const teamMembers = [
   {
@@ -27,6 +28,15 @@ const teamMembers = [
   },
   {
     id: "member-3",
+    name: "Ayush S Kulkarni",
+    role: "director of Partnerships and Engagements",
+    description:
+      "builds external relationships and drives member involvement to grow the club's presence and value.",
+    image: DirectorPr,
+    linkedin: "https://www.linkedin.com/in/ayushsk"
+  },
+  {
+    id: "member-4",
     name: "Dhruv Bhandari",
     role: "President",
     description:
@@ -35,7 +45,7 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/dhruv-bhandari-b08041364/",
   },
   {
-    id: "member-4",
+    id: "member-5",
     name: "Lavanya Sodhani",
     role: "Vice-President",
     description:
@@ -44,7 +54,7 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/lavanya-s006/",
   },
   {
-    id: "member-5",
+    id: "member-6",
     name: "Akash Singh Bisht",
     role: "Head of Tech",
     description:
@@ -53,7 +63,7 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/akash-bisht-601268322?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   },
   {
-    id: "member-6",
+    id: "member-7",
     name: "Aryav Agrawal",
     role: "Head of PR Team",
     description:
@@ -62,7 +72,7 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/aryav-agrawal-42649b293",
   },
   {
-    id: "member-7",
+    id: "member-8",
     name: "Payal A Singh",
     role: "Documentation Team Co-Lead",
     description:

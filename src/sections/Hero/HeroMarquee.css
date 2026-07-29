@@ -52,3 +52,13 @@
     transform: translateX(-50%);
   }
 }
+
+@media (max-width: 768px) {
+  .hero__marquee-line {
+    text-shadow: none;
+  }
+
+  .hero__marquee-line span {
+    animation: none;
+  }
+}

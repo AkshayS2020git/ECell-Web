@@ -11,6 +11,7 @@
   background: #050505;
   transform-origin: center center;
   will-change: transform, opacity, border-radius, box-shadow;
+  backface-visibility: hidden;
 }
 
 .hero__label {

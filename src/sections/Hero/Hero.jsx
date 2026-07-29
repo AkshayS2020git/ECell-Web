@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
-import heroVideo from "../../assets/videos/hero2.mp4";
+import heroVideo from "../../assets/videos/hero2-optimized.mp4";
+import heroMobileVideo from "../../assets/videos/hero-mobile.mp4";
+import heroPoster from "../../assets/videos/hero-poster.jpg";
 import { setupHeroAnimations } from "./HeroAnimations";
 import "./Hero.css";
 import "./HeroLayout.css";
@@ -69,6 +71,7 @@ export default function Hero() {
             muted
             loop
             playsInline
+            poster={heroPoster}
             preload="metadata"
             onPlay={(e) => {
               e.currentTarget.playbackRate = 0.5;
@@ -80,6 +83,7 @@ export default function Hero() {
               e.currentTarget.playbackRate = 0.5;
             }}
           >
+            <source media="(max-width: 768px)" src={heroMobileVideo} type="video/mp4" />
             <source src={heroVideo} type="video/mp4" />
           </video>
           <div className="hero__overlay" />

@@ -70,3 +70,14 @@
     top: 0;
   }
 }
+
+@media (max-width: 768px) {
+  .hero {
+    height: 230vh;
+  }
+
+  .hero__scroll-hint .hero__scroll-track i {
+    animation: none;
+    top: 0;
+  }
+}
