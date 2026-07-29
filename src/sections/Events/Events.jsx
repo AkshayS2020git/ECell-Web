@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import talkStartupWithMe from '../../assets/events/TalkStartupWithMe.png';
-import winterTechTalk from '../../assets/events/WinterTechTalk.png';
-import argonyx from '../../assets/events/argonyx.png';
+import talkStartupWithMe from '../../assets/events/TalkStartupWithMe.webp';
+import winterTechTalk from '../../assets/events/WinterTechTalk.webp';
+import argonyx from '../../assets/events/argonyx.webp';
 import './Events.css';
 
 gsap.registerPlugin(ScrollTrigger);

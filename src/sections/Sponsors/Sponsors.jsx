@@ -1,14 +1,15 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import attysLogo from "../../assets/logos/attys.png";
-import easyBitesLogo from "../../assets/logos/easybites.png";
-import herodyLogo from "../../assets/logos/herody.png";
-import justvendLogo from "../../assets/logos/justvend.png";
-import mercLogo from "../../assets/logos/merc.png";
-import mileLogo from "../../assets/logos/mile.png";
-import nokiaLogo from "../../assets/logos/nokia.png";
-import tvsLogo from "../../assets/logos/tvs.png";
+import attysLogo from "../../assets/logos/attys.webp";
+import cubeLogo from "../../assets/logos/cube.webp";
+import easyBitesLogo from "../../assets/logos/easybites.webp";
+import herodyLogo from "../../assets/logos/herody.webp";
+import justvendLogo from "../../assets/logos/justvend.webp";
+import mercLogo from "../../assets/logos/merc.webp";
+import mileLogo from "../../assets/logos/mile.webp";
+import nokiaLogo from "../../assets/logos/nokia.webp";
+import tvsLogo from "../../assets/logos/tvs.webp";
 import waffleLogo from "../../assets/logos/waffle.svg";
 import "./Sponsors.css";
 
@@ -21,6 +22,7 @@ const SPONSORS_DATA = [
   { name: "TVS Prakruthi Bikes", logo: tvsLogo, label: "Prakruthi Bikes" },
   { name: "Justvend", logo: justvendLogo },
   { name: "Atty's Bakery & Confectionery", logo: attysLogo },
+  { name: "Cube", logo: cubeLogo },
   { name: "The Belgian Waffle Co.", logo: waffleLogo },
   { name: "Herody", logo: herodyLogo, logoKey: "herody" },
   { name: "EasyBites", logo: easyBitesLogo, label: "EasyBites" },

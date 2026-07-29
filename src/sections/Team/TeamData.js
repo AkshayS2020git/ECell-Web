@@ -1,11 +1,11 @@
-import President from "../../assets/team/President.png";
-import VicePresident from "../../assets/team/vicePres.jpeg";
-import HeadTech from "../../assets/team/HeadTech.jpeg";
-import HeadPr from "../../assets/team/HeadPr.jpg";
-import HeadDocumentation from "../../assets/team/HeadDocumentation.jpg";
-import Advisory from "../../assets/team/Advisory.jpeg";
-import AdvisoryHead from "../../assets/team/AdvisoryHead.jpg";
-import DirectorPr from "../../assets/team/DirectorPr.jpeg";
+import President from "../../assets/team/President.webp";
+import VicePresident from "../../assets/team/vicePres.webp";
+import HeadTech from "../../assets/team/HeadTech.webp";
+import HeadPr from "../../assets/team/HeadPr.webp";
+import HeadDocumentation from "../../assets/team/HeadDocumentation.webp";
+import Advisory from "../../assets/team/Advisory.webp";
+import AdvisoryHead from "../../assets/team/AdvisoryHead.webp";
+import DirectorPr from "../../assets/team/DirectorPr.webp";
 
 const teamMembers = [
   {
