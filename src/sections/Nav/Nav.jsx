@@ -75,11 +75,13 @@ export default function Nav() {
         className={`chapters-dropdown ${isOpen ? 'open' : ''}`}
         aria-hidden={!isOpen}
       >
-        <a
+       <a
           href="#aboutSection"
           onClick={(e) => {
             e.preventDefault();
             scrollToSection('aboutSection');
+            document.activeElement?.blur();
+    setIsOpen(false);
           }}
           className="dropdown-about-link"
         >
@@ -90,6 +92,8 @@ export default function Nav() {
           onClick={(e) => {
             e.preventDefault();
             scrollToSection('teamSection');
+            document.activeElement?.blur();
+    setIsOpen(false);
           }}
           className="dropdown-team-link"
         >
@@ -100,6 +104,8 @@ export default function Nav() {
           onClick={(e) => {
             e.preventDefault();
             scrollToSection('eventsSection');
+            document.activeElement?.blur();
+    setIsOpen(false);
           }}
           className="dropdown-events-link"
         >
@@ -110,6 +116,8 @@ export default function Nav() {
           onClick={(e) => {
             e.preventDefault();
             scrollToSection('sponsors');
+            document.activeElement?.blur();
+    setIsOpen(false);
           }}
           className="dropdown-sponsors-link"
         >
@@ -120,6 +128,9 @@ export default function Nav() {
           onClick={(e) => {
             e.preventDefault();
             scrollToSection('speakers');
+            document.activeElement?.blur();
+    setIsOpen(false);
+         
           }}
           className="dropdown-speakers-link"
         >
@@ -130,6 +141,8 @@ export default function Nav() {
           onClick={(e) => {
             e.preventDefault();
             scrollToSection('footer');
+            document.activeElement?.blur();
+    setIsOpen(false);
           }}
           className="dropdown-footer-link"
         >
