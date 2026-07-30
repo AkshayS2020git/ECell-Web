@@ -162,6 +162,15 @@
   transition: color 180ms ease;
 }
 
+.footer-credit {
+  text-align: center;
+}
+
+.footer-credit-heart {
+  color: #ff5c5c;
+  font-size: 0.95rem;
+}
+
 .footer-top-button:hover {
   color: var(--fg-dim);
 }
@@ -200,5 +209,9 @@
     align-items: flex-start;
     flex-direction: column;
     gap: 1rem;
+  }
+
+  .footer-credit {
+    text-align: left;
   }
 }

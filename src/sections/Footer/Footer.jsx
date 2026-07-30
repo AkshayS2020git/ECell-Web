@@ -52,6 +52,9 @@ export default function Footer() {
 
       <div className="wrap footer-bottom">
         <span>© {new Date().getFullYear()} ECELL RV UNIVERSITY</span>
+        <span className="footer-credit">
+          Made with <span className="footer-credit-heart" aria-label="love">♥</span> by ECell Tech Team
+        </span>
         <button className="footer-top-button" onClick={scrollToTop} type="button">
           BACK TO TOP <span aria-hidden="true">↑</span>
         </button>
