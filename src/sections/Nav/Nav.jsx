@@ -30,6 +30,20 @@ export default function Nav() {
     }
   };
 
+  useEffect(() => {
+  const handleScroll = () => {
+    if (isOpen) {
+      setIsOpen(false);
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll);
+
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+}, [isOpen]);
+
   return (
     <>
       <nav>

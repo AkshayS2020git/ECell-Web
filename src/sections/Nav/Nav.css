@@ -14,6 +14,12 @@ nav {
   justify-content: space-between;
   padding: 24px 32px;
   mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+nav button,
+nav a {
+    pointer-events: auto;
 }
 
 .logo {
