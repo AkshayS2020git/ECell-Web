@@ -62,6 +62,7 @@
   color: var(--fg);
   letter-spacing: -0.02em;
   line-height: 1;
+  will-change: transform, opacity;
 }
 
 .speakers-header-left::after {
@@ -135,6 +136,7 @@
   align-items: center;
   perspective: 1200px;
   margin-bottom: 50px;
+  will-change: transform, opacity;
 }
 
 .speaker-card-item {
@@ -182,63 +184,6 @@
 .speaker-card-item.has-photo:hover .speaker-card-photo {
   transform: scale(1.06);
 }
-
-.speakers-community-handoff {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-  width: fit-content;
-  margin: -10px auto 0;
-  color: #88d8a5;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  transition: color 200ms ease, transform 200ms ease;
-}
-
-.speakers-community-handoff:hover {
-  color: #d6ffe3;
-  transform: translateY(-3px);
-}
-
-.speakers-community-handoff:focus-visible {
-  outline: 2px solid #8de9aa;
-  outline-offset: 7px;
-  border-radius: 4px;
-}
-
-.speakers-handoff-route {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.speakers-handoff-route i {
-  width: 33px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #37b86c);
-  animation: speakers-route-glow 2.7s ease-in-out infinite;
-}
-
-.speakers-handoff-route i:last-child { background: linear-gradient(90deg, #37b86c, transparent); }
-.speakers-handoff-route b { font-size: 12px; color: #49d77d; animation: speakers-route-pulse 2.7s ease-in-out infinite; }
-
-.speakers-community-handoff svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
-  transition: transform 200ms ease;
-}
-
-.speakers-community-handoff:hover svg { transform: translateX(4px); }
-
-@keyframes speakers-route-glow { 50% { opacity: 0.28; transform: scaleX(0.72); } }
-@keyframes speakers-route-pulse { 50% { text-shadow: 0 0 14px #37b86c; transform: scale(1.25); } }
 
 .speaker-card-inner {
   position: relative;
@@ -430,8 +375,6 @@
     height: 292px;
   }
 
-  .speakers-community-handoff { gap: 9px; font-size: 8px; letter-spacing: 0.12em; }
-  .speakers-handoff-route i { width: 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -445,10 +388,7 @@
 
   .speaker-card-item,
   .speakers-arrow-btn,
-  .speaker-spotlight-panel,
-  .speakers-community-handoff,
-  .speakers-handoff-route i,
-  .speakers-handoff-route b {
+  .speaker-spotlight-panel {
     transition: none;
     animation: none;
   }

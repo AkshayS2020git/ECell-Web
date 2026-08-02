@@ -111,6 +111,38 @@ export default function Speakers() {
         }
       );
 
+      // The bloom is tied to scroll position, so it expands and settles in both
+      // directions instead of only playing on the first visit.
+      const bloomTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 90%",
+          end: "top 24%",
+          scrub: 0.5,
+        },
+      });
+
+      bloomTimeline
+        .fromTo(
+          ".speakers-headline",
+          { opacity: 0, scaleX: 0.52, transformOrigin: "left center" },
+          { opacity: 1, scaleX: 1.1, duration: 0.62, ease: "power3.out" }
+        )
+        .to(
+          ".speakers-headline",
+          { scaleX: 1, duration: 0.42, ease: "power3.out" }
+        )
+        .fromTo(
+          cardStageRef.current,
+          { opacity: 0, scale: 0.74, y: 44, transformOrigin: "center center" },
+          { opacity: 1, scale: 1.12, y: 0, duration: 0.68, ease: "back.out(1.35)" },
+          "-=0.52"
+        )
+        .to(
+          cardStageRef.current,
+          { scale: 1, duration: 0.52, ease: "power3.out" }
+        );
+
       if (transitionLightRef.current) {
         gsap.fromTo(
           transitionLightRef.current,
@@ -253,11 +285,6 @@ export default function Speakers() {
             );
           })}
         </div>
-        <a className="speakers-community-handoff" href="#community" aria-label="Continue to the WhatsApp community">
-          <span className="speakers-handoff-route" aria-hidden="true"><i /><b>✦</b><i /></span>
-          <span>THE CONVERSATION CONTINUES</span>
-          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" /></svg>
-        </a>
       </div>
     </section>
   );
