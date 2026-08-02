@@ -62,6 +62,7 @@
   color: var(--fg);
   letter-spacing: -0.02em;
   line-height: 1;
+  will-change: transform, opacity;
 }
 
 .speakers-header-left::after {
@@ -135,6 +136,7 @@
   align-items: center;
   perspective: 1200px;
   margin-bottom: 50px;
+  will-change: transform, opacity;
 }
 
 .speaker-card-item {
@@ -372,6 +374,7 @@
     width: min(68vw, 250px);
     height: 292px;
   }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -387,5 +390,6 @@
   .speakers-arrow-btn,
   .speaker-spotlight-panel {
     transition: none;
+    animation: none;
   }
 }
