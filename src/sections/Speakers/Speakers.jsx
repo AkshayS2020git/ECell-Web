@@ -253,6 +253,11 @@ export default function Speakers() {
             );
           })}
         </div>
+        <a className="speakers-community-handoff" href="#community" aria-label="Continue to the WhatsApp community">
+          <span className="speakers-handoff-route" aria-hidden="true"><i /><b>✦</b><i /></span>
+          <span>THE CONVERSATION CONTINUES</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" /></svg>
+        </a>
       </div>
     </section>
   );
