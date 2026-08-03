@@ -28,15 +28,6 @@ const teamMembers = [
   },
   {
     id: "member-3",
-    name: "Ayush S Kulkarni",
-    role: "director of Partnerships and Engagements",
-    description:
-      "builds external relationships and drives member involvement to grow the club's presence and value.",
-    image: DirectorPr,
-    linkedin: "https://www.linkedin.com/in/ayushsk"
-  },
-  {
-    id: "member-4",
     name: "Dhruv Bhandari",
     role: "President",
     description:
@@ -45,13 +36,22 @@ const teamMembers = [
     linkedin: "https://www.linkedin.com/in/dhruv-bhandari-b08041364/",
   },
   {
-    id: "member-5",
+    id: "member-4",
     name: "Lavanya Sodhani",
     role: "Vice-President",
     description:
       "Driving operational excellence and coordinating cross-functional teams to amplify the club's impact and outreach.",
     image: VicePresident,
     linkedin: "https://www.linkedin.com/in/lavanya-s006/",
+  },
+  {
+    id: "member-5",
+    name: "Ayush S Kulkarni",
+    role: "director of Partnerships and Engagements",
+    description:
+      "builds external relationships and drives member involvement to grow the club's presence and value.",
+    image: DirectorPr,
+    linkedin: "https://www.linkedin.com/in/ayushsk"
   },
   {
     id: "member-6",
