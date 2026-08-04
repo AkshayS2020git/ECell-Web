@@ -118,11 +118,15 @@ export default function Team() {
         {/* Header bar with Slider Navigation Controls */}
         <div className="team__header">
           <div className="team__header-title">
-            <span className="team__label-mark">THE TEAM</span>
-            <div className="team__counter">
-              <span className="team__counter-current">{String(activeIndex + 1).padStart(2, "0")}</span>
-              <span className="team__counter-divider">/</span>
-              <span className="team__counter-total">{String(teamMembers.length).padStart(2, "0")}</span>
+            <span className="team__label-mark">ECELL / LEADERSHIP</span>
+            <h2 className="team__section-title">Meet the team<span className="team__section-title-dot">.</span></h2>
+            <div className="team__header-meta">
+              <p className="team__intro">The people building a stronger home for ideas, ambition, and action.</p>
+              <div className="team__counter" aria-label={`Team member ${activeIndex + 1} of ${teamMembers.length}`}>
+                <span className="team__counter-current">{String(activeIndex + 1).padStart(2, "0")}</span>
+                <span className="team__counter-divider">/</span>
+                <span className="team__counter-total">{String(teamMembers.length).padStart(2, "0")}</span>
+              </div>
             </div>
           </div>
 
@@ -215,7 +219,7 @@ export default function Team() {
 
                   <div className="team__content">
                     <span className="team__role">{member.role}</span>
-                    <h2 className="team__title">{member.name}</h2>
+                    <h3 className="team__title">{member.name}</h3>
                     <p className="team__description">{member.description}</p>
                   </div>
                 </article>

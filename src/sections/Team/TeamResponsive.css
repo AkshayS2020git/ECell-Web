@@ -39,7 +39,7 @@
 
   .team__header {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 12px;
     padding-top: 20px;
@@ -47,12 +47,26 @@
   }
 
   .team__header-title {
-    gap: 14px;
+    max-width: 470px;
   }
 
   .team__label-mark {
-    font-size: 0.78rem;
-    letter-spacing: 0.25em;
+    margin-bottom: 10px;
+    font-size: 0.64rem;
+    letter-spacing: 0.18em;
+  }
+
+  .team__section-title {
+    font-size: clamp(2.25rem, 9vw, 3.5rem);
+  }
+
+  .team__header-meta {
+    margin-top: 12px;
+  }
+
+  .team__intro {
+    max-width: 350px;
+    font-size: 0.82rem;
   }
 
   .team__counter-current {
@@ -118,12 +132,12 @@
   }
 
   .team__role {
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     letter-spacing: 0.14em;
   }
 
   .team__title {
-    font-size: 1.85rem;
+    font-size: 2.15rem;
   }
 
   .team__description {
@@ -138,12 +152,38 @@
   }
 
   .team__header-title {
-    gap: 10px;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 250px;
   }
 
   .team__label-mark {
-    font-size: 0.72rem;
+    font-size: 0.58rem;
     letter-spacing: 0.18em;
+  }
+
+  .team__label-mark::before {
+    width: 14px;
+  }
+
+  .team__section-title {
+    font-size: 2.25rem;
+  }
+
+  .team__header-meta {
+    margin-top: 10px;
+  }
+
+  .team__intro {
+    display: none;
+  }
+
+  .team__dots {
+    display: none;
+  }
+
+  .team__slider-controls {
+    gap: 0;
   }
 
   .team__counter {
@@ -186,11 +226,11 @@
   }
 
   .team__role {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
   }
 
   .team__title {
-    font-size: 1.55rem;
+    font-size: 1.95rem;
   }
 
   .team__description {
@@ -201,5 +241,19 @@
   .team__slider-btn {
     width: 38px;
     height: 38px;
+  }
+}
+
+@media (max-width: 380px) {
+  .team__header {
+    gap: 8px;
+  }
+
+  .team__section-title {
+    font-size: 2rem;
+  }
+
+  .team__slider-nav {
+    gap: 6px;
   }
 }

@@ -10,6 +10,7 @@ import Speakers from './sections/Speakers/Speakers';
 import WhatsAppCommunity from './sections/WhatsAppCommunity/WhatsAppCommunity';
 import Footer from './sections/Footer/Footer';
 import FloatingLogo from './components/FloatingLogo/FloatingLogo';
+import GameLauncher from './components/GameLauncher/GameLauncher';
 import Team from "./sections/Team/Team";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <>
           <Nav />
           <FloatingLogo />
+          <GameLauncher />
           <Hero />
           <About />
           <Story />
