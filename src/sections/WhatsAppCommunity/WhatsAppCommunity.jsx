@@ -5,8 +5,8 @@ import "./WhatsAppCommunity.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Swap this with the E-Cell WhatsApp invite URL when it is ready.
-const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/";
+// this is the url for the whatsapp student community.
+const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
 
 export default function WhatsAppCommunity() {
   const sectionRef = useRef(null);
@@ -173,7 +173,7 @@ export default function WhatsAppCommunity() {
                   <small>11:42</small>
                 </div>
                 <div className="whatsapp-community-message whatsapp-community-message-two">
-                  Anyone building in climate tech this semester?
+                  Where can i register for this?
                   <small>11:45</small>
                 </div>
                 <div className="whatsapp-community-typing"><i /><i /><i /> Builders are typing</div>
