@@ -30,6 +30,9 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: "Inter", sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -41,8 +44,9 @@ h3,
 .display {
   font-family: "Archivo", sans-serif;
   font-weight: 900;
-  letter-spacing: 0;
-  line-height: 0.95;
+  letter-spacing: -0.035em;
+  line-height: 0.94;
+  text-wrap: balance;
 }
 
 a {
