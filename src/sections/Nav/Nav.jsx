@@ -151,6 +151,18 @@ export default function Nav() {
           PREVIOUS SPEAKERS
         </a>
         <a
+          href="#community"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('community');
+            document.activeElement?.blur();
+            setIsOpen(false);
+          }}
+          className="dropdown-footer-link"
+        >
+          WHATSAPP COMMUNITY
+        </a>
+        <a
           href="#footer"
           onClick={(e) => {
             e.preventDefault();
