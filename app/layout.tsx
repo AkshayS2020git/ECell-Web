@@ -3,64 +3,102 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import "./globals.css";
 
+const SITE_URL = "https://ecell-rvu.vercel.app";
+
 export const metadata: Metadata = {
-  title: "ECell RV University | Entrepreneurship Cell & Startup Community",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default:
+      "ECell RV University | Entrepreneurship Cell & Startup Community",
+    template: "%s | ECell RV University",
+  },
   description:
-    "ECell RV University is the entrepreneurship cell at RV University, building a campus community for founders, innovators, and future entrepreneurs.",
+    "ECell RV University is the official entrepreneurship cell at RV University, Bengaluru. We build a thriving campus community for founders, innovators, and future entrepreneurs through events, mentorship, and startup resources.",
   keywords: [
     "ECell RV University",
     "ecell rvu",
     "E-Cell RVU",
     "entrepreneurship cell",
     "RV University",
-    "startup community",
-    "student entrepreneurs",
-    "innovation",
+    "RV University entrepreneurship",
+    "startup community Bengaluru",
+    "student entrepreneurs India",
+    "innovation cell",
     "founders",
-    "Bengaluru",
+    "Bengaluru startups",
+    "college entrepreneurship",
+    "startup events Bengaluru",
+    "student startup community",
   ],
   authors: [{ name: "ECell RV University" }],
+  creator: "ECell RV University",
+  publisher: "ECell RV University",
   robots: {
     index: true,
     follow: true,
     googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
       "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   alternates: {
-    canonical: "https://ecell-rvu.vercel.app/",
+    canonical: "/",
   },
   openGraph: {
     type: "website",
     siteName: "ECell RV University",
-    title: "ECell RV University | Building What’s Next",
+    title: "ECell RV University | Building What's Next",
     description:
-      "Building ideas, backing founders, and growing a community of entrepreneurs at RV University.",
-    url: "https://e-cell-rvu.vercel.app/",
+      "Building ideas, backing founders, and growing a community of entrepreneurs at RV University, Bengaluru.",
+    url: SITE_URL,
     locale: "en_IN",
+    images: [
+      {
+        url: "/ECell_Logo_Black.svg",
+        alt: "ECell RV University logo",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
-    title: "ECell RV University | Building What’s Next",
+    card: "summary_large_image",
+    title: "ECell RV University | Building What's Next",
     description:
-      "The entrepreneurship cell at RV University for founders, innovators, and future entrepreneurs.",
+      "The official entrepreneurship cell at RV University — for founders, innovators, and future entrepreneurs.",
+    images: ["/ECell_Logo_Black.svg"],
   },
   icons: {
     icon: "/favicon.svg?v=2",
     shortcut: "/favicon.svg?v=2",
     apple: "/favicon.svg?v=2",
   },
+  category: "education",
 };
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "ECell RV University",
-  alternateName: "E-Cell RVU",
-  url: "https://e-cell-rvu.vercel.app/",
+  alternateName: ["E-Cell RVU", "ECell RVU", "Entrepreneurship Cell RV University"],
+  url: `${SITE_URL}/`,
+  logo: `${SITE_URL}/ECell_Logo_Black.svg`,
   description:
-    "The entrepreneurship cell at RV University, building a campus community for founders, innovators, and future entrepreneurs.",
+    "The official entrepreneurship cell at RV University, Bengaluru — building a thriving campus community for founders, innovators, and future entrepreneurs.",
   email: "club_ecell@rvu.edu.in",
+  foundingDate: "2023",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Bengaluru",
+    addressRegion: "Karnataka",
+    addressCountry: "IN",
+  },
+  parentOrganization: {
+    "@type": "CollegeOrUniversity",
+    name: "RV University",
+    url: "https://www.rvu.edu.in",
+  },
   sameAs: [
     "https://www.instagram.com/ecell_rvu/",
     "https://www.linkedin.com/search/results/all/?keywords=ECell%2C%20RV%20University",
