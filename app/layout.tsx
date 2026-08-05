@@ -70,9 +70,9 @@ export const metadata: Metadata = {
     images: ["/ECell_Logo_Black.svg"],
   },
   icons: {
-    icon: "/favicon.svg?v=2",
-    shortcut: "/favicon.svg?v=2",
-    apple: "/favicon.svg?v=2",
+    icon: "/favicon.svg?v=3",
+    shortcut: "/favicon.svg?v=3",
+    apple: "/favicon.svg?v=3",
   },
   category: "education",
 };
@@ -119,9 +119,9 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-        <link rel="shortcut icon" href="/favicon.svg?v=2" />
-        <link rel="apple-touch-icon" href="/favicon.svg?v=2" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
+        <link rel="shortcut icon" href="/favicon.svg?v=3" />
+        <link rel="apple-touch-icon" href="/favicon.svg?v=3" />
         <link
           href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
           rel="stylesheet"
