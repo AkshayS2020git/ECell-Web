@@ -1,7 +1,8 @@
+"use client";
 import { useEffect, useRef } from "react";
-import heroVideo from "../../assets/videos/hero2-optimized.mp4";
-import heroMobileVideo from "../../assets/videos/hero-mobile.mp4";
-import heroPoster from "../../assets/videos/hero-poster.jpg";
+const heroVideo = "/assets/videos/hero2-optimized.mp4";
+const heroMobileVideo = "/assets/videos/hero-mobile.mp4";
+const heroPoster = "/assets/videos/hero-poster.jpg";
 import { setupHeroAnimations } from "./HeroAnimations";
 import "./Hero.css";
 import "./HeroLayout.css";
@@ -49,10 +50,10 @@ export default function Hero() {
           </div>
           <div className="hero__marquee-line hero__marquee-line--dim hero__marquee-line--reverse">
             <span>
-              WE'RE HERE TO HELP YOU TURN THAT CURIOSITY INTO ACTION
-              &nbsp;&nbsp;&nbsp; WE'RE HERE TO HELP YOU TURN THAT CURIOSITY INTO
-              ACTION &nbsp;&nbsp;&nbsp; WE'RE HERE TO HELP YOU TURN THAT
-              CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp; WE'RE HERE TO HELP YOU
+              WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY INTO ACTION
+              &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY INTO
+              ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN THAT
+              CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU
               TURN THAT CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp;
             </span>
           </div>

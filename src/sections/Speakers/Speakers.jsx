@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -262,7 +263,7 @@ export default function Speakers() {
               >
                 <img
                   className="speaker-card-photo"
-                  src={speaker.photo}
+                  src={typeof speaker.photo === "string" ? speaker.photo : speaker.photo?.src || speaker.photo}
                   alt=""
                   aria-hidden="true"
                   loading="lazy"

@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -125,7 +126,7 @@ export default function Sponsors() {
                 <span className="sponsor-logo-frame">
                   <img
                     className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ''}`}
-                    src={item.logo}
+                    src={typeof item.logo === "string" ? item.logo : item.logo?.src || item.logo}
                     alt={item.name}
                     loading="lazy"
                     decoding="async"

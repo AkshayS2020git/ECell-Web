@@ -1,3 +1,4 @@
+"use client";
 import './PageTransition.css';
 
 export default function PageTransition({ active, targetView }) {
