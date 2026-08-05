@@ -19,16 +19,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 const SPONSORS_DATA = [
   { name: "Nokia", logo: nokiaLogo, logoKey: "nokia" },
-  { name: "Akshaya Motors", logo: mercLogo, label: "Akshaya Motors" },
-  { name: "mile", logo: mileLogo, label: "mile" },
-  { name: "TVS Prakruthi Bikes", logo: tvsLogo, label: "Prakruthi Bikes" },
+  { name: "Akshaya Motors", logo: mercLogo },
+  { name: "mile", logo: mileLogo},
+  { name: "TVS Prakruthi Bikes", logo: tvsLogo },
   {name: "redbull", logo: redbull},
   { name: "Justvend", logo: justvendLogo },
   { name: "Atty's Bakery & Confectionery", logo: attysLogo },
   { name: "Cube", logo: cubeLogo },
   { name: "The Belgian Waffle Co.", logo: waffleLogo },
   { name: "Herody", logo: herodyLogo, logoKey: "herody" },
-  { name: "EasyBites", logo: easyBitesLogo, label: "EasyBites" },
+  { name: "EasyBites", logo: easyBitesLogo },
 ];
 
 export default function Sponsors() {

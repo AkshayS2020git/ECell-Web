@@ -58,12 +58,6 @@ export default function WhatsAppCommunity() {
           ".community-bridge-core",
           { opacity: 0, scale: 0.55, y: -18 },
           { opacity: 1, scale: 1, y: 0, duration: 0.55, ease: "back.out(1.7)" }
-        )
-        .fromTo(
-          ".community-bridge-copy",
-          { opacity: 0, x: -12 },
-          { opacity: 1, x: 0, duration: 0.36, ease: "power2.out" },
-          "-=0.2"
         );
 
       gsap.fromTo(
@@ -177,7 +171,7 @@ export default function WhatsAppCommunity() {
                   Where can i register for this?
                   <small>11:45</small>
                 </div>
-                <div className="whatsapp-community-typing"><i /><i /><i /> Builders are typing</div>
+                <div className="whatsapp-community-typing"><i /><i /><i /> Founders are typing</div>
               </div>
             </div>
           </div>
