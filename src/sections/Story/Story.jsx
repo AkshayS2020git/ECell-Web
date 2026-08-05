@@ -67,6 +67,7 @@ export default function Story({
     }
 
     const mm = gsap.matchMedia();
+    let disposed = false;
 
     mm.add(
       { isDesktop: "(min-width: 768px)", isMobile: "(max-width: 767px)" },
@@ -77,6 +78,10 @@ export default function Story({
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
         const textH2 = revealTextInner.querySelector("h2");
+        const setTextSkew = textH2 ? gsap.quickSetter(textH2, "skewX") : null;
+        const setTextScaleX = textH2 ? gsap.quickSetter(textH2, "scaleX") : null;
+        const setTextScaleY = textH2 ? gsap.quickSetter(textH2, "scaleY") : null;
+        const setTextY = textH2 ? gsap.quickSetter(textH2, "y") : null;
 
         gsap.set(revealTextInner, { x: containerWidth });
         gsap.set(".story-reveal-text", { opacity: 0 });
@@ -110,15 +115,10 @@ export default function Story({
               const scaleY = 1 - clampedStretch;
 
               if (textH2) {
-                gsap.to(textH2, {
-                  skewX: clampedSkew,
-                  scaleX: scaleX,
-                  scaleY: scaleY,
-                  y: dip,
-                  overwrite: "auto",
-                  duration: 0.3,
-                  ease: "power2.out",
-                });
+                setTextSkew(clampedSkew);
+                setTextScaleX(scaleX);
+                setTextScaleY(scaleY);
+                setTextY(dip);
               }
             },
           },
@@ -199,10 +199,13 @@ export default function Story({
     );
 
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => ScrollTrigger.refresh());
+      document.fonts.ready.then(() => {
+        if (!disposed) ScrollTrigger.refresh();
+      });
     }
 
     return () => {
+      disposed = true;
       mm.revert();
       if (rafHandler) gsap.ticker.remove(rafHandler);
       lenis?.destroy();

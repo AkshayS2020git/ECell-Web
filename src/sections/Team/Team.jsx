@@ -6,6 +6,7 @@ import {
   setupTeamScroll,
   selectMember,
   getIsAnimating,
+  cleanupTeamAnimations,
 } from "./TeamAnimations";
 import "./Team.css";
 import "./TeamLayout.css";
@@ -28,6 +29,7 @@ export default function Team() {
     const cleanupScroll = setupTeamScroll({ teamRef });
     return () => {
       cleanupScroll?.();
+      cleanupTeamAnimations();
     };
   }, []);
 

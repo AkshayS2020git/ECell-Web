@@ -9,9 +9,19 @@ const EASE = "power2.inOut";
 
 let isAnimating = false;
 let scrollTriggerInstance = null;
+let transitionTimeline = null;
 
 export function getIsAnimating() {
   return isAnimating;
+}
+
+export function cleanupTeamAnimations() {
+  transitionTimeline?.kill();
+  transitionTimeline = null;
+  isAnimating = false;
+
+  scrollTriggerInstance?.kill();
+  scrollTriggerInstance = null;
 }
 
 /**
@@ -157,9 +167,10 @@ export function selectMember(
 
   const direction = newIndex > activeIndex ? 1 : -1;
 
-  const transitionTimeline = gsap.timeline({
+  transitionTimeline = gsap.timeline({
     onComplete: () => {
       isAnimating = false;
+      transitionTimeline = null;
       if (onComplete) {
         onComplete(newIndex);
       }
