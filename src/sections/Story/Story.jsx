@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -211,7 +212,7 @@ export default function Story({
   return (
     <section className="story-reveal" ref={revealRef} id="storyReveal">
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
-        <img ref={imageRef} src={libImg} alt="Story background" />
+        <img ref={imageRef} src={typeof libImg === "string" ? libImg : libImg?.src || libImg} alt="Story background" />
         <div className="grain"></div>
       </div>
 

@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import teamMembers from "./TeamData.js";
 import {
@@ -189,7 +190,7 @@ export default function Team() {
                   <div className="team__image-wrapper">
                     <div className="team__image">
                       <img
-                        src={member.image}
+                        src={typeof member.image === "string" ? member.image : member.image?.src || member.image}
                         alt={member.name}
                         loading={isActive ? "eager" : "lazy"}
                         style={member.imagePosition ? { objectPosition: member.imagePosition } : undefined}

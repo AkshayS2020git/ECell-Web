@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -202,7 +203,7 @@ export default function Events() {
               data-caption={item.caption}
               ref={(el) => (itemsRef.current[idx] = el)}
             >
-              <img src={item.src} alt={item.alt} />
+              <img src={typeof item.src === 'string' ? item.src : item.src?.src || item.src} alt={item.alt} />
             </div>
           ))}
         </div>
