@@ -28,6 +28,7 @@ export default function GameLauncher() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [target, setTarget] = useState({ x: 52, y: 48 });
   const closeButtonRef = useRef(null);
+  const launcherButtonRef = useRef(null);
   const gameActive = isPlaying && timeLeft > 0;
 
   useEffect(() => {
@@ -64,60 +65,65 @@ export default function GameLauncher() {
   const closeWindow = () => {
     setIsOpen(false);
     setIsPlaying(false);
+    window.requestAnimationFrame(() => launcherButtonRef.current?.focus());
   };
 
   return (
     <aside className={`game-launcher ${isOpen ? "game-launcher--open" : ""}`}>
       {isOpen && (
-        <section className="game-window" role="dialog" aria-modal="false" aria-labelledby="game-window-title">
-          <header className="game-window__header">
-            <div>
-              <span className="game-window__eyebrow">ECELL // AFTER HOURS</span>
-              <h2 id="game-window-title">Founder Sprint</h2>
-            </div>
-            <button ref={closeButtonRef} className="game-window__close" type="button" onClick={closeWindow} aria-label="Close Founder Sprint">
-              <CloseIcon />
-            </button>
-          </header>
-
-          <p className="game-window__intro">Build momentum. Catch every spark before the clock runs out.</p>
-
-          <div className="game-stats" aria-live="polite">
-            <span>SPARKS <strong>{String(score).padStart(2, "0")}</strong></span>
-            <span>TIME <strong>{String(timeLeft).padStart(2, "0")}s</strong></span>
-          </div>
-
-          <div className="game-stage">
-            {!gameActive && (
-              <div className="game-stage__start">
-                <span>{timeLeft === 0 ? `Round complete — ${score} sparks` : "15-second focus round"}</span>
-                <button type="button" onClick={startRound}>{timeLeft === 0 ? "Play again" : "Start sprint"}</button>
+        <>
+          <button className="game-launcher__backdrop" type="button" onClick={closeWindow} aria-label="Close Founder Sprint" />
+          <section className="game-window" role="dialog" aria-modal="true" aria-labelledby="game-window-title">
+            <header className="game-window__header">
+              <div>
+                <span className="game-window__eyebrow">ECELL // AFTER HOURS</span>
+                <h2 id="game-window-title">Founder Sprint</h2>
               </div>
-            )}
-            {gameActive && (
-              <button
-                className="game-target"
-                type="button"
-                onClick={moveTarget}
-                style={{ left: `${target.x}%`, top: `${target.y}%` }}
-                aria-label="Collect spark"
-              >
-                ✦
+              <button ref={closeButtonRef} className="game-window__close" type="button" onClick={closeWindow} aria-label="Close Founder Sprint">
+                <CloseIcon />
               </button>
-            )}
-          </div>
+            </header>
 
-          <footer className="game-window__footer">
-            <span>{gameActive ? "Tap the moving spark" : "Made for a quick break"}</span>
-            <span className="game-window__status"><i /> ONLINE</span>
-          </footer>
-        </section>
+            <p className="game-window__intro">Build momentum. Catch every spark before the clock runs out.</p>
+
+            <div className="game-stats" aria-live="polite">
+              <span>SPARKS <strong>{String(score).padStart(2, "0")}</strong></span>
+              <span>TIME <strong>{String(timeLeft).padStart(2, "0")}s</strong></span>
+            </div>
+
+            <div className="game-stage">
+              {!gameActive && (
+                <div className="game-stage__start">
+                  <span>{timeLeft === 0 ? `Round complete — ${score} sparks` : "15-second focus round"}</span>
+                  <button type="button" onClick={startRound}>{timeLeft === 0 ? "Play again" : "Start sprint"}</button>
+                </div>
+              )}
+              {gameActive && (
+                <button
+                  className="game-target"
+                  type="button"
+                  onClick={moveTarget}
+                  style={{ left: `${target.x}%`, top: `${target.y}%` }}
+                  aria-label="Collect spark"
+                >
+                  ✦
+                </button>
+              )}
+            </div>
+
+            <footer className="game-window__footer">
+              <span>{gameActive ? "Tap the moving spark" : "Made for a quick break"}</span>
+              <span className="game-window__status"><i /> ONLINE</span>
+            </footer>
+          </section>
+        </>
       )}
 
       <button
+        ref={launcherButtonRef}
         className="game-launcher__button"
         type="button"
-        onClick={() => setIsOpen((value) => !value)}
+        onClick={() => (isOpen ? closeWindow() : setIsOpen(true))}
         aria-expanded={isOpen}
         aria-controls="game-window-title"
         aria-label={isOpen ? "Close Founder Sprint" : "Open Founder Sprint"}
