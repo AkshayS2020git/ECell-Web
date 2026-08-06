@@ -5,6 +5,33 @@ import Lenis from "lenis";
 import "./Story.css";
 import libImg from "../../assets/story/lib.webp";
 
+function renderJigglyText(text, keyPrefix) {
+  if (!text) return null;
+  const words = text.split(" ");
+  return words.map((word, wordIdx) => (
+    <span
+      key={`${keyPrefix}-w-${wordIdx}`}
+      className="jiggle-word"
+      style={{ display: "inline-block", whiteSpace: "nowrap" }}
+    >
+      {word.split("").map((char, charIdx) => (
+        <span
+          key={`${keyPrefix}-c-${charIdx}`}
+          className="jiggle-char"
+          style={{ display: "inline-block", willChange: "transform" }}
+        >
+          {char}
+        </span>
+      ))}
+      {wordIdx < words.length - 1 && (
+        <span className="jiggle-space" style={{ display: "inline-block" }}>
+          &nbsp;
+        </span>
+      )}
+    </span>
+  ));
+}
+
 export default function Story({
   eyebrow = "ECELL",
   headlineMain = "IT'S THE MIND",
@@ -55,6 +82,7 @@ export default function Story({
 
     let rafId = null;
     let disposed = false;
+    let tickerCallback = null;
 
     const scrollUpdateHandler = () => {
       ScrollTrigger.update();
@@ -81,11 +109,6 @@ export default function Story({
 
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
-        const textH2 = revealTextInner.querySelector("h2");
-        const setTextSkew = textH2 ? gsap.quickSetter(textH2, "skewX") : null;
-        const setTextScaleX = textH2 ? gsap.quickSetter(textH2, "scaleX") : null;
-        const setTextScaleY = textH2 ? gsap.quickSetter(textH2, "scaleY") : null;
-        const setTextY = textH2 ? gsap.quickSetter(textH2, "y") : null;
 
         gsap.set(revealTextInner, { x: containerWidth });
         gsap.set(".story-reveal-text", { opacity: 0 });
@@ -99,6 +122,94 @@ export default function Story({
           opacity: 1,
         });
 
+        // --- JIGGLY TEXT ANIMATION SETUP ---
+        const chars = revealTextInner.querySelectorAll(".jiggle-char");
+        const eyebrowChars = eyebrowEl ? eyebrowEl.querySelectorAll(".jiggle-char") : [];
+
+        let targetVel = 0;
+        let currentVel = 0;
+        let wobbleTime = 0;
+
+        tickerCallback = (time, deltaTime) => {
+          if (disposed) return;
+
+          // Smooth velocity lerp for organic spring behavior
+          const dtSec = Math.min(deltaTime / 1000, 0.05);
+          const lerpFactor = 1 - Math.pow(0.0001, dtSec);
+          currentVel += (targetVel - currentVel) * lerpFactor;
+
+          // Decay target velocity when scroll stops
+          targetVel *= Math.pow(0.85, dtSec * 60);
+
+          const velMag = Math.abs(currentVel);
+          const isMoving = velMag > 0.5;
+
+          if (isMoving || Math.abs(targetVel) > 0.5) {
+            wobbleTime += (0.008 + velMag * 0.00008) * (dtSec * 60);
+          }
+
+          // Normalized velocity (-1 to 1)
+          const normVel = gsap.utils.clamp(-2500, 2500, currentVel) / 2500;
+          const absNorm = Math.abs(normVel);
+
+          if (absNorm > 0.0005 || isMoving) {
+            // Animate main headline letters with dynamic jiggle wave (subtle, refined intensity)
+            chars.forEach((char, idx) => {
+              const phase = idx * 0.38 + wobbleTime * 6;
+              const sinWave = Math.sin(phase);
+              const cosWave = Math.cos(phase);
+
+              const yOffset = sinWave * absNorm * 10 + normVel * 7;
+              const skewX = normVel * 8 + cosWave * absNorm * 5;
+              const rotation = sinWave * absNorm * 3 + normVel * 2;
+              const scaleY = 1 - absNorm * 0.08 + sinWave * absNorm * 0.06;
+              const scaleX = 1 + absNorm * 0.08 - sinWave * absNorm * 0.05;
+
+              gsap.set(char, {
+                y: yOffset,
+                skewX: skewX,
+                rotation: rotation,
+                scaleY: scaleY,
+                scaleX: scaleX,
+                transformOrigin: "50% 100%",
+              });
+            });
+
+            // Animate eyebrow letters
+            eyebrowChars.forEach((char, idx) => {
+              const phase = idx * 0.45 + wobbleTime * 7;
+              const sinWave = Math.sin(phase);
+              const yOffset = sinWave * absNorm * 4 + normVel * 2.5;
+              const skewX = normVel * 4 + sinWave * absNorm * 3;
+
+              gsap.set(char, {
+                y: yOffset,
+                skewX: skewX,
+                transformOrigin: "50% 100%",
+              });
+            });
+          } else {
+            // Reset to default crisp state when stationary
+            chars.forEach((char) => {
+              gsap.set(char, {
+                y: 0,
+                skewX: 0,
+                rotation: 0,
+                scaleY: 1,
+                scaleX: 1,
+              });
+            });
+            eyebrowChars.forEach((char) => {
+              gsap.set(char, {
+                y: 0,
+                skewX: 0,
+              });
+            });
+          }
+        };
+
+        gsap.ticker.add(tickerCallback);
+
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: reveal,
@@ -108,22 +219,7 @@ export default function Story({
             pin: true,
             anticipatePin: 1,
             onUpdate: (self) => {
-              const velocity = self.getVelocity();
-              const skew = velocity * 0.006;
-              const clampedSkew = gsap.utils.clamp(-14, 14, skew);
-              const dip = Math.abs(clampedSkew) * 0.5;
-
-              const stretch = Math.abs(velocity) * 0.00018;
-              const clampedStretch = gsap.utils.clamp(0, 0.22, stretch);
-              const scaleX = 1 + clampedStretch;
-              const scaleY = 1 - clampedStretch;
-
-              if (textH2) {
-                setTextSkew(clampedSkew);
-                setTextScaleX(scaleX);
-                setTextScaleY(scaleY);
-                setTextY(dip);
-              }
+              targetVel = self.getVelocity();
             },
           },
         });
@@ -197,6 +293,7 @@ export default function Story({
         );
 
         return () => {
+          if (tickerCallback) gsap.ticker.remove(tickerCallback);
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
         };
       },
@@ -212,16 +309,21 @@ export default function Story({
       // 1. Set disposed flag first to stop rAF callback
       disposed = true;
 
-      // 2. Cancel the rAF loop immediately
+      // 2. Cancel ticker callback
+      if (tickerCallback) {
+        gsap.ticker.remove(tickerCallback);
+      }
+
+      // 3. Cancel the rAF loop immediately
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
         rafId = null;
       }
 
-      // 3. Revert gsap matchMedia (kills all ScrollTriggers created inside)
+      // 4. Revert gsap matchMedia (kills all ScrollTriggers created inside)
       mm.revert();
 
-      // 4. Clean up Lenis: remove listener, then destroy
+      // 5. Clean up Lenis: remove listener, then destroy
       if (lenis) {
         lenis.off("scroll", scrollUpdateHandler);
         lenis.destroy();
@@ -239,14 +341,16 @@ export default function Story({
 
       <div className="story-reveal-text">
         <div className="eyebrow" ref={eyebrowRef}>
-          {eyebrow}
+          {renderJigglyText(eyebrow, "eyebrow")}
         </div>
         <div className="story-reveal-text-inner" ref={revealTextInnerRef}>
           <h2>
-            {headlineMain} <em>{headlineAccent}</em>
+            {renderJigglyText(headlineMain, "main")}{" "}
+            <em>{renderJigglyText(headlineAccent, "accent")}</em>
           </h2>
         </div>
       </div>
     </section>
   );
 }
+

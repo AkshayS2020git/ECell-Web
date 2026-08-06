@@ -1,15 +1,71 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import "./WhatsAppCommunity.css";
 
 // this is the url for the whatsapp student community.
 const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
 
+const initialMessages = [
+  { id: "welcome", sender: "bot", text: "Hey! I’m the E-Cell guide. Ask me about the Ecell, events, joining, or building your idea.", time: "11:42" },
+  { id: "question", sender: "user", text: "Where can I register for this?", time: "11:45" },
+];
+
+const getAssistantReply = (message) => {
+  const question = message.toLowerCase();
+
+  if (/(what.{0,12}(e[ -]?cell|entrepreneurship cell)|(about)(e[ -]?cell|entrepreneurship cell).{0,12}(what|about))|(about)/.test(question)) {
+    return "E-Cell RV University is the campus entrepreneurship community. We help students explore ideas, learn from founders, meet collaborators, and take their first steps towards building something.";
+  }
+  if (/(what.{0,12}(do|offer)|why.{0,12}(join|e[ -]?cell)|benefit|opportunit)|(offer)/.test(question)) {
+    return "E-Cell brings you founder talks, workshops, events, mentorship, and a community of people who like building. It is a place to learn, find collaborators, and turn an idea into action.";
+  }
+  if (/(who.{0,12}(join|for)|eligible|eligibility|can i join|anyone)/.test(question)) {
+    return "Anyone at RV University who is curious about entrepreneurship can join — you do not need a startup or prior experience. Students with ideas, skills, or simply a willingness to learn are welcome.";
+  }
+  if (/(join|register|membership|member|core team|volunteer)/.test(question)) {
+    return "Tap “Join the community” to get started. We share event registrations, core-team openings, and ways to contribute in the WhatsApp community.";
+  }
+  if (/(event|workshop|talk|session)/.test(question)) {
+    return "We're the driving force behind more than half of everything :whappening at RVU.And we're just getting started.This year's lineup kicks off with Kalpvikas, followed by the intense Pitch-e-thon.Lock in the dates, secure your spot, and network with the builders who matter.👉 Join the community — and never miss a moment.";
+  }
+  if (/(idea|startup|build|founder|mentor|collaborat|team)/.test(question)) {
+    return "Absolutely — you do not need to have everything figured out. Share your idea with us and we’ll help you find fellow builders, relevant events, and useful resources.";
+  }
+  if (/(cost|fee|paid|payment|free)/.test(question)) {
+    return "Joining the WhatsApp community is free. Joining the Core team is also free, The time you have to pay is, if you are registering for an event.";
+  }
+  if (/(im interested)| (interested in)/.test(question)) {
+    return "Nice — we’re always looking for people who want to get involved. Tap “Join the community” to get started. We share event registrations, core-team openings, and ways to contribute in the WhatsApp community."
+  }
+  if (/(contact|reach|instagram|email|social)/.test(question)) {
+    return "The fastest way to stay connected is to join the community. You can also follow E-Cell RV University on its official social channels for updates.";
+  }
+  if (/(team)|(Who.{0,12}(members))|(members)|(who.{0,12}(Team member))/.test(question)) {
+
+  }
+  if (/(hello|hi|hey|yo|sup)/.test(question)) {
+    return "Hey! Ask me what E-Cell is, who can join, what we do, or how to get involved.";
+  }
+
+  return "I can help with E-Cell, joining the community, events, or building an idea. Ask away — or join the community for the latest opportunities.";
+};
+
+const timeNow = () => new Intl.DateTimeFormat("en-IN", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+}).format(new Date());
+
 export default function WhatsAppCommunity() {
   const sectionRef = useRef(null);
   const cursorFieldRef = useRef(null);
   const rafIdRef = useRef(null);
+  const replyTimeoutRef = useRef(null);
+  const messagesRef = useRef(null);
+  const [messages, setMessages] = useState(initialMessages);
+  const [draft, setDraft] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   const handleSectionPointerMove = (event) => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
@@ -103,6 +159,35 @@ export default function WhatsAppCommunity() {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    const messageList = messagesRef.current;
+    if (messageList) messageList.scrollTo({ top: messageList.scrollHeight, behavior: "smooth" });
+  }, [messages, isTyping]);
+
+  useEffect(() => () => {
+    if (replyTimeoutRef.current) clearTimeout(replyTimeoutRef.current);
+  }, []);
+
+  const handleSendMessage = (event) => {
+    event.preventDefault();
+    const text = draft.trim();
+    if (!text || isTyping) return;
+
+    setMessages((current) => [...current, { id: `user-${Date.now()}`, sender: "user", text, time: timeNow() }]);
+    setDraft("");
+    setIsTyping(true);
+
+    replyTimeoutRef.current = setTimeout(() => {
+      setMessages((current) => [...current, {
+        id: `bot-${Date.now()}`,
+        sender: "bot",
+        text: getAssistantReply(text),
+        time: timeNow(),
+      }]);
+      setIsTyping(false);
+    }, 700);
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -172,18 +257,35 @@ export default function WhatsAppCommunity() {
                 </span>
                 <i>•••</i>
               </div>
-              <div className="whatsapp-community-chat">
+              <div className="whatsapp-community-chat" aria-live="polite">
                 <span className="whatsapp-community-chat-date">TODAY</span>
-                <div className="whatsapp-community-message whatsapp-community-message-one">
-                  <b>Vanshraj · Advisory Head</b>
-                  The Registration is open for core members! ✨
-                  <small>11:42</small>
+                <div ref={messagesRef} className="whatsapp-community-messages">
+                  {messages.map((message) => (
+                    <div
+                      className={`whatsapp-community-message whatsapp-community-message-${message.sender}`}
+                      key={message.id}
+                    >
+                      {message.sender === "bot" && <b>E-Cell Guide</b>}
+                      {message.text}
+                      <small>{message.time}</small>
+                    </div>
+                  ))}
+                  {isTyping && <div className="whatsapp-community-typing"><i /><i /><i /> E-Cell Guide is typing</div>}
                 </div>
-                <div className="whatsapp-community-message whatsapp-community-message-two">
-                  Where can i register for this?
-                  <small>11:45</small>
-                </div>
-                <div className="whatsapp-community-typing"><i /><i /><i /> Founders are typing</div>
+                <form className="whatsapp-community-composer" onSubmit={handleSendMessage}>
+                  <label className="sr-only" htmlFor="community-message">Ask the E-Cell guide</label>
+                  <input
+                    id="community-message"
+                    value={draft}
+                    onChange={(event) => setDraft(event.target.value)}
+                    placeholder="Ask E-Cell..."
+                    maxLength={280}
+                    autoComplete="off"
+                  />
+                  <button type="submit" aria-label="Send message" disabled={!draft.trim() || isTyping}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 3-7.8 18-3.3-7-6.9-3.2L21 3Zm-11 11 4.1-4.1" /></svg>
+                  </button>
+                </form>
               </div>
             </div>
           </div>
