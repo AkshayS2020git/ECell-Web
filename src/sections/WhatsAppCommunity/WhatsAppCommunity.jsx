@@ -1,10 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import "./WhatsAppCommunity.css";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // this is the url for the whatsapp student community.
 const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
@@ -12,6 +9,7 @@ const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
 export default function WhatsAppCommunity() {
   const sectionRef = useRef(null);
   const cursorFieldRef = useRef(null);
+  const rafIdRef = useRef(null);
 
   const handleSectionPointerMove = (event) => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
@@ -20,26 +18,40 @@ export default function WhatsAppCommunity() {
     const section = event.currentTarget;
     if (!field || !section) return;
 
-    const bounds = section.getBoundingClientRect();
-    const x = event.clientX - bounds.left;
-    const y = event.clientY - bounds.top;
-    const icons = field.children;
+    const clientX = event.clientX;
+    const clientY = event.clientY;
 
-    field.style.setProperty("--cursor-x", `${x}px`);
-    field.style.setProperty("--cursor-y", `${y}px`);
+    if (rafIdRef.current !== null) return;
 
-    Array.from(icons).forEach((icon, index) => {
-      const angle = ((index * 137.5) - 30) * (Math.PI / 180);
-      const radius = 58 + (index % 4) * 32;
-      icon.style.setProperty("--icon-x", `${x + Math.cos(angle) * radius}px`);
-      icon.style.setProperty("--icon-y", `${y + Math.sin(angle) * radius}px`);
-      icon.style.setProperty("--trail-delay", `${55 + (index % 5) * 34}ms`);
+    rafIdRef.current = requestAnimationFrame(() => {
+      rafIdRef.current = null;
+      if (!section || !field) return;
+
+      const bounds = section.getBoundingClientRect();
+      const x = clientX - bounds.left;
+      const y = clientY - bounds.top;
+      const icons = field.children;
+
+      field.style.setProperty("--cursor-x", `${x}px`);
+      field.style.setProperty("--cursor-y", `${y}px`);
+
+      Array.from(icons).forEach((icon, index) => {
+        const angle = ((index * 137.5) - 30) * (Math.PI / 180);
+        const radius = 58 + (index % 4) * 32;
+        icon.style.setProperty("--icon-x", `${x + Math.cos(angle) * radius}px`);
+        icon.style.setProperty("--icon-y", `${y + Math.sin(angle) * radius}px`);
+        icon.style.setProperty("--trail-delay", `${55 + (index % 5) * 34}ms`);
+      });
+
+      field.classList.add("is-active");
     });
-
-    field.classList.add("is-active");
   };
 
   const handleSectionPointerLeave = () => {
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
     const field = cursorFieldRef.current;
     field?.classList.remove("is-active");
   };

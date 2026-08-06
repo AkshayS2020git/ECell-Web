@@ -1,12 +1,9 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import Lenis from "lenis";
 import "./Story.css";
 import libImg from "../../assets/story/lib.webp";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Story({
   eyebrow = "ECELL",
@@ -46,7 +43,9 @@ export default function Story({
     }
 
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    const lenis = isMobile
+
+    // --- Lenis smooth scroll (desktop only) ---
+    let lenis = isMobile
       ? null
       : new Lenis({
           duration: 1.2,
@@ -54,20 +53,25 @@ export default function Story({
           smoothWheel: true,
         });
 
-    const rafHandler = lenis
-      ? (time) => {
-          lenis.raf(time * 1000);
-        }
-      : null;
+    let rafId = null;
+    let disposed = false;
+
+    const scrollUpdateHandler = () => {
+      ScrollTrigger.update();
+    };
+
+    const updateLenis = (time) => {
+      if (disposed) return;
+      lenis?.raf(time);
+      rafId = requestAnimationFrame(updateLenis);
+    };
 
     if (lenis) {
-      lenis.on("scroll", ScrollTrigger.update);
-      gsap.ticker.add(rafHandler);
-      gsap.ticker.lagSmoothing(0);
+      lenis.on("scroll", scrollUpdateHandler);
+      rafId = requestAnimationFrame(updateLenis);
     }
 
     const mm = gsap.matchMedia();
-    let disposed = false;
 
     mm.add(
       { isDesktop: "(min-width: 768px)", isMobile: "(max-width: 767px)" },
@@ -205,10 +209,24 @@ export default function Story({
     }
 
     return () => {
+      // 1. Set disposed flag first to stop rAF callback
       disposed = true;
+
+      // 2. Cancel the rAF loop immediately
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+
+      // 3. Revert gsap matchMedia (kills all ScrollTriggers created inside)
       mm.revert();
-      if (rafHandler) gsap.ticker.remove(rafHandler);
-      lenis?.destroy();
+
+      // 4. Clean up Lenis: remove listener, then destroy
+      if (lenis) {
+        lenis.off("scroll", scrollUpdateHandler);
+        lenis.destroy();
+        lenis = null;
+      }
     };
   }, [headlineMain, headlineAccent]);
 

@@ -1,10 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import "./FloatingLogo.css";
-
-gsap.registerPlugin(ScrollTrigger);
 
 function smoothstep(edge0, edge1, x) {
   const t = Math.min(Math.max((x - edge0) / (edge1 - edge0), 0), 1);
@@ -37,9 +34,11 @@ export default function FloatingLogo() {
 
     if (!logo) return;
 
+    let disposed = false;
+
     // --- Measure the nav logo target position & label ---
-    const iconTargetEl = document.querySelector(".nav__logo-icon-target");
-    const navLabelEl = document.querySelector(".nav__logo-label");
+    let iconTargetEl = document.querySelector(".nav__logo-icon-target");
+    let navLabelEl = document.querySelector(".nav__logo-label");
 
     // --- Prepare SVG strokes ---
     const waveLengths = waves.map((path) => {
@@ -58,7 +57,7 @@ export default function FloatingLogo() {
     gsap.set([title, subtitle], { opacity: 0 });
 
     // --- Hero scroll phase ---
-    const heroEl = document.querySelector(".hero");
+    let heroEl = document.querySelector(".hero");
     if (!heroEl) return;
 
     let heroTarget = 0;
@@ -69,7 +68,7 @@ export default function FloatingLogo() {
     let targetY = 46;
 
     const updateNavTarget = () => {
-      if (!iconTargetEl) return;
+      if (!iconTargetEl || disposed) return;
       const navRect = iconTargetEl.getBoundingClientRect();
       targetX = navRect.left + navRect.width / 2;
       targetY = navRect.top + navRect.height / 2 + 3.5;
@@ -79,10 +78,10 @@ export default function FloatingLogo() {
     window.addEventListener("resize", updateNavTarget, { passive: true });
 
     const requestMobileUpdate = () => {
-      if (!isMobile || mobileFrame !== null) return;
+      if (!isMobile || mobileFrame !== null || disposed) return;
       mobileFrame = window.requestAnimationFrame(() => {
         mobileFrame = null;
-        updateLogo();
+        if (!disposed) updateLogo();
       });
     };
 
@@ -99,7 +98,7 @@ export default function FloatingLogo() {
     });
 
     // --- About transition scroll phase ---
-    const aboutEl = document.querySelector(".about");
+    let aboutEl = document.querySelector(".about");
     let transTarget = 0;
     let transSmoothed = 0;
 
@@ -118,10 +117,32 @@ export default function FloatingLogo() {
       });
     }
 
+    let lastHeroApplied = -1;
+    let lastTransApplied = -1;
+
     // --- Animation loop ---
     updateLogo = () => {
-      heroSmoothed = isMobile ? heroTarget : lerp(heroSmoothed, heroTarget, 0.1);
-      transSmoothed = isMobile ? transTarget : lerp(transSmoothed, transTarget, 0.05);
+      if (disposed) return;
+
+      const heroDiff = Math.abs(heroSmoothed - heroTarget);
+      if (heroDiff < 0.00005) {
+        heroSmoothed = heroTarget;
+      } else {
+        heroSmoothed = isMobile ? heroTarget : lerp(heroSmoothed, heroTarget, 0.1);
+      }
+
+      const transDiff = Math.abs(transSmoothed - transTarget);
+      if (transDiff < 0.00005) {
+        transSmoothed = transTarget;
+      } else {
+        transSmoothed = isMobile ? transTarget : lerp(transSmoothed, transTarget, 0.05);
+      }
+
+      if (heroSmoothed === lastHeroApplied && transSmoothed === lastTransApplied) {
+        return;
+      }
+      lastHeroApplied = heroSmoothed;
+      lastTransApplied = transSmoothed;
 
       const p = heroSmoothed;
       const rawT = transSmoothed;
@@ -197,12 +218,30 @@ export default function FloatingLogo() {
     }
 
     return () => {
-      if (mobileFrame !== null) window.cancelAnimationFrame(mobileFrame);
+      // Set disposed flag to stop any pending callbacks
+      disposed = true;
+
+      // Cancel pending mobile rAF
+      if (mobileFrame !== null) {
+        window.cancelAnimationFrame(mobileFrame);
+        mobileFrame = null;
+      }
+
+      // Remove global listeners
       window.removeEventListener("resize", updateNavTarget);
+
+      // Remove ticker callback
       if (!isMobile) gsap.ticker.remove(updateLogo);
+
+      // Kill ScrollTrigger instances
       heroTrigger.kill();
       if (aboutTrigger) aboutTrigger.kill();
-      if (navLabelEl) navLabelEl.style.opacity = 0;
+
+      // Null out references to free memory
+      iconTargetEl = null;
+      navLabelEl = null;
+      heroEl = null;
+      aboutEl = null;
     };
   }, []);
 

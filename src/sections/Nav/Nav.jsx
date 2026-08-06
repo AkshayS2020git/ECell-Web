@@ -32,18 +32,13 @@ export default function Nav() {
   };
 
   useEffect(() => {
-  const handleScroll = () => {
-    if (isOpen) {
-      setIsOpen(false);
-    }
-  };
-
-  window.addEventListener('scroll', handleScroll);
-
-  return () => {
-    window.removeEventListener('scroll', handleScroll);
-  };
-}, [isOpen]);
+    if (!isOpen) return;
+    const handleScroll = () => setIsOpen(false);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isOpen]);
 
   return (
     <>

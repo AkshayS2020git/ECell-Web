@@ -1,15 +1,12 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import ambikaPhoto from "../../assets/prevSpeakers/ambika.jpg";
 import arshdeepPhoto from "../../assets/prevSpeakers/arshdeep.jpg";
 import guhaPhoto from "../../assets/prevSpeakers/guha.png";
 import harpreetPhoto from "../../assets/prevSpeakers/harpreet.jpg";
 import shariffPhoto from "../../assets/prevSpeakers/shariff.jpg";
 import "./Speakers.css";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const SPEAKERS_LIST = [
   {

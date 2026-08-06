@@ -22,10 +22,45 @@ export default function Hero() {
   const scrollHintRef = useRef(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 0.5;
-    }
-    return setupHeroAnimations({
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.playbackRate = 0.5;
+
+    let isVisible = false;
+    let disposed = false;
+
+    const handleVisibilityChange = () => {
+      if (disposed) return;
+      if (document.hidden) {
+        video.pause();
+      } else if (isVisible) {
+        video.playbackRate = 0.5;
+        video.play().catch(() => {});
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (disposed) return;
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting;
+          if (entry.isIntersecting && !document.hidden) {
+            video.playbackRate = 0.5;
+            video.play().catch(() => {});
+          } else {
+            // Pause stops the decoder from accumulating frames in memory
+            video.pause();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(video);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const cleanupAnimations = setupHeroAnimations({
       heroRef,
       videoRef,
       videoWrapRef,
@@ -34,6 +69,14 @@ export default function Hero() {
       labelRef,
       scrollHintRef,
     });
+
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      cleanupAnimations?.();
+      video.pause();
+    };
   }, []);
 
   return (
@@ -74,15 +117,6 @@ export default function Hero() {
             playsInline
             poster={heroPoster}
             preload="metadata"
-            onPlay={(e) => {
-              e.currentTarget.playbackRate = 0.5;
-            }}
-            onCanPlay={(e) => {
-              e.currentTarget.playbackRate = 0.5;
-            }}
-            onLoadedData={(e) => {
-              e.currentTarget.playbackRate = 0.5;
-            }}
           >
             <source media="(max-width: 768px)" src={heroMobileVideo} type="video/mp4" />
             <source src={heroVideo} type="video/mp4" />
