@@ -20,17 +20,24 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
-      window.history.scrollRestoration = "manual";
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
       window.scrollTo(0, 0);
-    }
 
-    // Global cleanup: kill all GSAP/ScrollTrigger instances on page unmount
-    // to prevent stale instances accumulating in memory across navigations
-    return () => {
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-      gsap.globalTimeline.clear();
-    };
+      const handleBeforeUnload = () => {
+        window.scrollTo(0, 0);
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        ScrollTrigger.getAll().forEach((st) => st.kill());
+        gsap.globalTimeline.clear();
+      };
+    }
   }, []);
 
   const handleLoaderComplete = () => {
@@ -38,6 +45,7 @@ export default function Home() {
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
       setTimeout(() => {
+        window.scrollTo(0, 0);
         ScrollTrigger.refresh();
       }, 50);
     }

@@ -117,6 +117,7 @@ export default function Hero() {
             playsInline
             poster={heroPoster}
             preload="metadata"
+            suppressHydrationWarning
           >
             <source media="(max-width: 768px)" src={heroMobileVideo} type="video/mp4" />
             <source src={heroVideo} type="video/mp4" />
