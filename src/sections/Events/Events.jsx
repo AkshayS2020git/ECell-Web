@@ -1,14 +1,11 @@
 "use client";
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import talkStartupWithMe from '../../assets/events/TalkStartupWithMe.webp';
 import winterTechTalk from '../../assets/events/WinterTechTalk.webp';
 import argonyx from '../../assets/events/argonyx.webp';
 import argonyx2 from '../../assets/events/argoynx2.jpg';
 import './Events.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const GALLERY_ITEMS = [
   {
@@ -95,90 +92,88 @@ export default function Events() {
       }
     };
 
-    updateScene();
-    const entrance = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 95%',
-        end: 'top 28%',
-        scrub: 0.7,
-      },
-    });
-
-    entrance
-      .fromTo(
-        transition,
-        { autoAlpha: 1, scaleY: 1, transformOrigin: 'top center' },
-        { autoAlpha: 0, scaleY: 0, ease: 'power4.inOut' },
-        0,
-      )
-      .fromTo(intro, { autoAlpha: 0, xPercent: -18 }, { autoAlpha: 1, xPercent: 0, ease: 'none' }, 0)
-      .fromTo(gallery, { autoAlpha: 0, scale: 0.82, yPercent: 12 }, { autoAlpha: 1, scale: 1, yPercent: 0, ease: 'none' }, 0.08);
-
-    const journey = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: '+=420%',
-        scrub: 0.8,
-        pin: true,
-        anticipatePin: 1,
-      },
-    });
-
-    journey
-      .to(camera, {
-        z: (GALLERY_ITEMS.length - 1) * zSpacing + 800,
-        duration: 4,
-        ease: 'none',
-        onUpdate: updateScene,
-      })
-      .to(
-        gallery,
-        {
-          autoAlpha: 0,
-          scale: 0.88,
-          yPercent: -12,
-          filter: 'blur(8px)',
-          duration: 0.65,
-          ease: 'power2.in',
+    const ctx = gsap.context(() => {
+      const entrance = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 95%',
+          end: 'top 28%',
+          scrub: 0.7,
         },
-        3.75
-      )
-      .to(
-        intro,
-        {
-          autoAlpha: 0,
-          yPercent: -15,
-          duration: 0.5,
-          ease: 'power2.in',
-        },
-        3.6
-      )
-      .to(
-        caption,
-        {
-          autoAlpha: 0,
-          y: 15,
-          duration: 0.5,
-          ease: 'power2.in',
-        },
-        3.6
-      );
+      });
 
-    if (exitGlow) {
-      journey.fromTo(
-        exitGlow,
-        { autoAlpha: 0, scaleX: 0.7 },
-        { autoAlpha: 1, scaleX: 1.1, duration: 0.7, ease: 'power1.out' },
-        3.5
-      );
-    }
+      entrance
+        .fromTo(
+          transition,
+          { autoAlpha: 1, scaleY: 1, transformOrigin: 'top center' },
+          { autoAlpha: 0, scaleY: 0, ease: 'power4.inOut' },
+          0,
+        )
+        .fromTo(intro, { autoAlpha: 0, xPercent: -18 }, { autoAlpha: 1, xPercent: 0, ease: 'none' }, 0)
+        .fromTo(gallery, { autoAlpha: 0, scale: 0.82, yPercent: 12 }, { autoAlpha: 1, scale: 1, yPercent: 0, ease: 'none' }, 0.08);
 
-    return () => {
-      entrance.kill();
-      journey.kill();
-    };
+      const journey = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=420%',
+          scrub: 0.8,
+          pin: true,
+          anticipatePin: 1,
+        },
+      });
+
+      journey
+        .to(camera, {
+          z: (GALLERY_ITEMS.length - 1) * zSpacing + 800,
+          duration: 4,
+          ease: 'none',
+          onUpdate: updateScene,
+        })
+        .to(
+          gallery,
+          {
+            autoAlpha: 0,
+            scale: 0.88,
+            yPercent: -12,
+            filter: 'blur(8px)',
+            duration: 0.65,
+            ease: 'power2.in',
+          },
+          3.75
+        )
+        .to(
+          intro,
+          {
+            autoAlpha: 0,
+            yPercent: -15,
+            duration: 0.5,
+            ease: 'power2.in',
+          },
+          3.6
+        )
+        .to(
+          caption,
+          {
+            autoAlpha: 0,
+            y: 15,
+            duration: 0.5,
+            ease: 'power2.in',
+          },
+          3.6
+        );
+
+      if (exitGlow) {
+        journey.fromTo(
+          exitGlow,
+          { autoAlpha: 0, scaleX: 0.7 },
+          { autoAlpha: 1, scaleX: 1.1, duration: 0.7, ease: 'power1.out' },
+          3.5
+        );
+      }
+    }, section);
+
+    return () => ctx.revert();
   }, []);
 
   return (

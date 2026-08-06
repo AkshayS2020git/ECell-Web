@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import attysLogo from "../../assets/logos/attys.webp";
 import cubeLogo from "../../assets/logos/cube.webp";
 import easyBitesLogo from "../../assets/logos/easybites.webp";
@@ -14,8 +13,6 @@ import tvsLogo from "../../assets/logos/tvs.webp";
 import waffleLogo from "../../assets/logos/waffle.svg";
 import redbull from "../../assets/logos/redbull.png";
 import "./Sponsors.css";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const SPONSORS_DATA = [
   { name: "Nokia", logo: nokiaLogo, logoKey: "nokia" },

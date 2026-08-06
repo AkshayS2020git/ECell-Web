@@ -1,8 +1,4 @@
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
-
+import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import { lerp, smoothstep } from "../../utils/math";
 
 export function setupHeroAnimations({
@@ -64,7 +60,12 @@ export function setupHeroAnimations({
     if (video) video.playbackRate = 0.5;
 
     return () => {
+      if (mobileTimeline.scrollTrigger) mobileTimeline.scrollTrigger.kill();
       mobileTimeline.kill();
+      // Pause video to release media resources
+      if (video) {
+        video.pause();
+      }
     };
   }
 
@@ -88,6 +89,8 @@ export function setupHeroAnimations({
 
   let targetProgress = 0;
   let heroSmoothed = 0;
+  let lastAppliedProgress = -1;
+  let disposed = false;
 
   const trigger = ScrollTrigger.create({
     trigger: heroRef.current,
@@ -101,7 +104,19 @@ export function setupHeroAnimations({
   });
 
   const updateHero = () => {
-    heroSmoothed = lerp(heroSmoothed, targetProgress, 0.1);
+    if (disposed) return;
+
+    const diff = Math.abs(heroSmoothed - targetProgress);
+    if (diff < 0.00005) {
+      heroSmoothed = targetProgress;
+      if (lastAppliedProgress === heroSmoothed) {
+        return;
+      }
+    } else {
+      heroSmoothed = lerp(heroSmoothed, targetProgress, 0.1);
+    }
+    lastAppliedProgress = heroSmoothed;
+
     const progress = heroSmoothed;
     const endSqueeze = smoothstep(0.72, 1, progress) * 0.07;
     const scale = 1 - progress * 0.55 - endSqueeze;
@@ -127,6 +142,7 @@ export function setupHeroAnimations({
   }
 
   const handleVideoMetadata = () => {
+    if (disposed) return;
     if (video) video.playbackRate = 0.5;
     ScrollTrigger.refresh();
   };
@@ -135,8 +151,13 @@ export function setupHeroAnimations({
   video?.addEventListener("loadedmetadata", handleVideoMetadata);
 
   return () => {
+    disposed = true;
     video?.removeEventListener("loadedmetadata", handleVideoMetadata);
     gsap.ticker.remove(updateHero);
     trigger.kill();
+    // Pause video to release media resources
+    if (video) {
+      video.pause();
+    }
   };
 }

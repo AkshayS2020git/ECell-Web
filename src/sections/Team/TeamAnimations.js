@@ -1,7 +1,4 @@
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 
 // Motion Constants - Slow, gentle, luxurious transitions
 const ANIM_DURATION = 0.85;
@@ -159,6 +156,11 @@ export function selectMember(
 ) {
   if (isAnimating || !cardRefs || cardRefs.length === 0) return;
   if (newIndex === activeIndex) return;
+
+  if (transitionTimeline) {
+    transitionTimeline.kill();
+    transitionTimeline = null;
+  }
 
   isAnimating = true;
 

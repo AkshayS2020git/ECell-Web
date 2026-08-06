@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
+import { gsap } from '../../utils/gsapSetup';
 import './About.css';
 
 export default function About() {
@@ -39,8 +39,13 @@ export default function About() {
 
     const ABOUT_SMOOTH = 0.06;
     let aboutSmoothed = 0;
+    let lastAppliedProgress = -1;
+
+    let disposed = false;
 
     function updateAboutAnimations() {
+      if (disposed) return;
+
       const rect = aboutStatement.getBoundingClientRect();
       const vh = window.innerHeight;
 
@@ -54,7 +59,14 @@ export default function About() {
         Math.max((startY - rect.top) / (startY - endY), 0),
         1,
       );
-      aboutSmoothed = lerp(aboutSmoothed, target, ABOUT_SMOOTH);
+      const diff = Math.abs(aboutSmoothed - target);
+      if (diff < 0.00005) {
+        aboutSmoothed = target;
+        if (lastAppliedProgress === aboutSmoothed) return;
+      } else {
+        aboutSmoothed = lerp(aboutSmoothed, target, ABOUT_SMOOTH);
+      }
+      lastAppliedProgress = aboutSmoothed;
       const p = aboutSmoothed;
 
       lines.forEach((line, i) => {
@@ -71,7 +83,16 @@ export default function About() {
     gsap.ticker.add(updateAboutAnimations);
 
     return () => {
+      disposed = true;
       gsap.ticker.remove(updateAboutAnimations);
+      lines.forEach((line) => {
+        if (line) {
+          line.style.transform = "";
+          line.style.opacity = "";
+          line.style.filter = "";
+        }
+      });
+      lines.length = 0;
     };
   }, []);
 
