@@ -7,48 +7,50 @@ import "./WhatsAppCommunity.css";
 const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
 
 const initialMessages = [
-  { id: "welcome", sender: "bot", text: "Hey! I’m the E-Cell guide. Ask me about the Ecell, events, joining, or building your idea.", time: "11:42" },
-  { id: "question", sender: "user", text: "Where can I register for this?", time: "11:45" },
+  { id: "welcome", sender: "bot", text: "Hey! I’m the E-Cell guide. Type a question below to ask about E-Cell, events, joining, or building your idea.", time: "11:42" },
 ];
 
 const getAssistantReply = (message) => {
-  const question = message.toLowerCase();
+  const q = message.toLowerCase().trim();
 
-  if (/(what.{0,12}(e[ -]?cell|entrepreneurship cell)|(about)(e[ -]?cell|entrepreneurship cell).{0,12}(what|about))|(about)/.test(question)) {
-    return "E-Cell RV University is the campus entrepreneurship community. We help students explore ideas, learn from founders, meet collaborators, and take their first steps towards building something.";
+  if (/\b(hi|hello|hey|yo|sup|greetings)\b/.test(q)) {
+    return "Hey there! 👋 Type any question about E-Cell, events, joining, or building your idea, and I'll be happy to help!";
   }
-  if (/(what.{0,12}(do|offer)|why.{0,12}(join|e[ -]?cell)|benefit|opportunit)|(offer)/.test(question)) {
-    return "E-Cell brings you founder talks, workshops, events, mentorship, and a community of people who like building. It is a place to learn, find collaborators, and turn an idea into action.";
+  if (/\b(team|members|member|who runs|core team|lead|leaders|board)\b/.test(q)) {
+    return "E-Cell is student-led by a passionate team of student builders and organizers at RV University. Join our WhatsApp community to stay updated when core-team recruitments open!";
   }
-  if (/(who.{0,12}(join|for)|eligible|eligibility|can i join|anyone)/.test(question)) {
-    return "Anyone at RV University who is curious about entrepreneurship can join — you do not need a startup or prior experience. Students with ideas, skills, or simply a willingness to learn are welcome.";
+  if (/\b(what is|about)\b.*\b(ecell|e-cell|entrepreneurship cell)\b|\b(what is ecell|what is e-cell|about ecell|about e-cell)\b/.test(q) || (/\babout\b/.test(q) && /\b(ecell|e-cell|cell)\b/.test(q))) {
+    return "E-Cell RV University is the campus entrepreneurship community. We help students explore ideas, learn from founders, meet collaborators, and take their first steps towards building something impactful.";
   }
-  if (/(join|register|membership|member|core team|volunteer)/.test(question)) {
-    return "Tap “Join the community” to get started. We share event registrations, core-team openings, and ways to contribute in the WhatsApp community.";
+  if (/\b(what do|offer|benefits|why join|why ecell|why e-cell|opportunity|opportunities)\b/.test(q)) {
+    return "E-Cell brings you founder talks, hands-on workshops, hackathons, pitch competitions, mentorship, and a vibrant builder community. It is the ultimate launchpad to turn your ideas into action.";
   }
-  if (/(event|workshop|talk|session)/.test(question)) {
-    return "We're the driving force behind more than half of everything :whappening at RVU.And we're just getting started.This year's lineup kicks off with Kalpvikas, followed by the intense Pitch-e-thon.Lock in the dates, secure your spot, and network with the builders who matter.👉 Join the community — and never miss a moment.";
+  if (/\b(who can|eligible|eligibility|can i|for who|who is it for|requirements)\b/.test(q)) {
+    return "Anyone at RV University curious about entrepreneurship can join! You don't need a startup or prior experience — just curiosity and a willingness to learn and build.";
   }
-  if (/(idea|startup|build|founder|mentor|collaborat|team)/.test(question)) {
-    return "Absolutely — you do not need to have everything figured out. Share your idea with us and we’ll help you find fellow builders, relevant events, and useful resources.";
+  if (/\b(join|register|registration|membership|how to join|where to register|sign up|volunteer)\b/.test(q)) {
+    return "Tap 'Join the community' above to join our WhatsApp group! We share event registrations, core team recruitments, and collaboration opportunities directly in the community.";
   }
-  if (/(cost|fee|paid|payment|free)/.test(question)) {
-    return "Joining the WhatsApp community is free. Joining the Core team is also free, The time you have to pay is, if you are registering for an event.";
+  if (/\b(event|events|workshop|workshops|talk|talks|pitch-e-thon|pitchathon|kalpvikas|session|sessions)\b/.test(q)) {
+    return "We're the driving force behind top entrepreneurial events at RVU! Our lineup includes Kalpvikas, Pitch-e-thon, founder sessions, and workshops. Join our WhatsApp community to lock in your spot and never miss an update!";
   }
-  if (/(im interested)| (interested in)/.test(question)) {
-    return "Nice — we’re always looking for people who want to get involved. Tap “Join the community” to get started. We share event registrations, core-team openings, and ways to contribute in the WhatsApp community."
+  if (/\b(idea|ideas|startup|startups|build|building|founder|founders|mentor|mentors|collaborate|co-founder|cofounder)\b/.test(q)) {
+    return "Have an idea or looking to start something? You don't need to have everything figured out yet. Share your idea in our community to find co-founders, access mentors, and start building!";
   }
-  if (/(contact|reach|instagram|email|social)/.test(question)) {
-    return "The fastest way to stay connected is to join the community. You can also follow E-Cell RV University on its official social channels for updates.";
+  if (/\b(cost|fee|fees|free|paid|payment|price|money|charge)\b/.test(q)) {
+    return "Joining the E-Cell WhatsApp community is 100% free! Core team membership is also free, while select flagship events may have nominal registration fees.";
   }
-  if (/(team)|(Who.{0,12}(members))|(members)|(who.{0,12}(Team member))/.test(question)) {
+  if (/\b(interested|get involved|want to participate)\b/.test(q)) {
+    return "Awesome! We'd love to have you onboard. Tap 'Join the community' above to hop into our official WhatsApp group and get involved right away.";
+  }
+  if (/\b(contact|reach|instagram|email|social|socials|handle|link|connect)\b/.test(q)) {
+    return "The fastest way to stay connected is by joining our WhatsApp group! You can also follow E-Cell RV University on Instagram and social channels for regular updates.";
+  }
+  if (/\b(ecell|e-cell)\b/.test(q)) {
+    return "E-Cell RV University is the campus entrepreneurship hub. Tap 'Join the community' to connect with fellow builders and stay updated on all upcoming opportunities!";
+  }
 
-  }
-  if (/(hello|hi|hey|yo|sup)/.test(question)) {
-    return "Hey! Ask me what E-Cell is, who can join, what we do, or how to get involved.";
-  }
-
-  return "I can help with E-Cell, joining the community, events, or building an idea. Ask away — or join the community for the latest opportunities.";
+  return "I can help with questions about E-Cell, joining the community, events, or building your startup idea. Type a question or tap 'Join the community' to get started!";
 };
 
 const timeNow = () => new Intl.DateTimeFormat("en-IN", {
@@ -63,6 +65,7 @@ export default function WhatsAppCommunity() {
   const rafIdRef = useRef(null);
   const replyTimeoutRef = useRef(null);
   const messagesRef = useRef(null);
+  const inputRef = useRef(null);
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -247,7 +250,11 @@ export default function WhatsAppCommunity() {
             <span className="whatsapp-community-note"><b>700+ students</b> are already in the loop.</span>
           </div>
 
-          <div className="whatsapp-community-visual" aria-label="Preview of the E-Cell WhatsApp community">
+          <div
+            className="whatsapp-community-visual"
+            aria-label="Preview of the E-Cell WhatsApp community"
+            onClick={() => inputRef.current?.focus()}
+          >
             <div className="whatsapp-community-phone">
               <div className="whatsapp-community-phone-header">
                 <span className="whatsapp-community-avatar">E</span>
@@ -275,10 +282,11 @@ export default function WhatsAppCommunity() {
                 <form className="whatsapp-community-composer" onSubmit={handleSendMessage}>
                   <label className="sr-only" htmlFor="community-message">Ask the E-Cell guide</label>
                   <input
+                    ref={inputRef}
                     id="community-message"
                     value={draft}
                     onChange={(event) => setDraft(event.target.value)}
-                    placeholder="Ask E-Cell..."
+                    placeholder="Type a question here..."
                     maxLength={280}
                     autoComplete="off"
                   />
