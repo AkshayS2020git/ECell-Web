@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./GameLauncher.css";
 
 const ROUND_LENGTH = 15;
 
-function SparkArcadeIcon() {
+function SparkArcadeIcon(): React.ReactElement {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
       <path className="game-launcher__spark" d="m16 4.25 1.8 6.02L23.75 12l-5.95 1.72L16 19.75l-1.8-6.03L8.25 12l5.95-1.73L16 4.25Z" />
@@ -14,7 +14,7 @@ function SparkArcadeIcon() {
   );
 }
 
-function CloseIcon() {
+function CloseIcon(): React.ReactElement {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="m7 7 10 10M17 7 7 17" />
@@ -22,19 +22,19 @@ function CloseIcon() {
   );
 }
 
-export default function GameLauncher() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(ROUND_LENGTH);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [target, setTarget] = useState({ x: 52, y: 48 });
-  const closeButtonRef = useRef(null);
-  const launcherButtonRef = useRef(null);
+export default function GameLauncher(): React.ReactElement {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [score, setScore] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(ROUND_LENGTH);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [target, setTarget] = useState<{ x: number; y: number }>({ x: 52, y: 48 });
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const launcherButtonRef = useRef<HTMLButtonElement | null>(null);
   const gameActive = isPlaying && timeLeft > 0;
 
   useEffect(() => {
     if (!isOpen) return undefined;
-    const onKeyDown = (event) => {
+    const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setIsOpen(false);
     };
     window.addEventListener("keydown", onKeyDown);
