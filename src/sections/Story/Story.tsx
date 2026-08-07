@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef } from "react";
+import Image from "next/image";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import Lenis from "lenis";
 import "./Story.css";
@@ -45,7 +46,7 @@ export default function Story({
 }: StoryProps): React.ReactElement {
   const revealRef = useRef<HTMLElement | null>(null);
   const imagePanelRef = useRef<HTMLDivElement | null>(null);
-  const imageRef = useRef<HTMLImageElement | null>(null);
+  const imageRef = useRef<HTMLDivElement | null>(null);
   const revealTextInnerRef = useRef<HTMLDivElement | null>(null);
   const eyebrowRef = useRef<HTMLDivElement | null>(null);
 
@@ -157,15 +158,15 @@ export default function Story({
 
           if (absNorm > 0.0005 || isMoving) {
             chars.forEach((char, idx) => {
-              const phase = idx * 0.42 + wobbleTime * 8;
+              const phase = idx * 0.42 + wobbleTime * 4.5;
               const sinWave = Math.sin(phase);
               const cosWave = Math.cos(phase);
 
-              const yOffset = sinWave * absNorm * 24 + normVel * 16;
-              const skewX = normVel * 18 + cosWave * absNorm * 12;
-              const rotation = sinWave * absNorm * 9 + normVel * 6;
-              const scaleY = 1 - absNorm * 0.18 + sinWave * absNorm * 0.14;
-              const scaleX = 1 + absNorm * 0.18 - sinWave * absNorm * 0.12;
+              const yOffset = sinWave * absNorm * 8 + normVel * 5;
+              const skewX = normVel * 6 + cosWave * absNorm * 4;
+              const rotation = sinWave * absNorm * 3 + normVel * 2;
+              const scaleY = 1 - absNorm * 0.05 + sinWave * absNorm * 0.04;
+              const scaleX = 1 + absNorm * 0.05 - sinWave * absNorm * 0.04;
 
               gsap.set(char, {
                 y: yOffset,
@@ -178,11 +179,11 @@ export default function Story({
             });
 
             eyebrowChars.forEach((char, idx) => {
-              const phase = idx * 0.5 + wobbleTime * 9;
+              const phase = idx * 0.5 + wobbleTime * 5;
               const sinWave = Math.sin(phase);
-              const yOffset = sinWave * absNorm * 10 + normVel * 7;
-              const skewX = normVel * 9 + sinWave * absNorm * 6;
-              const rotation = sinWave * absNorm * 4 + normVel * 3;
+              const yOffset = sinWave * absNorm * 3.5 + normVel * 2.2;
+              const skewX = normVel * 3 + sinWave * absNorm * 2;
+              const rotation = sinWave * absNorm * 1.2 + normVel * 1;
 
               gsap.set(char, {
                 y: yOffset,
@@ -327,12 +328,12 @@ export default function Story({
     };
   }, [headlineMain, headlineAccent]);
 
-  const imgSrc = typeof libImg === "string" ? libImg : libImg?.src || "";
-
   return (
     <section className="story-reveal" ref={revealRef} id="storyReveal">
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
-        <img ref={imageRef} src={imgSrc} alt="Story background" />
+        <div ref={imageRef} className="story-image-inner">
+          <Image src={libImg} alt="Story background" fill sizes="100vw" style={{ objectFit: "cover" }} />
+        </div>
         <div className="grain"></div>
       </div>
 

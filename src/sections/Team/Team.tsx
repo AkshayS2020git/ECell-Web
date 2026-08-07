@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import teamMembers from "./TeamData";
 import {
   setupTeamAnimations,
@@ -181,7 +182,6 @@ export default function Team(): React.ReactElement {
           >
             {teamMembers.map((member, index) => {
               const isActive = index === activeIndex;
-              const imgSrc = typeof member.image === "string" ? member.image : member.image?.src || "";
               return (
                 <article
                   key={member.id}
@@ -194,12 +194,14 @@ export default function Team(): React.ReactElement {
                 >
                   <div className="team__image-wrapper">
                     <div className="team__image">
-                      <img
-                        src={imgSrc}
+                      <Image
+                        src={member.image}
                         alt={member.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 420px"
                         loading={isActive ? "eager" : "lazy"}
-                        style={member.imagePosition ? { objectPosition: member.imagePosition } : undefined}
-                        draggable="false"
+                        style={member.imagePosition ? { objectFit: "cover", objectPosition: member.imagePosition } : { objectFit: "cover" }}
+                        draggable={false}
                       />
                       {/* LinkedIn overlay badge */}
                       <a

@@ -13,7 +13,7 @@ import tvsLogo from "../../assets/logos/tvs.webp";
 import waffleLogo from "../../assets/logos/waffle.svg";
 import redbull from "../../assets/logos/redbull.png";
 import "./Sponsors.css";
-import { StaticImageData } from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 export interface SponsorItem {
   name: string;
@@ -123,19 +123,20 @@ export default function Sponsors(): React.ReactElement {
         <div className="sponsor-marquee-track marquee-left">
           <div className="sponsor-marquee-inner">
             {marqueeList.map((item, index) => {
-              const imgSrc = typeof item.logo === "string" ? item.logo : item.logo?.src || "";
               return (
                 <span
                   key={`sponsor-${index}`}
                   className="sponsor-item"
                 >
                   <span className="sponsor-logo-frame">
-                    <img
+                    <Image
                       className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ""}`}
-                      src={imgSrc}
+                      src={item.logo}
                       alt={item.name}
+                      fill
+                      sizes="(max-width: 768px) 118px, 148px"
+                      style={{ objectFit: "contain" }}
                       loading="lazy"
-                      decoding="async"
                     />
                   </span>
                   {item.label && <span className="sponsor-label">{item.label}</span>}
