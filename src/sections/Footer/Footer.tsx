@@ -1,19 +1,25 @@
 "use client";
-import './Footer.css';
+import React from "react";
+import "./Footer.css";
 
-const FOOTER_LINKS = [
-  { label: 'About', href: '#aboutSection' },
-  { label: 'Events', href: '#eventsSection' },
-  { label: 'Speakers', href: '#speakers' },
+export interface FooterLink {
+  label: string;
+  href: string;
+}
+
+const FOOTER_LINKS: FooterLink[] = [
+  { label: "About", href: "#aboutSection" },
+  { label: "Events", href: "#eventsSection" },
+  { label: "Speakers", href: "#speakers" },
 ];
 
-const SOCIAL_LINKS = [
-  { label: 'Instagram', href: 'https://www.instagram.com/ecell_rvu/' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/search/results/all/?keywords=ECell%2C%20RV%20University&origin=RICH_QUERY_SUGGESTION&heroEntityKey=urn%3Ali%3Aorganization%3A96671040&position=1' },
+const SOCIAL_LINKS: FooterLink[] = [
+  { label: "Instagram", href: "https://www.instagram.com/ecell_rvu/" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/search/results/all/?keywords=ECell%2C%20RV%20University&origin=RICH_QUERY_SUGGESTION&heroEntityKey=urn%3Ali%3Aorganization%3A96671040&position=1" },
 ];
 
-export default function Footer() {
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+export default function Footer(): React.ReactElement {
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <footer className="site-footer" id="footer">
