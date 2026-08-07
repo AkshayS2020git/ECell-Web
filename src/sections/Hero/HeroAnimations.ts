@@ -1,5 +1,16 @@
+import { RefObject } from "react";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import { lerp, smoothstep } from "../../utils/math";
+
+export interface SetupHeroAnimationsOptions {
+  heroRef: RefObject<HTMLElement | null>;
+  videoRef: RefObject<HTMLVideoElement | null>;
+  videoWrapRef: RefObject<HTMLElement | null>;
+  headingRef: RefObject<HTMLElement | null>;
+  marqueeRef: RefObject<HTMLElement | null>;
+  labelRef: RefObject<HTMLElement | null>;
+  scrollHintRef?: RefObject<HTMLElement | null>;
+}
 
 export function setupHeroAnimations({
   heroRef,
@@ -9,15 +20,15 @@ export function setupHeroAnimations({
   marqueeRef,
   labelRef,
   scrollHintRef,
-}) {
+}: SetupHeroAnimationsOptions): () => void {
   const video = videoRef.current;
   const videoWrap = videoWrapRef.current;
   const marquee = marqueeRef.current;
   const label = labelRef.current;
   const heading = headingRef.current;
   const scrollHint = scrollHintRef?.current;
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const reduceMotion = typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false;
+  const isMobile = typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false;
 
   if (reduceMotion) {
     gsap.set([videoWrap, marquee, label, heading, scrollHint].filter(Boolean), {
@@ -54,8 +65,11 @@ export function setupHeroAnimations({
       .to(videoWrap, { scale: 0.78, opacity: 0.94, ease: "none", duration: 1 }, 0)
       .to(marquee, { opacity: 1, ease: "none", duration: 0.32 }, 0.12)
       .to(label, { opacity: 1, ease: "none", duration: 0.28 }, 0.16)
-      .to(heading, { opacity: 0, ease: "none", duration: 0.25 }, 0.06)
-      .to(scrollHint, { opacity: 0, ease: "none", duration: 0.18 }, 0.02);
+      .to(heading, { opacity: 0, ease: "none", duration: 0.25 }, 0.06);
+
+    if (scrollHint) {
+      mobileTimeline.to(scrollHint, { opacity: 0, ease: "none", duration: 0.18 }, 0.02);
+    }
 
     if (video) video.playbackRate = 0.5;
 
@@ -69,9 +83,9 @@ export function setupHeroAnimations({
     };
   }
 
-  const marqueeOpacity = gsap.quickSetter(marquee, "opacity");
-  const labelOpacity = gsap.quickSetter(label, "opacity");
-  const headingOpacity = gsap.quickSetter(heading, "opacity");
+  const marqueeOpacity = marquee ? gsap.quickSetter(marquee, "opacity") : () => {};
+  const labelOpacity = label ? gsap.quickSetter(label, "opacity") : () => {};
+  const headingOpacity = heading ? gsap.quickSetter(heading, "opacity") : () => {};
   const scrollHintOpacity = scrollHint
     ? gsap.quickSetter(scrollHint, "opacity")
     : null;
