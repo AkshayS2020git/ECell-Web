@@ -1,35 +1,29 @@
 "use client";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
+import { smoothstep, lerp } from "../../utils/math";
 import "./FloatingLogo.css";
 
-function smoothstep(edge0, edge1, x) {
-  const t = Math.min(Math.max((x - edge0) / (edge1 - edge0), 0), 1);
-  return t * t * (3 - 2 * t);
-}
-
-function lerp(a, b, t) {
-  return a + (b - a) * t;
-}
-
 /* Ease-out cubic for a more natural deceleration feel */
-function easeOutCubic(t) {
+function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
 
-export default function FloatingLogo() {
-  const logoRef = useRef(null);
-  const wave1Ref = useRef(null);
-  const wave2Ref = useRef(null);
-  const wave3Ref = useRef(null);
-  const titleRef = useRef(null);
-  const subtitleRef = useRef(null);
+export default function FloatingLogo(): React.ReactElement {
+  const logoRef = useRef<SVGSVGElement | null>(null);
+  const wave1Ref = useRef<SVGPathElement | null>(null);
+  const wave2Ref = useRef<SVGPathElement | null>(null);
+  const wave3Ref = useRef<SVGPathElement | null>(null);
+  const titleRef = useRef<SVGTextElement | null>(null);
+  const subtitleRef = useRef<SVGTextElement | null>(null);
 
   useEffect(() => {
     const logo = logoRef.current;
     const title = titleRef.current;
     const subtitle = subtitleRef.current;
-    const waves = [wave1Ref.current, wave2Ref.current, wave3Ref.current].filter(Boolean);
+    const waves = [wave1Ref.current, wave2Ref.current, wave3Ref.current].filter(
+      (path): path is SVGPathElement => Boolean(path)
+    );
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     if (!logo) return;
@@ -37,8 +31,8 @@ export default function FloatingLogo() {
     let disposed = false;
 
     // --- Measure the nav logo target position & label ---
-    let iconTargetEl = document.querySelector(".nav__logo-icon-target");
-    let navLabelEl = document.querySelector(".nav__logo-label");
+    let iconTargetEl: HTMLElement | null = document.querySelector(".nav__logo-icon-target");
+    let navLabelEl: HTMLElement | null = document.querySelector(".nav__logo-label");
 
     // --- Prepare SVG strokes ---
     const waveLengths = waves.map((path) => {
@@ -57,12 +51,12 @@ export default function FloatingLogo() {
     gsap.set([title, subtitle], { opacity: 0 });
 
     // --- Hero scroll phase ---
-    let heroEl = document.querySelector(".hero");
+    let heroEl: HTMLElement | null = document.querySelector(".hero");
     if (!heroEl) return;
 
     let heroTarget = 0;
     let heroSmoothed = 0;
-    let mobileFrame = null;
+    let mobileFrame: number | null = null;
     let updateLogo = () => {};
     let targetX = 54;
     let targetY = 46;
@@ -98,11 +92,11 @@ export default function FloatingLogo() {
     });
 
     // --- About transition scroll phase ---
-    let aboutEl = document.querySelector(".about");
+    let aboutEl: HTMLElement | null = document.querySelector(".about");
     let transTarget = 0;
     let transSmoothed = 0;
 
-    let aboutTrigger = null;
+    let aboutTrigger: globalThis.ScrollTrigger | null = null;
     if (aboutEl) {
       aboutTrigger = ScrollTrigger.create({
         trigger: aboutEl,
@@ -179,19 +173,18 @@ export default function FloatingLogo() {
       const centerY = vh / 2;
 
       // --- Target position (nav logo icon target) ---
-      // --- Size interpolation (proportionate logo in nav header: 64px) ---
       const startSize = Math.min(340, vw * 0.8);
       const endSize = 80;
       const currentSize = lerp(startSize, endSize, t);
 
-      // --- Position interpolation with slight arc (add a curve via Y offset) ---
-      const arcOffset = Math.sin(t * Math.PI) * -60; // slight upward arc
+      // --- Position interpolation with slight arc ---
+      const arcOffset = Math.sin(t * Math.PI) * -60;
       const currentX = lerp(centerX, targetX, t);
       const currentY = lerp(centerY, targetY, t) + arcOffset;
 
-      // --- Opacity: visible once hero reveals it, stays visible ---
+      // --- Opacity ---
       const baseOpacity = logoReveal;
-      logo.style.opacity = baseOpacity;
+      logo.style.opacity = `${baseOpacity}`;
 
       // --- Apply position and size ---
       logo.style.width = `${currentSize}px`;
@@ -207,7 +200,7 @@ export default function FloatingLogo() {
 
       // --- Fade in "ECELL" label text right after the logo icon as it arrives ---
       if (navLabelEl) {
-        navLabelEl.style.opacity = smoothstep(0.35, 0.85, rawT);
+        navLabelEl.style.opacity = `${smoothstep(0.35, 0.85, rawT)}`;
       }
     };
 
@@ -218,26 +211,20 @@ export default function FloatingLogo() {
     }
 
     return () => {
-      // Set disposed flag to stop any pending callbacks
       disposed = true;
 
-      // Cancel pending mobile rAF
       if (mobileFrame !== null) {
         window.cancelAnimationFrame(mobileFrame);
         mobileFrame = null;
       }
 
-      // Remove global listeners
       window.removeEventListener("resize", updateNavTarget);
 
-      // Remove ticker callback
       if (!isMobile) gsap.ticker.remove(updateLogo);
 
-      // Kill ScrollTrigger instances
       heroTrigger.kill();
       if (aboutTrigger) aboutTrigger.kill();
 
-      // Null out references to free memory
       iconTargetEl = null;
       navLabelEl = null;
       heroEl = null;

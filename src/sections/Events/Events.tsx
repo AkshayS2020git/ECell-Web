@@ -1,47 +1,54 @@
 "use client";
-import { useEffect, useRef } from 'react';
-import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
-import talkStartupWithMe from '../../assets/events/TalkStartupWithMe.webp';
-import winterTechTalk from '../../assets/events/WinterTechTalk.webp';
-import argonyx from '../../assets/events/argonyx.webp';
-import argonyx2 from '../../assets/events/argoynx2.jpg';
-import './Events.css';
+import React, { useEffect, useRef } from "react";
+import { gsap } from "../../utils/gsapSetup";
+import talkStartupWithMe from "../../assets/events/TalkStartupWithMe.webp";
+import winterTechTalk from "../../assets/events/WinterTechTalk.webp";
+import argonyx from "../../assets/events/argonyx.webp";
+import argonyx2 from "../../assets/events/argoynx2.jpg";
+import "./Events.css";
+import { StaticImageData } from "next/image";
 
-const GALLERY_ITEMS = [
+export interface GalleryItem {
+  caption: string;
+  src: StaticImageData | string;
+  alt: string;
+}
+
+const GALLERY_ITEMS: GalleryItem[] = [
   {
-    caption: 'Argonyx Hackathon - September 2025',
+    caption: "Argonyx Hackathon - September 2025",
     src: argonyx,
-    alt: 'Workshop',
+    alt: "Workshop",
   },
   {
-    caption: 'Winter Tech Talk - Winter 2025',
+    caption: "Winter Tech Talk - Winter 2025",
     src: winterTechTalk,
-    alt: 'Founders Panel',
+    alt: "Founders Panel",
   },
   {
-    caption: 'Talk Startup With Me - Spring 2026',
+    caption: "Talk Startup With Me - Spring 2026",
     src: talkStartupWithMe,
-    alt: 'Hackathon',
+    alt: "Hackathon",
   },
   {
-    caption: 'Argonyx Hackathon - September 2025',
+    caption: "Argonyx Hackathon - September 2025",
     src: argonyx2,
-    alt: 'Argonyx 2.0 event',
+    alt: "Argonyx 2.0 event",
   },
 ];
 
-export default function Events() {
-  const sectionRef = useRef(null);
-  const introRef = useRef(null);
-  const galleryRef = useRef(null);
-  const sceneRef = useRef(null);
-  const captionRef = useRef(null);
-  const transitionRef = useRef(null);
-  const exitGlowRef = useRef(null);
-  const itemsRef = useRef([]);
+export default function Events(): React.ReactElement {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const introRef = useRef<HTMLDivElement | null>(null);
+  const galleryRef = useRef<HTMLDivElement | null>(null);
+  const sceneRef = useRef<HTMLDivElement | null>(null);
+  const captionRef = useRef<HTMLDivElement | null>(null);
+  const transitionRef = useRef<HTMLDivElement | null>(null);
+  const exitGlowRef = useRef<HTMLDivElement | null>(null);
+  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    const items = itemsRef.current.filter(Boolean);
+    const items = itemsRef.current.filter((item): item is HTMLDivElement => Boolean(item));
     const section = sectionRef.current;
     const scene = sceneRef.current;
     const caption = captionRef.current;
@@ -51,21 +58,21 @@ export default function Events() {
     const exitGlow = exitGlowRef.current;
     if (!section || !scene || !caption || !items.length) return undefined;
 
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
     const zSpacing = 1500;
 
     items.forEach((item, index) => {
       const isRightSide = index % 2 === 0;
       const xOffset = isRightSide
-        ? isMobile ? '20%' : '35%'
-        : isMobile ? '-20%' : '-35%';
+        ? isMobile ? "20%" : "35%"
+        : isMobile ? "-20%" : "-35%";
       const zOffset = -(index * zSpacing);
 
-      item.dataset.z = zOffset;
+      item.dataset.z = `${zOffset}`;
       item.style.transform = `translate3d(${xOffset}, 0px, ${zOffset}px)`;
     });
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       caption.textContent = GALLERY_ITEMS[0].caption;
       return undefined;
     }
@@ -96,8 +103,8 @@ export default function Events() {
       const entrance = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top 95%',
-          end: 'top 28%',
+          start: "top 95%",
+          end: "top 28%",
           scrub: 0.7,
         },
       });
@@ -105,18 +112,18 @@ export default function Events() {
       entrance
         .fromTo(
           transition,
-          { autoAlpha: 1, scaleY: 1, transformOrigin: 'top center' },
-          { autoAlpha: 0, scaleY: 0, ease: 'power4.inOut' },
-          0,
+          { autoAlpha: 1, scaleY: 1, transformOrigin: "top center" },
+          { autoAlpha: 0, scaleY: 0, ease: "power4.inOut" },
+          0
         )
-        .fromTo(intro, { autoAlpha: 0, xPercent: -18 }, { autoAlpha: 1, xPercent: 0, ease: 'none' }, 0)
-        .fromTo(gallery, { autoAlpha: 0, scale: 0.82, yPercent: 12 }, { autoAlpha: 1, scale: 1, yPercent: 0, ease: 'none' }, 0.08);
+        .fromTo(intro, { autoAlpha: 0, xPercent: -18 }, { autoAlpha: 1, xPercent: 0, ease: "none" }, 0)
+        .fromTo(gallery, { autoAlpha: 0, scale: 0.82, yPercent: 12 }, { autoAlpha: 1, scale: 1, yPercent: 0, ease: "none" }, 0.08);
 
       const journey = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top top',
-          end: '+=420%',
+          start: "top top",
+          end: "+=420%",
           scrub: 0.8,
           pin: true,
           anticipatePin: 1,
@@ -127,7 +134,7 @@ export default function Events() {
         .to(camera, {
           z: (GALLERY_ITEMS.length - 1) * zSpacing + 800,
           duration: 4,
-          ease: 'none',
+          ease: "none",
           onUpdate: updateScene,
         })
         .to(
@@ -136,9 +143,9 @@ export default function Events() {
             autoAlpha: 0,
             scale: 0.88,
             yPercent: -12,
-            filter: 'blur(8px)',
+            filter: "blur(8px)",
             duration: 0.65,
-            ease: 'power2.in',
+            ease: "power2.in",
           },
           3.75
         )
@@ -148,7 +155,7 @@ export default function Events() {
             autoAlpha: 0,
             yPercent: -15,
             duration: 0.5,
-            ease: 'power2.in',
+            ease: "power2.in",
           },
           3.6
         )
@@ -158,7 +165,7 @@ export default function Events() {
             autoAlpha: 0,
             y: 15,
             duration: 0.5,
-            ease: 'power2.in',
+            ease: "power2.in",
           },
           3.6
         );
@@ -167,7 +174,7 @@ export default function Events() {
         journey.fromTo(
           exitGlow,
           { autoAlpha: 0, scaleX: 0.7 },
-          { autoAlpha: 1, scaleX: 1.1, duration: 0.7, ease: 'power1.out' },
+          { autoAlpha: 1, scaleX: 1.1, duration: 0.7, ease: "power1.out" },
           3.5
         );
       }
@@ -191,16 +198,21 @@ export default function Events() {
         </div>
 
         <div className="events-scene" ref={sceneRef} id="scene">
-          {GALLERY_ITEMS.map((item, idx) => (
-            <div
-              key={idx}
-              className="events-gallery-item"
-              data-caption={item.caption}
-              ref={(el) => (itemsRef.current[idx] = el)}
-            >
-              <img src={typeof item.src === 'string' ? item.src : item.src?.src || item.src} alt={item.alt} />
-            </div>
-          ))}
+          {GALLERY_ITEMS.map((item, idx) => {
+            const imgSrc = typeof item.src === "string" ? item.src : item.src?.src || "";
+            return (
+              <div
+                key={idx}
+                className="events-gallery-item"
+                data-caption={item.caption}
+                ref={(el) => {
+                  itemsRef.current[idx] = el;
+                }}
+              >
+                <img src={imgSrc} alt={item.alt} />
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="events-exit-glow" ref={exitGlowRef} aria-hidden="true" />

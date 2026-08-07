@@ -1,13 +1,19 @@
 "use client";
-import './PageTransition.css';
+import React from "react";
+import "./PageTransition.css";
 
-export default function PageTransition({ active, targetView }) {
+export interface PageTransitionProps {
+  active?: boolean;
+  targetView?: string;
+}
+
+export default function PageTransition({ active, targetView }: PageTransitionProps): React.ReactElement | null {
   if (!active) return null;
 
-  const isEnteringEvents = targetView === 'events';
+  const isEnteringEvents = targetView === "events";
 
   return (
-    <div className={`page-transition-overlay ${active ? 'active' : ''}`}>
+    <div className={`page-transition-overlay ${active ? "active" : ""}`}>
       <div className="transition-shutter left"></div>
       <div className="transition-shutter right"></div>
       
@@ -18,10 +24,10 @@ export default function PageTransition({ active, targetView }) {
           <div className="ring ring-3"></div>
         </div>
         <div className="transition-title">
-          {isEnteringEvents ? 'ENTERING 3D VIRTUAL SCROLL' : 'RETURNING TO MAIN PAGE'}
+          {isEnteringEvents ? "ENTERING 3D VIRTUAL SCROLL" : "RETURNING TO MAIN PAGE"}
         </div>
         <div className="transition-subtitle">
-          {isEnteringEvents ? 'E-Cell Events Gallery' : 'E-Cell RV University'}
+          {isEnteringEvents ? "E-Cell Events Gallery" : "E-Cell RV University"}
         </div>
       </div>
 

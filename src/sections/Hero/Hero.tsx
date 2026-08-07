@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 const heroVideo = "/assets/videos/hero2-optimized.mp4";
 const heroMobileVideo = "/assets/videos/hero-mobile.mp4";
 const heroPoster = "/assets/videos/hero-poster.jpg";
@@ -11,15 +11,15 @@ import "./HeroMarquee.css";
 import "./HeroTypography.css";
 import "./HeroResponsive.css";
 
-export default function Hero() {
-  const heroRef = useRef(null);
-  const stickyRef = useRef(null);
-  const videoWrapRef = useRef(null);
-  const videoRef = useRef(null);
-  const headingRef = useRef(null);
-  const marqueeRef = useRef(null);
-  const labelRef = useRef(null);
-  const scrollHintRef = useRef(null);
+export default function Hero(): React.ReactElement {
+  const heroRef = useRef<HTMLElement | null>(null);
+  const stickyRef = useRef<HTMLDivElement | null>(null);
+  const videoWrapRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const marqueeRef = useRef<HTMLDivElement | null>(null);
+  const labelRef = useRef<HTMLDivElement | null>(null);
+  const scrollHintRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -49,7 +49,6 @@ export default function Hero() {
             video.playbackRate = 0.5;
             video.play().catch(() => {});
           } else {
-            // Pause stops the decoder from accumulating frames in memory
             video.pause();
           }
         });

@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
-import teamMembers from "./TeamData.js";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import teamMembers from "./TeamData";
 import {
   setupTeamAnimations,
   setupTeamScroll,
@@ -12,18 +12,18 @@ import "./Team.css";
 import "./TeamLayout.css";
 import "./TeamResponsive.css";
 
-export default function Team() {
-  const teamRef = useRef(null);
-  const containerRef = useRef(null);
-  const stageRef = useRef(null);
-  const stackRef = useRef(null);
-  const cardRefs = useRef([]);
+export default function Team(): React.ReactElement {
+  const teamRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+  const stackRef = useRef<HTMLDivElement | null>(null);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
 
-  const touchStartXRef = useRef(null);
-  const touchStartYRef = useRef(null);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   // Always start at index 0 (Advisory Head - Vanshaj)
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
 
   useEffect(() => {
     const cleanupScroll = setupTeamScroll({ teamRef });
@@ -33,7 +33,7 @@ export default function Team() {
     };
   }, []);
 
-  const navigateMember = useCallback((direction) => {
+  const navigateMember = useCallback((direction: "next" | "prev") => {
     if (getIsAnimating && getIsAnimating()) return;
 
     const total = teamMembers.length;
@@ -51,7 +51,7 @@ export default function Team() {
     });
   }, [activeIndex]);
 
-  const selectMemberDirect = useCallback((targetIndex) => {
+  const selectMemberDirect = useCallback((targetIndex: number) => {
     if (targetIndex === activeIndex) return;
     if (getIsAnimating && getIsAnimating()) return;
 
@@ -73,7 +73,7 @@ export default function Team() {
 
   // Keyboard navigation (Left / Right Arrow Keys)
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         navigateMember("prev");
       } else if (e.key === "ArrowRight") {
@@ -88,13 +88,13 @@ export default function Team() {
   }, [navigateMember]);
 
   // Touch Swipe Gesture Navigation for Mobile Devices
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (e: React.TouchEvent) => {
     if (!e.touches || e.touches.length === 0) return;
     touchStartXRef.current = e.touches[0].clientX;
     touchStartYRef.current = e.touches[0].clientY;
   };
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartXRef.current === null || touchStartYRef.current === null) return;
     if (!e.changedTouches || e.changedTouches.length === 0) return;
 
@@ -181,10 +181,13 @@ export default function Team() {
           >
             {teamMembers.map((member, index) => {
               const isActive = index === activeIndex;
+              const imgSrc = typeof member.image === "string" ? member.image : member.image?.src || "";
               return (
                 <article
                   key={member.id}
-                  ref={(el) => (cardRefs.current[index] = el)}
+                  ref={(el) => {
+                    cardRefs.current[index] = el;
+                  }}
                   className="team__card"
                   data-index={index}
                   data-active={isActive}
@@ -192,7 +195,7 @@ export default function Team() {
                   <div className="team__image-wrapper">
                     <div className="team__image">
                       <img
-                        src={typeof member.image === "string" ? member.image : member.image?.src || member.image}
+                        src={imgSrc}
                         alt={member.name}
                         loading={isActive ? "eager" : "lazy"}
                         style={member.imagePosition ? { objectPosition: member.imagePosition } : undefined}

@@ -1,4 +1,4 @@
-// src/utils/constants.js
+// src/utils/constants.ts
 
 /* =====================================================
    ANIMATION
@@ -14,7 +14,7 @@ export const ANIMATION = {
   easeIn: "power3.in",
   easeInOut: "power3.inOut",
   smooth: "power2.out",
-};
+} as const;
 
 /* =====================================================
    BREAKPOINTS
@@ -25,7 +25,7 @@ export const BREAKPOINTS = {
   tablet: 1024,
   desktop: 1280,
   wide: 1440,
-};
+} as const;
 
 /* =====================================================
    COLORS
@@ -38,7 +38,7 @@ export const COLORS = {
   text: "#f5f5f5",
   textDim: "#adada8",
   border: "rgba(255,255,255,.08)",
-};
+} as const;
 
 /* =====================================================
    HERO
@@ -49,7 +49,7 @@ export const HERO = {
   borderRadius: 24,
   logoSize: 300,
   marqueeSpeed: 24,
-};
+} as const;
 
 /* =====================================================
    NAVBAR
@@ -57,7 +57,7 @@ export const HERO = {
 
 export const NAVBAR = {
   height: 80,
-};
+} as const;
 
 /* =====================================================
    Z INDEX
@@ -69,7 +69,7 @@ export const Z = {
   heroLogo: 30,
   heroContent: 20,
   heroVideo: 10,
-};
+} as const;
 
 /* =====================================================
    SPACING
@@ -82,4 +82,4 @@ export const SPACING = {
   lg: 40,
   xl: 64,
   xxl: 96,
-};
+} as const;

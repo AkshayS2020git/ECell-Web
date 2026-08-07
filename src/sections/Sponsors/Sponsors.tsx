@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
+import React, { useEffect, useRef } from "react";
+import { gsap } from "../../utils/gsapSetup";
 import attysLogo from "../../assets/logos/attys.webp";
 import cubeLogo from "../../assets/logos/cube.webp";
 import easyBitesLogo from "../../assets/logos/easybites.webp";
@@ -13,13 +13,21 @@ import tvsLogo from "../../assets/logos/tvs.webp";
 import waffleLogo from "../../assets/logos/waffle.svg";
 import redbull from "../../assets/logos/redbull.png";
 import "./Sponsors.css";
+import { StaticImageData } from "next/image";
 
-const SPONSORS_DATA = [
+export interface SponsorItem {
+  name: string;
+  logo: StaticImageData | string;
+  logoKey?: string;
+  label?: string;
+}
+
+const SPONSORS_DATA: SponsorItem[] = [
   { name: "Nokia", logo: nokiaLogo, logoKey: "nokia" },
   { name: "Akshaya Motors", logo: mercLogo },
-  { name: "mile", logo: mileLogo},
+  { name: "mile", logo: mileLogo },
   { name: "TVS Prakruthi Bikes", logo: tvsLogo },
-  {name: "redbull", logo: redbull},
+  { name: "redbull", logo: redbull },
   { name: "Justvend", logo: justvendLogo },
   { name: "Atty's Bakery & Confectionery", logo: attysLogo },
   { name: "Cube", logo: cubeLogo },
@@ -28,11 +36,11 @@ const SPONSORS_DATA = [
   { name: "EasyBites", logo: easyBitesLogo },
 ];
 
-export default function Sponsors() {
-  const sponsorsSectionRef = useRef(null);
-  const glowRef = useRef(null);
-  const marqueeRef = useRef(null);
-  const headerRef = useRef(null);
+export default function Sponsors(): React.ReactElement {
+  const sponsorsSectionRef = useRef<HTMLElement | null>(null);
+  const glowRef = useRef<HTMLDivElement | null>(null);
+  const marqueeRef = useRef<HTMLDivElement | null>(null);
+  const headerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const section = sponsorsSectionRef.current;
@@ -98,7 +106,6 @@ export default function Sponsors() {
     return () => ctx.revert();
   }, []);
 
-  // Repeating the same list once makes the scrolling loop seamless.
   const marqueeList = [...SPONSORS_DATA, ...SPONSORS_DATA];
 
   return (
@@ -115,23 +122,26 @@ export default function Sponsors() {
       <div ref={marqueeRef} className="sponsor-marquee-wrapper">
         <div className="sponsor-marquee-track marquee-left">
           <div className="sponsor-marquee-inner">
-            {marqueeList.map((item, index) => (
-              <span
-                key={`sponsor-${index}`}
-                className="sponsor-item"
-              >
-                <span className="sponsor-logo-frame">
-                  <img
-                    className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ''}`}
-                    src={typeof item.logo === "string" ? item.logo : item.logo?.src || item.logo}
-                    alt={item.name}
-                    loading="lazy"
-                    decoding="async"
-                  />
+            {marqueeList.map((item, index) => {
+              const imgSrc = typeof item.logo === "string" ? item.logo : item.logo?.src || "";
+              return (
+                <span
+                  key={`sponsor-${index}`}
+                  className="sponsor-item"
+                >
+                  <span className="sponsor-logo-frame">
+                    <img
+                      className={`sponsor-logo${item.logoKey ? ` sponsor-logo--${item.logoKey}` : ""}`}
+                      src={imgSrc}
+                      alt={item.name}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
+                  {item.label && <span className="sponsor-label">{item.label}</span>}
                 </span>
-                {item.label && <span className="sponsor-label">{item.label}</span>}
-              </span>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

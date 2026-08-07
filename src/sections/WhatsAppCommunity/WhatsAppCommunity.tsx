@@ -1,16 +1,23 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
+import React, { useEffect, useRef, useState } from "react";
+import { gsap } from "../../utils/gsapSetup";
 import "./WhatsAppCommunity.css";
 
 // this is the url for the whatsapp student community.
 const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
 
-const initialMessages = [
+export interface Message {
+  id: string;
+  sender: "bot" | "user";
+  text: string;
+  time: string;
+}
+
+const initialMessages: Message[] = [
   { id: "welcome", sender: "bot", text: "Hey! I’m the E-Cell guide. Type a question below to ask about E-Cell, events, joining, or building your idea.", time: "11:42" },
 ];
 
-const getAssistantReply = (message) => {
+const getAssistantReply = (message: string): string => {
   const q = message.toLowerCase().trim();
 
   if (/\b(hi|hello|hey|yo|sup|greetings)\b/.test(q)) {
@@ -53,24 +60,24 @@ const getAssistantReply = (message) => {
   return "I can help with questions about E-Cell, joining the community, events, or building your startup idea. Type a question or tap 'Join the community' to get started!";
 };
 
-const timeNow = () => new Intl.DateTimeFormat("en-IN", {
+const timeNow = (): string => new Intl.DateTimeFormat("en-IN", {
   hour: "2-digit",
   minute: "2-digit",
   hour12: false,
 }).format(new Date());
 
-export default function WhatsAppCommunity() {
-  const sectionRef = useRef(null);
-  const cursorFieldRef = useRef(null);
-  const rafIdRef = useRef(null);
-  const replyTimeoutRef = useRef(null);
-  const messagesRef = useRef(null);
-  const inputRef = useRef(null);
-  const [messages, setMessages] = useState(initialMessages);
-  const [draft, setDraft] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+export default function WhatsAppCommunity(): React.ReactElement {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const cursorFieldRef = useRef<HTMLDivElement | null>(null);
+  const rafIdRef = useRef<number | null>(null);
+  const replyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const messagesRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [draft, setDraft] = useState<string>("");
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
-  const handleSectionPointerMove = (event) => {
+  const handleSectionPointerMove = (event: React.PointerEvent<HTMLElement>) => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
 
     const field = cursorFieldRef.current;
@@ -95,11 +102,12 @@ export default function WhatsAppCommunity() {
       field.style.setProperty("--cursor-y", `${y}px`);
 
       Array.from(icons).forEach((icon, index) => {
+        const htmlIcon = icon as HTMLElement;
         const angle = ((index * 137.5) - 30) * (Math.PI / 180);
         const radius = 58 + (index % 4) * 32;
-        icon.style.setProperty("--icon-x", `${x + Math.cos(angle) * radius}px`);
-        icon.style.setProperty("--icon-y", `${y + Math.sin(angle) * radius}px`);
-        icon.style.setProperty("--trail-delay", `${55 + (index % 5) * 34}ms`);
+        htmlIcon.style.setProperty("--icon-x", `${x + Math.cos(angle) * radius}px`);
+        htmlIcon.style.setProperty("--icon-y", `${y + Math.sin(angle) * radius}px`);
+        htmlIcon.style.setProperty("--trail-delay", `${55 + (index % 5) * 34}ms`);
       });
 
       field.classList.add("is-active");
@@ -171,7 +179,7 @@ export default function WhatsAppCommunity() {
     if (replyTimeoutRef.current) clearTimeout(replyTimeoutRef.current);
   }, []);
 
-  const handleSendMessage = (event) => {
+  const handleSendMessage = (event: React.FormEvent) => {
     event.preventDefault();
     const text = draft.trim();
     if (!text || isTyping) return;

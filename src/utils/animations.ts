@@ -1,21 +1,26 @@
-// src/utils/animations.js
+// src/utils/animations.ts
 
 import { gsap } from "gsap";
 
 /* =====================================================
-   DEFAULTS
+   TYPES & DEFAULTS
 ===================================================== */
+
+export interface FadeOptions {
+  from?: gsap.TweenVars;
+  to?: gsap.TweenVars;
+}
 
 export const DEFAULTS = {
   duration: 0.8,
   ease: "power3.out",
-};
+} as const;
 
 /* =====================================================
    INITIAL STATE
 ===================================================== */
 
-export function setInitial(target, vars = {}) {
+export function setInitial(target: gsap.TweenTarget, vars: gsap.TweenVars = {}): gsap.core.Tween {
   return gsap.set(target, vars);
 }
 
@@ -23,7 +28,7 @@ export function setInitial(target, vars = {}) {
    TIMELINES
 ===================================================== */
 
-export function createTimeline(options = {}) {
+export function createTimeline(options: gsap.TimelineVars = {}): gsap.core.Timeline {
   return gsap.timeline({
     defaults: DEFAULTS,
     ...options,
@@ -34,7 +39,7 @@ export function createTimeline(options = {}) {
    FADE IN
 ===================================================== */
 
-export function fadeIn(target, options = {}) {
+export function fadeIn(target: gsap.TweenTarget, options: FadeOptions = {}): gsap.core.Tween {
   return gsap.fromTo(
     target,
     {
@@ -54,7 +59,7 @@ export function fadeIn(target, options = {}) {
    FADE UP
 ===================================================== */
 
-export function fadeUp(target, options = {}) {
+export function fadeUp(target: gsap.TweenTarget, options: FadeOptions = {}): gsap.core.Tween {
   return gsap.fromTo(
     target,
     {
@@ -76,7 +81,7 @@ export function fadeUp(target, options = {}) {
    STAGGER FADE UP
 ===================================================== */
 
-export function staggerFadeUp(targets, options = {}) {
+export function staggerFadeUp(targets: gsap.TweenTarget, options: gsap.TweenVars = {}): gsap.core.Tween {
   return gsap.fromTo(
     targets,
     {
@@ -98,7 +103,7 @@ export function staggerFadeUp(targets, options = {}) {
    SCALE IN
 ===================================================== */
 
-export function scaleIn(target, options = {}) {
+export function scaleIn(target: gsap.TweenTarget, options: FadeOptions = {}): gsap.core.Tween {
   return gsap.fromTo(
     target,
     {
@@ -120,7 +125,7 @@ export function scaleIn(target, options = {}) {
    SVG HELPERS
 ===================================================== */
 
-export function prepareSVG(path) {
+export function prepareSVG(path: SVGPathElement): number {
   const length = path.getTotalLength();
 
   gsap.set(path, {
@@ -132,7 +137,7 @@ export function prepareSVG(path) {
   return length;
 }
 
-export function drawSVG(path, options = {}) {
+export function drawSVG(path: SVGPathElement, options: gsap.TweenVars = {}): gsap.core.Tween {
   return gsap.to(path, {
     strokeDashoffset: 0,
     opacity: 1,
@@ -146,7 +151,7 @@ export function drawSVG(path, options = {}) {
    QUICK SETTERS
 ===================================================== */
 
-export function quickSetters(element) {
+export function quickSetters(element: Element | string) {
   return {
     x: gsap.quickSetter(element, "x", "px"),
     y: gsap.quickSetter(element, "y", "px"),
@@ -164,7 +169,7 @@ export function quickSetters(element) {
    COUNTER
 ===================================================== */
 
-export function animateCounter(target, end, options = {}) {
+export function animateCounter(target: gsap.TweenTarget, end: number, options: gsap.TweenVars = {}): gsap.core.Tween {
   return gsap.to(target, {
     innerText: end,
     snap: { innerText: 1 },
@@ -178,7 +183,7 @@ export function animateCounter(target, end, options = {}) {
    CLEANUP
 ===================================================== */
 
-export function kill(animation) {
+export function kill(animation?: gsap.core.Animation | null): void {
   if (animation) {
     animation.kill();
   }
