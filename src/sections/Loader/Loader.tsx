@@ -1,18 +1,22 @@
 "use client";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import "./Loader.css";
 
-export default function Loader({ onComplete }) {
-  const loaderRef = useRef(null);
-  const squiggleSvgRef = useRef(null);
+export interface LoaderProps {
+  onComplete?: () => void;
+}
 
-  const wave1Ref = useRef(null);
-  const wave2Ref = useRef(null);
-  const wave3Ref = useRef(null);
+export default function Loader({ onComplete }: LoaderProps): React.ReactElement {
+  const loaderRef = useRef<HTMLDivElement | null>(null);
+  const squiggleSvgRef = useRef<SVGSVGElement | null>(null);
 
-  const wordmarkTitleRef = useRef(null);
-  const wordmarkSubRef = useRef(null);
+  const wave1Ref = useRef<SVGPathElement | null>(null);
+  const wave2Ref = useRef<SVGPathElement | null>(null);
+  const wave3Ref = useRef<SVGPathElement | null>(null);
+
+  const wordmarkTitleRef = useRef<SVGTextElement | null>(null);
+  const wordmarkSubRef = useRef<SVGTextElement | null>(null);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -27,11 +31,10 @@ export default function Loader({ onComplete }) {
     const title = wordmarkTitleRef.current;
     const subtitle = wordmarkSubRef.current;
 
-    const waves = [wave1, wave2, wave3];
+    const waves = [wave1, wave2, wave3].filter((path): path is SVGPathElement => Boolean(path));
 
     // Prepare SVG paths stroke & fill states
     waves.forEach((path) => {
-      if (!path) return;
       const length = path.getTotalLength();
 
       gsap.set(path, {
