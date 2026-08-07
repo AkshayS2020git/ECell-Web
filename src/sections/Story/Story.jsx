@@ -138,32 +138,32 @@ export default function Story({
           const lerpFactor = 1 - Math.pow(0.0001, dtSec);
           currentVel += (targetVel - currentVel) * lerpFactor;
 
-          // Decay target velocity when scroll stops
-          targetVel *= Math.pow(0.85, dtSec * 60);
+          // Organic spring decay of target velocity when scrolling pauses
+          targetVel *= Math.pow(0.90, dtSec * 60);
 
           const velMag = Math.abs(currentVel);
           const isMoving = velMag > 0.5;
 
           if (isMoving || Math.abs(targetVel) > 0.5) {
-            wobbleTime += (0.008 + velMag * 0.00008) * (dtSec * 60);
+            wobbleTime += (0.016 + velMag * 0.00012) * (dtSec * 60);
           }
 
-          // Normalized velocity (-1 to 1)
-          const normVel = gsap.utils.clamp(-2500, 2500, currentVel) / 2500;
+          // Normalized velocity (-1 to 1) with higher sensitivity
+          const normVel = gsap.utils.clamp(-1400, 1400, currentVel) / 1400;
           const absNorm = Math.abs(normVel);
 
           if (absNorm > 0.0005 || isMoving) {
-            // Animate main headline letters with dynamic jiggle wave (subtle, refined intensity)
+            // Animate main headline letters with extra jiggly elastic wave & momentum tilt
             chars.forEach((char, idx) => {
-              const phase = idx * 0.38 + wobbleTime * 6;
+              const phase = idx * 0.42 + wobbleTime * 8;
               const sinWave = Math.sin(phase);
               const cosWave = Math.cos(phase);
 
-              const yOffset = sinWave * absNorm * 10 + normVel * 7;
-              const skewX = normVel * 8 + cosWave * absNorm * 5;
-              const rotation = sinWave * absNorm * 3 + normVel * 2;
-              const scaleY = 1 - absNorm * 0.08 + sinWave * absNorm * 0.06;
-              const scaleX = 1 + absNorm * 0.08 - sinWave * absNorm * 0.05;
+              const yOffset = sinWave * absNorm * 24 + normVel * 16;
+              const skewX = normVel * 18 + cosWave * absNorm * 12;
+              const rotation = sinWave * absNorm * 9 + normVel * 6;
+              const scaleY = 1 - absNorm * 0.18 + sinWave * absNorm * 0.14;
+              const scaleX = 1 + absNorm * 0.18 - sinWave * absNorm * 0.12;
 
               gsap.set(char, {
                 y: yOffset,
@@ -175,16 +175,18 @@ export default function Story({
               });
             });
 
-            // Animate eyebrow letters
+            // Animate eyebrow letters with responsive jiggle
             eyebrowChars.forEach((char, idx) => {
-              const phase = idx * 0.45 + wobbleTime * 7;
+              const phase = idx * 0.5 + wobbleTime * 9;
               const sinWave = Math.sin(phase);
-              const yOffset = sinWave * absNorm * 4 + normVel * 2.5;
-              const skewX = normVel * 4 + sinWave * absNorm * 3;
+              const yOffset = sinWave * absNorm * 10 + normVel * 7;
+              const skewX = normVel * 9 + sinWave * absNorm * 6;
+              const rotation = sinWave * absNorm * 4 + normVel * 3;
 
               gsap.set(char, {
                 y: yOffset,
                 skewX: skewX,
+                rotation: rotation,
                 transformOrigin: "50% 100%",
               });
             });
@@ -203,6 +205,7 @@ export default function Story({
               gsap.set(char, {
                 y: 0,
                 skewX: 0,
+                rotation: 0,
               });
             });
           }
