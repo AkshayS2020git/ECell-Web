@@ -1,14 +1,25 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { gsap } from "../../utils/gsapSetup";
 import ambikaPhoto from "../../assets/prevSpeakers/ambika.jpg";
 import arshdeepPhoto from "../../assets/prevSpeakers/arshdeep.jpg";
 import guhaPhoto from "../../assets/prevSpeakers/guha.png";
 import harpreetPhoto from "../../assets/prevSpeakers/harpreet.jpg";
 import shariffPhoto from "../../assets/prevSpeakers/shariff.jpg";
 import "./Speakers.css";
+import { StaticImageData } from "next/image";
 
-const SPEAKERS_LIST = [
+export interface Speaker {
+  id: number;
+  name: string;
+  role: string;
+  company: string;
+  tag: string;
+  photo: StaticImageData | string;
+  photoPosition?: string;
+}
+
+const SPEAKERS_LIST: Speaker[] = [
   {
     id: 1,
     name: "Harpreet Sohan",
@@ -53,11 +64,11 @@ const SPEAKERS_LIST = [
   },
 ];
 
-export default function Speakers() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const speakersSectionRef = useRef(null);
-  const cardStageRef = useRef(null);
-  const transitionLightRef = useRef(null);
+export default function Speakers(): React.ReactElement {
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const speakersSectionRef = useRef<HTMLElement | null>(null);
+  const cardStageRef = useRef<HTMLDivElement | null>(null);
+  const transitionLightRef = useRef<HTMLDivElement | null>(null);
 
   const handlePrev = useCallback(() => {
     setActiveIndex((prev) => (prev - 1 + SPEAKERS_LIST.length) % SPEAKERS_LIST.length);
@@ -69,7 +80,7 @@ export default function Speakers() {
 
   // Keyboard navigation
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target;
       const isTyping = target instanceof HTMLElement &&
         (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
@@ -109,8 +120,6 @@ export default function Speakers() {
         }
       );
 
-      // The bloom is tied to scroll position, so it expands and settles in both
-      // directions instead of only playing on the first visit.
       const bloomTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -165,7 +174,7 @@ export default function Speakers() {
     return () => ctx.revert();
   }, []);
 
-  const pad2 = (n) => String(n).padStart(2, "0");
+  const pad2 = (n: number) => String(n).padStart(2, "0");
 
   return (
     <section ref={speakersSectionRef} className="speakers-section" id="speakers" aria-labelledby="speakers-heading">
@@ -177,7 +186,6 @@ export default function Speakers() {
             <h2 id="speakers-heading" className="speakers-headline">Voices of Innovation</h2>
           </div>
 
-          {/* Navigation Controls with Arrow Buttons */}
           <div className="speakers-nav-controls">
             <span className="speakers-counter">
               <strong aria-live="polite">{pad2(activeIndex + 1)}</strong> / {pad2(SPEAKERS_LIST.length)}
@@ -217,7 +225,6 @@ export default function Speakers() {
           </div>
         </div>
 
-        {/* Dynamic Card Stage / Fan View */}
         <div ref={cardStageRef} className="speaker-cards-stage">
           {SPEAKERS_LIST.map((speaker, index) => {
             const offset = (index - activeIndex + SPEAKERS_LIST.length) % SPEAKERS_LIST.length;
@@ -229,13 +236,13 @@ export default function Speakers() {
             const isActive = index === activeIndex;
             const absOffset = Math.abs(normOffset);
 
-            // Compute 3D stacked layout properties
-            const translateX = normOffset * 140; // horizontal separation
-            const rotateY = normOffset * -12; // 3D rotation
-            const rotateZ = normOffset * 3; // slight fan tilt
+            const translateX = normOffset * 140;
+            const rotateY = normOffset * -12;
+            const rotateZ = normOffset * 3;
             const scale = isActive ? 1.05 : Math.max(0.78, 1 - absOffset * 0.12);
             const opacity = isActive ? 1 : Math.max(0.25, 1 - absOffset * 0.35);
             const zIndex = 10 - absOffset;
+            const imgSrc = typeof speaker.photo === "string" ? speaker.photo : speaker.photo?.src || "";
 
             return (
               <div
@@ -249,7 +256,7 @@ export default function Speakers() {
                 }}
                 className={`speaker-card-item ${isActive ? "active" : ""} has-photo`}
                 role="button"
-                tabIndex="0"
+                tabIndex={0}
                 aria-label={`Show ${speaker.name}, ${speaker.role}`}
                 aria-pressed={isActive}
                 style={{
@@ -260,7 +267,7 @@ export default function Speakers() {
               >
                 <img
                   className="speaker-card-photo"
-                  src={typeof speaker.photo === "string" ? speaker.photo : speaker.photo?.src || speaker.photo}
+                  src={imgSrc}
                   alt=""
                   aria-hidden="true"
                   loading="lazy"
