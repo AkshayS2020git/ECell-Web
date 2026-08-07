@@ -1,11 +1,17 @@
 "use client";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import Lenis from "lenis";
 import "./Story.css";
 import libImg from "../../assets/story/lib.webp";
 
-function renderJigglyText(text, keyPrefix) {
+export interface StoryProps {
+  eyebrow?: string;
+  headlineMain?: string;
+  headlineAccent?: string;
+}
+
+function renderJigglyText(text: string, keyPrefix: string): React.ReactNode {
   if (!text) return null;
   const words = text.split(" ");
   return words.map((word, wordIdx) => (
@@ -36,12 +42,12 @@ export default function Story({
   eyebrow = "ECELL",
   headlineMain = "IT'S THE MIND",
   headlineAccent = "THAT MAKES THE DIFFERENCE",
-}) {
-  const revealRef = useRef(null);
-  const imagePanelRef = useRef(null);
-  const imageRef = useRef(null);
-  const revealTextInnerRef = useRef(null);
-  const eyebrowRef = useRef(null);
+}: StoryProps): React.ReactElement {
+  const revealRef = useRef<HTMLElement | null>(null);
+  const imagePanelRef = useRef<HTMLDivElement | null>(null);
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const revealTextInnerRef = useRef<HTMLDivElement | null>(null);
+  const eyebrowRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const reveal = revealRef.current;
@@ -53,7 +59,7 @@ export default function Story({
     if (!reveal || !imagePanel || !revealTextInner) return;
 
     const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
+      "(prefers-reduced-motion: reduce)"
     ).matches;
 
     if (reduceMotion) {
@@ -72,7 +78,7 @@ export default function Story({
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
     // --- Lenis smooth scroll (desktop only) ---
-    let lenis = isMobile
+    let lenis: Lenis | null = isMobile
       ? null
       : new Lenis({
           duration: 1.2,
@@ -80,15 +86,15 @@ export default function Story({
           smoothWheel: true,
         });
 
-    let rafId = null;
+    let rafId: number | null = null;
     let disposed = false;
-    let tickerCallback = null;
+    let tickerCallback: ((time: number, deltaTime: number) => void) | null = null;
 
     const scrollUpdateHandler = () => {
       ScrollTrigger.update();
     };
 
-    const updateLenis = (time) => {
+    const updateLenis = (time: number) => {
       if (disposed) return;
       lenis?.raf(time);
       rafId = requestAnimationFrame(updateLenis);
@@ -104,8 +110,8 @@ export default function Story({
     mm.add(
       { isDesktop: "(min-width: 768px)", isMobile: "(max-width: 767px)" },
       (context) => {
-        const { isMobile } = context.conditions;
-        const travelPct = isMobile ? 28 : 40;
+        const isMobileCond = context.conditions?.isMobile ?? false;
+        const travelPct = isMobileCond ? 28 : 40;
 
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
@@ -116,7 +122,7 @@ export default function Story({
         gsap.set(imagePanel, {
           x: `${travelPct}%`,
           y: `${travelPct}%`,
-          scale: isMobile ? 0.62 : 0.5,
+          scale: isMobileCond ? 0.62 : 0.5,
           rotate: -4,
           filter: "blur(6px)",
           opacity: 1,
@@ -133,12 +139,10 @@ export default function Story({
         tickerCallback = (time, deltaTime) => {
           if (disposed) return;
 
-          // Smooth velocity lerp for organic spring behavior
           const dtSec = Math.min(deltaTime / 1000, 0.05);
           const lerpFactor = 1 - Math.pow(0.0001, dtSec);
           currentVel += (targetVel - currentVel) * lerpFactor;
 
-          // Organic spring decay of target velocity when scrolling pauses
           targetVel *= Math.pow(0.90, dtSec * 60);
 
           const velMag = Math.abs(currentVel);
@@ -148,12 +152,10 @@ export default function Story({
             wobbleTime += (0.016 + velMag * 0.00012) * (dtSec * 60);
           }
 
-          // Normalized velocity (-1 to 1) with higher sensitivity
           const normVel = gsap.utils.clamp(-1400, 1400, currentVel) / 1400;
           const absNorm = Math.abs(normVel);
 
           if (absNorm > 0.0005 || isMoving) {
-            // Animate main headline letters with extra jiggly elastic wave & momentum tilt
             chars.forEach((char, idx) => {
               const phase = idx * 0.42 + wobbleTime * 8;
               const sinWave = Math.sin(phase);
@@ -175,7 +177,6 @@ export default function Story({
               });
             });
 
-            // Animate eyebrow letters with responsive jiggle
             eyebrowChars.forEach((char, idx) => {
               const phase = idx * 0.5 + wobbleTime * 9;
               const sinWave = Math.sin(phase);
@@ -191,7 +192,6 @@ export default function Story({
               });
             });
           } else {
-            // Reset to default crisp state when stationary
             chars.forEach((char) => {
               gsap.set(char, {
                 y: 0,
@@ -217,7 +217,7 @@ export default function Story({
           scrollTrigger: {
             trigger: reveal,
             start: "top top",
-            end: isMobile ? "+=250%" : "+=300%",
+            end: isMobileCond ? "+=250%" : "+=300%",
             scrub: 0.8,
             pin: true,
             anticipatePin: 1,
@@ -227,7 +227,6 @@ export default function Story({
           },
         });
 
-        // 1. Image panel entrance from bottom-right to center
         tl.to(
           imagePanel,
           {
@@ -240,18 +239,17 @@ export default function Story({
             duration: 0.56,
             ease: "power2.out",
           },
-          0.04,
+          0.04
         );
 
         if (image) {
           tl.to(image, { scale: 1, duration: 0.56, ease: "power2.out" }, 0.04);
         }
 
-        // 2. Headline text scroll across screen
         tl.to(
           ".story-reveal-text",
           { opacity: 1, duration: 0.15, ease: "power1.out" },
-          0.6,
+          0.6
         )
           .to(
             revealTextInner,
@@ -260,46 +258,45 @@ export default function Story({
               duration: 1.6,
               ease: "none",
             },
-            0.6,
+            0.6
           )
           .fromTo(
             eyebrowEl,
             { opacity: 0, y: 10 },
             { opacity: 1, y: 0, duration: 0.2, ease: "power1.out" },
-            0.7,
+            0.7
           )
           .to(
             eyebrowEl,
             { opacity: 0, y: -10, duration: 0.2, ease: "power1.in" },
-            1.95,
+            1.95
           )
           .to(
             ".story-reveal-text",
             { opacity: 0, duration: 0.15, ease: "power1.in" },
-            2.08,
+            2.08
           );
 
-        // A short overlapping exit clears the stage as the headline leaves.
         tl.to(
           imagePanel,
           {
             x: `-${travelPct + 26}%`,
             y: `-${travelPct + 22}%`,
-            scale: isMobile ? 0.6 : 0.48,
+            scale: isMobileCond ? 0.6 : 0.48,
             rotate: 11,
             filter: "blur(20px)",
             opacity: 0,
             duration: 0.42,
             ease: "power4.in",
           },
-          2.06,
+          2.06
         );
 
         return () => {
           if (tickerCallback) gsap.ticker.remove(tickerCallback);
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
         };
-      },
+      }
     );
 
     if (document.fonts && document.fonts.ready) {
@@ -309,24 +306,19 @@ export default function Story({
     }
 
     return () => {
-      // 1. Set disposed flag first to stop rAF callback
       disposed = true;
 
-      // 2. Cancel ticker callback
       if (tickerCallback) {
         gsap.ticker.remove(tickerCallback);
       }
 
-      // 3. Cancel the rAF loop immediately
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
         rafId = null;
       }
 
-      // 4. Revert gsap matchMedia (kills all ScrollTriggers created inside)
       mm.revert();
 
-      // 5. Clean up Lenis: remove listener, then destroy
       if (lenis) {
         lenis.off("scroll", scrollUpdateHandler);
         lenis.destroy();
@@ -335,10 +327,12 @@ export default function Story({
     };
   }, [headlineMain, headlineAccent]);
 
+  const imgSrc = typeof libImg === "string" ? libImg : libImg?.src || "";
+
   return (
     <section className="story-reveal" ref={revealRef} id="storyReveal">
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
-        <img ref={imageRef} src={typeof libImg === "string" ? libImg : libImg?.src || libImg} alt="Story background" />
+        <img ref={imageRef} src={imgSrc} alt="Story background" />
         <div className="grain"></div>
       </div>
 
@@ -356,4 +350,3 @@ export default function Story({
     </section>
   );
 }
-
