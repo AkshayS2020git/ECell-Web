@@ -1,3 +1,4 @@
+import { StaticImageData } from "next/image";
 import President from "../../assets/team/President.webp";
 import VicePresident from "../../assets/team/vicePres.webp";
 import HeadTech from "../../assets/team/HeadTech.webp";
@@ -7,7 +8,17 @@ import Advisory from "../../assets/team/Advisory.webp";
 import AdvisoryHead from "../../assets/team/AdvisoryHead.webp";
 import DirectorPr from "../../assets/team/DirectorPr.webp";
 
-const teamMembers = [
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  image: StaticImageData | string;
+  imagePosition?: string;
+  linkedin: string;
+}
+
+const teamMembers: TeamMember[] = [
   {
     id: "member-1",
     name: "Vanshaj",
@@ -51,7 +62,7 @@ const teamMembers = [
     description:
       "builds external relationships and drives member involvement to grow the club's presence and value.",
     image: DirectorPr,
-    linkedin: "https://www.linkedin.com/in/ayushsk"
+    linkedin: "https://www.linkedin.com/in/ayushsk",
   },
   {
     id: "member-6",

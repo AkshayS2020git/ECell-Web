@@ -1,3 +1,4 @@
+import { RefObject, CSSProperties } from "react";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 
 // Motion Constants - Slow, gentle, luxurious transitions
@@ -5,14 +6,14 @@ const ANIM_DURATION = 0.85;
 const EASE = "power2.inOut";
 
 let isAnimating = false;
-let scrollTriggerInstance = null;
-let transitionTimeline = null;
+let scrollTriggerInstance: globalThis.ScrollTrigger | null = null;
+let transitionTimeline: gsap.core.Timeline | null = null;
 
-export function getIsAnimating() {
+export function getIsAnimating(): boolean {
   return isAnimating;
 }
 
-export function cleanupTeamAnimations() {
+export function cleanupTeamAnimations(): void {
   transitionTimeline?.kill();
   transitionTimeline = null;
   isAnimating = false;
@@ -21,10 +22,14 @@ export function cleanupTeamAnimations() {
   scrollTriggerInstance = null;
 }
 
+export interface SetupTeamScrollOptions {
+  teamRef?: RefObject<HTMLElement | null>;
+}
+
 /**
  * Natural page reveal animation.
  */
-export function setupTeamScroll({ teamRef } = {}) {
+export function setupTeamScroll({ teamRef }: SetupTeamScrollOptions = {}): (() => void) | undefined {
   if (!teamRef?.current) return;
 
   if (scrollTriggerInstance) {
@@ -33,15 +38,15 @@ export function setupTeamScroll({ teamRef } = {}) {
   }
 
   const team = teamRef.current;
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const reduceMotion = typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false;
+  const isMobile = typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false;
   if (reduceMotion) return;
 
   const header = team.querySelector(".team__header");
   const activeCard = team.querySelector('.team__card[data-active="true"]');
   const image = activeCard?.querySelector(".team__image");
   const content = activeCard?.querySelectorAll(
-    ".team__role, .team__title, .team__description",
+    ".team__role, .team__title, .team__description"
   );
   const wipe = team.querySelector(".team__transition-wipe");
 
@@ -59,34 +64,40 @@ export function setupTeamScroll({ teamRef } = {}) {
       wipe,
       { autoAlpha: 1, scaleX: 1, transformOrigin: "right center" },
       { autoAlpha: 0, scaleX: 0, duration: 0.72, ease: "power4.inOut" },
-      0,
+      0
     )
     .fromTo(
       header,
       { autoAlpha: 0, y: 28 },
       { autoAlpha: 1, y: 0, duration: 0.55, ease: "power3.out" },
-      0.18,
+      0.18
     )
     .fromTo(
       activeCard,
       { autoAlpha: 0, y: isMobile ? 48 : 84, scale: isMobile ? 0.95 : 0.9, rotate: isMobile ? 1 : 2.5 },
       { autoAlpha: 1, y: 0, scale: 1, rotate: 0, duration: 0.9, ease: "power4.out" },
-      0.22,
-    )
-    .fromTo(
+      0.22
+    );
+
+  if (image) {
+    entrance.fromTo(
       image,
       { clipPath: "inset(100% 0 0 0)", scale: isMobile ? 1.06 : 1.12 },
       { clipPath: "inset(0% 0 0 0)", scale: 1, duration: 0.7, ease: "power3.out" },
-      0.46,
-    )
-    .fromTo(
+      0.46
+    );
+  }
+
+  if (content && content.length > 0) {
+    entrance.fromTo(
       content,
       { autoAlpha: 0, x: 28 },
       { autoAlpha: 1, x: 0, duration: 0.48, stagger: 0.08, ease: "power3.out" },
-      0.56,
+      0.56
     );
+  }
 
-  scrollTriggerInstance = entrance.scrollTrigger;
+  scrollTriggerInstance = entrance.scrollTrigger ?? null;
 
   return () => {
     entrance.kill();
@@ -101,7 +112,7 @@ export function setupTeamScroll({ teamRef } = {}) {
  * Clean card display style: Only active card is visible (opacity 1).
  * Inactive cards are fully hidden (opacity 0) to prevent any background clutter or bleed.
  */
-export function getStackStyle(index, activeIndex) {
+export function getStackStyle(index: number, activeIndex: number): CSSProperties {
   const isActive = index === activeIndex;
 
   if (isActive) {
@@ -125,13 +136,18 @@ export function getStackStyle(index, activeIndex) {
   }
 }
 
+export interface SetupTeamAnimationsOptions {
+  cardRefs?: (HTMLElement | null)[];
+  activeIndex?: number;
+}
+
 /**
  * Initializes card stack presentation.
  */
 export function setupTeamAnimations({
   cardRefs = [],
   activeIndex = 0,
-} = {}) {
+}: SetupTeamAnimationsOptions = {}): void {
   if (!cardRefs || cardRefs.length === 0) return;
 
   cardRefs.forEach((card, index) => {
@@ -147,13 +163,19 @@ export function setupTeamAnimations({
   });
 }
 
+export interface SelectMemberOptions {
+  cardRefs?: (HTMLElement | null)[];
+  activeIndex?: number;
+  onComplete?: (index: number) => void;
+}
+
 /**
  * Easy, slow, calm transition between team members.
  */
 export function selectMember(
-  newIndex,
-  { cardRefs = [], activeIndex = 0, onComplete } = {}
-) {
+  newIndex: number,
+  { cardRefs = [], activeIndex = 0, onComplete }: SelectMemberOptions = {}
+): void {
   if (isAnimating || !cardRefs || cardRefs.length === 0) return;
   if (newIndex === activeIndex) return;
 
