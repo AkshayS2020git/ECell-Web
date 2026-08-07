@@ -1,42 +1,46 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
-import './Nav.css';
+import React, { useState, useEffect, useRef } from "react";
+import "./Nav.css";
 
-export default function Nav() {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleRef = useRef(null);
-  const dropdownRef = useRef(null);
+export default function Nav(): React.ReactElement {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const toggleRef = useRef<HTMLButtonElement | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    function handleClickOutside(event) {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Node | null;
       if (
-        toggleRef.current && !toggleRef.current.contains(event.target) &&
-        dropdownRef.current && !dropdownRef.current.contains(event.target)
+        toggleRef.current &&
+        target &&
+        !toggleRef.current.contains(target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target)
       ) {
         setIsOpen(false);
       }
     }
 
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
-  const scrollToSection = (id) => {
+  const scrollToSection = (id: string) => {
     setIsOpen(false);
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   useEffect(() => {
     if (!isOpen) return;
     const handleScroll = () => setIsOpen(false);
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [isOpen]);
 
@@ -68,7 +72,7 @@ export default function Nav() {
           <button
             className="menu-icon"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label={isOpen ? 'Close chapters menu' : 'Open chapters menu'}
+            aria-label={isOpen ? "Close chapters menu" : "Open chapters menu"}
             aria-expanded={isOpen}
             aria-controls="chapters-menu"
             type="button"
@@ -82,15 +86,15 @@ export default function Nav() {
       <div
         ref={dropdownRef}
         id="chapters-menu"
-        className={`chapters-dropdown ${isOpen ? 'open' : ''}`}
+        className={`chapters-dropdown ${isOpen ? "open" : ""}`}
         aria-hidden={!isOpen}
       >
         <a
           href="#aboutSection"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection('aboutSection');
-            document.activeElement?.blur();
+            scrollToSection("aboutSection");
+            (document.activeElement as HTMLElement | null)?.blur();
             setIsOpen(false);
           }}
           className="dropdown-about-link"
@@ -101,8 +105,8 @@ export default function Nav() {
           href="#teamSection"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection('teamSection');
-            document.activeElement?.blur();
+            scrollToSection("teamSection");
+            (document.activeElement as HTMLElement | null)?.blur();
             setIsOpen(false);
           }}
           className="dropdown-team-link"
@@ -113,8 +117,8 @@ export default function Nav() {
           href="#eventsSection"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection('eventsSection');
-            document.activeElement?.blur();
+            scrollToSection("eventsSection");
+            (document.activeElement as HTMLElement | null)?.blur();
             setIsOpen(false);
           }}
           className="dropdown-events-link"
@@ -125,8 +129,8 @@ export default function Nav() {
           href="#sponsors"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection('sponsors');
-            document.activeElement?.blur();
+            scrollToSection("sponsors");
+            (document.activeElement as HTMLElement | null)?.blur();
             setIsOpen(false);
           }}
           className="dropdown-sponsors-link"
@@ -137,10 +141,9 @@ export default function Nav() {
           href="#speakers"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection('speakers');
-            document.activeElement?.blur();
+            scrollToSection("speakers");
+            (document.activeElement as HTMLElement | null)?.blur();
             setIsOpen(false);
-
           }}
           className="dropdown-speakers-link"
         >
@@ -150,8 +153,8 @@ export default function Nav() {
           href="#community"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection('community');
-            document.activeElement?.blur();
+            scrollToSection("community");
+            (document.activeElement as HTMLElement | null)?.blur();
             setIsOpen(false);
           }}
           className="dropdown-footer-link"
@@ -162,8 +165,8 @@ export default function Nav() {
           href="#footer"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection('footer');
-            document.activeElement?.blur();
+            scrollToSection("footer");
+            (document.activeElement as HTMLElement | null)?.blur();
             setIsOpen(false);
           }}
           className="dropdown-footer-link"
