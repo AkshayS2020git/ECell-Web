@@ -6,7 +6,7 @@ import winterTechTalk from "../../assets/events/WinterTechTalk.webp";
 import argonyx from "../../assets/events/argonyx.webp";
 import argonyx2 from "../../assets/events/argoynx2.jpg";
 import "./Events.css";
-import { StaticImageData } from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 export interface GalleryItem {
   caption: string;
@@ -199,7 +199,6 @@ export default function Events(): React.ReactElement {
 
         <div className="events-scene" ref={sceneRef} id="scene">
           {GALLERY_ITEMS.map((item, idx) => {
-            const imgSrc = typeof item.src === "string" ? item.src : item.src?.src || "";
             return (
               <div
                 key={idx}
@@ -209,7 +208,7 @@ export default function Events(): React.ReactElement {
                   itemsRef.current[idx] = el;
                 }}
               >
-                <img src={imgSrc} alt={item.alt} />
+                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 80vw, 32vw" style={{ objectFit: "cover" }} />
               </div>
             );
           })}

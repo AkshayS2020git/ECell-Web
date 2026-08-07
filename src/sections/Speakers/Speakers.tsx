@@ -7,7 +7,7 @@ import guhaPhoto from "../../assets/prevSpeakers/guha.png";
 import harpreetPhoto from "../../assets/prevSpeakers/harpreet.jpg";
 import shariffPhoto from "../../assets/prevSpeakers/shariff.jpg";
 import "./Speakers.css";
-import { StaticImageData } from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 export interface Speaker {
   id: number;
@@ -242,8 +242,6 @@ export default function Speakers(): React.ReactElement {
             const scale = isActive ? 1.05 : Math.max(0.78, 1 - absOffset * 0.12);
             const opacity = isActive ? 1 : Math.max(0.25, 1 - absOffset * 0.35);
             const zIndex = 10 - absOffset;
-            const imgSrc = typeof speaker.photo === "string" ? speaker.photo : speaker.photo?.src || "";
-
             return (
               <div
                 key={speaker.id}
@@ -265,13 +263,13 @@ export default function Speakers(): React.ReactElement {
                   zIndex: zIndex,
                 }}
               >
-                <img
+                <Image
                   className="speaker-card-photo"
-                  src={imgSrc}
+                  src={speaker.photo}
                   alt=""
                   aria-hidden="true"
-                  loading="lazy"
-                  decoding="async"
+                  fill
+                  sizes="240px"
                   style={{ objectPosition: speaker.photoPosition }}
                 />
                 <div className="speaker-card-inner">

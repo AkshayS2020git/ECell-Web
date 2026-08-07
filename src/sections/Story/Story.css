@@ -84,13 +84,19 @@
   background: var(--story-panel);
 }
 
+.story-image-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: scale(1.18);
+  will-change: transform;
+}
+
 .story-image-panel img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transform: scale(1.18);
-  will-change: transform;
 }
 
 /* Subtle film grain texture overlay */
