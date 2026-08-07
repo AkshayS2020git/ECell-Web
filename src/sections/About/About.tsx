@@ -1,15 +1,16 @@
 "use client";
-import { useEffect, useRef } from 'react';
-import { gsap } from '../../utils/gsapSetup';
-import './About.css';
+import React, { useEffect, useRef } from "react";
+import { gsap } from "../../utils/gsapSetup";
+import { smoothstep, lerp } from "../../utils/math";
+import "./About.css";
 
-export default function About() {
-  const aboutSectionRef = useRef(null);
-  const aboutStatementRef = useRef(null);
-  const line1Ref = useRef(null);
-  const line2Ref = useRef(null);
-  const line3Ref = useRef(null);
-  const line4Ref = useRef(null);
+export default function About(): React.ReactElement {
+  const aboutSectionRef = useRef<HTMLElement | null>(null);
+  const aboutStatementRef = useRef<HTMLDivElement | null>(null);
+  const line1Ref = useRef<HTMLSpanElement | null>(null);
+  const line2Ref = useRef<HTMLSpanElement | null>(null);
+  const line3Ref = useRef<HTMLSpanElement | null>(null);
+  const line4Ref = useRef<HTMLSpanElement | null>(null);
 
   useEffect(() => {
     const aboutSection = aboutSectionRef.current;
@@ -28,15 +29,6 @@ export default function About() {
       return;
     }
 
-    function smoothstep(edge0, edge1, x) {
-      const t = Math.min(Math.max((x - edge0) / (edge1 - edge0), 0), 1);
-      return t * t * (3 - 2 * t);
-    }
-
-    function lerp(a, b, t) {
-      return a + (b - a) * t;
-    }
-
     const ABOUT_SMOOTH = 0.06;
     let aboutSmoothed = 0;
     let lastAppliedProgress = -1;
@@ -44,20 +36,18 @@ export default function About() {
     let disposed = false;
 
     function updateAboutAnimations() {
-      if (disposed) return;
+      if (disposed || !aboutStatement) return;
 
       const rect = aboutStatement.getBoundingClientRect();
       const vh = window.innerHeight;
 
-      // Do not spend a frame recalculating blur/transforms while this section
-      // is well outside the viewport (especially during the hero scroll).
       if (rect.bottom < -vh || rect.top > vh * 1.25) return;
 
       const startY = vh * 1.0;
       const endY = vh * 0.1;
       const target = Math.min(
         Math.max((startY - rect.top) / (startY - endY), 0),
-        1,
+        1
       );
       const diff = Math.abs(aboutSmoothed - target);
       if (diff < 0.00005) {
@@ -75,7 +65,7 @@ export default function About() {
         const winLen = 0.42;
         const lp = smoothstep(winStart, winStart + winLen, p);
         line.style.transform = `translateY(${100 - lp * 100}%)`;
-        line.style.opacity = lp;
+        line.style.opacity = `${lp}`;
         line.style.filter = `blur(${10 - lp * 10}px)`;
       });
     }
@@ -102,25 +92,25 @@ export default function About() {
       <div ref={aboutStatementRef} className="about-statement" id="aboutStatement">
         <span className="line-mask">
           <span ref={line1Ref} className="line-inner">
-            <span className="bright">Building ideas,</span>{' '}
+            <span className="bright">Building ideas,</span>{" "}
             <span className="dim">chasing outcomes,</span>
           </span>
         </span>
         <span className="line-mask">
           <span ref={line2Ref} className="line-inner">
-            <span className="bright">backing founders</span>{' '}
+            <span className="bright">backing founders</span>{" "}
             <span className="dim">who go all in.</span>
           </span>
         </span>
         <span className="line-mask">
           <span ref={line3Ref} className="line-inner">
-            <span className="dim">Defining a</span>{' '}
+            <span className="dim">Defining a</span>{" "}
             <span className="bright">legacy</span>
           </span>
         </span>
         <span className="line-mask">
           <span ref={line4Ref} className="line-inner">
-            <span className="dim">of builders,</span>{' '}
+            <span className="dim">of builders,</span>{" "}
             <span className="bright">on campus and beyond.</span>
           </span>
         </span>
