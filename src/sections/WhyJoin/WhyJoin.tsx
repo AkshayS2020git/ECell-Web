@@ -64,12 +64,12 @@ const reasons = [
 
 export default function WhyJoin(): React.ReactElement {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const cardRefs = useRef<Array<HTMLArticleElement | null>>([]);
+  const cardRefs = useRef<Array<HTMLElement | null>>([]);
 
   useEffect(() => {
     const section = sectionRef.current;
     const cards = cardRefs.current.filter(
-      (card): card is HTMLArticleElement => card !== null
+      (card): card is HTMLElement => card !== null
     );
     if (!section || cards.length !== reasons.length) return;
 
