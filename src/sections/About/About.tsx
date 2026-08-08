@@ -59,8 +59,8 @@ export default function About(): React.ReactElement {
     const wordTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: wordsStage,
-        start: "top 82%",
-        end: "bottom 46%",
+        start: "top 75%",
+        end: "bottom 15%",
         scrub: 0.7,
       },
     });
@@ -68,9 +68,21 @@ export default function About(): React.ReactElement {
       wordTimeline.fromTo(
         word,
         { yPercent: 80, autoAlpha: 0, rotate: 3 },
-        { yPercent: 0, autoAlpha: 1, rotate: 0, duration: 0.72, ease: "power4.out" },
-        index * 0.72
+        { yPercent: 0, autoAlpha: 1, rotate: 0, duration: 0.78, ease: "power4.out" },
+        index * 1.25
       );
+    });
+    // Keep the completed statement on screen briefly before exiting.
+    wordTimeline.to({}, { duration: 0.6 });
+
+    // Exit animation: fade out and drift up so 'Create.' exits the screen cleanly before transition enters.
+    wordTimeline.to(words, {
+      yPercent: -50,
+      autoAlpha: 0,
+      filter: "blur(6px)",
+      stagger: 0.1,
+      duration: 0.8,
+      ease: "power2.in",
     });
 
     const transitionTween = transition
@@ -83,8 +95,8 @@ export default function About(): React.ReactElement {
             ease: "power2.out",
             scrollTrigger: {
               trigger: transition,
-              start: "top 94%",
-              end: "top 74%",
+              start: "top 85%",
+              end: "top 65%",
               scrub: 0.5,
             },
           }
