@@ -112,7 +112,9 @@ export default function Story({
       { isDesktop: "(min-width: 768px)", isMobile: "(max-width: 767px)" },
       (context) => {
         const isMobileCond = context.conditions?.isMobile ?? false;
-        const travelPct = isMobileCond ? 28 : 40;
+        // Keep the panel aligned to the viewport horizontally so it rises
+        // through the bottom edge instead of entering from a corner.
+        const entryYOffset = isMobileCond ? 68 : 76;
 
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
@@ -121,10 +123,10 @@ export default function Story({
         gsap.set(".story-reveal-text", { opacity: 0 });
 
         gsap.set(imagePanel, {
-          x: `${travelPct}%`,
-          y: `${travelPct}%`,
-          scale: isMobileCond ? 0.62 : 0.5,
-          rotate: -4,
+          x: "0%",
+          y: `${entryYOffset}%`,
+          scale: isMobileCond ? 0.82 : 0.86,
+          rotate: 0,
           filter: "blur(6px)",
           opacity: 1,
         });
@@ -281,8 +283,8 @@ export default function Story({
         tl.to(
           imagePanel,
           {
-            x: `-${travelPct + 26}%`,
-            y: `-${travelPct + 22}%`,
+            x: "-26%",
+            y: "-62%",
             scale: isMobileCond ? 0.6 : 0.48,
             rotate: 11,
             filter: "blur(20px)",

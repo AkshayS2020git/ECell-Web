@@ -1,9 +1,9 @@
 .about {
   position: relative;
   z-index: 2;
-  min-height: 100vh;
+  min-height: 185vh;
   padding-top: 90px;
-  padding-bottom: 360px;
+  padding-bottom: 150px;
   background: var(--bg);
   text-align: center;
 }
@@ -17,13 +17,13 @@
 }
 
 .about-statement {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
   color: var(--fg);
   font-family: "Archivo", sans-serif;
-  font-size: clamp(30px, 5.4vw, 68px);
+  font-size: clamp(34px, 5.4vw, 76px);
   font-weight: 900;
-  line-height: 1.15;
+  line-height: 1.08;
 }
 
 .line-mask {
@@ -34,24 +34,167 @@
 
 .line-inner {
   display: block;
-  transform: translateY(100%);
-  opacity: 0;
-  filter: blur(10px);
   will-change: transform, opacity, filter;
 }
 
-.bright {
-  color: var(--fg);
+.dim {
+  color: rgba(244, 244, 242, 0.42);
 }
 
-.dim {
-  color: rgba(244, 244, 242, 0.36);
+.about-copy {
+  max-width: 665px;
+  margin: 32px auto 0;
+  color: rgba(244, 244, 242, 0.64);
+  font-size: clamp(17px, 1.5vw, 21px);
+  line-height: 1.48;
 }
+
+.about-copy__mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+}
+
+.about-copy__line {
+  display: block;
+  will-change: transform, opacity, filter;
+}
+
+.about-words {
+  position: relative;
+  height: min(51vw, 680px);
+  min-height: 410px;
+  max-height: 680px;
+  margin: clamp(112px, 15vw, 210px) auto 0;
+  overflow: hidden;
+  color: var(--fg);
+  font-family: "Archivo", sans-serif;
+  font-size: clamp(96px, 11vw, 178px);
+  font-weight: 900;
+  letter-spacing: -0.09em;
+  line-height: 0.78;
+  text-transform: uppercase;
+}
+
+.about-word {
+  position: absolute;
+  right: 0;
+  left: 0;
+  display: block;
+  opacity: 0;
+  transform: translateY(80%) rotate(3deg);
+  transform-origin: 50% 100%;
+  will-change: opacity, transform;
+}
+
+.about-word:nth-child(1) {
+  top: 2%;
+}
+
+.about-word:nth-child(2) {
+  top: 34%;
+  color: rgba(244, 244, 242, 0.48);
+}
+
+.about-word:nth-child(3) {
+  top: 60%;
+  color: #8bce5d;
+}
+
+.about-transition {
+  position: absolute;
+  right: 32px;
+  bottom: 78px;
+  left: 32px;
+  display: grid;
+  grid-template-columns: auto auto minmax(72px, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  color: rgba(244, 244, 242, 0.62);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  will-change: opacity, transform;
+}
+
+.about-transition__count { color: var(--fg); }
+.about-transition__label { white-space: nowrap; }
+
+.about-transition__line {
+  position: relative;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(244, 244, 242, 0.16);
+}
+
+.about-transition__line i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 32%;
+  background: var(--fg);
+  animation: about-transition-pulse 2.4s ease-in-out infinite;
+}
+
+.about-transition__arrow {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgba(244, 244, 242, 0.32);
+  border-radius: 50%;
+  color: var(--fg);
+  font-size: 15px;
+  letter-spacing: 0;
+  animation: about-transition-bounce 2.4s ease-in-out infinite;
+}
+
+@keyframes about-transition-pulse { 50% { transform: translateX(220%); } }
+@keyframes about-transition-bounce { 50% { transform: translateY(4px); } }
 
 @media (max-width: 768px) {
   .about {
-    min-height: 100vh;
+    min-height: 152vh;
     padding-top: 120px;
-    padding-bottom: 120px;
+    padding-bottom: 125px;
   }
+
+  .about-statement {
+    font-size: clamp(31px, 9.3vw, 49px);
+  }
+
+  .about-copy {
+    max-width: 510px;
+    margin-top: 24px;
+    font-size: 16px;
+  }
+
+  .about-words {
+    height: 88vw;
+    min-height: 340px;
+    margin-top: 104px;
+    font-size: clamp(64px, 17vw, 130px);
+    line-height: 0.8;
+  }
+
+  .about-word:nth-child(3) {
+    top: 61%;
+  }
+
+  .about-transition {
+    right: 22px;
+    bottom: 34px;
+    left: 22px;
+    grid-template-columns: auto 1fr auto;
+    gap: 11px;
+    font-size: 9px;
+  }
+
+  .about-transition__label { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-transition__line i,
+  .about-transition__arrow { animation: none; }
 }
