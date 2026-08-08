@@ -6,6 +6,7 @@ import Loader from "@/src/sections/Loader/Loader";
 import Nav from "@/src/sections/Nav/Nav";
 import Hero from "@/src/sections/Hero/Hero";
 import About from "@/src/sections/About/About";
+import WhyJoin from "@/src/sections/WhyJoin/WhyJoin";
 import Story from "@/src/sections/Story/Story";
 import Events from "@/src/sections/Events/Events";
 import Sponsors from "@/src/sections/Sponsors/Sponsors";
@@ -59,6 +60,7 @@ export default function Home() {
       <GameLauncher />
       <Hero />
       <About />
+      <WhyJoin />
       <Story />
       <Team />
       <Events />
