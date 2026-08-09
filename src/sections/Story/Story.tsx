@@ -4,7 +4,6 @@ import Image from "next/image";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import Lenis from "lenis";
 import "./Story.css";
-import libImg from "../../assets/story/lib.webp";
 
 export interface StoryProps {
   eyebrow?: string;
@@ -358,7 +357,7 @@ export default function Story({
     <section className="story-reveal" ref={revealRef} id="storyReveal">
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
         <div ref={imageRef} className="story-image-inner">
-          <Image src={libImg} alt="Story background" fill sizes="100vw" style={{ objectFit: "cover" }} />
+          <Image src="/assets/story/lib.webp" alt="Story background" fill sizes="100vw" style={{ objectFit: "cover" }} />
         </div>
         <div className="grain"></div>
       </div>

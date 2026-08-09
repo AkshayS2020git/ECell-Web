@@ -19,55 +19,109 @@
 /* Scroll progress indicator hint */
 .hero__scroll-hint {
   position: absolute;
-  bottom: 40px;
+  bottom: clamp(28px, 5vh, 52px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   z-index: 10;
   pointer-events: none;
+  filter: drop-shadow(0 0 18px rgba(244, 244, 242, 0.08));
 }
 
-.hero__scroll-hint span {
-  font-size: 0.65rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--fg-dim, #a7a7a1);
-}
-
-.hero__scroll-hint .hero__scroll-track {
+.hero__scroll-mouse {
   position: relative;
-  width: 1px;
-  height: 34px;
-  background: var(--line, rgba(244, 244, 242, 0.14));
-  overflow: hidden;
+  width: 28px;
+  height: 44px;
+  border: 2px solid rgba(244, 244, 242, 0.55);
+  border-radius: 999px;
+  background: rgba(7, 7, 7, 0.22);
+  backdrop-filter: blur(6px);
 }
 
-.hero__scroll-hint .hero__scroll-track i {
+.hero__scroll-wheel {
   position: absolute;
-  top: -34px;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 9px;
+  left: 50%;
+  width: 4px;
+  height: 10px;
+  border-radius: 999px;
   background: var(--fg, #f4f4f2);
-  animation: heroTravel 1.8s ease-in-out infinite;
+  transform: translateX(-50%);
+  animation: heroScrollWheel 1.9s ease-in-out infinite;
 }
 
-@keyframes heroTravel {
+.hero__scroll-chevrons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: -4px;
+}
+
+.hero__scroll-chevrons span {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(244, 244, 242, 0.72);
+  border-bottom: 2px solid rgba(244, 244, 242, 0.72);
+  transform: rotate(45deg);
+  animation: heroScrollChevron 1.9s ease-in-out infinite;
+}
+
+.hero__scroll-chevrons span:nth-child(2) {
+  margin-top: -6px;
+  animation-delay: 0.18s;
+  opacity: 0.45;
+}
+
+.hero__scroll-label {
+  font-family: "Archivo", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(244, 244, 242, 0.88);
+}
+
+@keyframes heroScrollWheel {
   0% {
-    transform: translateY(0);
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  70% {
+    opacity: 0.15;
+    transform: translateX(-50%) translateY(14px);
   }
   100% {
-    transform: translateY(68px);
+    opacity: 0;
+    transform: translateX(-50%) translateY(14px);
+  }
+}
+
+@keyframes heroScrollChevron {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: rotate(45deg) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(45deg) translateY(4px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__scroll-hint .hero__scroll-track i {
+  .hero__scroll-wheel,
+  .hero__scroll-chevrons span {
     animation: none;
-    top: 0;
+  }
+
+  .hero__scroll-wheel {
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -76,8 +130,18 @@
     height: 230vh;
   }
 
-  .hero__scroll-hint .hero__scroll-track i {
-    animation: none;
-    top: 0;
+  .hero__scroll-hint {
+    bottom: 24px;
+    gap: 10px;
+  }
+
+  .hero__scroll-mouse {
+    width: 24px;
+    height: 38px;
+  }
+
+  .hero__scroll-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
   }
 }

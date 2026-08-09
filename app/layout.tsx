@@ -57,8 +57,11 @@ export const metadata: Metadata = {
     locale: "en_IN",
     images: [
       {
-        url: "/ECell_Logo_Black.svg",
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
         alt: "ECell RV University logo",
+        type: "image/png",
       },
     ],
   },
@@ -67,12 +70,16 @@ export const metadata: Metadata = {
     title: "ECell RV University | Building What's Next",
     description:
       "The official entrepreneurship cell at RV University — for founders, innovators, and future entrepreneurs.",
-    images: ["/ECell_Logo_Black.svg"],
+    images: ["/og-image.png"],
   },
   icons: {
-    icon: "/favicon.svg?v=3",
-    shortcut: "/favicon.svg?v=3",
-    apple: "/favicon.svg?v=3",
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+    ],
+    shortcut: "/favicon-48x48.png",
+    apple: "/apple-touch-icon.png",
   },
   category: "education",
 };
@@ -83,7 +90,7 @@ const jsonLd = {
   name: "ECell RV University",
   alternateName: ["E-Cell RVU", "ECell RVU", "Entrepreneurship Cell RV University"],
   url: `${SITE_URL}/`,
-  logo: `${SITE_URL}/ECell_Logo_Black.svg`,
+  logo: `${SITE_URL}/logo.png`,
   description:
     "The official entrepreneurship cell at RV University, Bengaluru — building a thriving campus community for founders, innovators, and future entrepreneurs.",
   email: "club_ecell@rvu.edu.in",
@@ -119,9 +126,15 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
-        <link rel="shortcut icon" href="/favicon.svg?v=3" />
-        <link rel="apple-touch-icon" href="/favicon.svg?v=3" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+        <link rel="shortcut icon" href="/favicon-48x48.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/png" />
         <link
           href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
           rel="stylesheet"
