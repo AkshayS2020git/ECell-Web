@@ -236,7 +236,8 @@
   }
 
   .why-join__intro {
-    top: 48px;
+    /* Keep the fixed navigation clear of the section heading on mobile. */
+    top: max(88px, calc(64px + env(safe-area-inset-top)));
   }
 
   .why-join h2 {
@@ -249,10 +250,10 @@
   }
 
   .why-join__stack {
-    width: calc(100% - 44px);
-    height: min(105vw, 530px);
-    min-height: 390px;
-    right: 22px;
+    width: calc(100% - 56px);
+    height: min(96vw, 480px);
+    min-height: 360px;
+    right: 28px;
     bottom: 36px;
   }
 
@@ -264,6 +265,7 @@
   .why-card__middle {
     left: 27px;
     right: 27px;
+    top: 40%;
   }
 
   .why-card__icon {
