@@ -53,7 +53,7 @@ export default function Hero(): React.ReactElement {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(video);
@@ -93,10 +93,10 @@ export default function Hero(): React.ReactElement {
           <div className="hero__marquee-line hero__marquee-line--dim hero__marquee-line--reverse">
             <span>
               WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY INTO ACTION
-              &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY INTO
-              ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN THAT
-              CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU
-              TURN THAT CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY
+              INTO ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN
+              THAT CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO
+              HELP YOU TURN THAT CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp;
             </span>
           </div>
         </div>
@@ -118,7 +118,11 @@ export default function Hero(): React.ReactElement {
             preload="metadata"
             suppressHydrationWarning
           >
-            <source media="(max-width: 768px)" src={heroMobileVideo} type="video/mp4" />
+            <source
+              media="(max-width: 768px)"
+              src={heroMobileVideo}
+              type="video/mp4"
+            />
             <source src={heroVideo} type="video/mp4" />
           </video>
           <div className="hero__overlay" />
@@ -130,11 +134,15 @@ export default function Hero(): React.ReactElement {
           </h1>
         </div>
 
-        <div ref={scrollHintRef} className="hero__scroll-hint">
-          <div className="hero__scroll-track">
-            <i />
+        <div ref={scrollHintRef} className="hero__scroll-hint" aria-hidden="true">
+          <div className="hero__scroll-mouse">
+            <span className="hero__scroll-wheel" />
           </div>
-          <span>SCROLL</span>
+          <div className="hero__scroll-chevrons">
+            <span />
+            <span />
+          </div>
+          <span className="hero__scroll-label">Scroll to explore</span>
         </div>
       </div>
     </section>
