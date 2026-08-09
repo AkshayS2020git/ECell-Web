@@ -1,119 +1,139 @@
 "use client";
+
 import React, { useEffect, useRef } from "react";
 import { gsap } from "../../utils/gsapSetup";
-import { smoothstep, lerp } from "../../utils/math";
 import "./About.css";
 
 export default function About(): React.ReactElement {
-  const aboutSectionRef = useRef<HTMLElement | null>(null);
-  const aboutStatementRef = useRef<HTMLDivElement | null>(null);
-  const line1Ref = useRef<HTMLSpanElement | null>(null);
-  const line2Ref = useRef<HTMLSpanElement | null>(null);
-  const line3Ref = useRef<HTMLSpanElement | null>(null);
-  const line4Ref = useRef<HTMLSpanElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const copyRef = useRef<HTMLParagraphElement | null>(null);
+  const wordsRef = useRef<HTMLDivElement | null>(null);
+  const transitionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const aboutSection = aboutSectionRef.current;
-    const aboutStatement = aboutStatementRef.current;
-    const lines = [line1Ref.current, line2Ref.current, line3Ref.current, line4Ref.current];
+    const section = sectionRef.current;
+    const heading = headingRef.current;
+    const copy = copyRef.current;
+    const wordsStage = wordsRef.current;
+    const transition = transitionRef.current;
+    const headingLines = Array.from(
+      heading?.querySelectorAll<HTMLSpanElement>(".line-inner") ?? []
+    );
+    const copyLines = Array.from(
+      copy?.querySelectorAll<HTMLSpanElement>(".about-copy__line") ?? []
+    );
+    const words = Array.from(
+      wordsStage?.querySelectorAll<HTMLSpanElement>(".about-word") ?? []
+    );
 
-    if (!aboutSection || !aboutStatement) return;
+    if (!section || !heading || !copy || !wordsStage) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      lines.forEach((line) => {
-        if (!line) return;
-        line.style.transform = "none";
-        line.style.opacity = "1";
-        line.style.filter = "none";
+      gsap.set([...headingLines, ...copyLines, ...words, transition].filter(Boolean), {
+        clearProps: "all",
+        autoAlpha: 1,
       });
       return;
     }
 
-    const ABOUT_SMOOTH = 0.06;
-    let aboutSmoothed = 0;
-    let lastAppliedProgress = -1;
-
-    let disposed = false;
-
-    function updateAboutAnimations() {
-      if (disposed || !aboutStatement) return;
-
-      const rect = aboutStatement.getBoundingClientRect();
-      const vh = window.innerHeight;
-
-      if (rect.bottom < -vh || rect.top > vh * 1.25) return;
-
-      const startY = vh * 1.0;
-      const endY = vh * 0.1;
-      const target = Math.min(
-        Math.max((startY - rect.top) / (startY - endY), 0),
-        1
+    const headingTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top 76%",
+        toggleActions: "play none none reverse",
+      },
+    })
+      .fromTo(
+        headingLines,
+        { yPercent: 108, autoAlpha: 0, filter: "blur(9px)" },
+        { yPercent: 0, autoAlpha: 1, filter: "blur(0px)", duration: 0.8, stagger: 0.13, ease: "power4.out" }
+      )
+      .fromTo(
+        copyLines,
+        { yPercent: 110, autoAlpha: 0, filter: "blur(7px)" },
+        { yPercent: 0, autoAlpha: 1, filter: "blur(0px)", duration: 0.58, stagger: 0.09, ease: "power4.out" },
+        "-=0.3"
       );
-      const diff = Math.abs(aboutSmoothed - target);
-      if (diff < 0.00005) {
-        aboutSmoothed = target;
-        if (lastAppliedProgress === aboutSmoothed) return;
-      } else {
-        aboutSmoothed = lerp(aboutSmoothed, target, ABOUT_SMOOTH);
-      }
-      lastAppliedProgress = aboutSmoothed;
-      const p = aboutSmoothed;
 
-      lines.forEach((line, i) => {
-        if (!line) return;
-        const winStart = i * 0.18;
-        const winLen = 0.42;
-        const lp = smoothstep(winStart, winStart + winLen, p);
-        line.style.transform = `translateY(${100 - lp * 100}%)`;
-        line.style.opacity = `${lp}`;
-        line.style.filter = `blur(${10 - lp * 10}px)`;
-      });
-    }
+    const wordTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: wordsStage,
+        start: "top 75%",
+        end: "bottom 15%",
+        scrub: 0.7,
+      },
+    });
+    words.forEach((word, index) => {
+      wordTimeline.fromTo(
+        word,
+        { yPercent: 80, autoAlpha: 0, rotate: 3 },
+        { yPercent: 0, autoAlpha: 1, rotate: 0, duration: 0.78, ease: "power4.out" },
+        index * 1.25
+      );
+    });
+    // Keep the completed statement on screen briefly before exiting.
+    wordTimeline.to({}, { duration: 0.6 });
 
-    gsap.ticker.add(updateAboutAnimations);
+    // Exit animation: fade out and drift up so 'Create.' exits the screen cleanly before transition enters.
+    wordTimeline.to(words, {
+      yPercent: -50,
+      autoAlpha: 0,
+      filter: "blur(6px)",
+      stagger: 0.1,
+      duration: 0.8,
+      ease: "power2.in",
+    });
+
+    const transitionTween = transition
+      ? gsap.fromTo(
+          transition,
+          { autoAlpha: 0, y: 24 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: transition,
+              start: "top 85%",
+              end: "top 65%",
+              scrub: 0.5,
+            },
+          }
+        )
+      : null;
 
     return () => {
-      disposed = true;
-      gsap.ticker.remove(updateAboutAnimations);
-      lines.forEach((line) => {
-        if (line) {
-          line.style.transform = "";
-          line.style.opacity = "";
-          line.style.filter = "";
-        }
-      });
-      lines.length = 0;
+      headingTimeline.kill();
+      wordTimeline.kill();
+      transitionTween?.kill();
     };
   }, []);
 
   return (
-    <section ref={aboutSectionRef} className="about wrap" id="aboutSection">
+    <section ref={sectionRef} className="about wrap" id="aboutSection">
       <div className="eyebrow">About ECell</div>
-      <div ref={aboutStatementRef} className="about-statement" id="aboutStatement">
-        <span className="line-mask">
-          <span ref={line1Ref} className="line-inner">
-            <span className="bright">Building ideas,</span>{" "}
-            <span className="dim">chasing outcomes,</span>
-          </span>
-        </span>
-        <span className="line-mask">
-          <span ref={line2Ref} className="line-inner">
-            <span className="bright">backing founders</span>{" "}
-            <span className="dim">who go all in.</span>
-          </span>
-        </span>
-        <span className="line-mask">
-          <span ref={line3Ref} className="line-inner">
-            <span className="dim">Defining a</span>{" "}
-            <span className="bright">legacy</span>
-          </span>
-        </span>
-        <span className="line-mask">
-          <span ref={line4Ref} className="line-inner">
-            <span className="dim">of builders,</span>{" "}
-            <span className="bright">on campus and beyond.</span>
-          </span>
-        </span>
+      <h2 ref={headingRef} className="about-statement" id="aboutStatement">
+        <span className="line-mask"><span className="line-inner">Entrepreneurship isn&apos;t just about</span></span>
+        <span className="line-mask"><span className="line-inner dim">starting a company.</span></span>
+      </h2>
+      <p ref={copyRef} className="about-copy">
+        <span className="about-copy__mask"><span className="about-copy__line">It&apos;s about curiosity. It&apos;s about building.</span></span>
+        <span className="about-copy__mask"><span className="about-copy__line">It&apos;s about finding people crazy enough to build with you.</span></span>
+        <span className="about-copy__mask"><span className="about-copy__line">E-Cell exists to give those ideas a place to go.</span></span>
+      </p>
+
+      <div ref={wordsRef} className="about-words" aria-label="Build. Connect. Create.">
+        <span className="about-word">Build.</span>
+        <span className="about-word">Connect.</span>
+        <span className="about-word">Create.</span>
+      </div>
+
+      <div ref={transitionRef} className="about-transition" aria-hidden="true">
+        <span className="about-transition__count">01 — 05</span>
+        <span className="about-transition__label">Reasons to join E-Cell</span>
+        <span className="about-transition__line"><i /></span>
+        <span className="about-transition__arrow">↓</span>
       </div>
     </section>
   );

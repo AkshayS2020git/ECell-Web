@@ -112,7 +112,9 @@ export default function Story({
       { isDesktop: "(min-width: 768px)", isMobile: "(max-width: 767px)" },
       (context) => {
         const isMobileCond = context.conditions?.isMobile ?? false;
-        const travelPct = isMobileCond ? 28 : 40;
+        // Panel starts completely below the bottom edge of the viewport (100%)
+        // and rises up into full screen as the user scrolls.
+        const entryYOffset = 100;
 
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
@@ -121,13 +123,23 @@ export default function Story({
         gsap.set(".story-reveal-text", { opacity: 0 });
 
         gsap.set(imagePanel, {
-          x: `${travelPct}%`,
-          y: `${travelPct}%`,
-          scale: isMobileCond ? 0.62 : 0.5,
-          rotate: -4,
-          filter: "blur(6px)",
-          opacity: 1,
+          x: "100%",
+          y: "0%",
+          scale: isMobileCond ? 0.78 : 0.82,
+          rotate: -3,
+          rotateY: -8,
+          borderRadius: isMobileCond ? "24px" : "36px",
+          filter: "blur(10px) brightness(0.78)",
+          boxShadow: "0 30px 80px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
+          opacity: 0.9,
         });
+
+        if (image) {
+          gsap.set(image, {
+            scale: 1.3,
+            x: "-5%",
+          });
+        }
 
         // --- JIGGLY TEXT ANIMATION SETUP ---
         const chars = revealTextInner.querySelectorAll(".jiggle-char");
@@ -235,16 +247,28 @@ export default function Story({
             y: "0%",
             scale: 1,
             rotate: 0,
-            filter: "blur(0px)",
+            rotateY: 0,
+            borderRadius: "0px",
+            filter: "blur(0px) brightness(1)",
+            boxShadow: "0 0 0 rgba(0, 0, 0, 0), inset 0 0 0 rgba(255, 255, 255, 0)",
             opacity: 1,
-            duration: 0.56,
-            ease: "power2.out",
+            duration: 0.62,
+            ease: "power3.out",
           },
           0.04
         );
 
         if (image) {
-          tl.to(image, { scale: 1, duration: 0.56, ease: "power2.out" }, 0.04);
+          tl.to(
+            image,
+            {
+              scale: 1,
+              x: "0%",
+              duration: 0.62,
+              ease: "power3.out",
+            },
+            0.04
+          );
         }
 
         tl.to(
@@ -281,14 +305,16 @@ export default function Story({
         tl.to(
           imagePanel,
           {
-            x: `-${travelPct + 26}%`,
-            y: `-${travelPct + 22}%`,
-            scale: isMobileCond ? 0.6 : 0.48,
-            rotate: 11,
-            filter: "blur(20px)",
+            x: "-100%",
+            y: "0%",
+            scale: isMobileCond ? 0.78 : 0.82,
+            rotate: 3,
+            rotateY: 8,
+            borderRadius: isMobileCond ? "24px" : "36px",
+            filter: "blur(18px) brightness(0.38)",
             opacity: 0,
-            duration: 0.42,
-            ease: "power4.in",
+            duration: 0.45,
+            ease: "power3.in",
           },
           2.06
         );
