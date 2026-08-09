@@ -15,7 +15,7 @@
 }
 
 .hero__heading-sub {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
   font-style: italic;
   font-weight: 400;
   font-size: clamp(24px, 3.5vw, 48px);
@@ -25,7 +25,7 @@
 }
 
 .hero__heading-main {
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-weight: 900;
   font-size: clamp(38px, 6.5vw, 84px);
   color: #ffffff;
@@ -34,7 +34,7 @@
 }
 
 .hero__label-mark {
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: 20px;
   font-weight: 900;
 }

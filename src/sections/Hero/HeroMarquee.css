@@ -16,7 +16,7 @@
 .hero__marquee-line {
   overflow: hidden;
   color: var(--fg);
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: clamp(58px, 10vw, 140px);
   font-weight: 900;
   line-height: 0.95;

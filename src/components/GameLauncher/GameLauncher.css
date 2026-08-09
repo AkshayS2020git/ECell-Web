@@ -126,7 +126,7 @@
 
 .game-window h2 {
   margin-top: 6px;
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: 1.65rem;
   line-height: 0.95;
 }
@@ -175,7 +175,7 @@
 .game-stats strong {
   margin-left: 4px;
   color: var(--fg);
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: 0.85rem;
 }
 
