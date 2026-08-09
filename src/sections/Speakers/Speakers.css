@@ -6,7 +6,6 @@
   overflow: hidden;
   border-top: 0.5px solid var(--line);
   isolation: isolate;
-  will-change: transform, opacity;
 }
 
 .speakers-section::before {

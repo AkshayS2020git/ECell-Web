@@ -354,7 +354,7 @@
 }
 
 @media (max-width: 600px) {
-  .whatsapp-community { padding: 91px 0 84px; }
+  .whatsapp-community { padding: 91px 0 max(84px, env(safe-area-inset-bottom)); }
   .community-bridge { top: -22px; }.community-bridge-core { margin: 0 8px; }
   .whatsapp-community-card { border-radius: 22px; }.whatsapp-community-copy { padding: 44px 25px 32px; }.whatsapp-community-copy h2 { font-size: clamp(38px, 12vw, 54px); }.whatsapp-community-copy p { font-size: 14px; }
   .whatsapp-community-visual { min-height: 307px; margin-left: 25px; }.whatsapp-community-phone { top: 0; right: 18px; bottom: 24px; border-width: 5px; border-radius: 21px; }.whatsapp-community-phone-header { height: 61px; padding: 11px 14px 5px; }.whatsapp-community-chat { height: calc(100% - 61px); padding: 14px 11px 7px; }.whatsapp-community-chat-date { margin-bottom: 9px; }.whatsapp-community-message { margin-bottom: 7px; padding: 7px 24px 10px 9px; font-size: 9px; }.whatsapp-community-message b { font-size: 8px; }.whatsapp-community-composer { margin-top: 6px; }.whatsapp-community-composer input { font-size: 9px; }.whatsapp-community-composer button { width: 22px; height: 22px; }

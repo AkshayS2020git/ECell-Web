@@ -1,5 +1,5 @@
 import { RefObject, CSSProperties } from "react";
-import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
+import { gsap } from "../../utils/gsapSetup";
 
 // Motion Constants - Slow, gentle, luxurious transitions
 const ANIM_DURATION = 0.85;
