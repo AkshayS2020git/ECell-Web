@@ -111,10 +111,6 @@ export default function Story({
       { isDesktop: "(min-width: 768px)", isMobile: "(max-width: 767px)" },
       (context) => {
         const isMobileCond = context.conditions?.isMobile ?? false;
-        // Panel starts completely below the bottom edge of the viewport (100%)
-        // and rises up into full screen as the user scrolls.
-        const entryYOffset = 100;
-
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
 

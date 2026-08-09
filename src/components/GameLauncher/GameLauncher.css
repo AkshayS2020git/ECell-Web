@@ -308,8 +308,8 @@
 
 @media (max-width: 768px) {
   .game-launcher {
-    bottom: 18px;
-    left: 18px;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    left: max(18px, env(safe-area-inset-left));
   }
 
 }
