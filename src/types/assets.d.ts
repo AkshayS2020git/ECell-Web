@@ -1,27 +1,34 @@
-import type { StaticImageData } from "next/image";
+interface StaticImageAsset {
+  src: string;
+  height: number;
+  width: number;
+  blurDataURL?: string;
+  blurWidth?: number;
+  blurHeight?: number;
+}
 
 declare module "*.png" {
-  const source: StaticImageData;
+  const source: StaticImageAsset;
   export default source;
 }
 
 declare module "*.jpg" {
-  const source: StaticImageData;
+  const source: StaticImageAsset;
   export default source;
 }
 
 declare module "*.jpeg" {
-  const source: StaticImageData;
+  const source: StaticImageAsset;
   export default source;
 }
 
 declare module "*.webp" {
-  const source: StaticImageData;
+  const source: StaticImageAsset;
   export default source;
 }
 
 declare module "*.avif" {
-  const source: StaticImageData;
+  const source: StaticImageAsset;
   export default source;
 }
 
