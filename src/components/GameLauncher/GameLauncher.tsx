@@ -32,10 +32,16 @@ export default function GameLauncher(): React.ReactElement {
   const launcherButtonRef = useRef<HTMLButtonElement | null>(null);
   const gameActive = isPlaying && timeLeft > 0;
 
+  const closeWindow = () => {
+    setIsOpen(false);
+    setIsPlaying(false);
+    launcherButtonRef.current?.focus();
+  };
+
   useEffect(() => {
     if (!isOpen) return undefined;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsOpen(false);
+      if (event.key === "Escape") closeWindow();
     };
     window.addEventListener("keydown", onKeyDown);
     closeButtonRef.current?.focus();
@@ -61,12 +67,6 @@ export default function GameLauncher(): React.ReactElement {
     setTimeLeft(ROUND_LENGTH);
     setTarget({ x: 52, y: 48 });
     setIsPlaying(true);
-  };
-
-  const closeWindow = () => {
-    setIsOpen(false);
-    setIsPlaying(false);
-    window.requestAnimationFrame(() => launcherButtonRef.current?.focus());
   };
 
   return (
