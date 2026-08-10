@@ -39,7 +39,7 @@
 }
 
 .events-intro h2 {
-  font-family: "Bebas Neue", "Archivo", sans-serif;
+  font-family: var(--font-bebas-neue), var(--font-archivo), sans-serif;
   font-size: clamp(2.5rem, 5vw, 5rem);
   font-weight: 400;
   line-height: 0.9;

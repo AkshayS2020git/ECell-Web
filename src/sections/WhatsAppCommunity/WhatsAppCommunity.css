@@ -250,7 +250,7 @@
   border-radius: 999px;
   background: #4fe080;
   color: #08210f;
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: 14px;
   font-weight: 900;
   box-shadow: 0 10px 26px rgba(48, 201, 105, 0.18);
@@ -292,7 +292,7 @@
   color: #ecfff4;
 }
 
-.whatsapp-community-avatar { display: grid; flex: 0 0 auto; width: 32px; height: 32px; place-items: center; border-radius: 50%; background: #c5ffd8; color: #12613e; font-family: "Archivo", sans-serif; font-size: 17px; font-weight: 900; }
+.whatsapp-community-avatar { display: grid; flex: 0 0 auto; width: 32px; height: 32px; place-items: center; border-radius: 50%; background: #c5ffd8; color: #12613e; font-family: var(--font-archivo), sans-serif; font-size: 17px; font-weight: 900; }
 .whatsapp-community-phone-header span:not(.whatsapp-community-avatar) { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .whatsapp-community-phone-header b { overflow: hidden; font-size: 12px; letter-spacing: -0.01em; text-overflow: ellipsis; white-space: nowrap; }
 .whatsapp-community-phone-header small { color: rgba(235, 255, 242, 0.72); font-size: 9px; }

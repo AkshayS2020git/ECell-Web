@@ -20,7 +20,7 @@
   max-width: 1120px;
   margin: 0 auto;
   color: var(--fg);
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: clamp(34px, 5.4vw, 76px);
   font-weight: 900;
   line-height: 1.08;
@@ -68,7 +68,7 @@
   margin: clamp(112px, 15vw, 210px) auto 0;
   overflow: hidden;
   color: var(--fg);
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: clamp(4rem, 11vw, 11rem);
   font-weight: 900;
   letter-spacing: -0.09em;

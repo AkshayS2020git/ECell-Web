@@ -116,7 +116,7 @@
 
 .why-card__number {
   color: var(--card-text);
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: clamp(62px, 7.6vw, 116px);
   font-weight: 900;
   letter-spacing: -0.1em;
@@ -131,7 +131,7 @@
   border-radius: 50%;
   background: var(--card-icon-bg);
   color: var(--card-icon-fg);
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-archivo), sans-serif;
   font-size: 25px;
   font-weight: 900;
 }
