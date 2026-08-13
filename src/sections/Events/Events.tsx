@@ -5,7 +5,7 @@ import talkStartupWithMe from "../../assets/events/TalkStartupWithMe.webp";
 import winterTechTalk from "../../assets/events/WinterTechTalk.webp";
 import argonyx from "../../assets/events/argonyx.webp";
 import argonyx2 from "../../assets/events/argoynx2.jpg";
-import teamBg from "../../assets/events/team.jpeg";
+import teamBg from "../../assets/events/team-sharp-1920x1080.webp";
 import "./Events.css";
 import Image, { StaticImageData } from "next/image";
 
@@ -145,19 +145,20 @@ export default function Events(): React.ReactElement {
          (duration 0 → 1.0)
          ---------------------------------------------------------- */
       if (bgPanel) {
-        // Initial state: off-screen top-right, blurred, rotated, scaled down
+        // Keep the source large enough during the entrance to avoid a soft
+        // interpolation step before it settles into the fullscreen panel.
         gsap.set(bgPanel, {
           xPercent: 100,
           yPercent: -100,
-          scale: isMobile ? 0.7 : 0.75,
+          scale: isMobile ? 0.84 : 0.88,
           rotate: -8,
-          filter: "blur(16px) brightness(0.6)",
+          filter: "blur(6px) brightness(0.7)",
           borderRadius: isMobile ? "24px" : "36px",
           opacity: 0.85,
         });
 
         if (bgInner) {
-          gsap.set(bgInner, { scale: 1.3, x: "-8%", y: "8%" });
+          gsap.set(bgInner, { scale: 1.12, x: "-4%", y: "4%" });
         }
 
         // Animate to fullscreen center
@@ -181,7 +182,7 @@ export default function Events(): React.ReactElement {
           journey.to(
             bgInner,
             {
-              scale: 1.05,
+              scale: 1.02,
               x: "0%",
               y: "0%",
               duration: 1.0,
@@ -282,7 +283,7 @@ export default function Events(): React.ReactElement {
         journey.to(
           bgInner,
           {
-            scale: 1.12,
+            scale: 1.06,
             duration: 1.0,
             ease: "none",
           },
@@ -313,6 +314,7 @@ export default function Events(): React.ReactElement {
             alt="ECell team background"
             fill
             sizes="100vw"
+            quality={100}
             style={{ objectFit: "cover" }}
             priority
           />
@@ -343,7 +345,7 @@ export default function Events(): React.ReactElement {
                   itemsRef.current[idx] = el;
                 }}
               >
-                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 80vw, 32vw" style={{ objectFit: "cover" }} />
+                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 80vw, 32vw" quality={100} style={{ objectFit: "cover" }} />
               </div>
             );
           })}
