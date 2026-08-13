@@ -118,8 +118,8 @@
 
 .whatsapp-community-cursor-icon {
   position: absolute;
-  left: var(--icon-x, 50%);
-  top: var(--icon-y, 50%);
+  left: 0;
+  top: 0;
   display: grid;
   width: 31px;
   height: 31px;
@@ -130,12 +130,7 @@
   box-shadow: 0 0 32px rgba(67, 230, 116, 0.12);
   color: rgba(166, 255, 194, 0.58);
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.25) rotate(-18deg);
-  transition:
-    left var(--trail-delay, 100ms) cubic-bezier(0.16, 1, 0.3, 1),
-    top var(--trail-delay, 100ms) cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 200ms ease,
-    transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate(-50%, -50%) scale(0);
 }
 
 .whatsapp-community-cursor-icon svg {
@@ -145,13 +140,7 @@
 }
 
 .whatsapp-community-cursor-icon:nth-child(3n) { width: 24px; height: 24px; color: rgba(149, 255, 182, 0.38); }
-.whatsapp-community-cursor-icon:nth-child(4n) { width: 39px; height: 39px; opacity: 0; color: rgba(190, 255, 210, 0.42); }
-.whatsapp-community-cursor-icon:nth-child(2n) { transition-delay: 35ms; }
-.whatsapp-community-cursor-icon:nth-child(3n + 1) { transition-delay: 70ms; }
-.whatsapp-community-cursor-field.is-active .whatsapp-community-cursor-icon {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1) rotate(0deg);
-}
+.whatsapp-community-cursor-icon:nth-child(4n) { width: 39px; height: 39px; color: rgba(190, 255, 210, 0.42); }
 .whatsapp-community-cursor-field.is-active::before { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
 .whatsapp-community-card::before {
@@ -321,8 +310,16 @@
 .whatsapp-community-composer button { display: grid; width: 25px; height: 25px; flex: 0 0 auto; padding: 0; border: 0; border-radius: 50%; place-items: center; background: #1c8b55; color: #fff; cursor: pointer; transition: background 160ms ease, transform 160ms ease; }
 .whatsapp-community-composer button:hover:not(:disabled) { background: #126f42; transform: scale(1.06); }
 .whatsapp-community-composer button:disabled { cursor: not-allowed; opacity: 0.46; }
+.whatsapp-community-composer:focus-within {
+  box-shadow: 0 0 0 2px rgba(28, 139, 85, 0.45), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.whatsapp-community-composer button:focus-visible, 
+.whatsapp-community-composer input:focus-visible { 
+  outline: none; 
+}
+
 .whatsapp-community-composer svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
-.whatsapp-community-composer button:focus-visible, .whatsapp-community-composer input:focus-visible { outline: 2px solid #126f42; outline-offset: 2px; }
 .whatsapp-community .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 .whatsapp-community-bubble { position: absolute; z-index: 2; padding: 13px 15px; border: 1px solid rgba(198, 255, 215, 0.24); border-radius: 13px; background: rgba(17, 52, 33, 0.86); box-shadow: 0 14px 26px rgba(0, 0, 0, 0.28); backdrop-filter: blur(12px); color: #ecfff2; font-size: 12px; font-weight: 700; }
