@@ -152,40 +152,55 @@ export default function WhatsAppCommunity(): React.ReactElement {
     const clientX = event.clientX;
     const clientY = event.clientY;
 
-    if (rafIdRef.current !== null) return;
+    const bounds = section.getBoundingClientRect();
+    const x = clientX - bounds.left;
+    const y = clientY - bounds.top;
+    const icons = field.children;
 
-    rafIdRef.current = requestAnimationFrame(() => {
-      rafIdRef.current = null;
-      if (!section || !field) return;
+    field.style.setProperty("--cursor-x", `${x}px`);
+    field.style.setProperty("--cursor-y", `${y}px`);
 
-      const bounds = section.getBoundingClientRect();
-      const x = clientX - bounds.left;
-      const y = clientY - bounds.top;
-      const icons = field.children;
+    Array.from(icons).forEach((icon, index) => {
+      const htmlIcon = icon as HTMLElement;
+      const angle = ((index * 137.5) - 30) * (Math.PI / 180);
+      const radius = 58 + (index % 4) * 32;
+      const targetX = x + Math.cos(angle) * radius;
+      const targetY = y + Math.sin(angle) * radius;
 
-      field.style.setProperty("--cursor-x", `${x}px`);
-      field.style.setProperty("--cursor-y", `${y}px`);
+      const baseScale = index % 4 === 3 ? 1.12 : index % 3 === 0 ? 0.77 : 1;
+      const baseOpacity = index % 4 === 3 ? 0.38 : 1;
 
-      Array.from(icons).forEach((icon, index) => {
-        const htmlIcon = icon as HTMLElement;
-        const angle = ((index * 137.5) - 30) * (Math.PI / 180);
-        const radius = 58 + (index % 4) * 32;
-        htmlIcon.style.setProperty("--icon-x", `${x + Math.cos(angle) * radius}px`);
-        htmlIcon.style.setProperty("--icon-y", `${y + Math.sin(angle) * radius}px`);
-        htmlIcon.style.setProperty("--trail-delay", `${55 + (index % 5) * 34}ms`);
+      gsap.to(htmlIcon, {
+        x: targetX,
+        y: targetY,
+        scale: baseScale,
+        opacity: baseOpacity,
+        rotate: index * 12,
+        duration: 0.42 + (index % 5) * 0.08,
+        ease: "power2.out",
+        overwrite: "auto"
       });
-
-      field.classList.add("is-active");
     });
+
+    field.classList.add("is-active");
   };
 
   const handleSectionPointerLeave = () => {
-    if (rafIdRef.current !== null) {
-      cancelAnimationFrame(rafIdRef.current);
-      rafIdRef.current = null;
-    }
     const field = cursorFieldRef.current;
-    field?.classList.remove("is-active");
+    if (!field) return;
+
+    field.classList.remove("is-active");
+    const icons = field.children;
+    Array.from(icons).forEach((icon) => {
+      const htmlIcon = icon as HTMLElement;
+      gsap.to(htmlIcon, {
+        scale: 0,
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.inOut",
+        overwrite: "auto"
+      });
+    });
   };
 
   useEffect(() => {
