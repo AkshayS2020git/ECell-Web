@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import Lenis from "lenis";
+import storyBackground from "../../assets/story/lib.webp";
 import "./Story.css";
 
 export interface StoryProps {
@@ -353,7 +354,7 @@ export default function Story({
     <section className="story-reveal" ref={revealRef} id="storyReveal">
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
         <div ref={imageRef} className="story-image-inner">
-          <Image src="/assets/story/lib.webp" alt="Story background" fill sizes="100vw" style={{ objectFit: "cover" }} />
+          <Image src={storyBackground} alt="Story background" fill sizes="100vw" style={{ objectFit: "cover" }} />
         </div>
         <div className="grain"></div>
       </div>
