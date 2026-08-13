@@ -325,7 +325,7 @@ export default function Events(): React.ReactElement {
       <div className="events-transition-wipe" ref={transitionRef} aria-hidden="true" />
       <div className="events-intro" ref={introRef} aria-hidden="true">
         <span>ECELL</span>
-        <h2>Our Events</h2>
+        <h2>Our Legacy</h2>
       </div>
       <div className="events-3d-wrapper" ref={galleryRef}>
         <div className="events-caption-container">
