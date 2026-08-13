@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
 import Lenis from "lenis";
+import storyBackground from "../../assets/story/lib.png";
 import "./Story.css";
 
 export interface StoryProps {
@@ -120,19 +121,19 @@ export default function Story({
         gsap.set(imagePanel, {
           x: "100%",
           y: "0%",
-          scale: isMobileCond ? 0.78 : 0.82,
+          scale: isMobileCond ? 0.84 : 0.88,
           rotate: -3,
           rotateY: -8,
           borderRadius: isMobileCond ? "24px" : "36px",
-          filter: "blur(10px) brightness(0.78)",
+          filter: "blur(6px) brightness(0.78)",
           boxShadow: "0 30px 80px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.2)",
           opacity: 0.9,
         });
 
         if (image) {
           gsap.set(image, {
-            scale: 1.3,
-            x: "-5%",
+            scale: 1.12,
+            x: "-3%",
           });
         }
 
@@ -306,7 +307,7 @@ export default function Story({
             rotate: 3,
             rotateY: 8,
             borderRadius: isMobileCond ? "24px" : "36px",
-            filter: "blur(18px) brightness(0.38)",
+            filter: "blur(12px) brightness(0.38)",
             opacity: 0,
             duration: 0.45,
             ease: "power3.in",
@@ -353,7 +354,7 @@ export default function Story({
     <section className="story-reveal" ref={revealRef} id="storyReveal">
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
         <div ref={imageRef} className="story-image-inner">
-          <Image src="/assets/story/lib.webp" alt="Story background" fill sizes="100vw" style={{ objectFit: "cover" }} />
+          <Image src={storyBackground} alt="Story background" fill sizes="100vw" quality={100} style={{ objectFit: "cover" }} />
         </div>
         <div className="grain"></div>
       </div>

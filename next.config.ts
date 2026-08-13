@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   allowedDevOrigins: ["monsoon-suspend-uncloak.ngrok-free.dev"],
   images: {
+    qualities: [75, 100],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
