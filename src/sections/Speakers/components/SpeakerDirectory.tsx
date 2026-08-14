@@ -53,7 +53,7 @@ export default function SpeakerDirectory({
                       alt=""
                       aria-hidden="true"
                       fill
-                      sizes="(max-width: 640px) 240px, 290px"
+                      sizes="(max-width: 768px) 70px, 240px"
                       style={{ objectPosition: speaker.photoPosition || "center" }}
                     />
                     <div className="deck-card-photo-gradient" />

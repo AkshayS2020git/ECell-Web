@@ -18,7 +18,7 @@ describe("Speakers Section", () => {
     expect(screen.getByRole("heading", { name: "Voices of Innovation" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Harpreet Sohan" })).toBeInTheDocument();
     expect(screen.getAllByText("Decodes").length).toBeGreaterThan(0);
-    expect(screen.getByText("RVU Guest")).toBeInTheDocument();
+    expect(screen.getByText("E-Summit '24")).toBeInTheDocument();
   });
 
   it("navigates to next and previous speakers with arrow buttons", () => {
@@ -64,6 +64,32 @@ describe("Speakers Section", () => {
     expect(screen.getByRole("heading", { name: "Mustafa Shariff" })).toBeInTheDocument();
 
     fireEvent.keyDown(window, { key: "ArrowLeft" });
+    expect(screen.getByRole("heading", { name: "Harpreet Sohan" })).toBeInTheDocument();
+  });
+
+  it("navigates using touch swipe on mobile showcase card", () => {
+    const { container } = render(<Speakers />);
+    const showcaseContainer = container.querySelector(".speakers-showcase-container");
+    expect(showcaseContainer).toBeInTheDocument();
+
+    // Swipe left (next)
+    fireEvent.touchStart(showcaseContainer!, {
+      touches: [{ clientX: 200, clientY: 100 }],
+    });
+    fireEvent.touchEnd(showcaseContainer!, {
+      changedTouches: [{ clientX: 100, clientY: 105 }],
+    });
+
+    expect(screen.getByRole("heading", { name: "Mustafa Shariff" })).toBeInTheDocument();
+
+    // Swipe right (prev)
+    fireEvent.touchStart(showcaseContainer!, {
+      touches: [{ clientX: 100, clientY: 100 }],
+    });
+    fireEvent.touchEnd(showcaseContainer!, {
+      changedTouches: [{ clientX: 200, clientY: 105 }],
+    });
+
     expect(screen.getByRole("heading", { name: "Harpreet Sohan" })).toBeInTheDocument();
   });
 });

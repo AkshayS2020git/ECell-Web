@@ -379,6 +379,7 @@ export default function Speakers(): React.ReactElement {
                     key={cat}
                     role="tab"
                     aria-selected={isSelected}
+                    aria-label={cat}
                     type="button"
                     className={`speakers-cat-pill ${isSelected ? "active" : ""}`}
                     onClick={() => {
