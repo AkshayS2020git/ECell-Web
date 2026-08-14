@@ -17,8 +17,8 @@ describe("Speakers Section", () => {
 
     expect(screen.getByRole("heading", { name: "Voices of Innovation" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Harpreet Sohan" })).toBeInTheDocument();
-    expect(screen.getAllByText("Decodes").length).toBeGreaterThan(0);
-    expect(screen.getByText("E-Summit '24")).toBeInTheDocument();
+    expect(screen.getAllByText("Wand").length).toBeGreaterThan(0);
+    expect(screen.getByText("Argonyx '25")).toBeInTheDocument();
   });
 
   it("navigates to next and previous speakers with arrow buttons", () => {
