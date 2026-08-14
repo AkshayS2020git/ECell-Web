@@ -5,7 +5,7 @@ import talkStartupWithMe from "../../assets/events/events_photo/TalkStartupWithM
 import winterTechTalk from "../../assets/events/events_photo/WinterTechTalk.webp";
 import argonyx from "../../assets/events/events_photo/argonyx.webp";
 import argonyx2 from "../../assets/events/events_photo/argoynx2.jpg";
-import desktopTeamBg from "../../assets/events/background/pcTeam.webp";
+import desktopTeamBg from "../../assets/events/background/pcTeam.jpeg";
 import mobileTeamBg from "../../assets/events/background/phone.jpeg";
 import "./Events.css";
 import Image, { StaticImageData } from "next/image";
@@ -445,7 +445,7 @@ export default function Events(): React.ReactElement {
             src={desktopTeamBg}
             alt="ECell team background"
             fill
-            sizes="100vw"
+            sizes="(max-width: 768px) 0px, 100vw"
             quality={85}
             priority
           />
@@ -455,7 +455,7 @@ export default function Events(): React.ReactElement {
             alt=""
             aria-hidden="true"
             fill
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, 0px"
             quality={85}
             priority
           />

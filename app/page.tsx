@@ -10,7 +10,7 @@ import WhyJoin from "@/src/sections/WhyJoin/WhyJoin";
 import Story from "@/src/sections/Story/Story";
 import Events from "@/src/sections/Events/Events";
 import Sponsors from "@/src/sections/Sponsors/Sponsors";
-import Speakers from "@/src/sections/Speakers/Speakers";
+import Speakers from "@/src/sections/Speakers/components/Speakers";
 import WhatsAppCommunity from "@/src/sections/WhatsAppCommunity/WhatsAppCommunity";
 import Footer from "@/src/sections/Footer/Footer";
 import FloatingLogo from "@/src/components/FloatingLogo/FloatingLogo";
