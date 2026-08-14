@@ -254,14 +254,89 @@ export default function Speakers(): React.ReactElement {
 
   // Animate spotlight transitions when active index or category changes
   useEffect(() => {
-    if (!spotlightRef.current) return;
+    const spotlight = spotlightRef.current;
+    if (!spotlight) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    gsap.fromTo(
-      spotlightRef.current,
-      { opacity: 0.3, y: 10, scale: 0.988 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power2.out" }
+    const photo = spotlight.querySelector(".spotlight-photo");
+    const identity = spotlight.querySelectorAll(
+      ".spotlight-role-badge, .spotlight-meta-separator, .spotlight-company-chip"
     );
+    const name = spotlight.querySelector(".spotlight-speaker-name");
+    const highlights = spotlight.querySelectorAll(".highlight-pill");
+    const quote = spotlight.querySelector(".spotlight-quote-box");
+    const eventBadge = spotlight.querySelector(".spotlight-edition-badge");
+    const tagBadge = spotlight.querySelector(".spotlight-tag-badge");
+    const actions = spotlight.querySelector(".spotlight-actions-row");
+
+    const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+    if (photo) {
+      timeline.fromTo(
+        photo,
+        { opacity: 0, x: 24, scale: 1.025 },
+        { opacity: 1, x: 0, scale: 1, duration: 0.65 },
+        0
+      );
+    }
+
+    if (eventBadge || tagBadge) {
+      timeline.fromTo(
+        [eventBadge, tagBadge].filter(Boolean),
+        { opacity: 0, y: -7 },
+        { opacity: 1, y: 0, duration: 0.35 },
+        0.08
+      );
+    }
+
+    if (identity.length) {
+      timeline.fromTo(
+        identity,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.35, stagger: 0.035 },
+        0.12
+      );
+    }
+
+    if (name) {
+      timeline.fromTo(
+        name,
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.5 },
+        0.16
+      );
+    }
+
+    if (highlights.length) {
+      timeline.fromTo(
+        highlights,
+        { opacity: 0, y: 9 },
+        { opacity: 1, y: 0, duration: 0.3, stagger: 0.045 },
+        0.28
+      );
+    }
+
+    if (quote) {
+      timeline.fromTo(
+        quote,
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.45 },
+        0.38
+      );
+    }
+
+    if (actions) {
+      timeline.fromTo(
+        actions,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.35 },
+        0.48
+      );
+    }
+
+    return () => {
+      timeline.kill();
+    };
   }, [safeActiveIndex, selectedCategory]);
 
   const pad2 = (n: number) => String(n).padStart(2, "0");
