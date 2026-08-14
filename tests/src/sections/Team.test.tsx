@@ -42,6 +42,13 @@ describe("Team Data", () => {
       expect(member.imagePosition).toBeDefined();
     });
   });
+
+  it("assigns red accent to Akash and green accent to Aryav", () => {
+    const akash = teamMembers.find((m) => m.name.toLowerCase().includes("akash"));
+    const aryav = teamMembers.find((m) => m.name.toLowerCase().includes("aryav"));
+    expect(akash?.accentColor).toBe("#ff4d4d");
+    expect(aryav?.accentColor).toBe("#38ef7d");
+  });
 });
 
 describe("TeamDirectory Component", () => {
@@ -103,7 +110,7 @@ describe("TeamDirectory Component", () => {
     expect(onSelectMock).toHaveBeenCalledWith(3);
   });
 
-  it("supports scroll navigation buttons", () => {
+  it("supports keyboard arrow navigation across member tabs", () => {
     render(
       <TeamDirectory
         members={teamMembers}
@@ -112,14 +119,15 @@ describe("TeamDirectory Component", () => {
       />
     );
 
-    const nextBtn = screen.getByRole("button", { name: /scroll directory right/i });
-    const prevBtn = screen.getByRole("button", { name: /scroll directory left/i });
+    const firstCard = screen.getByRole("tab", {
+      name: new RegExp(teamMembers[0].name, "i"),
+    });
 
-    expect(nextBtn).toBeInTheDocument();
-    expect(prevBtn).toBeInTheDocument();
+    fireEvent.keyDown(firstCard, { key: "ArrowRight" });
+    expect(onSelectMock).toHaveBeenCalledWith(1);
 
-    fireEvent.click(nextBtn);
-    fireEvent.click(prevBtn);
+    fireEvent.keyDown(firstCard, { key: "ArrowLeft" });
+    expect(onSelectMock).toHaveBeenCalledWith(teamMembers.length - 1);
   });
 });
 

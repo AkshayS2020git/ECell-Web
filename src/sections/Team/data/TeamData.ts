@@ -17,6 +17,7 @@ export interface TeamMember {
   imagePosition?: string;
   directoryImagePosition?: string;
   linkedin: string;
+  accentColor?: string;
 }
 
 const teamMembers: TeamMember[] = [
@@ -85,6 +86,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 20%",
     directoryImagePosition: "center 40%",
     linkedin: "https://www.linkedin.com/in/akash-bisht-601268322?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+    accentColor: "#ff4d4d",
   },
   {
     id: "member-7",
@@ -96,6 +98,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 20%",
     directoryImagePosition: "center 0%",
     linkedin: "https://www.linkedin.com/in/aryav-agrawal-42649b293",
+    accentColor: "#38ef7d",
   },
   {
     id: "member-8",

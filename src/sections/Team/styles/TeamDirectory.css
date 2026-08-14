@@ -3,7 +3,7 @@
   z-index: 12;
   width: min(100%, 1120px);
   margin: 32px auto 0;
-  padding: 0 20px 28px;
+  padding: 0 20px 16px;
 }
 
 .team-directory__header {
@@ -66,72 +66,26 @@
   font-weight: 400;
 }
 
-.team-directory__nav-btns {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.team-directory__nav-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(244, 244, 242, 0.7);
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.team-directory__nav-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.team-directory__nav-btn:active {
-  transform: translateY(0);
-}
-
 .team-directory__strip {
   display: flex;
   gap: 14px;
   overflow-x: auto;
-  padding: 6px 4px 18px;
-  scrollbar-color: rgba(244, 244, 242, 0.2) transparent;
-  scrollbar-width: thin;
+  padding: 6px 4px 10px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
   scroll-behavior: smooth;
 }
 
 .team-directory__strip::-webkit-scrollbar {
-  height: 5px;
-}
-
-.team-directory__strip::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 4px;
-}
-
-.team-directory__strip::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-.team-directory__strip::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+  display: none; /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
 }
 
 .team-directory__card {
   position: relative;
   display: flex;
-  flex: 0 0 clamp(210px, 20vw, 244px);
+  flex: 0 0 clamp(210px, calc((100% - 4 * 14px) / 4.25), 240px);
   height: 246px;
   flex-direction: column;
   overflow: hidden;
@@ -309,13 +263,14 @@
   }
 
   .team-directory__card {
-    flex-basis: 216px;
+    flex: 0 0 clamp(190px, calc((100% - 2 * 12px) / 2.3), 220px);
     height: 236px;
     scroll-snap-align: start;
   }
 
   .team-directory__strip {
     scroll-snap-type: x mandatory;
+    gap: 12px;
     padding-bottom: 12px;
   }
 
@@ -330,7 +285,7 @@
   }
 
   .team-directory__card {
-    flex-basis: 200px;
+    flex: 0 0 clamp(170px, calc((100% - 10px) / 1.3), 210px);
     height: 228px;
   }
 
@@ -346,7 +301,6 @@
 @media (prefers-reduced-motion: reduce) {
   .team-directory__card,
   .team-directory__image-photo,
-  .team-directory__nav-btn,
   .team-directory__linkedin-btn {
     transition: none;
     animation: none;

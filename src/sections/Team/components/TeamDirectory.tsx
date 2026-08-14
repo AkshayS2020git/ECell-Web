@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import type { TeamMember } from "../data/TeamData";
 
@@ -10,13 +10,19 @@ interface TeamDirectoryProps {
   onSelect: (index: number) => void;
 }
 
-function getRoleAccent(role: string): string {
-  const normalizedRole = role.toLowerCase();
+function getMemberAccent(member: TeamMember): string {
+  if (member.accentColor) return member.accentColor;
+
+  const normalizedName = member.name.toLowerCase();
+  if (normalizedName.includes("akash")) return "#ff4d4d";
+  if (normalizedName.includes("aryav")) return "#38ef7d";
+
+  const normalizedRole = member.role.toLowerCase();
   if (normalizedRole.includes("president")) return "#8edcff";
   if (normalizedRole.includes("advisory")) return "#b8a0ff";
-  if (normalizedRole.includes("tech")) return "#82f0be";
+  if (normalizedRole.includes("tech")) return "#ff4d4d";
+  if (normalizedRole.includes("pr")) return "#38ef7d";
   if (normalizedRole.includes("partnership")) return "#ffc478";
-  if (normalizedRole.includes("pr")) return "#ff96b4";
   if (normalizedRole.includes("documentation")) return "#f1d27a";
   return "#c4c8d4";
 }
@@ -47,15 +53,6 @@ export default function TeamDirectory({
     }
   }, [activeIndex]);
 
-  const handleScroll = useCallback((direction: "prev" | "next") => {
-    if (!stripRef.current) return;
-    const scrollAmount = 260;
-    stripRef.current.scrollBy({
-      left: direction === "next" ? scrollAmount : -scrollAmount,
-      behavior: "smooth",
-    });
-  }, []);
-
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === "ArrowRight") {
       e.preventDefault();
@@ -80,28 +77,6 @@ export default function TeamDirectory({
 
         <div className="team-directory__header-right">
           <span className="team-directory__hint">Select a member to view full profile</span>
-          <div className="team-directory__nav-btns">
-            <button
-              type="button"
-              className="team-directory__nav-btn team-directory__nav-btn--prev"
-              onClick={() => handleScroll("prev")}
-              aria-label="Scroll directory left"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              className="team-directory__nav-btn team-directory__nav-btn--next"
-              onClick={() => handleScroll("next")}
-              aria-label="Scroll directory right"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
 
@@ -113,7 +88,7 @@ export default function TeamDirectory({
       >
         {members.map((member, index) => {
           const isActive = index === activeIndex;
-          const accentColor = getRoleAccent(member.role);
+          const accentColor = getMemberAccent(member);
           const imagePosition = member.directoryImagePosition || "center center";
 
           return (
