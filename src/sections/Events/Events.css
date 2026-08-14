@@ -2,9 +2,12 @@
   position: relative;
   height: 100vh;
   height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background: #070707;
   color: #fff;
+  contain: layout style;
 }
 
 /* --- Background Image Panel (like Story section) --- */
@@ -14,9 +17,8 @@
   z-index: 1;
   overflow: hidden;
   transform-origin: top right;
-  transform-style: preserve-3d;
   backface-visibility: hidden;
-  will-change: transform, border-radius, opacity;
+  will-change: transform;
   background: #0a0a0a;
 }
 
@@ -26,7 +28,6 @@
   position: relative;
   transform: translateZ(0) scale(1.08);
   backface-visibility: hidden;
-  will-change: transform;
 }
 
 .events-bg-panel img {
@@ -35,6 +36,10 @@
   object-fit: cover;
   display: block;
   backface-visibility: hidden;
+}
+
+.events-bg-mobile {
+  display: none;
 }
 
 /* Dark scrim for text contrast */
@@ -74,7 +79,7 @@
     radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.18), transparent 32%),
     linear-gradient(180deg, #09090a 0%, #20201f 58%, #0a0a0b 100%);
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.2);
-  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 /* --- Intro Text --- */
@@ -86,7 +91,7 @@
   max-width: 28rem;
   pointer-events: none;
   opacity: 0;
-  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 .events-intro span {
@@ -138,10 +143,11 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 210, 255, 0.15);
-  will-change: transform, opacity;
+  transform: translateZ(0);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   pointer-events: auto;
+  contain: layout paint;
 }
 
 .events-gallery-item:hover {
@@ -181,36 +187,90 @@
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateZ(0);
   width: min(90vw, 1000px);
   height: 180px;
   background: radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, 0.16), transparent 72%);
   pointer-events: none;
   z-index: 15;
   opacity: 0;
-  will-change: opacity, transform;
 }
 
 @media (max-width: 768px) {
-  .events-3d-wrapper {
-    perspective: 600px;
+  .events-section {
+    /* Fix bottom gap on mobile browsers */
+    min-height: -webkit-fill-available;
   }
 
-  .events-intro {
-    top: 7rem;
-    left: 1.5rem;
-    max-width: 17rem;
+  .events-bg-panel {
+    /* No GPU layer promotion — rely on simple transforms */
+    will-change: auto;
+    transform: translateZ(0);
+  }
+
+  .events-bg-inner {
+    transform: translateZ(0) scale(1);
+  }
+
+  .events-bg-desktop {
+    display: none;
+  }
+
+  .events-bg-mobile {
+    display: block;
+    object-position: 50% 50%;
+  }
+
+  .events-bg-panel::after {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.48) 0%,
+      rgba(0, 0, 0, 0.18) 42%,
+      rgba(0, 0, 0, 0.78) 100%
+    );
+  }
+
+  /* === KILL 3D CONTEXT ON MOBILE === */
+  .events-3d-wrapper {
+    perspective: none;
+    contain: layout style;
   }
 
   .events-scene {
-    top: 8vh;
+    top: 7vh;
+    transform-style: flat;
+    will-change: auto;
+  }
+
+  .events-intro {
+    top: clamp(5.5rem, 12vh, 7rem);
+    left: 1.25rem;
+    max-width: 15rem;
+  }
+
+  .events-intro span {
+    margin-bottom: 0.55rem;
+    font-size: 0.62rem;
+  }
+
+  .events-intro h2 {
+    font-size: clamp(2.8rem, 13vw, 4.2rem);
   }
 
   .events-gallery-item {
-    width: 60vw;
-    height: 40vh;
-    margin-left: -30vw;
-    margin-top: -20vh;
+    width: min(72vw, 19rem);
+    height: min(42vh, 23rem);
+    margin-left: min(-36vw, -9.5rem);
+    margin-top: min(-21vh, -11.5rem);
+    border-radius: 10px;
+    transition: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    contain: layout paint;
+  }
+
+  .events-gallery-item:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
   }
 
   .events-caption-container {
@@ -219,8 +279,11 @@
   }
 
   .events-caption-text {
-    font-size: 0.8rem;
+    max-width: 19rem;
+    margin: 0 auto;
+    font-size: clamp(0.7rem, 2.8vw, 0.85rem);
     letter-spacing: 0.12em;
+    line-height: 1.45;
   }
 
   .events-exit-glow {
