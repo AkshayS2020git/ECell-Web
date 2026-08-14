@@ -38,7 +38,7 @@
   backface-visibility: hidden;
 }
 
-.events-bg-mobile {
+.events-bg-panel img.events-bg-mobile {
   display: none;
 }
 
@@ -212,11 +212,11 @@
     transform: translateZ(0) scale(1);
   }
 
-  .events-bg-desktop {
+  .events-bg-panel img.events-bg-desktop {
     display: none;
   }
 
-  .events-bg-mobile {
+  .events-bg-panel img.events-bg-mobile {
     display: block;
     object-position: 50% 50%;
   }

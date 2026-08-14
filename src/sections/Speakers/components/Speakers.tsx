@@ -11,9 +11,7 @@ import shariffPhoto from "../../../assets/prevSpeakers/shariff.jpg";
 import "../styles/Speakers.base.css";
 import "../styles/Speakers.controls.css";
 import "../styles/Speakers.spotlight.css";
-import "../styles/Speakers.deck.css";
 import "../styles/Speakers.responsive.css";
-import SpeakerDirectory from "./SpeakerDirectory";
 
 export interface Speaker {
   id: number;
@@ -110,8 +108,6 @@ export default function Speakers(): React.ReactElement {
   const speakersSectionRef = useRef<HTMLElement | null>(null);
   const spotlightRef = useRef<HTMLDivElement | null>(null);
   const transitionLightRef = useRef<HTMLDivElement | null>(null);
-  const deckStripRef = useRef<HTMLDivElement | null>(null);
-  const activeDeckCardRef = useRef<HTMLButtonElement | null>(null);
 
   // Touch swipe support coordinates
   const touchStartXRef = useRef<number | null>(null);
@@ -133,27 +129,6 @@ export default function Speakers(): React.ReactElement {
   const handleNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % filteredSpeakers.length);
   }, [filteredSpeakers.length]);
-
-  // Auto-scroll active thumbnail card into center view
-  useEffect(() => {
-    if (activeDeckCardRef.current && deckStripRef.current) {
-      const deck = deckStripRef.current;
-      const card = activeDeckCardRef.current;
-      const cardLeft = card.offsetLeft;
-      const cardWidth = card.offsetWidth;
-      const deckWidth = deck.offsetWidth;
-      const targetScroll = Math.max(0, cardLeft - deckWidth / 2 + cardWidth / 2);
-
-      if (typeof deck.scrollTo === "function") {
-        deck.scrollTo({
-          left: targetScroll,
-          behavior: "smooth",
-        });
-      } else {
-        deck.scrollLeft = targetScroll;
-      }
-    }
-  }, [safeActiveIndex]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -578,13 +553,6 @@ export default function Speakers(): React.ReactElement {
             </div>
           </div>
 
-          <SpeakerDirectory
-            speakers={filteredSpeakers}
-            activeIndex={safeActiveIndex}
-            onSelect={setActiveIndex}
-            deckStripRef={deckStripRef}
-            activeDeckCardRef={activeDeckCardRef}
-          />
 
         </div>
       </div>
