@@ -6,7 +6,6 @@ import "./globals.css";
 
 const archivo = Archivo({
   subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
   variable: "--font-archivo",
   display: "swap",
 });
@@ -20,7 +19,6 @@ const bebasNeue = Bebas_Neue({
 
 const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
   style: ["normal", "italic"],
   variable: "--font-fraunces",
   display: "swap",
@@ -28,7 +26,6 @@ const fraunces = Fraunces({
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
   variable: "--font-inter",
   display: "swap",
 });

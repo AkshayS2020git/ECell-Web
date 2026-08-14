@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { gsap } from "../../utils/gsapSetup";
-import talkStartupWithMe from "../../assets/events/TalkStartupWithMe.webp";
-import winterTechTalk from "../../assets/events/WinterTechTalk.webp";
-import argonyx from "../../assets/events/argonyx.webp";
-import argonyx2 from "../../assets/events/argoynx2.jpg";
-import teamBg from "../../assets/events/team-sharp-1920x1080.webp";
+import talkStartupWithMe from "../../assets/events/events_photo/TalkStartupWithMe.webp";
+import winterTechTalk from "../../assets/events/events_photo/WinterTechTalk.webp";
+import argonyx from "../../assets/events/events_photo/argonyx.webp";
+import argonyx2 from "../../assets/events/events_photo/argoynx2.jpg";
+import desktopTeamBg from "../../assets/events/background/pcTeam.webp";
+import mobileTeamBg from "../../assets/events/background/phone.jpeg";
 import "./Events.css";
 import Image, { StaticImageData } from "next/image";
 
@@ -64,25 +65,175 @@ export default function Events(): React.ReactElement {
     if (!section || !scene || !caption || !items.length) return undefined;
 
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      caption.textContent = GALLERY_ITEMS[0].caption;
+      if (bgPanel) gsap.set(bgPanel, { x: 0, y: 0, scale: 1, rotate: 0 });
+      if (intro) gsap.set(intro, { autoAlpha: 1 });
+      return undefined;
+    }
+
+    /* ============================================================
+       MOBILE: Lightweight 2D cross-fade gallery
+       No 3D transforms, no perspective, no filter animations.
+       Only opacity + simple transforms — buttery smooth on any phone.
+       ============================================================ */
+    if (isMobile) {
+      // Stack all items at center, hide all except first
+      items.forEach((item, i) => {
+        item.style.transform = "none";
+        item.style.opacity = i === 0 ? "1" : "0";
+      });
+      caption.textContent = GALLERY_ITEMS[0].caption;
+
+      let activeIndex = 0;
+
+      const ctx = gsap.context(() => {
+        // Entrance wipe from previous section
+        if (transition) {
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top 95%",
+              end: "top 28%",
+              scrub: 0.3,
+            },
+          }).fromTo(
+            transition,
+            { autoAlpha: 1, scaleY: 1, transformOrigin: "top center" },
+            { autoAlpha: 0, scaleY: 0, ease: "power4.inOut" },
+            0
+          );
+        }
+
+        // Main pinned timeline
+        const journey = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "+=460%",
+            scrub: 0.3,
+            pin: true,
+            anticipatePin: 1,
+          },
+        });
+
+        /* Phase 1: Background fades in (0 → 1.0) */
+        if (bgPanel) {
+          gsap.set(bgPanel, { opacity: 0, scale: 1.02 });
+          journey.to(bgPanel, {
+            opacity: 1,
+            scale: 1,
+            duration: 1.0,
+            ease: "power2.out",
+          }, 0);
+        }
+
+        /* Phase 2: Intro text (0.8 → 1.3) */
+        if (intro) {
+          journey.fromTo(
+            intro,
+            { autoAlpha: 0, y: 30 },
+            { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" },
+            0.8
+          );
+        }
+
+        /* Phase 2b: Gallery container fades in (0.9 → 1.4) */
+        if (gallery) {
+          journey.fromTo(
+            gallery,
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+            0.9
+          );
+        }
+
+        /* Phase 3: Cross-fade between gallery items (1.4 → 4.6) */
+        const crossFadeStart = 1.4;
+        const crossFadeDuration = 3.2;
+        const perItem = crossFadeDuration / items.length;
+
+        items.forEach((item, i) => {
+          const itemStart = crossFadeStart + perItem * i;
+
+          // Fade in (first item is already visible)
+          if (i > 0) {
+            journey.fromTo(
+              item,
+              { opacity: 0 },
+              { opacity: 1, duration: perItem * 0.35, ease: "power1.inOut" },
+              itemStart
+            );
+          }
+
+          // Fade out (last item stays visible for exit)
+          if (i < items.length - 1) {
+            journey.to(
+              item,
+              { opacity: 0, duration: perItem * 0.35, ease: "power1.inOut" },
+              itemStart + perItem * 0.65
+            );
+          }
+        });
+
+        // Track caption via a dummy value tween (works with scrub reverse)
+        const tracker = { value: 0 };
+        journey.to(
+          tracker,
+          {
+            value: items.length - 0.01,
+            duration: crossFadeDuration,
+            ease: "none",
+            onUpdate: () => {
+              const idx = Math.min(Math.floor(tracker.value), GALLERY_ITEMS.length - 1);
+              if (idx !== activeIndex) {
+                activeIndex = idx;
+                caption.textContent = GALLERY_ITEMS[idx].caption;
+              }
+            },
+          },
+          crossFadeStart
+        );
+
+        /* Exit animations */
+        if (gallery) {
+          journey.to(gallery, { autoAlpha: 0, duration: 0.8, ease: "power2.inOut" }, 4.55);
+        }
+        if (intro) {
+          journey.to(intro, { autoAlpha: 0, y: -15, duration: 0.6, ease: "power2.inOut" }, 4.45);
+        }
+        journey.to(caption, { autoAlpha: 0, duration: 0.6, ease: "power2.inOut" }, 4.45);
+
+        if (exitGlow) {
+          journey.fromTo(
+            exitGlow,
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.7, ease: "power1.out" },
+            4.55
+          );
+          journey.to(exitGlow, { autoAlpha: 0, duration: 0.35, ease: "power1.in" }, 5.15);
+        }
+      }, section);
+
+      return () => ctx.revert();
+    }
+
+    /* ============================================================
+       DESKTOP: Full 3D gallery experience (unchanged)
+       ============================================================ */
     const zSpacing = 1500;
+    const exitStart = 5;
+    const exitDuration = 0.7;
 
     items.forEach((item, index) => {
       const isRightSide = index % 2 === 0;
-      const xOffset = isRightSide
-        ? isMobile ? "20%" : "35%"
-        : isMobile ? "-20%" : "-35%";
+      const xOffset = isRightSide ? "35%" : "-35%";
       const zOffset = -(index * zSpacing);
 
       item.dataset.z = `${zOffset}`;
       item.style.transform = `translate3d(${xOffset}, 0px, ${zOffset}px)`;
     });
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      caption.textContent = GALLERY_ITEMS[0].caption;
-      if (bgPanel) gsap.set(bgPanel, { x: 0, y: 0, scale: 1, rotate: 0, filter: "blur(0px)" });
-      if (intro) gsap.set(intro, { autoAlpha: 1 });
-      return undefined;
-    }
 
     const camera = { z: 0 };
     let activeIndex = -1;
@@ -107,9 +258,7 @@ export default function Events(): React.ReactElement {
     };
 
     const ctx = gsap.context(() => {
-      /* ----------------------------------------------------------
-         Phase 0: Transition wipe from previous section
-         ---------------------------------------------------------- */
+      /* Phase 0: Transition wipe from previous section */
       const entrance = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -126,9 +275,7 @@ export default function Events(): React.ReactElement {
         0
       );
 
-      /* ----------------------------------------------------------
-         Main pinned timeline — 3 phases
-         ---------------------------------------------------------- */
+      /* Main pinned timeline */
       const journey = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -140,28 +287,26 @@ export default function Events(): React.ReactElement {
         },
       });
 
-      /* ----------------------------------------------------------
-         Phase 1: Background image flies in from top-right to center
-         (duration 0 → 1.0)
-         ---------------------------------------------------------- */
+      /* Phase 1: Background image flies in from top-right to center */
       if (bgPanel) {
-        // Keep the source large enough during the entrance to avoid a soft
-        // interpolation step before it settles into the fullscreen panel.
         gsap.set(bgPanel, {
           xPercent: 100,
           yPercent: -100,
-          scale: isMobile ? 0.84 : 0.88,
+          scale: 0.88,
           rotate: -8,
           filter: "blur(6px) brightness(0.7)",
-          borderRadius: isMobile ? "24px" : "36px",
+          borderRadius: "36px",
           opacity: 0.85,
         });
 
         if (bgInner) {
-          gsap.set(bgInner, { scale: 1.12, x: "-4%", y: "4%" });
+          gsap.set(bgInner, {
+            scale: 1.12,
+            x: "-4%",
+            y: "4%",
+          });
         }
 
-        // Animate to fullscreen center
         journey.to(
           bgPanel,
           {
@@ -193,10 +338,7 @@ export default function Events(): React.ReactElement {
         }
       }
 
-      /* ----------------------------------------------------------
-         Phase 2: Intro text reveals with scroll
-         (duration 0.8 → 1.4)
-         ---------------------------------------------------------- */
+      /* Phase 2: Intro text reveals */
       if (intro) {
         journey.fromTo(
           intro,
@@ -212,10 +354,7 @@ export default function Events(): React.ReactElement {
         );
       }
 
-      /* ----------------------------------------------------------
-         Phase 2b: Gallery fades in
-         (duration 0.9 → 1.4)
-         ---------------------------------------------------------- */
+      /* Phase 2b: Gallery fades in */
       if (gallery) {
         journey.fromTo(
           gallery,
@@ -225,10 +364,7 @@ export default function Events(): React.ReactElement {
         );
       }
 
-      /* ----------------------------------------------------------
-         Phase 3: 3D gallery camera flythrough (existing behavior)
-         (duration 1.4 → 5.4)
-         ---------------------------------------------------------- */
+      /* Phase 3: 3D gallery camera flythrough */
       journey.to(camera, {
         z: (GALLERY_ITEMS.length - 1) * zSpacing + 800,
         duration: 4,
@@ -236,10 +372,7 @@ export default function Events(): React.ReactElement {
         onUpdate: updateScene,
       }, 1.4);
 
-      /* ----------------------------------------------------------
-         Exit animations — gallery & text fade out,
-         background image STAYS visible for a seamless transition
-         ---------------------------------------------------------- */
+      /* Exit animations */
       journey.to(
         gallery,
         {
@@ -247,10 +380,10 @@ export default function Events(): React.ReactElement {
           scale: 0.92,
           yPercent: -8,
           filter: "blur(10px)",
-          duration: 0.7,
-          ease: "power2.in",
+          duration: exitDuration,
+          ease: "power2.inOut",
         },
-        5.0
+        exitStart
       );
 
       journey.to(
@@ -260,9 +393,9 @@ export default function Events(): React.ReactElement {
           yPercent: -20,
           filter: "blur(4px)",
           duration: 0.5,
-          ease: "power2.in",
+          ease: "power2.inOut",
         },
-        4.9
+        exitStart - 0.1
       );
 
       journey.to(
@@ -272,22 +405,20 @@ export default function Events(): React.ReactElement {
           y: 20,
           filter: "blur(4px)",
           duration: 0.5,
-          ease: "power2.in",
+          ease: "power2.inOut",
         },
-        4.9
+        exitStart - 0.1
       );
 
-      // Background image stays — no fade-out. Just a subtle slow zoom
-      // for a cinematic lingering feel as content exits.
       if (bgInner) {
         journey.to(
           bgInner,
           {
             scale: 1.06,
             duration: 1.0,
-            ease: "none",
+            ease: "power1.inOut",
           },
-          4.8
+          exitStart - 0.15
         );
       }
 
@@ -296,7 +427,7 @@ export default function Events(): React.ReactElement {
           exitGlow,
           { autoAlpha: 0, scaleX: 0.7 },
           { autoAlpha: 1, scaleX: 1.2, duration: 0.8, ease: "power1.out" },
-          5.0
+          exitStart
         );
       }
     }, section);
@@ -310,12 +441,22 @@ export default function Events(): React.ReactElement {
       <div className="events-bg-panel" ref={bgPanelRef}>
         <div className="events-bg-inner" ref={bgInnerRef}>
           <Image
-            src={teamBg}
+            className="events-bg-desktop"
+            src={desktopTeamBg}
             alt="ECell team background"
             fill
             sizes="100vw"
-            quality={100}
-            style={{ objectFit: "cover" }}
+            quality={85}
+            priority
+          />
+          <Image
+            className="events-bg-mobile"
+            src={mobileTeamBg}
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="100vw"
+            quality={85}
             priority
           />
         </div>
@@ -345,7 +486,7 @@ export default function Events(): React.ReactElement {
                   itemsRef.current[idx] = el;
                 }}
               >
-                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 80vw, 32vw" quality={100} style={{ objectFit: "cover" }} />
+                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 72vw, 32vw" quality={85} />
               </div>
             );
           })}
