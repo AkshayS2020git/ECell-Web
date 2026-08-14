@@ -1,0 +1,128 @@
+/* =========================================
+   Responsive Breakpoints
+   ========================================= */
+@media (max-width: 960px) {
+  .speakers-header {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .speakers-categories,
+  .speakers-nav-controls {
+    justify-content: flex-start;
+  }
+
+  .speakers-nav-controls {
+    justify-content: space-between;
+  }
+
+  .speaker-spotlight-core {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .spotlight-left-column {
+    width: min(100%, 420px);
+    margin: 0 auto;
+  }
+
+  .spotlight-photo-frame {
+    height: 380px;
+  }
+}
+
+@media (max-width: 640px) {
+  .speakers-section {
+    padding: 80px 0 100px;
+  }
+
+  .speakers-headline {
+    font-size: clamp(34px, 11vw, 48px);
+  }
+
+  .speakers-categories {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    margin-right: -16px;
+    padding: 2px 16px 6px 0;
+    scrollbar-width: none;
+  }
+
+  .speakers-categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  .speakers-cat-pill {
+    flex: 0 0 auto;
+  }
+
+  .speaker-spotlight-shell {
+    padding: 5px;
+    border-radius: 22px;
+  }
+
+  .speaker-spotlight-core {
+    gap: 20px;
+    padding: 16px 14px 22px;
+    border-radius: 17px;
+  }
+
+  .spotlight-left-column {
+    width: 100%;
+  }
+
+  .spotlight-photo-frame {
+    height: 310px;
+  }
+
+  .spotlight-speaker-name {
+    font-size: 32px;
+    margin-bottom: 14px;
+  }
+
+  .spotlight-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .speaker-island-btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .speaker-secondary-btn {
+    align-self: center;
+  }
+
+  .speaker-deck-card {
+    flex-basis: 240px;
+  }
+
+  .speaker-deck-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speakers-transition-light {
+    animation: none;
+  }
+
+  .counter-number {
+    animation: none;
+  }
+
+  .speaker-spotlight-shell,
+  .speaker-deck-card,
+  .speakers-arrow-btn,
+  .speakers-cat-pill,
+  .speaker-island-btn,
+  .speaker-secondary-btn,
+  .spotlight-photo,
+  .deck-card-photo-wrapper img {
+    transition: none;
+  }
+}
+
