@@ -621,7 +621,8 @@
     transform: none;
   }
 
-  .footer-links-list {
+  .footer-row-group {
+    max-width: none;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 12px 18px;

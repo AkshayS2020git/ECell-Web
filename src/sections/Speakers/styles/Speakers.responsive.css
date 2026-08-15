@@ -375,6 +375,24 @@
 }
 
 @media (max-width: 400px) {
+  .speakers-reveal-panel {
+    padding-top: 24px;
+    padding-bottom: 36px;
+  }
+
+  .speakers-header {
+    gap: 7px 8px;
+    margin-bottom: 12px;
+  }
+
+  .speakers-headline {
+    font-size: 29px;
+  }
+
+  .speakers-subheading {
+    font-size: 12px;
+  }
+
   .speaker-spotlight-core {
     padding: 8px 8px 12px;
   }
@@ -386,6 +404,11 @@
   .speaker-island-btn {
     font-size: 10.5px;
     padding: 4px 6px 4px 10px;
+  }
+
+  .speaker-secondary-btn {
+    padding-right: 8px;
+    padding-left: 8px;
   }
 
   .speaker-deck-card {
