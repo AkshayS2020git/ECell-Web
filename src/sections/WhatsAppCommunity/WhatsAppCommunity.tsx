@@ -289,6 +289,34 @@ export default function WhatsAppCommunity(): React.ReactElement {
           },
         }
       );
+
+      // ═════════════════════════════════════════════════════════════
+      // ── MORPHIC EXIT TRANSITION: ONLY FIRES ON SECTION EXIT ──
+      // ═════════════════════════════════════════════════════════════
+      const exitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "bottom 85%",
+          end: "bottom 5%",
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // 1. Community card and bridge core shrink and compress towards center
+      exitTl.to(
+        [".whatsapp-community-card", ".community-bridge-core"],
+        {
+          scale: 0.22,
+          y: -40,
+          opacity: 0,
+          filter: "blur(12px)",
+          duration: 0.45,
+          ease: "power2.in",
+        },
+        0
+      );
+
     }, section);
 
     return () => ctx.revert();

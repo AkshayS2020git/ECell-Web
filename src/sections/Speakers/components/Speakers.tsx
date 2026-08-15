@@ -251,30 +251,50 @@ export default function Speakers(): React.ReactElement {
         });
       }
 
-      // ── Parallax Depth: Inner content lags behind panel ──
+      // ── Kinetic Typography: Voices of Innovation & Headline Compression ──
       if (headerBlockRef.current) {
-        gsap.fromTo(
-          headerBlockRef.current,
-          { y: 80, opacity: 0, filter: "blur(6px)" },
-          {
-            y: 0,
-            opacity: 1,
-            filter: "blur(0px)",
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 60%",
-              end: "top -5%",
-              scrub: 0.9,
-            },
-          }
+        const typoTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top 65%",
+            end: "top 5%",
+            scrub: 0.8,
+          },
+        });
+
+        typoTl.fromTo(
+          ".speakers-kicker-row",
+          { y: -16, opacity: 0, letterSpacing: "0.35em", filter: "blur(6px)" },
+          { y: 0, opacity: 1, letterSpacing: "0.22em", filter: "blur(0px)", ease: "power2.out" },
+          0
+        );
+
+        typoTl.fromTo(
+          ".speakers-typo-top",
+          { y: -45, opacity: 0, scale: 1.15, filter: "blur(8px)", letterSpacing: "0.06em" },
+          { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", letterSpacing: "-0.03em", ease: "power3.out" },
+          0.05
+        );
+
+        typoTl.fromTo(
+          ".speakers-typo-bottom",
+          { y: 45, opacity: 0, scale: 1.15, filter: "blur(8px)", letterSpacing: "0.06em" },
+          { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", letterSpacing: "-0.03em", ease: "power3.out" },
+          0.05
+        );
+
+        typoTl.fromTo(
+          ".speakers-subheading",
+          { y: 24, opacity: 0, filter: "blur(4px)" },
+          { y: 0, opacity: 1, filter: "blur(0px)", ease: "power3.out" },
+          0.2
         );
       }
 
       if (spotlightRef.current) {
         gsap.fromTo(
           spotlightRef.current,
-          { y: 120, opacity: 0, scale: 0.96 },
+          { y: 70, opacity: 0, scale: 0.96 },
           {
             y: 0,
             opacity: 1,
@@ -282,9 +302,9 @@ export default function Speakers(): React.ReactElement {
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,
-              start: "top 50%",
-              end: "top -10%",
-              scrub: 1,
+              start: "top 65%",
+              end: "top 20%",
+              scrub: 0.8,
             },
           }
         );
@@ -308,6 +328,61 @@ export default function Speakers(): React.ReactElement {
           }
         );
       }
+
+      // ═════════════════════════════════════════════════════════════
+      // ── MORPHIC EXIT TRANSITION: ONLY FIRES ON SECTION EXIT ──
+      // ═════════════════════════════════════════════════════════════
+      const exitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "bottom 85%",
+          end: "bottom 10%",
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // 1. Showcase spotlight card and header shrink and collapse to center with blur
+      exitTl.to(
+        [spotlightRef.current, headerBlockRef.current].filter(Boolean),
+        {
+          scale: 0.25,
+          y: -40,
+          opacity: 0,
+          filter: "blur(10px)",
+          duration: 0.55,
+          ease: "power2.in",
+        },
+        0
+      );
+
+      // 2. Central vertical conduit spine shoots down rapidly and locks flush to the bottom
+      exitTl.fromTo(
+        ".speakers-morphic-spine",
+        { scaleY: 0, opacity: 0 },
+        {
+          scaleY: 1,
+          opacity: 1,
+          duration: 0.25,
+          ease: "power2.out",
+          transformOrigin: "top center",
+        },
+        0.05
+      );
+
+      // 3. Central spine strikes bottom and immediately erupts horizontally into horizon divider
+      exitTl.fromTo(
+        ".speakers-morphic-divider",
+        { scaleX: 0, opacity: 0 },
+        {
+          scaleX: 1,
+          opacity: 1,
+          duration: 0.35,
+          ease: "power3.out",
+          transformOrigin: "center center",
+        },
+        0.25
+      );
     }, section);
 
     return () => ctx.revert();
@@ -410,23 +485,20 @@ export default function Speakers(): React.ReactElement {
       aria-labelledby="speakers-heading"
     >
       <div ref={speakersPanelRef} className="speakers-reveal-panel">
-        {/* Rising Stage transition element */}
-        <div ref={wipeBarRef} className="section-wipe-bar" aria-hidden="true" />
-        <div
-          ref={transitionLightRef}
-          className="speakers-transition-light"
-          aria-hidden="true"
-          style={{
-            background: `radial-gradient(ellipse, ${currentSpeaker.accentColor || "rgba(142, 220, 255, 0.16)"} 0%, rgba(142, 220, 255, 0.03) 45%, transparent 72%)`,
-          }}
-        />
+        {/* Morphic Conduit Spine & Horizon Divider */}
+        <div className="speakers-morphic-spine" aria-hidden="true" />
+        <div className="speakers-morphic-divider" aria-hidden="true" />
 
         <div className="wrap">
         {/* Header Block — parallax depth offset */}
         <div ref={headerBlockRef} className="speakers-header">
           <div className="speakers-header-main">
-            <h2 id="speakers-heading" className="speakers-headline">
-              Previous Speakers
+            <div className="speakers-kicker-row">
+              <span className="speakers-kicker-text">VOICES OF INNOVATION</span>
+            </div>
+            <h2 id="speakers-heading" className="speakers-headline" aria-label="Previous Speakers">
+              <span className="speakers-typo-word speakers-typo-top">Previous</span>{" "}
+              <span className="speakers-typo-word speakers-typo-bottom">Speakers</span>
             </h2>
             <p className="speakers-subheading">
               Founders, tech leaders, and entrepreneurs who have shared hard-earned lessons with the next generation of builders.

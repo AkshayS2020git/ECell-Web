@@ -198,8 +198,13 @@
 
 @media (max-width: 768px) {
   .events-section {
-    /* Fix bottom gap on mobile browsers */
+    /* Keep the pinned scene stable while the mobile browser chrome moves. */
+    min-height: 100svh;
     min-height: -webkit-fill-available;
+  }
+
+  .events-transition-wipe {
+    box-shadow: none;
   }
 
   .events-bg-panel {
@@ -243,9 +248,9 @@
   }
 
   .events-intro {
-    top: clamp(5.5rem, 12vh, 7rem);
+    top: clamp(4.75rem, 10vh, 6.5rem);
     left: 1.25rem;
-    max-width: 15rem;
+    max-width: min(15rem, calc(100vw - 2.5rem));
   }
 
   .events-intro span {
@@ -258,10 +263,10 @@
   }
 
   .events-gallery-item {
-    width: min(72vw, 19rem);
-    height: min(42vh, 23rem);
-    margin-left: min(-36vw, -9.5rem);
-    margin-top: min(-21vh, -11.5rem);
+    width: min(78vw, 20rem);
+    height: clamp(220px, 40svh, 22rem);
+    margin-left: min(-39vw, -10rem);
+    margin-top: clamp(-11rem, -20svh, -7rem);
     border-radius: 10px;
     transition: none;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
@@ -274,8 +279,8 @@
   }
 
   .events-caption-container {
-    bottom: 1.75rem;
-    padding: 0 1.25rem;
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    padding: 0 1.5rem;
   }
 
   .events-caption-text {

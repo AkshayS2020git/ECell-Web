@@ -101,24 +101,55 @@ export default function Sponsors(): React.ReactElement {
         });
       }
 
-      // ── Header: Focus Pull Scrub ──
+      // ── Kinetic Typography: Partners slides from left, & stays center, Sponsors from right ──
       const headerTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: "top 80%",
-          end: "top 30%",
+          start: "top 88%",
+          end: "top 35%",
           scrub: 0.8,
         },
       });
 
-      if (headerRef.current) {
-        headerTl.fromTo(
-          headerRef.current,
-          { y: 40, opacity: 0, scale: 1.05, filter: "blur(6px)" },
-          { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", ease: "power3.out" },
-          0
-        );
-      }
+      // Badge enters from top
+      headerTl.fromTo(
+        ".sponsors-badge-container",
+        { y: -20, opacity: 0, scale: 0.92, filter: "blur(6px)" },
+        { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", ease: "power3.out" },
+        0
+      );
+
+      // "Partners" slides in with momentum from the left
+      headerTl.fromTo(
+        ".sponsors-word-left",
+        { x: -110, opacity: 0, filter: "blur(10px)", letterSpacing: "0.08em" },
+        { x: 0, opacity: 1, filter: "blur(0px)", letterSpacing: "-0.03em", ease: "power3.out" },
+        0.05
+      );
+
+      // "&" stays anchored in center, scaling from a luminous focal spark
+      headerTl.fromTo(
+        ".sponsors-headline-amp",
+        { scale: 0, opacity: 0, filter: "blur(8px)" },
+        { scale: 1, opacity: 0.65, filter: "blur(0px)", ease: "back.out(2.2)" },
+        0.1
+      );
+
+      // "Sponsors" slides in with momentum from the right
+      headerTl.fromTo(
+        ".sponsors-word-right",
+        { x: 110, opacity: 0, filter: "blur(10px)", letterSpacing: "0.08em" },
+        { x: 0, opacity: 1, filter: "blur(0px)", letterSpacing: "-0.03em", ease: "power3.out" },
+        0.05
+      );
+
+      // Subtitle unmasks as the headline locks together
+      headerTl.fromTo(
+        ".sponsors-intro",
+        { y: 22, opacity: 0, filter: "blur(6px)" },
+        { y: 0, opacity: 1, filter: "blur(0px)", ease: "power3.out" },
+        0.2
+      );
 
       // ── Ambient Radial Glow Expansion ──
       if (glowRef.current) {
@@ -429,13 +460,13 @@ export default function Sponsors(): React.ReactElement {
       }
 
       // ═════════════════════════════════════════════════════════════
-      // ── MORPHIC TRANSITION: SPONSORS COLLAPSE → CONDUIT → HORIZON DIVIDER ──
+      // ── MORPHIC TRANSITION: ONLY FIRES ON SECTION EXIT ──
       // ═════════════════════════════════════════════════════════════
       const exitTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: "bottom 96%",
-          end: "bottom 15%",
+          start: "bottom 85%",
+          end: "bottom 10%",
           scrub: 0.8,
           invalidateOnRefresh: true,
         },
@@ -493,39 +524,32 @@ export default function Sponsors(): React.ReactElement {
         0.05
       );
 
-      // 4. Central vertical spine ignites and shoots down into bottom boundary
+      // 4. Central vertical spine ignites and shoots down rapidly into bottom boundary
       exitTl.fromTo(
         ".morphic-central-spine",
         { scaleY: 0, opacity: 0 },
         {
           scaleY: 1,
           opacity: 1,
-          duration: 0.4,
+          duration: 0.25,
           ease: "power2.out",
           transformOrigin: "top center",
         },
-        0.25
+        0.05
       );
 
-      // 5. The spine strikes the bottom and erupts horizontally into the horizon divider
+      // 5. The spine strikes the bottom and immediately erupts horizontally into the horizon divider
       exitTl.fromTo(
         ".morphic-horizon-divider",
         { scaleX: 0, opacity: 0 },
         {
           scaleX: 1,
           opacity: 1,
-          duration: 0.45,
+          duration: 0.35,
           ease: "power3.out",
           transformOrigin: "center center",
         },
-        0.45
-      );
-
-      // 6. Spine dissolves as horizon beam locks into place for the next section
-      exitTl.to(
-        ".morphic-central-spine",
-        { opacity: 0, duration: 0.25, ease: "power2.out" },
-        0.65
+        0.25
       );
     }, section);
 
@@ -555,10 +579,13 @@ export default function Sponsors(): React.ReactElement {
 
       <div ref={headerRef} className="wrap sponsors-header">
         <div className="sponsors-badge-container">
-          <span className="sponsors-live-dot" />
           <span className="sponsors-kicker">SUPPORTED BY</span>
         </div>
-        <h2 className="sponsors-headline">Partners &amp; Sponsors</h2>
+        <h2 className="sponsors-headline" aria-label="Partners &amp; Sponsors">
+          <span className="sponsors-headline-word sponsors-word-left">Partners</span>
+          <span className="sponsors-headline-amp" aria-hidden="true">&amp;</span>
+          <span className="sponsors-headline-word sponsors-word-right">Sponsors</span>
+        </h2>
         <p className="sponsors-intro">
           The organisations helping us turn ideas into action.
         </p>

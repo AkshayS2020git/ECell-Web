@@ -157,35 +157,11 @@
 .sponsors-badge-container {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   padding: 4px 12px;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(244, 244, 242, 0.1);
   margin-bottom: 16px;
-}
-
-.sponsors-live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
-  animation: liveDotPulse 2s ease-in-out infinite;
-}
-
-@keyframes liveDotPulse {
-
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: scale(0.85);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
 }
 
 .sponsors-kicker {
@@ -203,9 +179,32 @@
   font-weight: 900;
   font-size: clamp(32px, 5.2vw, 60px);
   letter-spacing: -0.03em;
-  line-height: 1.02;
+  line-height: 1.04;
   color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.4vw, 18px);
   text-wrap: balance;
+  overflow: visible;
+  will-change: transform, opacity;
+}
+
+.sponsors-headline-word {
+  display: inline-block;
+  will-change: transform, opacity, filter, letter-spacing;
+}
+
+.sponsors-headline-amp {
+  display: inline-block;
+  font-family: var(--font-archivo), sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 0.82em;
+  color: var(--fg-dim);
+  opacity: 0.65;
+  will-change: transform, opacity, filter;
+  transform-origin: center center;
 }
 
 .sponsors-intro {
@@ -618,17 +617,37 @@
 
 @media (max-width: 768px) {
   .sponsors-section {
-    padding: 85px 0 100px;
+    padding: 68px 0 76px;
+    border-top: 0;
+  }
+
+  .sponsors-section::before,
+  .sponsors-divider-line,
+  .morphic-central-spine,
+  .morphic-horizon-divider {
+    display: none;
   }
 
   .sponsors-header {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
+    padding: 0 8px;
+  }
+
+  .sponsors-headline {
+    flex-wrap: wrap;
+    font-size: clamp(30px, 9vw, 44px);
+    line-height: 0.98;
+  }
+
+  .sponsors-intro {
+    max-width: 34ch;
+    font-size: 14px;
   }
 
   .constellation-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 
   .constellation-row {
@@ -650,14 +669,14 @@
   }
 
   .sponsor-card-inner {
-    height: 80px;
-    padding: 10px 14px;
+    height: 72px;
+    padding: 8px 10px;
     border-radius: 12px;
   }
 
   .sponsor-logo-frame {
-    width: 115px;
-    height: 42px;
+    width: 105px;
+    height: 38px;
   }
 
   .node-nokia,
