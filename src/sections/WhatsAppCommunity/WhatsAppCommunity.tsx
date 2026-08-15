@@ -143,6 +143,14 @@ export default function WhatsAppCommunity(): React.ReactElement {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [draft, setDraft] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
+  // Decorative DOM is mounted after hydration so browser extensions cannot
+  // make the server-rendered tree differ from React's first client render.
+  const [isDecorativeReady, setIsDecorativeReady] = useState<boolean>(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setIsDecorativeReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   const handleSectionPointerMove = (event: React.PointerEvent<HTMLElement>) => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
@@ -377,25 +385,29 @@ export default function WhatsAppCommunity(): React.ReactElement {
       onPointerMove={handleSectionPointerMove}
       onPointerLeave={handleSectionPointerLeave}
     >
-      {/* Transitions: Top light wipe bar & ambient green bloom */}
-      <div ref={wipeBarRef} className="section-wipe-bar" aria-hidden="true" />
-      <div ref={bloomRef} className="section-bloom section-bloom--green" aria-hidden="true" />
+      {isDecorativeReady && (
+        <>
+          {/* Transitions: Top light wipe bar & ambient green bloom */}
+          <div ref={wipeBarRef} className="section-wipe-bar" aria-hidden="true" />
+          <div ref={bloomRef} className="section-bloom section-bloom--green" aria-hidden="true" />
 
-      <div className="whatsapp-community-orb whatsapp-community-orb-one" aria-hidden="true" />
-      <div className="whatsapp-community-orb whatsapp-community-orb-two" aria-hidden="true" />
-      <div ref={cursorFieldRef} className="whatsapp-community-cursor-field" aria-hidden="true">
-        {Array.from({ length: 14 }, (_, index) => (
-          <span className="whatsapp-community-cursor-icon" key={index}>
-            {index % 3 === 0 ? (
-              <svg viewBox="0 0 24 24"><path d="M19.1 4.9A9.72 9.72 0 0 0 3.72 16.62L2.5 21.5l5-1.18A9.72 9.72 0 0 0 19.1 4.9ZM12 19.8a7.79 7.79 0 0 1-3.97-1.09l-.28-.16-2.97.7.72-2.89-.18-.3A7.8 7.8 0 1 1 12 19.8Zm4.27-5.84c-.23-.12-1.38-.68-1.59-.75-.21-.08-.36-.12-.51.12s-.59.75-.72.9c-.13.16-.26.18-.49.06a6.34 6.34 0 0 1-1.86-1.15 6.95 6.95 0 0 1-1.28-1.6c-.13-.23-.01-.35.1-.47.1-.1.23-.26.34-.39.11-.13.15-.23.23-.38.08-.16.04-.29-.02-.41-.06-.12-.51-1.22-.7-1.67-.18-.44-.37-.38-.51-.39h-.44c-.15 0-.4.06-.61.29s-.8.78-.8 1.9.82 2.2.93 2.36c.12.16 1.62 2.47 3.93 3.47.55.24.98.38 1.31.49.55.17 1.05.15 1.44.09.44-.07 1.38-.56 1.57-1.1.19-.54.19-1 .13-1.1-.06-.1-.21-.16-.44-.28Z" /></svg>
-            ) : index % 3 === 1 ? (
-              <svg viewBox="0 0 24 24"><path d="M20 3H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4l4 3 4-3h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm-3 9H7V10h10v2Zm0-4H7V6h10v2Z" /></svg>
-            ) : (
-              <svg viewBox="0 0 24 24"><path d="M16 11a4 4 0 1 0-3.95-4.65A5.5 5.5 0 0 1 15 11h1ZM8 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm8 2c-1.04 0-2.04.18-2.97.52A6.9 6.9 0 0 1 15 18.5c0 .52-.06 1.02-.17 1.5H22v-2c0-2.76-2.24-5-5-5ZM8 13c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4Z" /></svg>
-            )}
-          </span>
-        ))}
-      </div>
+          <div className="whatsapp-community-orb whatsapp-community-orb-one" aria-hidden="true" />
+          <div className="whatsapp-community-orb whatsapp-community-orb-two" aria-hidden="true" />
+          <div ref={cursorFieldRef} className="whatsapp-community-cursor-field" aria-hidden="true">
+            {Array.from({ length: 14 }, (_, index) => (
+              <span className="whatsapp-community-cursor-icon" key={index}>
+                {index % 3 === 0 ? (
+                  <svg viewBox="0 0 24 24"><path d="M19.1 4.9A9.72 9.72 0 0 0 3.72 16.62L2.5 21.5l5-1.18A9.72 9.72 0 0 0 19.1 4.9ZM12 19.8a7.79 7.79 0 0 1-3.97-1.09l-.28-.16-2.97.7.72-2.89-.18-.3A7.8 7.8 0 1 1 12 19.8Zm4.27-5.84c-.23-.12-1.38-.68-1.59-.75-.21-.08-.36-.12-.51.12s-.59.75-.72.9c-.13.16-.26.18-.49.06a6.34 6.34 0 0 1-1.86-1.15 6.95 6.95 0 0 1-1.28-1.6c-.13-.23-.01-.35.1-.47.1-.1.23-.26.34-.39.11-.13.15-.23.23-.38.08-.16.04-.29-.02-.41-.06-.12-.51-1.22-.7-1.67-.18-.44-.37-.38-.51-.39h-.44c-.15 0-.4.06-.61.29s-.8.78-.8 1.9.82 2.2.93 2.36c.12.16 1.62 2.47 3.93 3.47.55.24.98.38 1.31.49.55.17 1.05.15 1.44.09.44-.07 1.38-.56 1.57-1.1.19-.54.19-1 .13-1.1-.06-.1-.21-.16-.44-.28Z" /></svg>
+                ) : index % 3 === 1 ? (
+                  <svg viewBox="0 0 24 24"><path d="M20 3H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4l4 3 4-3h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm-3 9H7V10h10v2Zm0-4H7V6h10v2Z" /></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24"><path d="M16 11a4 4 0 1 0-3.95-4.65A5.5 5.5 0 0 1 15 11h1ZM8 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm8 2c-1.04 0-2.04.18-2.97.52A6.9 6.9 0 0 1 15 18.5c0 .52-.06 1.02-.17 1.5H22v-2c0-2.76-2.24-5-5-5ZM8 13c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4Z" /></svg>
+                )}
+              </span>
+            ))}
+          </div>
+        </>
+      )}
       <div className="community-bridge" aria-hidden="true">
         <span className="community-bridge-line community-bridge-line-left" />
         <div className="community-bridge-core">
