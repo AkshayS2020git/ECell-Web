@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import { gsap } from "../../utils/gsapSetup";
+import React, { useRef } from "react";
 import "./Footer.css";
 
 export interface FooterLinkItem {
@@ -75,7 +74,8 @@ export default function Footer(): React.ReactElement {
               <span className="footer-eyebrow">ENTREPRENEURSHIP CELL &bull; RV UNIVERSITY</span>
             </div>
             <h2 className="footer-heading">
-              Let&apos;s build <span className="footer-heading-gradient">what&apos;s next.</span>
+              <span>Let&apos;s build</span>
+              <span className="footer-heading-gradient">what&apos;s next.</span>
             </h2>
             <p className="footer-tagline">
               Empowering the next generation of builders, thinkers, and venture creators at RV University.
@@ -163,7 +163,7 @@ export default function Footer(): React.ReactElement {
         <div className="footer-bottom-bar">
           <div className="footer-bottom-left">
             <div className="footer-copyright-block">
-              <span className="footer-cr-main">&copy; {new Date().getFullYear()} ECELL RV UNIVERSITY</span>
+              <span className="footer-cr-main">&copy; {new Date().getFullYear()} ECELL&trade; RV UNIVERSITY</span>
               <span className="footer-cr-sub">ALL RIGHTS RESERVED.</span>
             </div>
           </div>
@@ -185,4 +185,3 @@ export default function Footer(): React.ReactElement {
     </footer>
   );
 }
-

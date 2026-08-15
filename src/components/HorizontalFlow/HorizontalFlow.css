@@ -69,6 +69,7 @@
 
 .horizontal-flow-panel .site-footer {
   padding: clamp(40px, 5vh, 70px) 0 24px;
+  justify-content: flex-end;
 }
 
 .horizontal-flow-panel .footer-main {

@@ -8,7 +8,7 @@
   isolation: isolate;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   box-sizing: border-box;
 }
 
@@ -38,10 +38,10 @@
 
 .footer-corner-glow {
   position: absolute;
-  bottom: -60px;
-  left: -60px;
-  width: 480px;
-  height: 480px;
+  top: 12%;
+  right: -46px;
+  width: 520px;
+  height: 520px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(81, 180, 226, 0.08) 0%, rgba(142, 220, 255, 0.03) 45%, transparent 70%);
   filter: blur(40px);
@@ -49,15 +49,17 @@
 
 .footer-wave-emblem {
   position: absolute;
-  bottom: -30px;
-  left: -20px;
-  width: min(440px, 42vw);
+  top: 16%;
+  right: -28px;
+  width: min(480px, 44vw);
   height: auto;
-  opacity: 0.075;
-  filter: drop-shadow(0 0 24px rgba(142, 220, 255, 0.2));
-  mask-image: radial-gradient(ellipse 85% 85% at 20% 90%, black 30%, transparent 85%);
-  -webkit-mask-image: radial-gradient(ellipse 85% 85% at 20% 90%, black 30%, transparent 85%);
-  transform: rotate(-3deg);
+  opacity: 0.1;
+  filter: grayscale(0.25) saturate(0.85) drop-shadow(0 0 24px rgba(142, 220, 255, 0.2));
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%);
+  transform: rotate(-6deg);
+  transform-origin: 80% 10%;
 }
 
 .footer-container {
@@ -67,10 +69,11 @@
   padding: 0 32px;
   position: relative;
   z-index: 1;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: clamp(32px, 5vh, 56px);
+  justify-content: flex-end;
+  gap: clamp(40px, 7vh, 76px);
   box-sizing: border-box;
 }
 
@@ -85,6 +88,7 @@
 
 /* Left Column: Heading & Intro */
 .footer-intro {
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -105,12 +109,18 @@
 
 .footer-heading {
   font-family: var(--font-archivo), sans-serif;
-  font-size: clamp(2.4rem, 4.5vw, 4.4rem);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  gap: 24px;
+  font-size: clamp(3.8rem, 7vw, 7rem);
   font-weight: 900;
   letter-spacing: -0.05em;
   line-height: 0.95;
   color: var(--fg);
   margin: 0;
+  white-space: nowrap;
 }
 
 .footer-heading-gradient {
@@ -231,6 +241,7 @@
 
 /* Right Column: Contact Hero Card */
 .footer-contact-col {
+  grid-column: span 2;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -238,11 +249,14 @@
 
 .footer-contact-hero-card {
   position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 22px 24px;
-  border-radius: 20px;
+  gap: 12px;
+  width: min(100%, 320px);
+  min-height: 164px;
+  padding: 18px 22px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
@@ -391,7 +405,7 @@
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   overflow: hidden;
-  padding: clamp(16px, 2.5vh, 28px) 0;
+  padding: clamp(18px, 3vh, 34px) 0;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
@@ -410,13 +424,13 @@
 .footer-giant-marquee-track span {
   display: inline-block;
   font-family: var(--font-archivo), sans-serif;
-  font-size: clamp(2rem, 5vw, 4.2rem);
+  font-size: clamp(3.25rem, 5.5vw, 4rem);
   font-weight: 900;
   letter-spacing: -0.03em;
-  line-height: 1;
+  line-height: 0.95;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.12);
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.2);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.24);
   padding: 0 10px;
 }
 
@@ -459,8 +473,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 18px;
   color: rgba(244, 244, 242, 0.5);
   font-size: 0.72rem;
   font-weight: 600;
@@ -504,17 +517,19 @@
 }
 
 .footer-top-btn {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.03);
   color: var(--fg);
   cursor: pointer;
   font: inherit;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   transition: all 200ms ease;
@@ -568,7 +583,19 @@
   }
 
   .footer-heading {
-    font-size: clamp(2rem, 8vw, 2.8rem);
+    display: block;
+    font-size: clamp(2.2rem, 9vw, 3.2rem);
+    white-space: normal;
+  }
+
+  .footer-giant-marquee-track span {
+    font-size: clamp(2.2rem, 10vw, 3.2rem);
+  }
+
+  .footer-wave-emblem {
+    top: 22%;
+    right: -46px;
+    width: min(340px, 76vw);
   }
 
   .footer-nav-col {
