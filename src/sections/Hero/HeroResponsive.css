@@ -12,4 +12,8 @@
   .hero__marquee-line {
     font-size: clamp(46px, 18vw, 86px);
   }
+
+  .hero__marquee-line--startups {
+    font-size: clamp(36px, calc(18vw - 10px), 76px);
+  }
 }

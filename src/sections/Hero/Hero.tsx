@@ -82,22 +82,11 @@ export default function Hero(): React.ReactElement {
     <section ref={heroRef} className="hero">
       <div ref={stickyRef} className="hero__sticky">
         <div ref={marqueeRef} className="hero__marquee-group">
-          <div className="hero__marquee-line">
-            <span>
-              EVERY STARTUP BEGINS WITH CURIOSITY &nbsp;&nbsp;&nbsp; EVERY
-              STARTUP BEGINS WITH CURIOSITY &nbsp;&nbsp;&nbsp; EVERY STARTUP
-              BEGINS WITH CURIOSITY &nbsp;&nbsp;&nbsp; EVERY STARTUP BEGINS WITH
-              CURIOSITY &nbsp;&nbsp;&nbsp;
-            </span>
+          <div className="hero__marquee-line hero__marquee-line--startups">
+            <span>WHERE STARTUPS</span>
           </div>
-          <div className="hero__marquee-line hero__marquee-line--dim hero__marquee-line--reverse">
-            <span>
-              WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY INTO ACTION
-              &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY
-              INTO ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN
-              THAT CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO
-              HELP YOU TURN THAT CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp;
-            </span>
+          <div className="hero__marquee-line hero__marquee-line--shape">
+            <span>TAKE SHAPE.</span>
           </div>
         </div>
 
@@ -143,6 +132,26 @@ export default function Hero(): React.ReactElement {
             <span />
           </div>
           <span className="hero__scroll-label">Scroll to explore</span>
+        </div>
+
+        <div className="hero__bottom-marquee" aria-hidden="true">
+          <div className="hero__bottom-marquee-track">
+            <span>
+              WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b> TO FAIL <b>—</b> TO
+              START AGAIN <b>—</b> WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b>
+              TO FAIL <b>—</b> TO START AGAIN <b>—</b>
+            </span>
+            <span>
+              WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b> TO FAIL <b>—</b> TO
+              START AGAIN <b>—</b> WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b>
+              TO FAIL <b>—</b> TO START AGAIN <b>—</b>
+            </span>
+            <span>
+              WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b> TO FAIL <b>—</b> TO
+              START AGAIN <b>—</b> WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b>
+              TO FAIL <b>—</b> TO START AGAIN <b>—</b>
+            </span>
+          </div>
         </div>
       </div>
     </section>

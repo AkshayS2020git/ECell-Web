@@ -21,6 +21,7 @@ export function setupHeroAnimations({
   labelRef,
   scrollHintRef,
 }: SetupHeroAnimationsOptions): () => void {
+  const marqueeMaxOpacity = 0.82;
   const video = videoRef.current;
   const videoWrap = videoWrapRef.current;
   const marquee = marqueeRef.current;
@@ -31,10 +32,11 @@ export function setupHeroAnimations({
   const isMobile = typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false;
 
   if (reduceMotion) {
-    gsap.set([videoWrap, marquee, label, heading, scrollHint].filter(Boolean), {
+    gsap.set([videoWrap, label, heading, scrollHint].filter(Boolean), {
       clearProps: "all",
       opacity: 1,
     });
+    gsap.set(marquee, { clearProps: "all", opacity: marqueeMaxOpacity });
     video?.pause();
     return () => {};
   }
@@ -63,7 +65,7 @@ export function setupHeroAnimations({
 
     mobileTimeline
       .to(videoWrap, { scale: 0.78, opacity: 0.94, ease: "none", duration: 1 }, 0)
-      .to(marquee, { opacity: 1, ease: "none", duration: 0.32 }, 0.12)
+      .to(marquee, { opacity: marqueeMaxOpacity, ease: "none", duration: 0.32 }, 0.12)
       .to(label, { opacity: 1, ease: "none", duration: 0.28 }, 0.16)
       .to(heading, { opacity: 0, ease: "none", duration: 0.25 }, 0.06);
 
@@ -143,7 +145,7 @@ export function setupHeroAnimations({
       borderRadius: `${cardP * 24}px`,
       boxShadow: `0 ${cardP * 48}px ${cardP * 110}px rgba(0,0,0,${cardP * 0.46})`,
     });
-    marqueeOpacity(reveal);
+    marqueeOpacity(reveal * marqueeMaxOpacity);
     labelOpacity(reveal);
     headingOpacity(1 - smoothstep(0.05, 0.35, progress));
     if (scrollHintOpacity) {

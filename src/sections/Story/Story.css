@@ -3,12 +3,12 @@
    ============================================================ */
 
 .story-reveal {
-  --story-bg: var(--bg, #0c0c0d);
-  --story-panel: var(--bg-2, #141416);
-  --story-text: var(--fg, #f3efe6);
-  --story-muted: var(--fg-dim, #8f8b82);
-  --story-accent: var(--fg, #f3efe6);
-  --story-rule: rgba(243, 239, 230, 0.14);
+  --story-bg: var(--bgcolor, #1a1a1a);
+  --story-panel: var(--bg-2, #111111);
+  --story-text: var(--fg, #f4f4f2);
+  --story-muted: var(--primarycolor, #bababa);
+  --story-accent: var(--fg, #f4f4f2);
+  --story-rule: rgba(255, 255, 255, 0.14);
   --story-display: var(--font-fraunces), var(--font-archivo), serif;
   --story-body: var(--font-inter), "Helvetica Neue", sans-serif;
 
