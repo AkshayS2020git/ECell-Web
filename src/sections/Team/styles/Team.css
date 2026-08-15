@@ -337,11 +337,15 @@
 
 /* ─── Content Text ─── */
 .team__role {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  align-self: flex-start;
+  width: fit-content;
+  color: color-mix(in srgb, var(--team-spotlight-accent, #8edcff) 82%, white);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.52);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .team__title {
