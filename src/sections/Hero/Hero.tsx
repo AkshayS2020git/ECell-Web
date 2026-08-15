@@ -133,6 +133,26 @@ export default function Hero(): React.ReactElement {
           </div>
           <span className="hero__scroll-label">Scroll to explore</span>
         </div>
+
+        <div className="hero__bottom-marquee" aria-hidden="true">
+          <div className="hero__bottom-marquee-track">
+            <span>
+              WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b> TO FAIL <b>—</b> TO
+              START AGAIN <b>—</b> WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b>
+              TO FAIL <b>—</b> TO START AGAIN <b>—</b>
+            </span>
+            <span>
+              WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b> TO FAIL <b>—</b> TO
+              START AGAIN <b>—</b> WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b>
+              TO FAIL <b>—</b> TO START AGAIN <b>—</b>
+            </span>
+            <span>
+              WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b> TO FAIL <b>—</b> TO
+              START AGAIN <b>—</b> WE&apos;RE HERE TO BUILD <b>—</b> TO TRY <b>—</b>
+              TO FAIL <b>—</b> TO START AGAIN <b>—</b>
+            </span>
+          </div>
+        </div>
       </div>
     </section>
   );
