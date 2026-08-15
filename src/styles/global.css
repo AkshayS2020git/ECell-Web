@@ -45,7 +45,9 @@ body {
 
 main {
   width: 100%;
-  overflow-x: clip;
+  /* Do NOT set overflow-x: clip/hidden here — it creates a containing block
+     for position: fixed children in Chrome, which breaks GSAP ScrollTrigger
+     pinning when scrolling backwards. Body already has overflow-x: hidden. */
 }
 
 h1,

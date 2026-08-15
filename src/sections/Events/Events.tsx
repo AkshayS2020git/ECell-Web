@@ -221,42 +221,74 @@ export default function Events(): React.ReactElement {
     }
 
     /* ============================================================
-       DESKTOP: Full 3D gallery experience (unchanged)
+       DESKTOP: Full 3D gallery experience
        ============================================================ */
     const zSpacing = 1500;
     const exitStart = 5;
     const exitDuration = 0.7;
+
+    // Cache z-offsets as numbers — avoids parsing dataset.z on every frame
+    const zValues: number[] = [];
+    // Create quick setters — batches DOM writes, avoids style recalc per item
+    const opacitySetters = items.map((item) => gsap.quickSetter(item, "opacity"));
+    const sceneZSetter = gsap.quickSetter(scene, "z", "px");
 
     items.forEach((item, index) => {
       const isRightSide = index % 2 === 0;
       const xOffset = isRightSide ? "35%" : "-35%";
       const zOffset = -(index * zSpacing);
 
-      item.dataset.z = `${zOffset}`;
+      zValues[index] = zOffset;
       item.style.transform = `translate3d(${xOffset}, 0px, ${zOffset}px)`;
     });
 
     const camera = { z: 0 };
     let activeIndex = -1;
     const updateScene = () => {
-      scene.style.transform = `translateZ(${camera.z}px)`;
+      sceneZSetter(camera.z);
       let nearest = 0;
       let nearestDistance = Infinity;
 
-      items.forEach((item, index) => {
-        const relativeZ = Number(item.dataset.z) + camera.z;
-        item.style.opacity = `${Math.max(0, Math.min(1, 1 - Math.abs(relativeZ) / 2800))}`;
-        if (relativeZ <= 300 && Math.abs(relativeZ) < nearestDistance) {
-          nearest = index;
-          nearestDistance = Math.abs(relativeZ);
+      for (let i = 0; i < items.length; i++) {
+        const relativeZ = zValues[i] + camera.z;
+
+        // Asymmetric alpha curve:
+        // - Deep background (<-3500px): invisible
+        // - Approach (-3500px to -1500px): smooth ramp in
+        // - Hero view (-1500px to 150px): 100% crisp solid opacity
+        // - Passing camera (150px to 550px): smooth rapid fade out BEFORE hitting 800px singularity
+        // - Past viewer (>=550px): hidden (prevents Chrome 3D singularity & GPU texture dropping)
+        let alpha = 0;
+        if (relativeZ < -3500) {
+          alpha = 0;
+        } else if (relativeZ < -1500) {
+          alpha = (relativeZ + 3500) / 2000;
+        } else if (relativeZ <= 150) {
+          alpha = 1;
+        } else if (relativeZ < 550) {
+          alpha = 1 - (relativeZ - 150) / 400;
+        } else {
+          alpha = 0;
         }
-      });
+
+        opacitySetters[i](alpha);
+        items[i].style.visibility = alpha > 0 ? "visible" : "hidden";
+
+        const absZ = Math.abs(relativeZ);
+        if (relativeZ <= 300 && absZ < nearestDistance) {
+          nearest = i;
+          nearestDistance = absZ;
+        }
+      }
 
       if (nearest !== activeIndex) {
         activeIndex = nearest;
         caption.textContent = GALLERY_ITEMS[nearest].caption;
       }
     };
+
+    // Initialize items and scene position immediately
+    updateScene();
 
     const ctx = gsap.context(() => {
       /* Phase 0: Transition wipe from previous section */
@@ -296,9 +328,8 @@ export default function Events(): React.ReactElement {
           yPercent: -100,
           scale: 0.88,
           rotate: -8,
-          filter: "blur(6px) brightness(0.7)",
           borderRadius: "36px",
-          opacity: 0.85,
+          opacity: 0,
         });
 
         if (bgInner) {
@@ -316,7 +347,6 @@ export default function Events(): React.ReactElement {
             yPercent: 0,
             scale: 1,
             rotate: 0,
-            filter: "blur(0px) brightness(1)",
             borderRadius: "0px",
             opacity: 1,
             duration: 1.0,
@@ -344,11 +374,10 @@ export default function Events(): React.ReactElement {
       if (intro) {
         journey.fromTo(
           intro,
-          { autoAlpha: 0, y: 40, filter: "blur(6px)" },
+          { autoAlpha: 0, y: 40 },
           {
             autoAlpha: 1,
             y: 0,
-            filter: "blur(0px)",
             duration: 0.5,
             ease: "power2.out",
           },
@@ -381,7 +410,6 @@ export default function Events(): React.ReactElement {
           autoAlpha: 0,
           scale: 0.92,
           yPercent: -8,
-          filter: "blur(10px)",
           duration: exitDuration,
           ease: "power2.inOut",
         },
@@ -393,7 +421,6 @@ export default function Events(): React.ReactElement {
         {
           autoAlpha: 0,
           yPercent: -20,
-          filter: "blur(4px)",
           duration: 0.5,
           ease: "power2.inOut",
         },
@@ -405,7 +432,6 @@ export default function Events(): React.ReactElement {
         {
           autoAlpha: 0,
           y: 20,
-          filter: "blur(4px)",
           duration: 0.5,
           ease: "power2.inOut",
         },
@@ -488,7 +514,16 @@ export default function Events(): React.ReactElement {
                   itemsRef.current[idx] = el;
                 }}
               >
-                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 72vw, 32vw" quality={85} />
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 768px) 78vw, 32vw"
+                  quality={85}
+                  priority
+                  loading="eager"
+                  draggable={false}
+                />
               </div>
             );
           })}
