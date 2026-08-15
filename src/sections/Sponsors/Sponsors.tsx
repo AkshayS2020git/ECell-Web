@@ -404,6 +404,7 @@ export default function Sponsors(): React.ReactElement {
         );
       }
 
+      // ═════════════════════════════════════════════════════════════
       // ── PHASE 4: LOGOS (Living Signal Lock-In) ──
       // Logos surge with exposure/contrast before settling into crisp clarity
       const logos = gsap.utils.toArray<HTMLElement>(".sponsor-logo");
@@ -426,6 +427,106 @@ export default function Sponsors(): React.ReactElement {
           0.9
         );
       }
+
+      // ═════════════════════════════════════════════════════════════
+      // ── MORPHIC TRANSITION: SPONSORS COLLAPSE → CONDUIT → HORIZON DIVIDER ──
+      // ═════════════════════════════════════════════════════════════
+      const exitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "bottom 96%",
+          end: "bottom 15%",
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // 1. Left and right cards collapse towards center axis with blur & scale down
+      exitTl.to(
+        ".col-r1-left, .col-r2-1, .col-r2-2, .col-r3-1, .col-r4-1",
+        {
+          x: 140,
+          scale: 0.2,
+          opacity: 0,
+          filter: "blur(10px)",
+          duration: 0.5,
+          ease: "power2.in",
+        },
+        0
+      );
+
+      exitTl.to(
+        ".col-r1-right, .col-r2-3, .col-r2-4, .col-r3-2, .col-r3-3, .col-r4-2",
+        {
+          x: -140,
+          scale: 0.2,
+          opacity: 0,
+          filter: "blur(10px)",
+          duration: 0.5,
+          ease: "power2.in",
+        },
+        0
+      );
+
+      // 2. Nodes and dots implode to center
+      exitTl.to(
+        ".constellation-anchor-node, .constellation-junction-dot, .node-ping-ring, .constellation-star",
+        {
+          scale: 0,
+          opacity: 0,
+          duration: 0.35,
+          ease: "power2.in",
+        },
+        0
+      );
+
+      // 3. Constellation network lines stretch and collapse into center vertical conduit
+      exitTl.to(
+        ".constellation-line-path",
+        {
+          scaleX: 0.02,
+          transformOrigin: "50% 50%",
+          opacity: 0.7,
+          duration: 0.45,
+          ease: "power2.inOut",
+        },
+        0.05
+      );
+
+      // 4. Central vertical spine ignites and shoots down into bottom boundary
+      exitTl.fromTo(
+        ".morphic-central-spine",
+        { scaleY: 0, opacity: 0 },
+        {
+          scaleY: 1,
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.out",
+          transformOrigin: "top center",
+        },
+        0.25
+      );
+
+      // 5. The spine strikes the bottom and erupts horizontally into the horizon divider
+      exitTl.fromTo(
+        ".morphic-horizon-divider",
+        { scaleX: 0, opacity: 0 },
+        {
+          scaleX: 1,
+          opacity: 1,
+          duration: 0.45,
+          ease: "power3.out",
+          transformOrigin: "center center",
+        },
+        0.45
+      );
+
+      // 6. Spine dissolves as horizon beam locks into place for the next section
+      exitTl.to(
+        ".morphic-central-spine",
+        { opacity: 0, duration: 0.25, ease: "power2.out" },
+        0.65
+      );
     }, section);
 
     return () => ctx.revert();
@@ -437,6 +538,10 @@ export default function Sponsors(): React.ReactElement {
       <div ref={wipeBarRef} className="section-wipe-bar" aria-hidden="true" />
       <div ref={glowRef} className="sponsors-glow" />
       <div className="sponsors-divider-line" />
+
+      {/* Morphic Conduit Spine & Horizon Divider */}
+      <div className="morphic-central-spine" aria-hidden="true" />
+      <div className="morphic-horizon-divider" aria-hidden="true" />
 
       {/* Constellation Backdrop Star Field */}
       <div className="constellation-star-field" aria-hidden="true">
