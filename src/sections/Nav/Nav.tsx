@@ -102,6 +102,18 @@ export default function Nav(): React.ReactElement {
           ABOUT ECELL
         </a>
         <a
+          href="#whyjoin"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection("why-join");
+            (document.activeElement as HTMLElement | null)?.blur();
+            setIsOpen(false);
+          }}
+          className="dropdown-team-link"
+        >
+          WHY JOIN ECELL
+        </a>
+        <a
           href="#teamSection"
           onClick={(e) => {
             e.preventDefault();
