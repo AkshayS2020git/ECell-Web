@@ -82,7 +82,7 @@ export default function Hero(): React.ReactElement {
     <section ref={heroRef} className="hero">
       <div ref={stickyRef} className="hero__sticky">
         <div ref={marqueeRef} className="hero__marquee-group">
-          <div className="hero__marquee-line">
+          <div className="hero__marquee-line hero__marquee-line--startups">
             <span>WHERE STARTUPS</span>
           </div>
           <div className="hero__marquee-line hero__marquee-line--shape">

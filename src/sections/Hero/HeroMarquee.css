@@ -40,6 +40,10 @@
     0 0 30px rgba(244, 244, 242, 0.08);
 }
 
+.hero__marquee-line--startups {
+  font-size: clamp(128px, calc(12vw - 10px), 174px);
+}
+
 .hero__marquee-line span {
   display: block;
   text-align: center;
