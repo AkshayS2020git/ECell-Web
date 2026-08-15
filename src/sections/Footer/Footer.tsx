@@ -98,7 +98,7 @@ export default function Footer(): React.ReactElement {
           </div>
 
           {/* Socials Column: Interactive Row Objects */}
-          <div className="footer-nav-col" aria-label="Social media links">
+          <div className="footer-nav-col footer-follow-col" aria-label="Social media links">
             <span className="footer-col-label">FOLLOW</span>
             <div className="footer-row-group">
               {FOOTER_SOCIAL_LINKS.map((link) => (
@@ -130,11 +130,6 @@ export default function Footer(): React.ReactElement {
               {/* Interactive cursor-following glow highlight */}
               <span className="contact-cursor-glow" aria-hidden="true" />
               <span className="contact-ambient-spark" aria-hidden="true" />
-
-              <div className="contact-card-top">
-                <span className="contact-card-badge">GET IN TOUCH</span>
-                <span className="contact-badge-dot" aria-hidden="true" />
-              </div>
 
               <div className="contact-card-mid">
                 <span className="contact-card-email">club_ecell@rvu.edu.in</span>
