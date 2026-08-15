@@ -134,6 +134,8 @@ const timeNow = (): string => new Intl.DateTimeFormat("en-IN", {
 export default function WhatsAppCommunity(): React.ReactElement {
   const sectionRef = useRef<HTMLElement | null>(null);
   const cursorFieldRef = useRef<HTMLDivElement | null>(null);
+  const wipeBarRef = useRef<HTMLDivElement | null>(null);
+  const bloomRef = useRef<HTMLDivElement | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const replyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const messagesRef = useRef<HTMLDivElement | null>(null);
@@ -193,41 +195,98 @@ export default function WhatsAppCommunity(): React.ReactElement {
     if (!section || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      const reveal = gsap.timeline({
-        scrollTrigger: { trigger: section, start: "top 82%", once: true },
-      });
-
-      reveal
-        .fromTo(
-          ".community-bridge-core",
-          { opacity: 0, scale: 0.55, y: -18 },
-          { opacity: 1, scale: 1, y: 0, duration: 0.55, ease: "back.out(1.7)" }
+      // ── Luminous Wipe Bar ──
+      if (wipeBarRef.current) {
+        gsap.fromTo(
+          wipeBarRef.current,
+          { scaleX: 0, opacity: 0 },
+          {
+            scaleX: 1,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
         );
+      }
 
+      // ── Ambient Green Bloom ──
+      if (bloomRef.current) {
+        gsap.fromTo(
+          bloomRef.current,
+          { scale: 0.5, opacity: 0 },
+          {
+            scale: 1.15,
+            opacity: 0.85,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // ── Community Card 3D Entrance ──
       gsap.fromTo(
         ".whatsapp-community-card",
-        { opacity: 0, y: 80, scale: 0.96 },
+        { opacity: 0, y: 70, scale: 0.94, filter: "blur(4px)" },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.9,
+          filter: "blur(0px)",
+          duration: 0.95,
           ease: "power3.out",
-          scrollTrigger: { trigger: section, start: "top 76%", once: true },
+          scrollTrigger: {
+            trigger: section,
+            start: "top 78%",
+            toggleActions: "play none none reverse",
+          },
         }
       );
 
+      // ── Phone Visual Kinetic Entrance ──
       gsap.fromTo(
         ".whatsapp-community-visual",
-        { opacity: 0, x: 55, rotate: 5 },
+        { opacity: 0, x: 45, y: 20, rotate: 3 },
         {
           opacity: 1,
           x: 0,
+          y: 0,
           rotate: 0,
-          duration: 0.85,
+          duration: 0.9,
+          delay: 0.1,
           ease: "power3.out",
-          delay: 0.12,
-          scrollTrigger: { trigger: section, start: "top 76%", once: true },
+          scrollTrigger: {
+            trigger: section,
+            start: "top 78%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // ── Community Bridge Core Beacon ──
+      gsap.fromTo(
+        ".community-bridge-core",
+        { opacity: 0, scale: 0.3, y: -15 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "back.out(1.8)",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
         }
       );
     }, section);
@@ -290,6 +349,10 @@ export default function WhatsAppCommunity(): React.ReactElement {
       onPointerMove={handleSectionPointerMove}
       onPointerLeave={handleSectionPointerLeave}
     >
+      {/* Transitions: Top light wipe bar & ambient green bloom */}
+      <div ref={wipeBarRef} className="section-wipe-bar" aria-hidden="true" />
+      <div ref={bloomRef} className="section-bloom section-bloom--green" aria-hidden="true" />
+
       <div className="whatsapp-community-orb whatsapp-community-orb-one" aria-hidden="true" />
       <div className="whatsapp-community-orb whatsapp-community-orb-two" aria-hidden="true" />
       <div ref={cursorFieldRef} className="whatsapp-community-cursor-field" aria-hidden="true">

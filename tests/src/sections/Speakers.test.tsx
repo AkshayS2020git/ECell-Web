@@ -15,7 +15,7 @@ describe("Speakers Section", () => {
   it("renders the section heading and initial featured speaker", () => {
     render(<Speakers />);
 
-    expect(screen.getByRole("heading", { name: "Voices of Innovation" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Previous Speakers" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Harpreet Sohan" })).toBeInTheDocument();
     expect(screen.getAllByText("Wand").length).toBeGreaterThan(0);
     expect(screen.getByText("Argonyx '25")).toBeInTheDocument();

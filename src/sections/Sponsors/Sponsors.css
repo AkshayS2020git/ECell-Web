@@ -6,6 +6,8 @@
   will-change: transform, opacity;
   border-top: 0.5px solid var(--line);
   isolation: isolate;
+  perspective: 1200px;
+  perspective-origin: 50% 40%;
 }
 
 .sponsors-section::before {
@@ -80,18 +82,42 @@
   position: relative;
   z-index: 1;
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
+}
+
+.sponsors-badge-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(244, 244, 242, 0.1);
+  margin-bottom: 16px;
+}
+
+.sponsors-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  animation: liveDotPulse 2s ease-in-out infinite;
+}
+
+@keyframes liveDotPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.2); }
 }
 
 .sponsors-kicker {
   display: inline-block;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--fg-dim);
-  opacity: 0.85;
-  margin-bottom: 14px;
+  opacity: 0.9;
 }
 
 .sponsors-headline {
@@ -121,6 +147,9 @@
   z-index: 1;
   max-width: 980px;
   margin: 0 auto;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity, filter;
 }
 
 /* Constellation SVG Overlay */
@@ -137,8 +166,7 @@
 
 .constellation-line-path {
   stroke: url(#lineGrad);
-  stroke-width: 1px;
-  stroke-dasharray: 3 3;
+  stroke-width: 1.2px;
   fill: none;
   opacity: 0.35;
   transition: stroke 0.35s ease, opacity 0.35s ease, stroke-width 0.35s ease, filter 0.35s ease;
@@ -146,16 +174,35 @@
 
 /* Interactive Path Highlight */
 .constellation-line-path.is-active {
-  stroke: rgba(255, 255, 255, 0.85);
-  stroke-width: 1.5px;
-  stroke-dasharray: none;
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-width: 1.6px;
   opacity: 0.95;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.65));
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
+}
+
+/* Anchor Nodes & Junction Points */
+.constellation-anchor-node {
+  fill: #ffffff;
+  opacity: 0.85;
+  transform-origin: center;
+  filter: url(#nodeGlow);
+  transition: transform 0.3s ease, fill 0.3s ease, opacity 0.3s ease;
+}
+
+.anchor-hub {
+  fill: #ffffff;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.85));
+}
+
+.node-ping-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.8);
+  transform-origin: center;
 }
 
 .constellation-junction-dot {
-  fill: rgba(244, 244, 242, 0.5);
-  opacity: 0.4;
+  fill: rgba(244, 244, 242, 0.6);
+  opacity: 0.5;
   animation: junctionPulse 3.5s ease-in-out infinite alternate;
   transition: fill 0.35s ease, opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
   transform-origin: center;
@@ -165,14 +212,14 @@
 .constellation-junction-dot.is-active {
   fill: #ffffff;
   opacity: 1;
-  transform: scale(1.5);
-  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.95));
+  transform: scale(1.6);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95));
   animation: none;
 }
 
 @keyframes junctionPulse {
-  0% { transform: scale(0.9); opacity: 0.25; }
-  100% { transform: scale(1.15); opacity: 0.5; }
+  0% { transform: scale(0.9); opacity: 0.3; }
+  100% { transform: scale(1.2); opacity: 0.7; }
 }
 
 /* Controlled Grid Layout */

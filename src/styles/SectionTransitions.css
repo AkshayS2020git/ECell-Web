@@ -1,0 +1,139 @@
+/* ============================================================
+   Section Transitions — Shared Awwwards-tier motion primitives
+   All animation targets transform + opacity only (GPU-safe).
+   ============================================================ */
+
+:root {
+  /* Premium cubic-bezier timing functions */
+  --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-smooth: cubic-bezier(0.45, 0, 0.15, 1);
+  --ease-heavy: cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+/* ── Luminous Wipe Bar ───────────────────────────────────────
+   Horizontal gradient line that sweeps across a section boundary */
+.section-wipe-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  pointer-events: none;
+  z-index: 5;
+  will-change: transform, opacity;
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+}
+
+.section-wipe-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 20%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.6) 80%,
+    transparent 100%
+  );
+}
+
+/* Trailing glow beneath the wipe */
+.section-wipe-bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Section Reveal Mask ─────────────────────────────────────
+   Dark overlay that peels away to reveal section content */
+.section-reveal-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: var(--bg, #070707);
+  will-change: transform, opacity;
+  transform-origin: top center;
+}
+
+/* ── Spotlight Bloom ─────────────────────────────────────────
+   Radial expansion from center, used as a theatrical reveal glow */
+.section-bloom {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(80vw, 900px);
+  height: 400px;
+  transform: translate(-50%, -50%) scale(0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, opacity;
+  opacity: 0;
+  filter: blur(60px);
+}
+
+.section-bloom--white {
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.03) 45%,
+    transparent 70%
+  );
+}
+
+.section-bloom--green {
+  background: radial-gradient(
+    circle,
+    rgba(72, 218, 124, 0.14) 0%,
+    rgba(72, 218, 124, 0.04) 40%,
+    transparent 70%
+  );
+}
+
+/* ── Horizon Glow ────────────────────────────────────────────
+   Luminous arc that crowns a section boundary */
+.section-horizon-glow {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  width: min(90vw, 1200px);
+  height: 120px;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: bottom center;
+  border-radius: 50% 50% 0 0;
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform, opacity;
+  opacity: 0;
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent 80%
+  );
+}
+
+/* ── Reduced Motion ──────────────────────────────────────────
+   Kill all transition theatrics for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .section-wipe-bar,
+  .section-reveal-mask,
+  .section-bloom,
+  .section-horizon-glow {
+    display: none !important;
+  }
+}

@@ -106,8 +106,11 @@ export default function Speakers(): React.ReactElement {
   const [copiedQuote, setCopiedQuote] = useState<boolean>(false);
 
   const speakersSectionRef = useRef<HTMLElement | null>(null);
+  const speakersPanelRef = useRef<HTMLDivElement | null>(null);
   const spotlightRef = useRef<HTMLDivElement | null>(null);
   const transitionLightRef = useRef<HTMLDivElement | null>(null);
+  const wipeBarRef = useRef<HTMLDivElement | null>(null);
+  const headerBlockRef = useRef<HTMLDivElement | null>(null);
 
   // Touch swipe support coordinates
   const touchStartXRef = useRef<number | null>(null);
@@ -183,40 +186,123 @@ export default function Speakers(): React.ReactElement {
   // GSAP scroll trigger entry animation
   useEffect(() => {
     const section = speakersSectionRef.current;
-    if (!section) return;
+    const panel = speakersPanelRef.current;
+    if (!section || !panel) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
     const ctx = gsap.context(() => {
+      // ── Rising Stage: Panel 3D Perspective Lift (Enhanced) ──
       gsap.fromTo(
-        section,
-        { opacity: 0, y: 35 },
+        panel,
         {
-          opacity: 1,
+          y: () => window.innerHeight * (isMobile ? 0.7 : 0.85),
+          scale: isMobile ? 0.94 : 0.82,
+          rotateX: isMobile ? -2 : -8,
+          transformOrigin: "bottom center",
+          borderRadius: isMobile ? "22px" : "40px",
+          boxShadow: "0 40px 120px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.18)",
+        },
+        {
           y: 0,
-          duration: 0.8,
+          scale: 1,
+          rotateX: 0,
+          borderRadius: "0px",
+          boxShadow: "0 0 0 rgba(0, 0, 0, 0), inset 0 0 0 rgba(255, 255, 255, 0)",
+          duration: 1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 88%",
-            end: "top 45%",
-            scrub: 0.6,
+            start: "top 120%",
+            end: "top top",
+            scrub: 0.8,
+            invalidateOnRefresh: true,
           },
         }
       );
 
+      // ── Luminous Wipe Bar Sweep ──
+      if (wipeBarRef.current) {
+        gsap.fromTo(
+          wipeBarRef.current,
+          { scaleX: 0, opacity: 0 },
+          {
+            scaleX: 1,
+            opacity: 1,
+            ease: "power2.inOut",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 80%",
+              end: "top 40%",
+              scrub: 0.5,
+            },
+          }
+        );
+        gsap.to(wipeBarRef.current, {
+          opacity: 0,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 35%",
+            end: "top 10%",
+            scrub: 0.5,
+          },
+        });
+      }
+
+      // ── Parallax Depth: Inner content lags behind panel ──
+      if (headerBlockRef.current) {
+        gsap.fromTo(
+          headerBlockRef.current,
+          { y: 80, opacity: 0, filter: "blur(6px)" },
+          {
+            y: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 60%",
+              end: "top -5%",
+              scrub: 0.9,
+            },
+          }
+        );
+      }
+
+      if (spotlightRef.current) {
+        gsap.fromTo(
+          spotlightRef.current,
+          { y: 120, opacity: 0, scale: 0.96 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 50%",
+              end: "top -10%",
+              scrub: 1,
+            },
+          }
+        );
+      }
+
+      // ── Transition Light (Enhanced) ──
       if (transitionLightRef.current) {
         gsap.fromTo(
           transitionLightRef.current,
-          { opacity: 0, scale: 0.7 },
+          { opacity: 0, scale: 0.5 },
           {
-            opacity: 0.85,
-            scale: 1.1,
+            opacity: 0.9,
+            scale: 1.2,
             ease: "none",
             scrollTrigger: {
               trigger: section,
-              start: "top 95%",
-              end: "top 30%",
+              start: "top 90%",
+              end: "top 25%",
               scrub: 0.8,
             },
           }
@@ -323,24 +409,27 @@ export default function Speakers(): React.ReactElement {
       id="speakers"
       aria-labelledby="speakers-heading"
     >
-      <div
-        ref={transitionLightRef}
-        className="speakers-transition-light"
-        aria-hidden="true"
-        style={{
-          background: `radial-gradient(ellipse, ${currentSpeaker.accentColor || "rgba(142, 220, 255, 0.16)"} 0%, rgba(142, 220, 255, 0.03) 45%, transparent 72%)`,
-        }}
-      />
+      <div ref={speakersPanelRef} className="speakers-reveal-panel">
+        {/* Rising Stage transition element */}
+        <div ref={wipeBarRef} className="section-wipe-bar" aria-hidden="true" />
+        <div
+          ref={transitionLightRef}
+          className="speakers-transition-light"
+          aria-hidden="true"
+          style={{
+            background: `radial-gradient(ellipse, ${currentSpeaker.accentColor || "rgba(142, 220, 255, 0.16)"} 0%, rgba(142, 220, 255, 0.03) 45%, transparent 72%)`,
+          }}
+        />
 
-      <div className="wrap">
-        {/* Header Block */}
-        <div className="speakers-header">
+        <div className="wrap">
+        {/* Header Block — parallax depth offset */}
+        <div ref={headerBlockRef} className="speakers-header">
           <div className="speakers-header-main">
             <h2 id="speakers-heading" className="speakers-headline">
-              Voices of Innovation
+              Previous Speakers
             </h2>
             <p className="speakers-subheading">
-              Founders, tech leaders, and entrepreneurs sharing hard-earned lessons with the next generation of builders.
+              Founders, tech leaders, and entrepreneurs who have shared hard-earned lessons with the next generation of builders.
             </p>
           </div>
 
@@ -555,6 +644,7 @@ export default function Speakers(): React.ReactElement {
 
 
         </div>
+      </div>
       </div>
     </section>
   );

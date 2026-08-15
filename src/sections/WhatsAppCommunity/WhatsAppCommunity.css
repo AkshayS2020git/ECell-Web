@@ -5,6 +5,8 @@
   background: radial-gradient(ellipse 75% 55% at 92% 38%, rgba(21, 129, 72, 0.12), transparent 72%), var(--bg);
   color: var(--fg);
   border-top: 1px solid rgba(76, 218, 127, 0.16);
+  isolation: isolate;
+  will-change: transform, opacity;
 }
 
 .whatsapp-community::before {

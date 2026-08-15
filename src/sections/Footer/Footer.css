@@ -4,6 +4,8 @@
   padding: 92px 0 26px;
   background: #080808;
   color: var(--fg);
+  isolation: isolate;
+  will-change: transform, opacity;
 }
 
 .site-footer::before {
