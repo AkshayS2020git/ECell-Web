@@ -7,7 +7,6 @@
   overflow: hidden;
   background: #070707;
   color: #fff;
-  contain: layout style;
 }
 
 /* --- Background Image Panel (like Story section) --- */
@@ -238,7 +237,6 @@
   /* === KILL 3D CONTEXT ON MOBILE === */
   .events-3d-wrapper {
     perspective: none;
-    contain: layout style;
   }
 
   .events-scene {

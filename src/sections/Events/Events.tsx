@@ -115,6 +115,7 @@ export default function Events(): React.ReactElement {
             scrub: 0.3,
             pin: true,
             anticipatePin: 1,
+            invalidateOnRefresh: true,
           },
         });
 
@@ -284,6 +285,7 @@ export default function Events(): React.ReactElement {
           scrub: 0.8,
           pin: true,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
         },
       });
 
