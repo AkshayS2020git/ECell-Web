@@ -12,17 +12,29 @@ interface TeamDirectoryProps {
 }
 
 function getMemberAccent(member: TeamMember): string {
+  const explicitAccents: Record<string, string> = {
+    "member-1": "#EF4444",
+    "member-2": "#38BDF8",
+    "member-3": "#F59E0B",
+    "member-4": "#F472B6",
+    "member-5": "#34D399",
+    "member-6": "#3B82F6",
+    "member-7": "#FB923C",
+    "member-8": "#2DD4BF",
+  };
+
+  if (explicitAccents[member.id]) return explicitAccents[member.id];
   if (member.accentColor) return member.accentColor;
 
   const normalizedName = member.name.toLowerCase();
-  if (normalizedName.includes("akash")) return "#ff4d4d";
-  if (normalizedName.includes("aryav")) return "#38ef7d";
+  if (normalizedName.includes("akash")) return "#3B82F6";
+  if (normalizedName.includes("aryav")) return "#FB923C";
 
   const normalizedRole = member.role.toLowerCase();
   if (normalizedRole.includes("president")) return "#8edcff";
   if (normalizedRole.includes("advisory")) return "#b8a0ff";
-  if (normalizedRole.includes("tech")) return "#ff4d4d";
-  if (normalizedRole.includes("pr")) return "#38ef7d";
+  if (normalizedRole.includes("tech")) return "#3B82F6";
+  if (normalizedRole.includes("pr")) return "#FB923C";
   if (normalizedRole.includes("partnership")) return "#ffc478";
   if (normalizedRole.includes("documentation")) return "#f1d27a";
   return "#c4c8d4";

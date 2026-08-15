@@ -258,6 +258,23 @@
   }
 }
 
+/* Mobile focus mode: preserve hierarchy without the desktop GPU-heavy effects. */
+@media (max-width: 768px) {
+  .team__focus-veil {
+    display: none;
+  }
+
+  .team__card[data-spotlight="true"] {
+    overflow: hidden;
+    animation: none;
+    box-shadow: 0 22px 46px rgba(0, 0, 0, 0.56) !important;
+  }
+
+  .team__card[data-spotlight="true"] .team__image-wrapper::before {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .team__focus-veil {
     transition: none;

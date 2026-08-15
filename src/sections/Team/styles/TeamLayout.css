@@ -53,7 +53,7 @@
   background:
     radial-gradient(
       circle at 50% 42%,
-      color-mix(in srgb, var(--team-spotlight-accent, #9eb8ff) 12%, transparent) 0%,
+      color-mix(in srgb, var(--team-spotlight-accent, #EF4444) 12%, transparent) 0%,
       transparent 58%
     ),
     rgba(6, 7, 10, 0.3);

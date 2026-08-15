@@ -16,12 +16,24 @@ import "../styles/TeamResponsive.css";
 import "../styles/TeamDirectory.css";
 
 function getSpotlightAccent(member: (typeof teamMembers)[number]): string {
+  const explicitAccents: Record<string, string> = {
+    "member-1": "#EF4444",
+    "member-2": "#38BDF8",
+    "member-3": "#F59E0B",
+    "member-4": "#F472B6",
+    "member-5": "#34D399",
+    "member-6": "#3B82F6",
+    "member-7": "#FB923C",
+    "member-8": "#2DD4BF",
+  };
+
+  if (explicitAccents[member.id]) return explicitAccents[member.id];
   if (member.accentColor) return member.accentColor;
 
   const role = member.role.toLowerCase();
   if (role.includes("president")) return "#8edcff";
   if (role.includes("advisory")) return "#b8a0ff";
-  if (role.includes("tech")) return "#ff6b6b";
+  if (role.includes("tech")) return "#3B82F6";
   if (role.includes("pr")) return "#70e89c";
   if (role.includes("partnership")) return "#ffc478";
   if (role.includes("documentation")) return "#f1d27a";
@@ -159,7 +171,7 @@ export default function Team(): React.ReactElement {
       id="teamSection"
       style={{
         "--team-spotlight-accent": spotlightIndex === null
-          ? "#9eb8ff"
+          ? "#EF4444"
           : getSpotlightAccent(teamMembers[spotlightIndex]),
       } as React.CSSProperties}
     >
