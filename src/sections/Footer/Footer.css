@@ -128,7 +128,9 @@
 
 .footer-heading-gradient {
   background: linear-gradient(135deg, #ffffff 30%, #8edcff 100%);
+  background-clip: text;
   -webkit-background-clip: text;
+  color: transparent;
   -webkit-text-fill-color: transparent;
 }
 
@@ -591,6 +593,15 @@
   .footer-main {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+
+  .footer-contact-col {
+    grid-column: 1 / -1;
+  }
+
+  .footer-contact-hero-card {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .footer-heading {
