@@ -1,202 +1,722 @@
 .sponsors-section {
   position: relative;
-  padding: 138px 0 140px;
+  padding: 120px 0 135px;
   background: var(--bg);
   overflow: hidden;
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
   border-top: 0.5px solid var(--line);
   isolation: isolate;
+  perspective: 1200px;
+  perspective-origin: 50% 40%;
 }
 
 .sponsors-section::before {
   content: "";
   position: absolute;
   z-index: -1;
-  top: -100px;
+  top: -80px;
   left: 50%;
-  width: min(80vw, 980px);
-  height: 220px;
+  width: min(85vw, 1080px);
+  height: 240px;
   transform: translateX(-50%);
   border-radius: 50%;
-  border-top: 1px solid rgba(244, 244, 242, 0.24);
-  background: radial-gradient(ellipse at 50% 0%, rgba(244, 244, 242, 0.11), transparent 68%);
-  filter: blur(0.2px);
+  border-top: 1px solid rgba(244, 244, 242, 0.22);
+  background: radial-gradient(ellipse at 50% 0%, rgba(244, 244, 242, 0.09), transparent 70%);
   pointer-events: none;
 }
 
 .sponsors-glow {
   position: absolute;
-  top: 30%;
+  top: 35%;
   left: 50%;
-  width: 700px;
-  height: 400px;
+  width: 750px;
+  height: 480px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.045) 0%, rgba(0, 0, 0, 0) 70%);
   pointer-events: none;
   border-radius: 50%;
+  z-index: 0;
 }
 
 .sponsors-divider-line {
   position: absolute;
   top: 0;
-  left: 10%;
-  right: 10%;
+  left: 8%;
+  right: 8%;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
 }
 
+/* Morphic Conduit Spine & Horizon Divider (Sponsors -> Speakers) */
+.morphic-central-spine {
+  position: absolute;
+  top: 15%;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.9) 75%, #ffffff 100%);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.9), 0 0 28px rgba(142, 220, 255, 0.5);
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transform-origin: top center;
+}
+
+.morphic-horizon-divider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.95) 50%, transparent 100%);
+  box-shadow: 0 0 22px rgba(255, 255, 255, 0.9), 0 0 40px rgba(142, 220, 255, 0.5);
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+  transform-origin: center center;
+}
+
+/* Star field backdrop */
+.constellation-star-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.constellation-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  animation: starTwinkle 4s ease-in-out infinite alternate;
+}
+
+.star-1 {
+  top: 16%;
+  left: 14%;
+  animation-delay: 0s;
+}
+
+.star-2 {
+  top: 24%;
+  right: 16%;
+  animation-delay: 1.2s;
+  width: 3px;
+  height: 3px;
+}
+
+.star-3 {
+  top: 60%;
+  left: 10%;
+  animation-delay: 2.1s;
+}
+
+.star-4 {
+  top: 76%;
+  right: 15%;
+  animation-delay: 0.7s;
+}
+
+.star-5 {
+  top: 44%;
+  left: 50%;
+  animation-delay: 1.8s;
+  opacity: 0.4;
+}
+
+.star-6 {
+  top: 86%;
+  left: 40%;
+  animation-delay: 2.7s;
+}
+
+@keyframes starTwinkle {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+
+  100% {
+    opacity: 0.9;
+    transform: scale(1.3);
+  }
+}
+
+/* Header */
 .sponsors-header {
+  position: relative;
+  z-index: 1;
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
+}
+
+.sponsors-badge-container {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(244, 244, 242, 0.1);
+  margin-bottom: 16px;
 }
 
 .sponsors-kicker {
-  display: block;
-  font-size: 12px;
-  letter-spacing: 0.22em;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--fg-dim);
-  margin-bottom: 14px;
+  opacity: 0.9;
 }
 
 .sponsors-headline {
   font-family: var(--font-archivo), sans-serif;
   font-weight: 900;
-  font-size: clamp(28px, 4.5vw, 54px);
+  font-size: clamp(32px, 5.2vw, 60px);
+  letter-spacing: -0.03em;
+  line-height: 1.04;
   color: var(--fg);
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-}
-
-.sponsors-intro {
-  max-width: 430px;
-  margin: 15px auto 0;
-  color: var(--fg-dim);
-  font-size: 15px;
-  line-height: 1.55;
-}
-
-.sponsor-marquee-wrapper {
   display: flex;
-  position: relative;
-  width: 100%;
-  min-height: 158px;
-  overflow: hidden;
   align-items: center;
-  background: transparent;
+  justify-content: center;
+  gap: clamp(8px, 1.4vw, 18px);
+  text-wrap: balance;
+  overflow: visible;
   will-change: transform, opacity;
 }
 
-.sponsor-marquee-track {
-  display: flex;
-  overflow: hidden;
-  user-select: none;
+.sponsors-headline-word {
+  display: inline-block;
+  will-change: transform, opacity, filter, letter-spacing;
 }
 
-.sponsor-marquee-inner {
+.sponsors-headline-amp {
+  display: inline-block;
+  font-family: var(--font-archivo), sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 0.82em;
+  color: var(--fg-dim);
+  opacity: 0.65;
+  will-change: transform, opacity, filter;
+  transform-origin: center center;
+}
+
+.sponsors-intro {
+  max-width: 440px;
+  margin: 12px auto 0;
+  color: var(--fg-dim);
+  font-size: clamp(14.5px, 1.5vw, 16px);
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* Constellation Container */
+.constellation-container {
+  position: relative;
+  z-index: 1;
+  max-width: 980px;
+  margin: 0 auto;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity, filter;
+}
+
+/* Constellation SVG Overlay */
+.constellation-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+}
+
+.constellation-line-path {
+  stroke: url(#lineGrad);
+  stroke-width: 1.2px;
+  fill: none;
+  opacity: 0.35;
+  transition: stroke 0.35s ease, opacity 0.35s ease, stroke-width 0.35s ease, filter 0.35s ease;
+}
+
+/* Interactive Path Highlight */
+.constellation-line-path.is-active {
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-width: 1.6px;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
+}
+
+/* Anchor Nodes & Junction Points */
+.constellation-anchor-node {
+  fill: #ffffff;
+  opacity: 0.85;
+  transform-origin: center;
+  filter: url(#nodeGlow);
+  transition: transform 0.3s ease, fill 0.3s ease, opacity 0.3s ease;
+}
+
+.anchor-hub {
+  fill: #ffffff;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.85));
+}
+
+.node-ping-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.8);
+  transform-origin: center;
+}
+
+.constellation-junction-dot {
+  fill: rgba(244, 244, 242, 0.6);
+  opacity: 0.5;
+  animation: junctionPulse 3.5s ease-in-out infinite alternate;
+  transition: fill 0.35s ease, opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
+  transform-origin: center;
+}
+
+/* Interactive Junction Highlight */
+.constellation-junction-dot.is-active {
+  fill: #ffffff;
+  opacity: 1;
+  transform: scale(1.6);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95));
+  animation: none;
+}
+
+@keyframes junctionPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* Controlled Grid Layout */
+.constellation-grid {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.constellation-row {
   display: flex;
   align-items: center;
-  will-change: transform;
+  width: 100%;
 }
 
-.marquee-left .sponsor-marquee-inner {
-  animation: marqueeScrollLeft 36s linear infinite;
+/* Row 1: 2 items [ Nokia ] [ Red Bull ] */
+.row-1 {
+  justify-content: center;
+  gap: 120px;
 }
 
-.sponsor-marquee-wrapper:hover .sponsor-marquee-inner {
-  animation-play-state: paused;
+.col-r1-left,
+.col-r1-right {
+  width: 215px;
 }
 
-@keyframes marqueeScrollLeft {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+/* Row 2: 4 items [ Belgian ] [ TVS ] [ Herody ] [ Mercedes ] */
+.row-2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
-.sponsor-item {
-  display: inline-flex;
-  flex-direction: column;
+.col-r2-1,
+.col-r2-2,
+.col-r2-3,
+.col-r2-4 {
+  width: 100%;
+}
+
+/* Row 3: 3 items [ Atty's ] [ Cube ] [ Justvend ] */
+.row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Row 4: 2 items [ EasyBites ] [ Mile ] */
+.row-4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Subtle micro-offsets for organic constellation feeling while preserving grid alignment */
+.node-nokia {
+  transform: translateY(2px);
+}
+
+.node-redbull {
+  transform: translateY(-2px);
+}
+
+.node-waffle {
+  transform: translateY(4px);
+}
+
+.node-tvs {
+  transform: translateY(-3px);
+}
+
+.node-herody {
+  transform: translateY(1px);
+}
+
+.node-merc {
+  transform: translateY(-4px);
+}
+
+.node-attys {
+  transform: translateY(2px);
+}
+
+.node-cube {
+  transform: translateY(-3px);
+}
+
+.node-justvend {
+  transform: translateY(1px);
+}
+
+.node-easybites {
+  transform: translateY(2px);
+}
+
+.node-mile {
+  transform: translateY(-2px);
+}
+
+/* Constellation Node Base */
+.constellation-node {
+  position: relative;
+  width: 100%;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.3s ease;
+}
+
+.constellation-node:hover {
+  z-index: 10;
+}
+
+/* Sponsor Card Materiality */
+.sponsor-card-inner {
+  position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 204px;
-  height: 118px;
-  margin: 0 10px;
-  padding: 14px 18px;
-  gap: 7px;
-  overflow: hidden;
-  cursor: default;
-  border: 1px solid rgba(244, 244, 242, 0.12);
+  height: 92px;
+  padding: 12px 18px;
   border-radius: 14px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 30px rgba(0, 0, 0, 0.12);
-  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(244, 244, 242, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 10px 24px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
+/* Subtle Glow behind logo on hover */
+.sponsor-logo-glow {
+  position: absolute;
+  width: 110px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* Card Hover Elevation & Light Up */
+.sponsor-card-inner:hover,
+.sponsor-card-inner.is-hovered {
+  transform: translateY(-4px);
+  border-color: rgba(244, 244, 242, 0.42);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.095), rgba(255, 255, 255, 0.03));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 16px 36px rgba(0, 0, 0, 0.48),
+    0 0 20px rgba(255, 255, 255, 0.09);
+}
+
+.sponsor-card-inner:hover .sponsor-logo-glow,
+.sponsor-card-inner.is-hovered .sponsor-logo-glow {
+  opacity: 1;
+  transform: scale(1.18);
+}
+
+.tier-featured {
+  border-color: rgba(244, 244, 242, 0.16);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02));
+}
+
+/* Corner Ticks (Constellation brackets) */
+.card-corner {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-color: rgba(244, 244, 242, 0.3);
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.corner-tl {
+  top: 4px;
+  left: 4px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.corner-tr {
+  top: 4px;
+  right: 4px;
+  border-top: 1px solid;
+  border-right: 1px solid;
+}
+
+.corner-bl {
+  bottom: 4px;
+  left: 4px;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+}
+
+.corner-br {
+  bottom: 4px;
+  right: 4px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+.sponsor-card-inner:hover .card-corner,
+.sponsor-card-inner.is-hovered .card-corner {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Beacon Point */
+.card-beacon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(244, 244, 242, 0.35);
+  pointer-events: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sponsor-card-inner:hover .card-beacon,
+.sponsor-card-inner.is-hovered .card-beacon {
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 14px rgba(255, 255, 255, 0.6);
+}
+
+/* Logo Frame */
 .sponsor-logo-frame {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 148px;
-  height: 66px;
+  width: 142px;
+  height: 56px;
   max-width: 100%;
 }
 
 .sponsor-logo {
   object-fit: contain;
-  filter: saturate(1.03) contrast(1.03);
+  filter: saturate(1.02) contrast(1.02);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
 }
 
-/* These source files have extra canvas padding — scale up to match the others visually */
-.sponsor-logo--nokia { transform: scale(1.25); }
-.sponsor-logo--herody { transform: scale(1.45); }
-
-.sponsor-label {
-  color: var(--fg);
-  font-family: var(--font-archivo), sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-  white-space: nowrap;
-  text-align: center;
+/* Logo scales ~1.05 on hover */
+.sponsor-card-inner:hover .sponsor-logo,
+.sponsor-card-inner.is-hovered .sponsor-logo {
+  transform: scale(1.05);
+  filter: saturate(1.06) contrast(1.06) brightness(1.06);
 }
 
-.sponsor-item:hover {
-  transform: translateY(-5px);
-  border-color: rgba(244, 244, 242, 0.32);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035));
+/* Source specific scale adjustments */
+.sponsor-logo--nokia {
+  transform: scale(1.22);
+}
+
+.sponsor-card-inner:hover .sponsor-logo--nokia,
+.sponsor-card-inner.is-hovered .sponsor-logo--nokia {
+  transform: scale(1.28);
+}
+
+.sponsor-logo--herody {
+  transform: scale(1.4);
+}
+
+.sponsor-card-inner:hover .sponsor-logo--herody,
+.sponsor-card-inner.is-hovered .sponsor-logo--herody {
+  transform: scale(1.47);
+}
+
+/* Responsive Adaptations */
+@media (max-width: 1024px) {
+  .constellation-svg {
+    display: none;
+  }
+
+  .row-1 {
+    gap: 20px;
+    max-width: 480px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .col-r1-left,
+  .col-r1-right {
+    width: 100%;
+  }
+
+  .row-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .row-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
 }
 
 @media (max-width: 768px) {
   .sponsors-section {
-    padding: 80px 0 100px;
+    padding: 68px 0 76px;
+    border-top: 0;
   }
 
-  .sponsor-item {
-    flex-basis: 164px;
-    height: 98px;
-    margin: 0 8px;
-    padding: 12px;
-    gap: 6px;
+  .sponsors-section::before,
+  .sponsors-divider-line,
+  .morphic-central-spine,
+  .morphic-horizon-divider {
+    display: none;
+  }
+
+  .sponsors-header {
+    margin-bottom: 22px;
+    padding: 0 8px;
+  }
+
+  .sponsors-headline {
+    flex-wrap: wrap;
+    font-size: clamp(30px, 9vw, 44px);
+    line-height: 0.98;
+  }
+
+  .sponsors-intro {
+    max-width: 34ch;
+    font-size: 14px;
+  }
+
+  .constellation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .constellation-row {
+    display: contents;
+  }
+
+  .col-r1-left,
+  .col-r1-right,
+  .col-r2-1,
+  .col-r2-2,
+  .col-r2-3,
+  .col-r2-4,
+  .col-r3-1,
+  .col-r3-2,
+  .col-r3-3,
+  .col-r4-1,
+  .col-r4-2 {
+    width: 100%;
+  }
+
+  .sponsor-card-inner {
+    height: 72px;
+    padding: 8px 10px;
     border-radius: 12px;
   }
 
   .sponsor-logo-frame {
-    width: 118px;
-    height: 50px;
+    width: 105px;
+    height: 38px;
   }
 
-  .sponsor-label {
-    font-size: 13px;
+  .node-nokia,
+  .node-redbull,
+  .node-waffle,
+  .node-tvs,
+  .node-herody,
+  .node-merc,
+  .node-attys,
+  .node-cube,
+  .node-justvend,
+  .node-easybites,
+  .node-mile {
+    transform: none;
   }
 
-  .sponsor-marquee-wrapper {
-    min-height: 118px;
+  /* Stagger every second item slightly on mobile */
+  .constellation-col:nth-child(even) .constellation-node {
+    transform: translateY(6px);
+  }
+
+  .col-r4-2 {
+    grid-column: span 2;
+    max-width: 220px;
+    margin: 0 auto;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sponsor-marquee-inner {
+
+  .constellation-star,
+  .constellation-junction-dot {
     animation: none;
+  }
+
+  .constellation-node {
+    transition: none;
+  }
+
+  .sponsor-card-inner {
+    transition: none;
   }
 }

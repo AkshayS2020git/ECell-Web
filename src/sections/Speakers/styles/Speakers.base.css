@@ -1,4 +1,10 @@
 .speakers-section {
+  position: relative;
+  perspective: 1400px;
+  perspective-origin: 50% 100%;
+}
+
+.speakers-reveal-panel {
   --speaker-accent: #8edcff;
   --speaker-muted: rgba(244, 244, 242, 0.65);
   --speaker-border: rgba(244, 244, 242, 0.12);
@@ -12,9 +18,12 @@
     radial-gradient(ellipse 60% 40% at 80% 12%, rgba(81, 180, 226, 0.08), transparent 70%),
     linear-gradient(180deg, #090a0c 0%, #060708 100%);
   color: var(--fg);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, border-radius, box-shadow;
 }
 
-.speakers-section::before {
+.speakers-reveal-panel::before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -24,6 +33,36 @@
   height: 1px;
   transform: translateX(-50%);
   background: linear-gradient(90deg, transparent, rgba(244, 244, 242, 0.25), transparent);
+}
+
+/* Morphic Conduit Spine & Horizon Divider (Speakers -> WhatsApp) */
+.speakers-morphic-spine {
+  position: absolute;
+  top: 20%;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(142, 220, 255, 0.9) 75%, #ffffff 100%);
+  box-shadow: 0 0 14px rgba(142, 220, 255, 0.9), 0 0 28px rgba(142, 220, 255, 0.5);
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transform-origin: top center;
+}
+
+.speakers-morphic-divider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(142, 220, 255, 0.95) 50%, transparent 100%);
+  box-shadow: 0 0 22px rgba(142, 220, 255, 0.9), 0 0 40px rgba(142, 220, 255, 0.5);
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+  transform-origin: center center;
 }
 
 .speakers-transition-light {
@@ -54,6 +93,22 @@
   max-width: 700px;
 }
 
+.speakers-kicker-row {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 12px;
+  will-change: transform, opacity, letter-spacing;
+}
+
+.speakers-kicker-text {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--speaker-accent);
+  opacity: 0.95;
+}
+
 .speakers-headline {
   margin-bottom: 18px;
   color: var(--fg);
@@ -64,11 +119,17 @@
   line-height: 0.96;
 }
 
+.speakers-typo-word {
+  display: inline-block;
+  will-change: transform, opacity, filter, letter-spacing;
+}
+
 .speakers-subheading {
   max-width: 580px;
   color: var(--speaker-muted);
   font-size: clamp(14px, 1.25vw, 16px);
   line-height: 1.6;
+  will-change: transform, opacity;
 }
 
 .speakers-header-actions {
@@ -77,4 +138,3 @@
   align-items: stretch;
   gap: 20px;
 }
-
