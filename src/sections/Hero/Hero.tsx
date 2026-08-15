@@ -83,21 +83,10 @@ export default function Hero(): React.ReactElement {
       <div ref={stickyRef} className="hero__sticky">
         <div ref={marqueeRef} className="hero__marquee-group">
           <div className="hero__marquee-line">
-            <span>
-              EVERY STARTUP BEGINS WITH CURIOSITY &nbsp;&nbsp;&nbsp; EVERY
-              STARTUP BEGINS WITH CURIOSITY &nbsp;&nbsp;&nbsp; EVERY STARTUP
-              BEGINS WITH CURIOSITY &nbsp;&nbsp;&nbsp; EVERY STARTUP BEGINS WITH
-              CURIOSITY &nbsp;&nbsp;&nbsp;
-            </span>
+            <span>WHERE STARTUPS</span>
           </div>
-          <div className="hero__marquee-line hero__marquee-line--dim hero__marquee-line--reverse">
-            <span>
-              WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY INTO ACTION
-              &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN THAT CURIOSITY
-              INTO ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO HELP YOU TURN
-              THAT CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp; WE&apos;RE HERE TO
-              HELP YOU TURN THAT CURIOSITY INTO ACTION &nbsp;&nbsp;&nbsp;
-            </span>
+          <div className="hero__marquee-line hero__marquee-line--shape">
+            <span>TAKE SHAPE.</span>
           </div>
         </div>
 
