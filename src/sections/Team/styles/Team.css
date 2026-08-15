@@ -7,6 +7,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@property --a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes team-border-rotation {
+  to { --a: 360deg; }
+}
+
 .team__transition-wipe {
   position: absolute;
   inset: 0;
@@ -36,6 +46,24 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   transition: border-color 0.4s ease, background 0.4s ease;
+}
+
+.team__card[data-spotlight="true"] {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--card-bg, #121216), var(--card-bg, #121216)) padding-box,
+    conic-gradient(
+      from var(--a),
+      transparent 0deg,
+      color-mix(in srgb, var(--team-spotlight-accent, #9eb8ff) 30%, transparent) 42deg,
+      color-mix(in srgb, var(--team-spotlight-accent, #9eb8ff) 100%, transparent) 92deg,
+      color-mix(in srgb, var(--team-spotlight-accent, #9eb8ff) 24%, transparent) 155deg,
+      transparent 235deg,
+      color-mix(in srgb, var(--team-spotlight-accent, #9eb8ff) 72%, transparent) 300deg,
+      transparent 360deg
+    ) border-box;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.62), 0 0 22px color-mix(in srgb, var(--team-spotlight-accent, #9eb8ff) 20%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  animation: team-border-rotation 24s linear infinite;
 }
 
 /* ─── Header & Navigation Controls ─── */
@@ -91,6 +119,10 @@
 
 .team__section-title-dot {
   color: #a7a7a1;
+}
+
+.team:has(.team-directory__card.is-spotlight) .team__section-title {
+  color: rgba(255, 255, 255, 0.67);
 }
 
 .team__header-meta {

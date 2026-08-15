@@ -7,6 +7,7 @@ import type { TeamMember } from "../data/TeamData";
 interface TeamDirectoryProps {
   members: TeamMember[];
   activeIndex: number;
+  spotlightIndex?: number | null;
   onSelect: (index: number) => void;
 }
 
@@ -30,6 +31,7 @@ function getMemberAccent(member: TeamMember): string {
 export default function TeamDirectory({
   members,
   activeIndex,
+  spotlightIndex = null,
   onSelect,
 }: TeamDirectoryProps): React.ReactElement {
   const stripRef = useRef<HTMLDivElement | null>(null);
@@ -102,7 +104,7 @@ export default function TeamDirectory({
               aria-selected={isActive}
               tabIndex={isActive ? 0 : -1}
               aria-label={`Select ${member.name}, ${member.role}`}
-              className={`team-directory__card ${isActive ? "is-active" : ""}`}
+              className={`team-directory__card ${isActive ? "is-active" : ""} ${spotlightIndex === index ? "is-spotlight" : ""}`}
               onClick={() => onSelect(index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               style={{ "--team-accent": accentColor } as React.CSSProperties}
@@ -152,4 +154,3 @@ export default function TeamDirectory({
     </div>
   );
 }
-

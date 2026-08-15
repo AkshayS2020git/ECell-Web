@@ -257,3 +257,14 @@
     gap: 6px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .team__focus-veil {
+    transition: none;
+  }
+
+  .team:has(.team__stack--spotlight) .team__focus-veil {
+    backdrop-filter: blur(8px) saturate(0.75) brightness(0.84);
+    -webkit-backdrop-filter: blur(8px) saturate(0.75) brightness(0.84);
+  }
+}

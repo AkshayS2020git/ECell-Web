@@ -1,6 +1,6 @@
 .team-directory {
   position: relative;
-  z-index: 12;
+  z-index: 50;
   width: min(100%, 1120px);
   margin: 32px auto 0;
   padding: 0 20px 16px;
@@ -104,6 +104,59 @@
               border-color 400ms cubic-bezier(0.32, 0.72, 0, 1),
               background 400ms cubic-bezier(0.32, 0.72, 0, 1),
               box-shadow 400ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.team:has(.team-directory__card.is-spotlight) .team-directory__card:not(.is-spotlight) {
+  opacity: 0.54;
+  filter: saturate(0.72) blur(0.35px);
+  transform: scale(0.97);
+}
+
+.team-directory__card.is-spotlight {
+  z-index: 5;
+  transform: scale(1.04);
+  border: 2px solid transparent;
+  background:
+    linear-gradient(rgba(20, 20, 26, 0.92), rgba(20, 20, 26, 0.92)) padding-box,
+    conic-gradient(
+      from var(--a),
+      transparent 0deg,
+      color-mix(in srgb, var(--team-accent) 30%, transparent) 42deg,
+      color-mix(in srgb, var(--team-accent) 100%, transparent) 92deg,
+      color-mix(in srgb, var(--team-accent) 24%, transparent) 155deg,
+      transparent 235deg,
+      color-mix(in srgb, var(--team-accent) 72%, transparent) 300deg,
+      transparent 360deg
+    ) border-box;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.52),
+    0 0 24px color-mix(in srgb, var(--team-accent) 18%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  animation: team-border-rotation 24s linear infinite;
+}
+
+.team-directory__card.is-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 42%;
+  background: conic-gradient(
+    from 25deg,
+    transparent 0deg,
+    rgba(142, 220, 255, 0.18) 70deg,
+    transparent 130deg,
+    rgba(184, 160, 255, 0.16) 220deg,
+    transparent 300deg
+  );
+  filter: blur(20px);
+  opacity: 0.8;
+  animation: team-directory-ambient-orbit 24s linear infinite;
+}
+
+@keyframes team-directory-ambient-orbit {
+  to { transform: rotate(360deg); }
 }
 
 .team-directory__card::before {
@@ -299,6 +352,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .team__card[data-spotlight="true"],
+  .team-directory__card.is-spotlight {
+    animation: none;
+  }
+
   .team-directory__card,
   .team-directory__image-photo,
   .team-directory__linkedin-btn {
@@ -306,4 +364,3 @@
     animation: none;
   }
 }
-

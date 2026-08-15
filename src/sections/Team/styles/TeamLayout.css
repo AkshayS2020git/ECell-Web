@@ -33,6 +33,32 @@
   justify-content: center;
   overflow: visible;
   margin-top: 20px;
+  z-index: 30;
+}
+
+.team__focus-veil {
+  position: fixed;
+  inset: -12vh -8vw;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(6, 7, 10, 0.3);
+  backdrop-filter: blur(0px) saturate(1);
+  -webkit-backdrop-filter: blur(0px) saturate(1);
+  transition: opacity 500ms ease, backdrop-filter 700ms ease;
+}
+
+.team:has(.team__stack--spotlight) .team__focus-veil {
+  opacity: 1;
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      color-mix(in srgb, var(--team-spotlight-accent, #9eb8ff) 12%, transparent) 0%,
+      transparent 58%
+    ),
+    rgba(6, 7, 10, 0.3);
+  backdrop-filter: blur(4px) saturate(0.64) brightness(0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(0.64) brightness(0.78);
 }
 
 .team__stack {
@@ -44,6 +70,16 @@
   align-items: center;
   overflow: visible;
   perspective: 1400px;
+  isolation: isolate;
+}
+
+.team__stack--spotlight .team__card[data-spotlight="true"] {
+  position: absolute;
+  z-index: 40 !important;
+}
+
+.team__stack--spotlight {
+  z-index: 40;
 }
 
 .team__card {
