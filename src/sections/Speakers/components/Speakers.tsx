@@ -109,7 +109,6 @@ export default function Speakers(): React.ReactElement {
   const speakersPanelRef = useRef<HTMLDivElement | null>(null);
   const spotlightRef = useRef<HTMLDivElement | null>(null);
   const transitionLightRef = useRef<HTMLDivElement | null>(null);
-  const wipeBarRef = useRef<HTMLDivElement | null>(null);
   const headerBlockRef = useRef<HTMLDivElement | null>(null);
 
   // Touch swipe support coordinates
@@ -193,196 +192,15 @@ export default function Speakers(): React.ReactElement {
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
     const ctx = gsap.context(() => {
-      // ── Rising Stage: Panel 3D Perspective Lift (Enhanced) ──
-      gsap.fromTo(
-        panel,
-        {
-          y: () => window.innerHeight * (isMobile ? 0.7 : 0.85),
-          scale: isMobile ? 0.94 : 0.82,
-          rotateX: isMobile ? -2 : -8,
-          transformOrigin: "bottom center",
-          borderRadius: isMobile ? "22px" : "40px",
-          boxShadow: "0 40px 120px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.18)",
-        },
-        {
-          y: 0,
-          scale: 1,
-          rotateX: 0,
-          borderRadius: "0px",
-          boxShadow: "0 0 0 rgba(0, 0, 0, 0), inset 0 0 0 rgba(255, 255, 255, 0)",
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 120%",
-            end: "top top",
-            scrub: 0.8,
-            invalidateOnRefresh: true,
-          },
-        }
-      );
-
-      // ── Luminous Wipe Bar Sweep ──
-      if (wipeBarRef.current) {
-        gsap.fromTo(
-          wipeBarRef.current,
-          { scaleX: 0, opacity: 0 },
-          {
-            scaleX: 1,
-            opacity: 1,
-            ease: "power2.inOut",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 80%",
-              end: "top 40%",
-              scrub: 0.5,
-            },
-          }
-        );
-        gsap.to(wipeBarRef.current, {
-          opacity: 0,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 35%",
-            end: "top 10%",
-            scrub: 0.5,
-          },
-        });
-      }
-
-      // ── Kinetic Typography: Voices of Innovation & Headline Compression ──
-      if (headerBlockRef.current) {
-        const typoTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: "top 65%",
-            end: "top 5%",
-            scrub: 0.8,
-          },
-        });
-
-        typoTl.fromTo(
-          ".speakers-kicker-row",
-          { y: -16, opacity: 0, letterSpacing: "0.35em", filter: "blur(6px)" },
-          { y: 0, opacity: 1, letterSpacing: "0.22em", filter: "blur(0px)", ease: "power2.out" },
-          0
-        );
-
-        typoTl.fromTo(
-          ".speakers-typo-top",
-          { y: -45, opacity: 0, scale: 1.15, filter: "blur(8px)", letterSpacing: "0.06em" },
-          { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", letterSpacing: "-0.03em", ease: "power3.out" },
-          0.05
-        );
-
-        typoTl.fromTo(
-          ".speakers-typo-bottom",
-          { y: 45, opacity: 0, scale: 1.15, filter: "blur(8px)", letterSpacing: "0.06em" },
-          { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", letterSpacing: "-0.03em", ease: "power3.out" },
-          0.05
-        );
-
-        typoTl.fromTo(
-          ".speakers-subheading",
-          { y: 24, opacity: 0, filter: "blur(4px)" },
-          { y: 0, opacity: 1, filter: "blur(0px)", ease: "power3.out" },
-          0.2
-        );
-      }
-
-      if (spotlightRef.current) {
-        gsap.fromTo(
-          spotlightRef.current,
-          { y: 70, opacity: 0, scale: 0.96 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 65%",
-              end: "top 20%",
-              scrub: 0.8,
-            },
-          }
-        );
-      }
-
-      // ── Transition Light (Enhanced) ──
+      // ── Transition Light ──
       if (transitionLightRef.current) {
-        gsap.fromTo(
-          transitionLightRef.current,
-          { opacity: 0, scale: 0.5 },
-          {
-            opacity: 0.9,
-            scale: 1.2,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 90%",
-              end: "top 25%",
-              scrub: 0.8,
-            },
-          }
-        );
-      }
-
-      // ═════════════════════════════════════════════════════════════
-      // ── MORPHIC EXIT TRANSITION: ONLY FIRES ON SECTION EXIT ──
-      // ═════════════════════════════════════════════════════════════
-      const exitTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "bottom 85%",
-          end: "bottom 10%",
-          scrub: 0.8,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      // 1. Showcase spotlight card and header shrink and collapse to center with blur
-      exitTl.to(
-        [spotlightRef.current, headerBlockRef.current].filter(Boolean),
-        {
-          scale: 0.25,
-          y: -40,
-          opacity: 0,
-          filter: "blur(10px)",
-          duration: 0.55,
-          ease: "power2.in",
-        },
-        0
-      );
-
-      // 2. Central vertical conduit spine shoots down rapidly and locks flush to the bottom
-      exitTl.fromTo(
-        ".speakers-morphic-spine",
-        { scaleY: 0, opacity: 0 },
-        {
-          scaleY: 1,
-          opacity: 1,
-          duration: 0.25,
+        gsap.to(transitionLightRef.current, {
+          opacity: 0.9,
+          scale: 1.2,
+          duration: 1,
           ease: "power2.out",
-          transformOrigin: "top center",
-        },
-        0.05
-      );
-
-      // 3. Central spine strikes bottom and immediately erupts horizontally into horizon divider
-      exitTl.fromTo(
-        ".speakers-morphic-divider",
-        { scaleX: 0, opacity: 0 },
-        {
-          scaleX: 1,
-          opacity: 1,
-          duration: 0.35,
-          ease: "power3.out",
-          transformOrigin: "center center",
-        },
-        0.25
-      );
+        });
+      }
     }, section);
 
     return () => ctx.revert();
@@ -485,6 +303,9 @@ export default function Speakers(): React.ReactElement {
       aria-labelledby="speakers-heading"
     >
       <div ref={speakersPanelRef} className="speakers-reveal-panel">
+        {/* Ambient Light Bloom */}
+        <div ref={transitionLightRef} className="speakers-transition-light" aria-hidden="true" />
+
         {/* Morphic Conduit Spine & Horizon Divider */}
         <div className="speakers-morphic-spine" aria-hidden="true" />
         <div className="speakers-morphic-divider" aria-hidden="true" />

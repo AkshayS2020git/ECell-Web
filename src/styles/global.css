@@ -1,10 +1,18 @@
 :root {
-  --bg: #070707;
-  --bg-2: #121212;
+  --bg: #1a1a1a;
+  --bg-2: #111111;
+  --bgcolor: #1a1a1a;
+  --primarycolor: #bababa;
   --fg: #f4f4f2;
-  --fg-dim: #a7a7a1;
-  --line: rgba(244, 244, 242, 0.14);
-  --line-strong: rgba(244, 244, 242, 0.28);
+  --fg-dim: #bababa;
+  --color-lightgrey: #71737d;
+  --color-cream: #bab5a6;
+  --color-red: #ff001a;
+  --color-blue: #03049c;
+  --color-black: #111111;
+  --columns: 20;
+  --line: rgba(255, 255, 255, 0.14);
+  --line-strong: rgba(255, 255, 255, 0.28);
 }
 
 * {

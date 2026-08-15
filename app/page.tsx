@@ -10,6 +10,7 @@ import WhyJoin from "@/src/sections/WhyJoin/WhyJoin";
 import Story from "@/src/sections/Story/Story";
 import Events from "@/src/sections/Events/Events";
 import Sponsors from "@/src/sections/Sponsors/Sponsors";
+import HorizontalFlow from "@/src/components/HorizontalFlow/HorizontalFlow";
 import Speakers from "@/src/sections/Speakers/components/Speakers";
 import WhatsAppCommunity from "@/src/sections/WhatsAppCommunity/WhatsAppCommunity";
 import Footer from "@/src/sections/Footer/Footer";
@@ -65,9 +66,11 @@ export default function Home() {
       <Team />
       <Events />
       <Sponsors />
-      <Speakers />
-      <WhatsAppCommunity />
-      <Footer />
+      <HorizontalFlow>
+        <Speakers />
+        <WhatsAppCommunity />
+        <Footer />
+      </HorizontalFlow>
     </main>
   );
 }

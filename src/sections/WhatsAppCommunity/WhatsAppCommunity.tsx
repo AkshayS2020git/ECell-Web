@@ -203,128 +203,15 @@ export default function WhatsAppCommunity(): React.ReactElement {
     if (!section || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      // ── Luminous Wipe Bar ──
-      if (wipeBarRef.current) {
-        gsap.fromTo(
-          wipeBarRef.current,
-          { scaleX: 0, opacity: 0 },
-          {
-            scaleX: 1,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      }
-
       // ── Ambient Green Bloom ──
       if (bloomRef.current) {
-        gsap.fromTo(
-          bloomRef.current,
-          { scale: 0.5, opacity: 0 },
-          {
-            scale: 1.15,
-            opacity: 0.85,
-            duration: 1.2,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
+        gsap.to(bloomRef.current, {
+          scale: 1.15,
+          opacity: 0.85,
+          duration: 1.2,
+          ease: "power2.out",
+        });
       }
-
-      // ── Community Card 3D Entrance ──
-      gsap.fromTo(
-        ".whatsapp-community-card",
-        { opacity: 0, y: 70, scale: 0.94, filter: "blur(4px)" },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 0.95,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 78%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-
-      // ── Phone Visual Kinetic Entrance ──
-      gsap.fromTo(
-        ".whatsapp-community-visual",
-        { opacity: 0, x: 45, y: 20, rotate: 3 },
-        {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          rotate: 0,
-          duration: 0.9,
-          delay: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 78%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-
-      // ── Community Bridge Core Beacon ──
-      gsap.fromTo(
-        ".community-bridge-core",
-        { opacity: 0, scale: 0.3, y: -15 },
-        {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "back.out(1.8)",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-
-      // ═════════════════════════════════════════════════════════════
-      // ── MORPHIC EXIT TRANSITION: ONLY FIRES ON SECTION EXIT ──
-      // ═════════════════════════════════════════════════════════════
-      const exitTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "bottom 85%",
-          end: "bottom 5%",
-          scrub: 0.8,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      // 1. Community card and bridge core shrink and compress towards center
-      exitTl.to(
-        [".whatsapp-community-card", ".community-bridge-core"],
-        {
-          scale: 0.22,
-          y: -40,
-          opacity: 0,
-          filter: "blur(12px)",
-          duration: 0.45,
-          ease: "power2.in",
-        },
-        0
-      );
-
     }, section);
 
     return () => ctx.revert();
@@ -408,14 +295,6 @@ export default function WhatsAppCommunity(): React.ReactElement {
           </div>
         </>
       )}
-      <div className="community-bridge" aria-hidden="true">
-        <span className="community-bridge-line community-bridge-line-left" />
-        <div className="community-bridge-core">
-          <span className="community-bridge-ripple" />
-          <span className="community-bridge-dot">✦</span>
-        </div>
-        <span className="community-bridge-line community-bridge-line-right" />
-      </div>
       <div className="wrap">
         <div className="whatsapp-community-card">
           <div className="whatsapp-community-copy">
