@@ -31,6 +31,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 20%",
     directoryImagePosition: "center 10%",
     linkedin: "https://www.linkedin.com/in/vanshajgargg/",
+    accentColor: "#EF4444",
   },
   {
     id: "member-2",
@@ -42,6 +43,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 10%",
     directoryImagePosition: "center 80%",
     linkedin: "https://www.linkedin.com/in/jaineesh-patel-6471902a7",
+    accentColor: "#38BDF8",
   },
   {
     id: "member-3",
@@ -53,6 +55,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 18%",
     directoryImagePosition: "center 10%",
     linkedin: "https://www.linkedin.com/in/dhruv-bhandari-b08041364/",
+    accentColor: "#F59E0B",
   },
   {
     id: "member-4",
@@ -64,6 +67,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 22%",
     directoryImagePosition: "center 50%",
     linkedin: "https://www.linkedin.com/in/lavanya-s006/",
+    accentColor: "#F472B6",
   },
   {
     id: "member-5",
@@ -75,6 +79,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 22%",
     directoryImagePosition: "center 30%",
     linkedin: "https://www.linkedin.com/in/ayushsk",
+    accentColor: "#34D399",
   },
   {
     id: "member-6",
@@ -86,7 +91,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 20%",
     directoryImagePosition: "center 40%",
     linkedin: "https://www.linkedin.com/in/akash-bisht-601268322?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-    accentColor: "#ff4d4d",
+    accentColor: "#3B82F6",
   },
   {
     id: "member-7",
@@ -98,7 +103,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 20%",
     directoryImagePosition: "center 0%",
     linkedin: "https://www.linkedin.com/in/aryav-agrawal-42649b293",
-    accentColor: "#38ef7d",
+    accentColor: "#FB923C",
   },
   {
     id: "member-8",
@@ -110,6 +115,7 @@ const teamMembers: TeamMember[] = [
     imagePosition: "center 20%",
     directoryImagePosition: "center 18%",
     linkedin: "https://www.linkedin.com/in/payal-singh-8601b5378/",
+    accentColor: "#2DD4BF",
   },
 ];
 

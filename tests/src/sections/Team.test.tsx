@@ -43,11 +43,11 @@ describe("Team Data", () => {
     });
   });
 
-  it("assigns red accent to Akash and green accent to Aryav", () => {
+  it("assigns accent colors to Akash and Aryav", () => {
     const akash = teamMembers.find((m) => m.name.toLowerCase().includes("akash"));
     const aryav = teamMembers.find((m) => m.name.toLowerCase().includes("aryav"));
-    expect(akash?.accentColor).toBe("#ff4d4d");
-    expect(aryav?.accentColor).toBe("#38ef7d");
+    expect(akash?.accentColor).toBe("#3B82F6");
+    expect(aryav?.accentColor).toBe("#FB923C");
   });
 });
 

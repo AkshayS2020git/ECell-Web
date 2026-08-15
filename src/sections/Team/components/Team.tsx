@@ -15,6 +15,31 @@ import "../styles/TeamLayout.css";
 import "../styles/TeamResponsive.css";
 import "../styles/TeamDirectory.css";
 
+function getSpotlightAccent(member: (typeof teamMembers)[number]): string {
+  const explicitAccents: Record<string, string> = {
+    "member-1": "#EF4444",
+    "member-2": "#38BDF8",
+    "member-3": "#F59E0B",
+    "member-4": "#F472B6",
+    "member-5": "#34D399",
+    "member-6": "#3B82F6",
+    "member-7": "#FB923C",
+    "member-8": "#2DD4BF",
+  };
+
+  if (explicitAccents[member.id]) return explicitAccents[member.id];
+  if (member.accentColor) return member.accentColor;
+
+  const role = member.role.toLowerCase();
+  if (role.includes("president")) return "#8edcff";
+  if (role.includes("advisory")) return "#b8a0ff";
+  if (role.includes("tech")) return "#3B82F6";
+  if (role.includes("pr")) return "#70e89c";
+  if (role.includes("partnership")) return "#ffc478";
+  if (role.includes("documentation")) return "#f1d27a";
+  return "#9eb8ff";
+}
+
 export default function Team(): React.ReactElement {
   const teamRef = useRef<HTMLElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -27,6 +52,7 @@ export default function Team(): React.ReactElement {
 
   // Always start at index 0 (Advisory Head - Vanshaj)
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [spotlightIndex, setSpotlightIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const cleanupScroll = setupTeamScroll({ teamRef });
@@ -35,6 +61,22 @@ export default function Team(): React.ReactElement {
       cleanupTeamAnimations();
     };
   }, []);
+
+  // Start the spotlight as the team section enters the viewport.
+  useEffect(() => {
+    const team = teamRef.current;
+    if (!team || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setSpotlightIndex(entry.isIntersecting ? activeIndex : null);
+      },
+      { threshold: 0.28 }
+    );
+
+    observer.observe(team);
+    return () => observer.disconnect();
+  }, [activeIndex]);
 
   const navigateMember = useCallback((direction: "next" | "prev") => {
     if (getIsAnimating && getIsAnimating()) return;
@@ -66,6 +108,11 @@ export default function Team(): React.ReactElement {
       },
     });
   }, [activeIndex]);
+
+  const selectDirectoryMember = useCallback((targetIndex: number) => {
+    setSpotlightIndex(targetIndex);
+    selectMemberDirect(targetIndex);
+  }, [selectMemberDirect]);
 
   useEffect(() => {
     setupTeamAnimations({
@@ -118,7 +165,16 @@ export default function Team(): React.ReactElement {
   };
 
   return (
-    <section ref={teamRef} className="team" id="teamSection">
+    <section
+      ref={teamRef}
+      className="team"
+      id="teamSection"
+      style={{
+        "--team-spotlight-accent": spotlightIndex === null
+          ? "#EF4444"
+          : getSpotlightAccent(teamMembers[spotlightIndex]),
+      } as React.CSSProperties}
+    >
       <div className="team__transition-wipe" aria-hidden="true" />
       <div ref={containerRef} className="team__container">
         {/* Header bar with Slider Navigation Controls */}
@@ -176,9 +232,10 @@ export default function Team(): React.ReactElement {
         </div>
 
         <div ref={stageRef} className="team__stage">
+          <div className="team__focus-veil" aria-hidden="true" />
           <div
             ref={stackRef}
-            className="team__stack"
+            className={`team__stack ${spotlightIndex !== null ? "team__stack--spotlight" : ""}`}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
@@ -193,6 +250,7 @@ export default function Team(): React.ReactElement {
                   className="team__card"
                   data-index={index}
                   data-active={isActive}
+                  data-spotlight={spotlightIndex === index}
                 >
                   <div className="team__image-wrapper">
                     <div className="team__image">
@@ -241,7 +299,8 @@ export default function Team(): React.ReactElement {
         <TeamDirectory
           members={teamMembers}
           activeIndex={activeIndex}
-          onSelect={selectMemberDirect}
+          spotlightIndex={spotlightIndex}
+          onSelect={selectDirectoryMember}
         />
       </div>
     </section>
