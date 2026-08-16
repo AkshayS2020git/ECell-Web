@@ -189,7 +189,11 @@
 
 @media (max-width: 768px) {
   .hero {
-    height: 230vh;
+    height: 210vh;
+  }
+
+  .hero__sticky {
+    min-height: 100svh;
   }
 
   .hero__scroll-hint {
@@ -208,8 +212,19 @@
   }
 
   .hero__bottom-marquee {
-    bottom: 18vh;
+    bottom: max(96px, 15svh);
     font-size: 0.58rem;
     letter-spacing: 0.16em;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero__scroll-hint {
+    bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  .hero__bottom-marquee {
+    bottom: 14svh;
+    font-size: 0.52rem;
   }
 }

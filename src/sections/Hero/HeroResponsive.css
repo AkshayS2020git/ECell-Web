@@ -1,12 +1,32 @@
 @media (max-width: 768px) {
   .hero__heading {
-    font-size: clamp(32px, 11vw, 52px);
-    width: min(92vw, 30rem);
+    gap: 10px;
+    width: min(88vw, 30rem);
     white-space: normal;
   }
 
+  .hero__heading-sub {
+    font-size: clamp(20px, 6.5vw, 30px);
+    line-height: 1.05;
+  }
+
+  .hero__heading-main {
+    font-size: clamp(32px, 10.5vw, 48px);
+    line-height: 0.98;
+  }
+
   .hero__label {
-    top: 12%;
+    top: max(10%, env(safe-area-inset-top));
+    gap: 6px;
+  }
+
+  .hero__label-mark {
+    font-size: 18px;
+  }
+
+  .hero__label-cap {
+    font-size: 10px;
+    letter-spacing: 0.12em;
   }
 
   .hero__marquee-line {
@@ -15,5 +35,24 @@
 
   .hero__marquee-line--startups {
     font-size: clamp(36px, calc(18vw - 10px), 76px);
+  }
+}
+
+@media (max-width: 420px) {
+  .hero__heading {
+    width: 86vw;
+  }
+
+  .hero__marquee-group {
+    gap: 4px;
+  }
+
+  .hero__marquee-line {
+    font-size: clamp(42px, 17vw, 70px);
+    letter-spacing: -2px;
+  }
+
+  .hero__marquee-line--shape {
+    letter-spacing: -1.5px;
   }
 }

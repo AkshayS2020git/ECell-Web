@@ -73,156 +73,6 @@ export default function Events(): React.ReactElement {
       return undefined;
     }
 
-    /* ============================================================
-       MOBILE: Lightweight 2D cross-fade gallery
-       No 3D transforms, no perspective, no filter animations.
-       Only opacity + simple transforms — buttery smooth on any phone.
-       ============================================================ */
-    if (isMobile) {
-      // Stack all items at center, hide all except first
-      items.forEach((item, i) => {
-        item.style.transform = "none";
-        item.style.opacity = i === 0 ? "1" : "0";
-      });
-      caption.textContent = GALLERY_ITEMS[0].caption;
-
-      let activeIndex = 0;
-
-      const ctx = gsap.context(() => {
-        // Entrance wipe from previous section
-        if (transition) {
-          gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top 95%",
-              end: "top 28%",
-              scrub: 0.3,
-            },
-          }).fromTo(
-            transition,
-            { autoAlpha: 1, scaleY: 1, transformOrigin: "top center" },
-            { autoAlpha: 0, scaleY: 0, ease: "power4.inOut" },
-            0
-          );
-        }
-
-        // Main pinned timeline
-        const journey = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: "top top",
-            end: "+=460%",
-            scrub: 0.3,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        /* Phase 1: Background fades in (0 → 1.0) */
-        if (bgPanel) {
-          gsap.set(bgPanel, { opacity: 0, scale: 1.02 });
-          journey.to(bgPanel, {
-            opacity: 1,
-            scale: 1,
-            duration: 1.0,
-            ease: "power2.out",
-          }, 0);
-        }
-
-        /* Phase 2: Intro text (0.8 → 1.3) */
-        if (intro) {
-          journey.fromTo(
-            intro,
-            { autoAlpha: 0, y: 30 },
-            { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" },
-            0.8
-          );
-        }
-
-        /* Phase 2b: Gallery container fades in (0.9 → 1.4) */
-        if (gallery) {
-          journey.fromTo(
-            gallery,
-            { autoAlpha: 0 },
-            { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
-            0.9
-          );
-        }
-
-        /* Phase 3: Cross-fade between gallery items (1.4 → 4.6) */
-        const crossFadeStart = 1.4;
-        const crossFadeDuration = 3.2;
-        const perItem = crossFadeDuration / items.length;
-
-        items.forEach((item, i) => {
-          const itemStart = crossFadeStart + perItem * i;
-
-          // Fade in (first item is already visible)
-          if (i > 0) {
-            journey.fromTo(
-              item,
-              { opacity: 0 },
-              { opacity: 1, duration: perItem * 0.35, ease: "power1.inOut" },
-              itemStart
-            );
-          }
-
-          // Fade out (last item stays visible for exit)
-          if (i < items.length - 1) {
-            journey.to(
-              item,
-              { opacity: 0, duration: perItem * 0.35, ease: "power1.inOut" },
-              itemStart + perItem * 0.65
-            );
-          }
-        });
-
-        // Track caption via a dummy value tween (works with scrub reverse)
-        const tracker = { value: 0 };
-        journey.to(
-          tracker,
-          {
-            value: items.length - 0.01,
-            duration: crossFadeDuration,
-            ease: "none",
-            onUpdate: () => {
-              const idx = Math.min(Math.floor(tracker.value), GALLERY_ITEMS.length - 1);
-              if (idx !== activeIndex) {
-                activeIndex = idx;
-                caption.textContent = GALLERY_ITEMS[idx].caption;
-              }
-            },
-          },
-          crossFadeStart
-        );
-
-        /* Exit animations */
-        if (gallery) {
-          journey.to(gallery, { autoAlpha: 0, duration: 0.8, ease: "power2.inOut" }, 4.55);
-        }
-        if (intro) {
-          journey.to(intro, { autoAlpha: 0, y: -15, duration: 0.6, ease: "power2.inOut" }, 4.45);
-        }
-        journey.to(caption, { autoAlpha: 0, duration: 0.6, ease: "power2.inOut" }, 4.45);
-
-        if (exitGlow) {
-          journey.fromTo(
-            exitGlow,
-            { autoAlpha: 0 },
-            { autoAlpha: 1, duration: 0.7, ease: "power1.out" },
-            4.55
-          );
-          journey.to(exitGlow, { autoAlpha: 0, duration: 0.35, ease: "power1.in" }, 5.15);
-        }
-      }, section);
-
-      return () => ctx.revert();
-    }
-
-    /* ============================================================
-       DESKTOP: Full 3D gallery experience
-       ============================================================ */
     const zSpacing = 1500;
     const exitStart = 5;
     const exitDuration = 0.7;
@@ -235,7 +85,9 @@ export default function Events(): React.ReactElement {
 
     items.forEach((item, index) => {
       const isRightSide = index % 2 === 0;
-      const xOffset = isRightSide ? "35%" : "-35%";
+      const xOffset = isRightSide
+        ? (isMobile ? "20%" : "35%")
+        : (isMobile ? "-20%" : "-35%");
       const zOffset = -(index * zSpacing);
 
       zValues[index] = zOffset;
@@ -313,7 +165,7 @@ export default function Events(): React.ReactElement {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=520%",
+          end: isMobile ? "+=420%" : "+=520%",
           scrub: 0.8,
           pin: true,
           anticipatePin: 1,
