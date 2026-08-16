@@ -8,7 +8,7 @@
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  background: var(--bg, #1a1a1a);
+  background: transparent;
   transform-origin: center center;
   will-change: transform, opacity, border-radius, box-shadow;
   backface-visibility: hidden;
