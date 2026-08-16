@@ -41,10 +41,12 @@ export const metadata: Metadata = {
   },
   description:
     "ECell RV University is the official entrepreneurship cell at RV University, Bengaluru. We build a thriving campus community for founders, innovators, and future entrepreneurs through events, mentorship, and startup resources.",
+  applicationName: "ECell RV University",
   keywords: [
     "ECell RV University",
-    "ecell rvu",
+    "ECell RVU",
     "E-Cell RVU",
+    "ECell RV",
     "entrepreneurship cell",
     "RV University",
     "RV University entrepreneurship",
@@ -57,9 +59,14 @@ export const metadata: Metadata = {
     "startup events Bengaluru",
     "student startup community",
   ],
-  authors: [{ name: "ECell RV University" }],
+  authors: [{ name: "ECell RV University", url: SITE_URL }],
   creator: "ECell RV University",
   publisher: "ECell RV University",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   robots: {
     index: true,
     follow: true,
@@ -72,7 +79,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "/",
+    canonical: SITE_URL,
   },
   openGraph: {
     type: "website",
@@ -87,7 +94,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ECell RV University logo",
+        alt: "ECell RV University - Official Entrepreneurship Cell of RV University",
         type: "image/png",
       },
     ],
@@ -98,44 +105,92 @@ export const metadata: Metadata = {
     description:
       "The official entrepreneurship cell at RV University — for founders, innovators, and future entrepreneurs.",
     images: ["/og-image.png"],
+    creator: "@ecell_rvu",
   },
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
     ],
     shortcut: "/favicon-48x48.png",
-    apple: "/apple-touch-icon.png",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "ECell RVU",
+    statusBarStyle: "black-translucent",
   },
   category: "education",
 };
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "ECell RV University",
-  alternateName: ["E-Cell RVU", "ECell RVU", "Entrepreneurship Cell RV University"],
-  url: `${SITE_URL}/`,
-  logo: `${SITE_URL}/logo.png`,
-  description:
-    "The official entrepreneurship cell at RV University, Bengaluru — building a thriving campus community for founders, innovators, and future entrepreneurs.",
-  email: "club_ecell@rvu.edu.in",
-  foundingDate: "2023",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Bengaluru",
-    addressRegion: "Karnataka",
-    addressCountry: "IN",
-  },
-  parentOrganization: {
-    "@type": "CollegeOrUniversity",
-    name: "RV University",
-    url: "https://www.rvu.edu.in",
-  },
-  sameAs: [
-    "https://www.instagram.com/ecell_rvu/",
-    "https://www.linkedin.com/search/results/all/?keywords=ECell%2C%20RV%20University",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: `${SITE_URL}/`,
+      name: "ECell RV University",
+      alternateName: [
+        "ECell RVU",
+        "E-Cell RVU",
+        "ECell RV",
+        "Entrepreneurship Cell RV University",
+      ],
+      description:
+        "The official entrepreneurship cell at RV University, Bengaluru.",
+      publisher: {
+        "@id": `${SITE_URL}/#organization`,
+      },
+      inLanguage: "en-IN",
+    },
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: "ECell RV University",
+      alternateName: [
+        "ECell RVU",
+        "E-Cell RVU",
+        "Entrepreneurship Cell RV University",
+      ],
+      url: `${SITE_URL}/`,
+      logo: {
+        "@type": "ImageObject",
+        "@id": `${SITE_URL}/#logo`,
+        url: `${SITE_URL}/logo-512.png`,
+        contentUrl: `${SITE_URL}/logo-512.png`,
+        caption: "ECell RV University Logo",
+        width: 512,
+        height: 512,
+      },
+      image: `${SITE_URL}/og-image.png`,
+      description:
+        "The official entrepreneurship cell at RV University, Bengaluru — building a thriving campus community for founders, innovators, and future entrepreneurs.",
+      email: "club_ecell@rvu.edu.in",
+      foundingDate: "2023",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Bengaluru",
+        addressRegion: "Karnataka",
+        addressCountry: "IN",
+      },
+      parentOrganization: {
+        "@type": "CollegeOrUniversity",
+        name: "RV University",
+        url: "https://www.rvu.edu.in",
+      },
+      sameAs: [
+        "https://www.instagram.com/ecell_rvu/",
+        "https://www.linkedin.com/company/ecell-rvu",
+      ],
+    },
   ],
 };
 
@@ -147,15 +202,39 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="48x48"
+          href="/favicon-48x48.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="96x96"
+          href="/favicon-96x96.png"
+        />
         <link rel="shortcut icon" href="/favicon-48x48.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:type" content="image/png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <meta name="theme-color" content="#000000" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
