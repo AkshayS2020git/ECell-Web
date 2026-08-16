@@ -78,8 +78,16 @@
 
 @media (max-width: 768px) {
   .horizontal-flow-panel .speakers-reveal-panel,
-  .horizontal-flow-panel .whatsapp-community,
-  .horizontal-flow-panel .site-footer {
+  .horizontal-flow-panel .whatsapp-community {
     padding: 20px 0;
+  }
+
+  .horizontal-flow-panel .site-footer {
+    padding: max(20px, env(safe-area-inset-top)) 0 max(16px, env(safe-area-inset-bottom));
+    justify-content: space-between;
+  }
+
+  .horizontal-flow-panel .footer-main {
+    padding-bottom: 0;
   }
 }

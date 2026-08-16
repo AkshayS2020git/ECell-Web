@@ -21,7 +21,7 @@ export function setupHeroAnimations({
   labelRef,
   scrollHintRef,
 }: SetupHeroAnimationsOptions): () => void {
-  const marqueeMaxOpacity = 0.82;
+  const marqueeMaxOpacity = 0.96;
   const video = videoRef.current;
   const videoWrap = videoWrapRef.current;
   const marquee = marqueeRef.current;
@@ -58,19 +58,30 @@ export function setupHeroAnimations({
         trigger: heroRef.current,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.25,
+        scrub: 0.3,
         invalidateOnRefresh: true,
       },
     });
 
     mobileTimeline
-      .to(videoWrap, { scale: 0.78, opacity: 0.94, ease: "none", duration: 1 }, 0)
-      .to(marquee, { opacity: marqueeMaxOpacity, ease: "none", duration: 0.32 }, 0.12)
-      .to(label, { opacity: 1, ease: "none", duration: 0.28 }, 0.16)
-      .to(heading, { opacity: 0, ease: "none", duration: 0.25 }, 0.06);
+      .to(
+        videoWrap,
+        {
+          scale: 0.38,
+          borderRadius: "16px",
+          boxShadow: "0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12)",
+          opacity: 0.4,
+          ease: "none",
+          duration: 1,
+        },
+        0,
+      )
+      .to(marquee, { opacity: marqueeMaxOpacity, ease: "none", duration: 0.3 }, 0.08)
+      .to(label, { opacity: 1, ease: "none", duration: 0.28 }, 0.12)
+      .to(heading, { opacity: 0, ease: "none", duration: 0.18 }, 0.02);
 
     if (scrollHint) {
-      mobileTimeline.to(scrollHint, { opacity: 0, ease: "none", duration: 0.18 }, 0.02);
+      mobileTimeline.to(scrollHint, { opacity: 0, ease: "none", duration: 0.15 }, 0);
     }
 
     if (video) video.playbackRate = 0.5;
@@ -134,22 +145,23 @@ export function setupHeroAnimations({
     lastAppliedProgress = heroSmoothed;
 
     const progress = heroSmoothed;
-    const endSqueeze = smoothstep(0.72, 1, progress) * 0.07;
-    const scale = 1 - progress * 0.55 - endSqueeze;
+    const endSqueeze = smoothstep(0.72, 1, progress) * 0.05;
+    const scale = 1 - progress * 0.62 - endSqueeze;
+    const opacity = 1 - progress * 0.6;
     const reveal = smoothstep(0.08, 0.35, progress);
     const cardP = smoothstep(0.18, 0.5, progress);
 
     gsap.set(videoWrap, {
       scale,
-      opacity: 1 - progress * 0.15,
-      borderRadius: `${cardP * 24}px`,
-      boxShadow: `0 ${cardP * 48}px ${cardP * 110}px rgba(0,0,0,${cardP * 0.46})`,
+      opacity,
+      borderRadius: `${cardP * 20}px`,
+      boxShadow: `0 ${cardP * 24}px ${cardP * 60}px rgba(0,0,0,${cardP * 0.5}), 0 0 0 1px rgba(255,255,255,${cardP * 0.12})`,
     });
     marqueeOpacity(reveal * marqueeMaxOpacity);
     labelOpacity(reveal);
-    headingOpacity(1 - smoothstep(0.05, 0.35, progress));
+    headingOpacity(1 - smoothstep(0.05, 0.25, progress));
     if (scrollHintOpacity) {
-      scrollHintOpacity(1 - smoothstep(0.02, 0.2, progress));
+      scrollHintOpacity(1 - smoothstep(0.02, 0.18, progress));
     }
   };
 

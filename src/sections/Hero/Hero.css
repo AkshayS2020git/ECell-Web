@@ -189,7 +189,7 @@
 
 @media (max-width: 768px) {
   .hero {
-    height: 210vh;
+    height: 220vh;
   }
 
   .hero__sticky {
@@ -197,34 +197,61 @@
   }
 
   .hero__scroll-hint {
-    bottom: 24px;
-    gap: 10px;
+    bottom: clamp(14px, 2.5vh, 22px);
+    gap: 8px;
   }
 
   .hero__scroll-mouse {
-    width: 24px;
-    height: 38px;
+    width: 22px;
+    height: 36px;
   }
 
   .hero__scroll-label {
-    font-size: 0.62rem;
-    letter-spacing: 0.22em;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
   }
 
   .hero__bottom-marquee {
-    bottom: max(96px, 15svh);
-    font-size: 0.58rem;
-    letter-spacing: 0.16em;
+    bottom: clamp(64px, 10vh, 88px);
+    font-size: clamp(10px, 2.6vw, 13px);
+    letter-spacing: 0.14em;
   }
 }
 
 @media (max-width: 420px) {
+  .hero {
+    height: 200vh;
+  }
+
   .hero__scroll-hint {
-    bottom: max(18px, env(safe-area-inset-bottom));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    gap: 6px;
+  }
+
+  .hero__scroll-mouse {
+    width: 20px;
+    height: 32px;
+  }
+
+  .hero__scroll-wheel {
+    top: 7px;
+    width: 3px;
+    height: 8px;
+  }
+
+  .hero__scroll-chevrons span {
+    width: 8px;
+    height: 8px;
+  }
+
+  .hero__scroll-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
   }
 
   .hero__bottom-marquee {
-    bottom: 14svh;
-    font-size: 0.52rem;
+    bottom: clamp(54px, 8.5vh, 76px);
+    font-size: 10px;
+    letter-spacing: 0.12em;
   }
 }
