@@ -120,7 +120,7 @@ export default function About(): React.ReactElement {
       <p ref={copyRef} className="about-copy">
         <span className="about-copy__mask"><span className="about-copy__line">It&apos;s about curiosity. It&apos;s about building.</span></span>
         <span className="about-copy__mask"><span className="about-copy__line">It&apos;s about finding people crazy enough to build with you.</span></span>
-        <span className="about-copy__mask"><span className="about-copy__line">E-Cell exists to give those ideas a place to go.</span></span>
+        <span className="about-copy__mask"><span className="about-copy__line">ECell exists to give those ideas a place to go.</span></span>
       </p>
 
       <div ref={wordsRef} className="about-words" aria-label="Build. Connect. Create.">
@@ -131,7 +131,7 @@ export default function About(): React.ReactElement {
 
       <div ref={transitionRef} className="about-transition" aria-hidden="true">
         <span className="about-transition__count">01 — 05</span>
-        <span className="about-transition__label">Reasons to join E-Cell</span>
+        <span className="about-transition__label">Reasons to join ECell</span>
         <span className="about-transition__line"><i /></span>
         <span className="about-transition__arrow">↓</span>
       </div>

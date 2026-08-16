@@ -165,12 +165,12 @@ export default function WhyJoin(): React.ReactElement {
   return (
     <section ref={sectionRef} className="why-join" id="why-join">
       <div className="why-join__intro wrap">
-        <p className="why-join__eyebrow">Why join E-Cell</p>
+        <p className="why-join__eyebrow">Why join ECell</p>
         <h2>Make your college years count.</h2>
         <p className="why-join__hint">Scroll to explore</p>
       </div>
 
-      <div className="why-join__stack" aria-label="Reasons to join E-Cell">
+      <div className="why-join__stack" aria-label="Reasons to join ECell">
         {reasons.map((reason, index) => (
           <article
             key={reason.number}

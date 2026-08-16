@@ -14,7 +14,7 @@ export interface Message {
 }
 
 const initialMessages: Message[] = [
-  { id: "welcome", sender: "bot", text: "Hey! I’m the E-Cell guide. Type a question below to ask about E-Cell, events, joining, or building your idea.", time: "11:42" },
+  { id: "welcome", sender: "bot", text: "Hey! I’m the ECell guide. Type a question below to ask about ECell, events, joining, or building your idea.", time: "11:42" },
 ];
 
 export interface QAEntry {
@@ -29,13 +29,13 @@ export const COMMUNITY_QA_RULES: QAEntry[] = [
     id: "greetings",
     chipLabel: "Say Hello",
     pattern: /\b(hi|hello|hey|yo|sup|greetings)\b/i,
-    reply: "Hey there! 👋 Type any question about E-Cell, events, joining, or building your idea, and I'll be happy to help!",
+    reply: "Hey there! 👋 Type any question about ECell, events, joining, or building your idea, and I'll be happy to help!",
   },
   {
     id: "about",
-    chipLabel: "What is E-Cell?",
-    pattern: /\b(what is|about)\b.*\b(ecell|e-cell|entrepreneurship cell)\b|\b(what is ecell|what is e-cell|about ecell|about e-cell)\b|\b(about)\b/i,
-    reply: "E-Cell RV University is the campus entrepreneurship community. We help students explore ideas, learn from founders, meet collaborators, and take their first steps towards building something impactful.",
+    chipLabel: "What is ECell?",
+    pattern: /\b(what is|about)\b.*\b(ecell|ecell|entrepreneurship cell)\b|\b(what is ecell|what is ecell|about ecell|about ecell)\b|\b(about)\b/i,
+    reply: "ECell RV University is the campus entrepreneurship community. We help students explore ideas, learn from founders, meet collaborators, and take their first steps towards building something impactful.",
   },
   {
     id: "join",
@@ -58,8 +58,8 @@ export const COMMUNITY_QA_RULES: QAEntry[] = [
   {
     id: "benefits",
     chipLabel: "Why join?",
-    pattern: /\b(what do|offer|benefits|why join|why ecell|why e-cell|opportunity|opportunities)\b/i,
-    reply: "E-Cell brings you founder talks, hands-on workshops, hackathons, pitch competitions, mentorship, and a vibrant builder community. It is the ultimate launchpad to turn your ideas into action.",
+    pattern: /\b(what do|offer|benefits|why join|why ecell|why ecell|opportunity|opportunities)\b/i,
+    reply: "ECell brings you founder talks, hands-on workshops, hackathons, pitch competitions, mentorship, and a vibrant builder community. It is the ultimate launchpad to turn your ideas into action.",
   },
   {
     id: "startup",
@@ -89,13 +89,13 @@ export const COMMUNITY_QA_RULES: QAEntry[] = [
     id: "cost",
     chipLabel: "Is it free?",
     pattern: /\b(cost|fee|fees|free|paid|payment|price|money|charge)\b/i,
-    reply: "Joining the E-Cell WhatsApp community is 100% free! Core team membership is also free, while select flagship events may have nominal registration fees.",
+    reply: "Joining the ECell WhatsApp community is 100% free! Core team membership is also free, while select flagship events may have nominal registration fees.",
   },
   {
     id: "team",
     chipLabel: "Core Team",
     pattern: /\b(team|members|member|who runs|core team|lead|leaders|board)\b/i,
-    reply: "E-Cell is student-led by a passionate team of student builders and organizers at RV University. The core team has 8 members consists of Advisory head, Advisory, President, VP and leads of all teams. You can see them in team section",
+    reply: "ECell is student-led by a passionate team of student builders and organizers at RV University. The core team has 8 members consists of Advisory head, Advisory, President, VP and leads of all teams. You can see them in team section",
   },
   {
     id: "interested",
@@ -107,17 +107,17 @@ export const COMMUNITY_QA_RULES: QAEntry[] = [
     id: "contact",
     chipLabel: "Contact & Socials",
     pattern: /\b(contact|reach|instagram|email|social|socials|handle|link|connect)\b/i,
-    reply: "The fastest way to stay connected is by joining our WhatsApp group! You can also follow E-Cell RV University on Instagram and social channels for regular updates.",
+    reply: "The fastest way to stay connected is by joining our WhatsApp group! You can also follow ECell RV University on Instagram and social channels for regular updates.",
   },
   {
     id: "ecell_general",
-    chipLabel: "E-Cell Info",
-    pattern: /\b(ecell|e-cell)\b/i,
-    reply: "E-Cell RV University is the campus entrepreneurship hub. Tap 'Join the community' to connect with fellow builders and stay updated on all upcoming opportunities!",
+    chipLabel: "ECell Info",
+    pattern: /\b(ecell|ecell)\b/i,
+    reply: "ECell RV University is the campus entrepreneurship hub. Tap 'Join the community' to connect with fellow builders and stay updated on all upcoming opportunities!",
   },
 ];
 
-const DEFAULT_REPLY = "I can help with questions about E-Cell, joining the community, events, or building your startup idea. Type a question or tap one of the suggested topics below!";
+const DEFAULT_REPLY = "I can help with questions about ECell, joining the community, events, or building your startup idea. Type a question or tap one of the suggested topics below!";
 
 const getAssistantReply = (message: string): string => {
   const query = message.toLowerCase().trim();
@@ -321,7 +321,7 @@ export default function WhatsAppCommunity(): React.ReactElement {
               <em>starts here.</em>
             </h2>
             <p>
-              Meet builders, find your next collaborator, and be first in line for E-Cell opportunities.
+              Meet builders, find your next collaborator, and be first in line for ECell opportunities.
             </p>
             <a
               className="whatsapp-community-cta"
@@ -339,14 +339,14 @@ export default function WhatsAppCommunity(): React.ReactElement {
 
           <div
             className="whatsapp-community-visual"
-            aria-label="Preview of the E-Cell WhatsApp community"
+            aria-label="Preview of the ECell WhatsApp community"
             onClick={() => inputRef.current?.focus()}
           >
             <div className="whatsapp-community-phone">
               <div className="whatsapp-community-phone-header">
                 <span className="whatsapp-community-avatar">E</span>
                 <span>
-                  <b>E-Cell Community</b>
+                  <b>ECell Community</b>
                   <small>700+ members</small>
                 </span>
                 <i>•••</i>
@@ -359,12 +359,12 @@ export default function WhatsAppCommunity(): React.ReactElement {
                       className={`whatsapp-community-message whatsapp-community-message-${message.sender}`}
                       key={message.id}
                     >
-                      {message.sender === "bot" && <b>E-Cell Guide</b>}
+                      {message.sender === "bot" && <b>ECell Guide</b>}
                       {message.text}
                       <small>{message.time}</small>
                     </div>
                   ))}
-                  {isTyping && <div className="whatsapp-community-typing"><i /><i /><i /> E-Cell Guide is typing</div>}
+                  {isTyping && <div className="whatsapp-community-typing"><i /><i /><i /> ECell Guide is typing</div>}
                 </div>
                 <div className="whatsapp-community-chips" role="group" aria-label="Suggested questions">
                   {COMMUNITY_QA_RULES.slice(1, 6).map((rule) => (
@@ -380,7 +380,7 @@ export default function WhatsAppCommunity(): React.ReactElement {
                   ))}
                 </div>
                 <form className="whatsapp-community-composer" onSubmit={handleSendMessage}>
-                  <label className="sr-only" htmlFor="community-message">Ask the E-Cell guide</label>
+                  <label className="sr-only" htmlFor="community-message">Ask the ECell guide</label>
                   <input
                     ref={inputRef}
                     id="community-message"
