@@ -141,7 +141,7 @@
   margin-left: -16vw;
   border-radius: 12px;
   overflow: hidden;
-  /* Avoid box-shadow & contain: paint in 3D context to prevent Chrome layer invalidation */
+  /* Avoid box-shadow & contain: paint in 3D context to prevent layer invalidation */
   border: 1px solid rgba(255, 255, 255, 0.12);
   pointer-events: auto;
   will-change: transform, opacity;
@@ -205,8 +205,7 @@
   }
 
   .events-bg-panel {
-    /* No GPU layer promotion — rely on simple transforms */
-    will-change: auto;
+    will-change: transform;
     transform: translateZ(0);
   }
 
@@ -232,15 +231,15 @@
     );
   }
 
-  /* === KILL 3D CONTEXT ON MOBILE === */
+  /* Keep the original 3D gallery on mobile, with a lighter perspective. */
   .events-3d-wrapper {
-    perspective: none;
+    perspective: 700px;
   }
 
   .events-scene {
     top: 7vh;
-    transform-style: flat;
-    will-change: auto;
+    transform-style: preserve-3d;
+    will-change: transform;
   }
 
   .events-intro {
@@ -265,7 +264,7 @@
     margin-top: clamp(-11rem, -20svh, -7rem);
     border-radius: 10px;
     transition: none;
-    contain: layout style;
+    contain: layout;
   }
 
   .events-gallery-item:hover {
