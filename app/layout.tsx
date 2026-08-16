@@ -235,6 +235,15 @@ export default function RootLayout({
           href="/apple-touch-icon.png"
         />
         <meta name="theme-color" content="#000000" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta
+          property="og:image:secure_url"
+          content={`${SITE_URL}/og-image.png`}
+        />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="ECell RV University" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
