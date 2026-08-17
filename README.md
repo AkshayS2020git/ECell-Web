@@ -44,3 +44,4 @@ ECell-Web/
 - [@AkshayS2020git](https://github.com/AkshayS2020git)
 - [@akash0-real](https://github.com/akash0-real)
 - [@shrisha77-boop](https://github.com/shrisha77-boop)
+- Aditya Dixit 
