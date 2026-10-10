@@ -418,13 +418,17 @@ export function CinematicFooter(): React.ReactElement {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
+      {/* The id lives on this in-flow wrapper, not the fixed <footer>: a fixed
+          element always reports its position as the viewport, so "scroll to
+          #footer" (nav Chapters → Footer) resolved to the current position and
+          went nowhere. Scrolling to the wrapper's top fully reveals the footer. */}
       <div
         ref={wrapperRef}
+        id="footer"
         className="motion-footer-reveal relative h-[100dvh] w-full"
         style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
       >
         <footer
-          id="footer"
           className="cinematic-footer-wrapper fixed bottom-0 left-0 flex h-[100dvh] w-full flex-col justify-between overflow-hidden bg-[#0a0b0c] text-[#f4f4f2]"
         >
           <div className="ecell-footer-aurora pointer-events-none absolute left-1/2 top-1/2 z-0 h-[62vh] w-[82vw] -translate-x-1/2 -translate-y-1/2 rounded-[50%] blur-[85px]" />

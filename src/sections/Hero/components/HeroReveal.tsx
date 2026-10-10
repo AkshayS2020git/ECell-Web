@@ -158,6 +158,7 @@ export default function HeroReveal(): React.ReactElement {
         uTime: { value: 0 },
         uAspect: { value: 1 },
         uDark: { value: 0 },
+        uTitleFade: { value: 0 },
         uInk: { value: 1 },
       },
     });
@@ -273,11 +274,18 @@ export default function HeroReveal(): React.ReactElement {
     let heroTravel = 0;
     let darkTarget = 0;
     let dark = 0;
+    // The floating logo fades in over the card at ~15-35% of the hero
+    // scroll; the title (and its credit) step aside over the same window so
+    // the logo is the single focus instead of stacking on top of the text.
+    let fadeTarget = 0;
+    let titleFade = 0;
+    let lastCreditFade = -1;
     let creditShade = -1;
     const onScroll = () => {
       if (heroTravel <= 0) return;
       const progress = THREE.MathUtils.clamp((window.scrollY - heroTop) / heroTravel, 0, 1);
       darkTarget = THREE.MathUtils.smoothstep(progress, 0.1, 0.42);
+      fadeTarget = THREE.MathUtils.smoothstep(progress, 0.14, 0.36);
     };
     const measureHero = () => {
       if (!heroSection) return;
@@ -345,8 +353,17 @@ export default function HeroReveal(): React.ReactElement {
       const flow = THREE.MathUtils.smoothstep(speed, 0.03, 1.0);
 
       // Ease the theme so it never pops, and keep rendering while it moves.
-      const themeMoving = Math.abs(darkTarget - dark) > 0.001;
-      dark = themeMoving ? dark + (darkTarget - dark) * (1 - Math.pow(0.0005, dt)) : darkTarget;
+      const ease = 1 - Math.pow(0.0005, dt);
+      const darkMoving = Math.abs(darkTarget - dark) > 0.001;
+      dark = darkMoving ? dark + (darkTarget - dark) * ease : darkTarget;
+      const fadeMoving = Math.abs(fadeTarget - titleFade) > 0.001;
+      titleFade = fadeMoving ? titleFade + (fadeTarget - titleFade) * ease : fadeTarget;
+      const themeMoving = darkMoving || fadeMoving;
+      const creditFade = Math.round(titleFade * 100);
+      if (creditFade !== lastCreditFade) {
+        lastCreditFade = creditFade;
+        host.style.setProperty("--title-fade", String(creditFade / 100));
+      }
 
       // The credit and backdrop follow the theme: black on white, light on the dark card.
       const shade = Math.round(dark * 237);
@@ -442,6 +459,7 @@ export default function HeroReveal(): React.ReactElement {
       finalMaterial.uniforms.uMask.value = simA.texture;
       finalMaterial.uniforms.uTime.value = t;
       finalMaterial.uniforms.uDark.value = dark;
+      finalMaterial.uniforms.uTitleFade.value = titleFade;
       renderer.render(finalScene, quadCamera);
     };
     raf = requestAnimationFrame(tick);

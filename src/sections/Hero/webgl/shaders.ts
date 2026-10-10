@@ -102,6 +102,8 @@ export const FINAL_FRAG = /* glsl */ `
 uniform sampler2D uText;
 uniform sampler2D uScene;
 uniform float uDark;
+// Fades the flat title out as the floating logo lands on the card.
+uniform float uTitleFade;
 // 0 once all ink has faded: skips the noise and 3D lookups entirely.
 uniform float uInk;
 uniform sampler2D uMask;
@@ -123,7 +125,7 @@ void main() {
   // hero shrinks on scroll, so the card sits naturally on the dark site.
   vec3 paper = mix(vec3(1.0), vec3(0.045), uDark);
   vec3 title = mix(vec3(0.0), vec3(0.93, 0.93, 0.91), uDark);
-  vec3 base = mix(paper, title, textA);
+  vec3 base = mix(paper, title, textA * (1.0 - uTitleFade));
   if (uInk < 0.5) {
     gl_FragColor = vec4(base, 1.0);
     return;

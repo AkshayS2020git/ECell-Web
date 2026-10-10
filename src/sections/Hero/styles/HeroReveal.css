@@ -76,7 +76,7 @@
 }
 
 .hero-reveal--ready .hero-reveal__credit {
-  opacity: 0.8;
+  opacity: calc(0.8 * (1 - var(--title-fade, 0)));
 }
 
 .hero-reveal__credit-rule {
