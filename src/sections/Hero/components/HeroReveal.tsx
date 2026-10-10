@@ -157,6 +157,8 @@ export default function HeroReveal(): React.ReactElement {
         uMask: { value: null },
         uTime: { value: 0 },
         uAspect: { value: 1 },
+        uDark: { value: 0 },
+        uInk: { value: 1 },
       },
     });
     const simScene = new THREE.Scene();
@@ -263,6 +265,30 @@ export default function HeroReveal(): React.ReactElement {
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("pointerdown", onPointerMove, { passive: true });
 
+    // Scroll progress through the pinned hero drives the light -> dark theme
+    // blend, timed with the card forming in HeroAnimations.
+    // Measured on resize only, so scrolling never forces a layout read.
+    const heroSection = host.closest<HTMLElement>(".hero");
+    let heroTop = 0;
+    let heroTravel = 0;
+    let darkTarget = 0;
+    let dark = 0;
+    let creditShade = -1;
+    const onScroll = () => {
+      if (heroTravel <= 0) return;
+      const progress = THREE.MathUtils.clamp((window.scrollY - heroTop) / heroTravel, 0, 1);
+      darkTarget = THREE.MathUtils.smoothstep(progress, 0.1, 0.42);
+    };
+    const measureHero = () => {
+      if (!heroSection) return;
+      heroTop = heroSection.getBoundingClientRect().top + window.scrollY;
+      heroTravel = heroSection.offsetHeight - window.innerHeight;
+      onScroll();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measureHero, { passive: true });
+    measureHero();
+
     let visible = true;
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
@@ -318,78 +344,104 @@ export default function HeroReveal(): React.ReactElement {
       const speed = Math.hypot(vel.x * aspect, vel.y);
       const flow = THREE.MathUtils.smoothstep(speed, 0.03, 1.0);
 
+      // Ease the theme so it never pops, and keep rendering while it moves.
+      const themeMoving = Math.abs(darkTarget - dark) > 0.001;
+      dark = themeMoving ? dark + (darkTarget - dark) * (1 - Math.pow(0.0005, dt)) : darkTarget;
+
+      // The credit and backdrop follow the theme: black on white, light on the dark card.
+      const shade = Math.round(dark * 237);
+      if (shade !== creditShade) {
+        creditShade = shade;
+        host.style.setProperty("--credit-ink", `rgb(${shade}, ${shade}, ${shade - Math.round(dark * 5)})`);
+        // The container behind the canvas must match the card colour too:
+        // when the card is scaled, its anti-aliased edges sample this, and a
+        // white background showed up as thin white lines around the card.
+        const paper = Math.round(255 + (11 - 255) * dark);
+        host.style.backgroundColor = `rgb(${paper}, ${paper}, ${paper})`;
+      }
+
+      // Ink decays below the visible threshold ~2.5s after the pointer stops.
+      // From then on only the flat title is drawn (cheap), and nothing at all
+      // once the theme has settled, so scrolling the hero stays smooth.
       quiet = flow > 0.01 ? 0 : quiet + dt;
-      if (quiet > 4 && !dirty) {
+      const inkVisible = quiet < 2.5;
+      if (!inkVisible && !dirty && !themeMoving) {
         lastStamp.copy(smoothed);
         return;
       }
       dirty = false;
 
-      // Mask simulation
-      simMaterial.uniforms.uPrev.value = simA.texture;
-      simMaterial.uniforms.uPrevMouse.value.copy(lastStamp);
-      simMaterial.uniforms.uMouse.value.copy(smoothed);
-      simMaterial.uniforms.uMouseVel.value.copy(vel).multiplyScalar(0.45);
-      simMaterial.uniforms.uRadius.value = 0.07 + Math.min(speed * 0.06, 0.15);
-      simMaterial.uniforms.uStrength.value = hasPointer ? flow * Math.min(dt * 60, 1.5) * 0.5 : 0;
-      simMaterial.uniforms.uDecay.value = Math.pow(0.982, dt * 60);
-      simMaterial.uniforms.uVelDecay.value = Math.pow(0.93, dt * 60);
-      simMaterial.uniforms.uDt.value = dt;
-      simMaterial.uniforms.uTime.value = t;
-      renderer.setRenderTarget(simB);
-      renderer.render(simScene, quadCamera);
-      [simA, simB] = [simB, simA];
-      lastStamp.copy(smoothed);
+      if (inkVisible) {
+        // Mask simulation
+        simMaterial.uniforms.uPrev.value = simA.texture;
+        simMaterial.uniforms.uPrevMouse.value.copy(lastStamp);
+        simMaterial.uniforms.uMouse.value.copy(smoothed);
+        simMaterial.uniforms.uMouseVel.value.copy(vel).multiplyScalar(0.45);
+        simMaterial.uniforms.uRadius.value = 0.07 + Math.min(speed * 0.06, 0.15);
+        simMaterial.uniforms.uStrength.value = hasPointer ? flow * Math.min(dt * 60, 1.5) * 0.5 : 0;
+        simMaterial.uniforms.uDecay.value = Math.pow(0.982, dt * 60);
+        simMaterial.uniforms.uVelDecay.value = Math.pow(0.93, dt * 60);
+        simMaterial.uniforms.uDt.value = dt;
+        simMaterial.uniforms.uTime.value = t;
+        renderer.setRenderTarget(simB);
+        renderer.render(simScene, quadCamera);
+        [simA, simB] = [simB, simA];
+        lastStamp.copy(smoothed);
 
-      // Nebula: spins faster while the ink is moving, camera leans to the cursor.
-      const motion = reduceMotion ? 0 : 1;
-      spin += dt * (0.12 + flow * 1.1) * motion;
-      galaxyMaterial.uniforms.uSpin.value = spin;
-      galaxyMaterial.uniforms.uTime.value = t * motion;
-      tilt.lerp(tiltTarget.set(smoothed.x - 0.5, smoothed.y - 0.5), 1 - Math.pow(0.05, dt));
-      const dist = camera.position.length();
-      orbit.set(dist, 1.0 - tilt.y * 0.5 * motion, tilt.x * 0.9 * motion);
-      camera.position.setFromSpherical(orbit);
-      camera.lookAt(0, 0, 0);
+        // Nebula: spins faster while the ink is moving, camera leans to the cursor.
+        const motion = reduceMotion ? 0 : 1;
+        spin += dt * (0.12 + flow * 1.1) * motion;
+        galaxyMaterial.uniforms.uSpin.value = spin;
+        galaxyMaterial.uniforms.uTime.value = t * motion;
+        tilt.lerp(tiltTarget.set(smoothed.x - 0.5, smoothed.y - 0.5), 1 - Math.pow(0.05, dt));
+        const dist = camera.position.length();
+        orbit.set(dist, 1.0 - tilt.y * 0.5 * motion, tilt.x * 0.9 * motion);
+        camera.position.setFromSpherical(orbit);
+        camera.lookAt(0, 0, 0);
 
-      // Letters: tilt toward the cursor, puff up as it passes.
-      letterGroup.rotation.y = tilt.x * 0.35 * motion;
-      letterGroup.rotation.x = -tilt.y * 0.3 * motion;
-      const px = smoothed.x * cssW;
-      const py = (1 - smoothed.y) * cssH;
-      for (const l of letters) {
-        const near = flow > 0.05 && Math.hypot(px - l.cx, py - l.cy) < layoutSize * 0.85 ? 1 : 0;
-        l.heat = Math.max(l.heat * Math.pow(0.975, dt * 60), near);
-        const targetInflate = 0.55 + 0.45 * l.heat;
-        // Under-damped spring so letters overshoot and wobble like balloons.
-        l.inflateVel += ((targetInflate - l.inflate) * 90 - l.inflateVel * 9) * dt;
-        l.inflate += l.inflateVel * dt;
+        // Letters: tilt toward the cursor, puff up as it passes.
+        letterGroup.rotation.y = tilt.x * 0.35 * motion;
+        letterGroup.rotation.x = -tilt.y * 0.3 * motion;
+        const px = smoothed.x * cssW;
+        const py = (1 - smoothed.y) * cssH;
+        for (const l of letters) {
+          const near = flow > 0.05 && Math.hypot(px - l.cx, py - l.cy) < layoutSize * 0.85 ? 1 : 0;
+          l.heat = Math.max(l.heat * Math.pow(0.975, dt * 60), near);
+          const targetInflate = 0.55 + 0.45 * l.heat;
+          // Under-damped spring so letters overshoot and wobble like balloons.
+          l.inflateVel += ((targetInflate - l.inflate) * 90 - l.inflateVel * 9) * dt;
+          l.inflate += l.inflateVel * dt;
 
-        const p = l.phase;
-        const swell = 1 + (l.inflate - 0.55) * 0.06;
-        l.mesh.scale.set(swell, swell, Math.max(0.05, l.inflate));
-        l.mesh.position.set(
-          l.baseX,
-          l.baseY + Math.sin(t * 1.1 + p) * layoutSize * 0.015 * motion,
-          Math.sin(t * 0.8 + p) * layoutSize * 0.04 * motion,
-        );
-        l.mesh.rotation.set(
-          Math.sin(t * 0.9 + p) * 0.08 * motion,
-          Math.sin(t * 0.7 + p * 1.7) * 0.12 * motion,
-          Math.sin(t * 0.6 + p * 0.6) * 0.04 * motion,
-        );
+          const p = l.phase;
+          const swell = 1 + (l.inflate - 0.55) * 0.06;
+          l.mesh.scale.set(swell, swell, Math.max(0.05, l.inflate));
+          l.mesh.position.set(
+            l.baseX,
+            l.baseY + Math.sin(t * 1.1 + p) * layoutSize * 0.015 * motion,
+            Math.sin(t * 0.8 + p) * layoutSize * 0.04 * motion,
+          );
+          l.mesh.rotation.set(
+            Math.sin(t * 0.9 + p) * 0.08 * motion,
+            Math.sin(t * 0.7 + p * 1.7) * 0.12 * motion,
+            Math.sin(t * 0.6 + p * 0.6) * 0.04 * motion,
+          );
+        }
+
+        renderer.setRenderTarget(sceneRT);
+        renderer.setClearColor(0x000000, 1);
+        renderer.clear();
+        renderer.render(scene, camera);
+        renderer.clearDepth();
+        renderer.render(letterScene, letterCamera);
+        renderer.setRenderTarget(null);
+      } else {
+        lastStamp.copy(smoothed);
       }
-
-      renderer.setRenderTarget(sceneRT);
-      renderer.setClearColor(0x000000, 1);
-      renderer.clear();
-      renderer.render(scene, camera);
-      renderer.clearDepth();
-      renderer.render(letterScene, letterCamera);
-      renderer.setRenderTarget(null);
+      finalMaterial.uniforms.uInk.value = inkVisible ? 1 : 0;
 
       finalMaterial.uniforms.uMask.value = simA.texture;
       finalMaterial.uniforms.uTime.value = t;
+      finalMaterial.uniforms.uDark.value = dark;
       renderer.render(finalScene, quadCamera);
     };
     raf = requestAnimationFrame(tick);
@@ -409,6 +461,8 @@ export default function HeroReveal(): React.ReactElement {
       window.clearTimeout(resizeTimer);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerdown", onPointerMove);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measureHero);
       io.disconnect();
       ro.disconnect();
       disposeLetters();

@@ -65,7 +65,7 @@ export function setupHeroAnimations({
         {
           scale: 0.38,
           borderRadius: "16px",
-          boxShadow: "0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12)",
+          boxShadow: "0 16px 40px rgba(0, 0, 0, 0.5)",
           opacity: 0.4,
           ease: "none",
           duration: 1,
@@ -146,7 +146,7 @@ export function setupHeroAnimations({
       scale,
       opacity,
       borderRadius: `${cardP * 20}px`,
-      boxShadow: `0 ${cardP * 24}px ${cardP * 60}px rgba(0,0,0,${cardP * 0.5}), 0 0 0 1px rgba(255,255,255,${cardP * 0.12})`,
+      boxShadow: `0 ${cardP * 24}px ${cardP * 60}px rgba(0,0,0,${cardP * 0.5})`,
     });
     marqueeOpacity(reveal * marqueeMaxOpacity);
     labelOpacity(reveal);
