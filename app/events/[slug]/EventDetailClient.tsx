@@ -20,6 +20,7 @@ import spiralImg11 from "@/src/assets/Argonyx26/dinner/mingos1.webp";
 import spiralImg12 from "@/src/assets/Argonyx26/judges/image copy.png";
 import spiralImg13 from "@/src/assets/Argonyx26/opening/image copy.png";
 import "./EventDetail.css";
+import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 
 const SPIRAL_GALLERY_IMAGES = [
   { src: spiralImg9, alt: "Registration & Opening Arrival" },
@@ -882,6 +883,8 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
           <a href="#register">Register →</a>
         )}
       </footer>
+
+      <SiteCredit />
     </div>
   );
 }

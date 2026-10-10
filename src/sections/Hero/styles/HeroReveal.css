@@ -47,3 +47,47 @@
   line-height: 1;
   white-space: nowrap;
 }
+
+/* "—— BUILT BY ECELL TECH TEAM", right-aligned under the end of the title.
+   Position and size come from the title layout (set in HeroReveal) so it
+   tracks the "VU" on every screen. Difference blending keeps it legible when
+   the ink passes over it. */
+.hero-reveal__credit {
+  position: absolute;
+  top: var(--credit-top, 70%);
+  right: var(--credit-right, 24px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9em;
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: var(--credit-size, 13px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-reveal--ready .hero-reveal__credit {
+  opacity: 0.8;
+}
+
+.hero-reveal__credit-rule {
+  display: block;
+  width: 3.2em;
+  height: 1px;
+  background: currentColor;
+}
+
+/* Without WebGL the title is plain text, so drop the anchored credit. */
+.hero-reveal--fallback .hero-reveal__credit {
+  display: none;
+}

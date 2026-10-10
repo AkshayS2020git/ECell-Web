@@ -19,8 +19,14 @@ import FloatingLogo from "@/src/components/FloatingLogo/FloatingLogo";
 import GameLauncher from "@/src/components/GameLauncher/GameLauncher";
 import Team from "@/src/sections/Team/Team";
 
+// The entry loader is an intro, not a per-mount effect: once it has played,
+// coming back to "/" from another page (client-side navigation keeps this
+// module alive) skips it. A full reload starts fresh and plays it again.
+// The server always renders the loader, which matches a first client render.
+let introPlayed = false;
+
 export default function Home() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !introPlayed);
 
   // Scroll restoration and the reset-to-top on navigation are handled once, by
   // the inline script in app/layout.tsx and by RouteScrollManager. This page
@@ -28,6 +34,7 @@ export default function Home() {
   // on unmount, which tore down triggers owned by other components.
 
   const handleLoaderComplete = () => {
+    introPlayed = true;
     setLoading(false);
 
     // Only snap to the top when the visitor did not ask for a specific section.

@@ -11,6 +11,7 @@ import winterTechTalk from "../assets/events/events_photo/WinterTechTalk.webp";
 import argonyx from "../assets/events/events_photo/argonyx.webp";
 import argonyx2 from "../assets/events/events_photo/argoynx2.webp";
 import "./EventsArchive.css";
+import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 
 /* =====================================================
    DATA
@@ -904,6 +905,8 @@ export default function EventsArchive(): React.ReactElement {
         </Link>
 
       </footer>
+
+      <SiteCredit />
 
     </main>
   );

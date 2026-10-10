@@ -174,6 +174,11 @@ export default function HeroReveal(): React.ReactElement {
     const buildText = () => {
       if (!cssW || !cssH) return;
       const layout = layoutText(cssW, cssH, fontFamily);
+      // Anchor the DOM credit right-aligned just under the end of the title.
+      host.style.setProperty("--credit-right", `${cssW - layout.right}px`);
+      host.style.setProperty("--credit-top", `${layout.baseline + layout.size * 0.13}px`);
+      host.style.setProperty("--credit-size", `${Math.min(15, Math.max(10, layout.size * 0.042))}px`);
+      host.classList.add("hero-reveal--ready");
       layoutSize = layout.size;
       drawFlatText(textCanvas, layout, cssW, cssH, Math.min(pixelRatio, 2560 / cssW));
       textTexture.needsUpdate = true;
@@ -430,6 +435,10 @@ export default function HeroReveal(): React.ReactElement {
       <span className="hero-reveal__fallback" aria-hidden="true">
         ECELL RVU
       </span>
+      <p className="hero-reveal__credit">
+        <span className="hero-reveal__credit-rule" aria-hidden="true" />
+        Built by ECell Tech Team
+      </p>
     </div>
   );
 }
