@@ -61,6 +61,9 @@ export interface EventDetailData {
   registrationAccent: string;
   registrationHint: string;
   image: StaticImageData;
+  /** The image is a designed poster: show it whole at its own proportions
+   *  instead of cropping it to the photo frame. */
+  imageIsPoster?: boolean;
   ledger: LedgerItem[];
   organizers: string[];
   contacts: ContactItem[];

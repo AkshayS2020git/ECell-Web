@@ -269,7 +269,14 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                   : `Register for ${event.title}`
               }
             >
-              <div className="event-card__media">
+              <div
+                className="event-card__media"
+                style={
+                  event.imageIsPoster
+                    ? { aspectRatio: `${event.image.width} / ${event.image.height}` }
+                    : undefined
+                }
+              >
                 <Image
                   src={event.image}
                   alt={event.title}

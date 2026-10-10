@@ -192,6 +192,26 @@
   }
 }
 
+/* Events sub-nav: content scrolls under the fixed bar, and difference
+   blending made "HOME / EVENTS" collide unreadably with card titles. Give it
+   a frosted backdrop the same colour as the page (invisible at the top) and
+   plain blending. The backdrop is a pseudo-element so the nav itself does not
+   become the containing block for the fixed chapters dropdown. */
+.site-nav--sub {
+  mix-blend-mode: normal;
+}
+
+.site-nav--sub::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(26, 26, 26, 0.82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
 /* Events sub-nav only (plain "← Home" link, no logo button) */
 @media (max-width: 420px) {
   .site-nav--sub {
