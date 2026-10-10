@@ -5,7 +5,8 @@
   z-index: 1;
   margin: 0;
   padding: 22px 16px calc(26px + env(safe-area-inset-bottom));
-  color: rgba(255, 255, 255, 0.45);
+  /* 0.45 fell just under the 4.5:1 contrast minimum on the dark pages. */
+  color: rgba(255, 255, 255, 0.6);
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 0.68rem;
   font-weight: 600;

@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import LaserFlow from "../../components/LaserFlow";
+import dynamic from "next/dynamic";
+
+// WebGL beam (three.js) far down the page: load it in its own chunk.
+const LaserFlow = dynamic(() => import("../../components/LaserFlow"), { ssr: false });
 import "./WhatsAppCommunity.css";
 
 // this is the url for the whatsapp student community.

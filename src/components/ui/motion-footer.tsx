@@ -236,6 +236,22 @@ const STYLES = `
   .ecell-footer-giant-text { font-size: 43vw; }
 }
 
+/* The footer is position: fixed behind the whole page and only uncovered at
+   the very end, but the browser treats a fixed element as always on screen:
+   its blurred aurora, backdrop-blurred marquee and drop-shadow heartbeat were
+   repainted every frame while reading the hero. Until the reveal wrapper
+   nears the viewport (data-revealed, set by an IntersectionObserver), hide it
+   and pause its animations so it costs nothing. */
+.motion-footer-reveal:not([data-revealed]) .cinematic-footer-wrapper {
+  visibility: hidden;
+}
+
+.motion-footer-reveal:not([data-revealed]) .ecell-footer-aurora,
+.motion-footer-reveal:not([data-revealed]) .ecell-footer-marquee-track,
+.motion-footer-reveal:not([data-revealed]) .ecell-footer-heart {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .motion-footer-reveal {
     height: auto !important;
@@ -363,6 +379,26 @@ const ArrowIcon = ({ external = false }: { external?: boolean }) => (
 
 export function CinematicFooter(): React.ReactElement {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  // Show and animate the fixed footer only while its reveal wrapper is near
+  // the viewport (see the [data-revealed] rules in STYLES).
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    if (typeof IntersectionObserver === "undefined") {
+      wrapper.dataset.revealed = "";
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) wrapper.dataset.revealed = "";
+        else delete wrapper.dataset.revealed;
+      },
+      { rootMargin: "200px 0px" },
+    );
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, []);
   const giantTextRef = useRef<HTMLDivElement | null>(null);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const linksRef = useRef<HTMLDivElement | null>(null);

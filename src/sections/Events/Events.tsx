@@ -111,8 +111,6 @@ export default function Events(): React.ReactElement {
     const bgInner = bgInnerRef.current;
     if (!section || !scene || !items.length) return undefined;
 
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       if (bgPanel) gsap.set(bgPanel, { x: 0, y: 0, scale: 1, rotate: 0 });
       if (intro) gsap.set(intro, { autoAlpha: 1 });

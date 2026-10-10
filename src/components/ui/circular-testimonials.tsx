@@ -115,7 +115,9 @@ export function CircularTestimonials({
 }: CircularTestimonialsProps) {
   // Defaults follow the site's dark palette (src/styles/global.css).
   const colorName = colors.name ?? "var(--fg)";
-  const colorDesignation = colors.designation ?? "var(--color-lightgrey)";
+  // --fg-dim (#bababa) keeps the role line above 4.5:1 contrast on the dark
+  // background; --color-lightgrey (#71737d) was ~3.6:1.
+  const colorDesignation = colors.designation ?? "var(--fg-dim)";
   const colorTestimony = colors.testimony ?? "rgba(244, 244, 242, 0.82)";
   const colorArrowBg = colors.arrowBackground ?? "#1f2023";
   const colorArrowFg = colors.arrowForeground ?? "var(--fg)";

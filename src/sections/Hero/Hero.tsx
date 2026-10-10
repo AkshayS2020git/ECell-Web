@@ -1,13 +1,22 @@
 "use client";
 import React, { useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { scrollToY } from "../../utils/lenis";
 import { setupHeroAnimations } from "./HeroAnimations";
-import HeroReveal from "./components/HeroReveal";
 import HeroIntro from "./components/HeroIntro";
 import HeroScrollHint from "./components/HeroScrollHint";
 import "./styles/Hero.css";
 import "./styles/HeroStage.css";
 import "./styles/HeroMarquee.css";
+import "./styles/HeroReveal.css";
+
+// three.js (~190 KB) is only needed by the WebGL reveal, so it loads in its own
+// chunk after the page is interactive instead of in the main bundle. The white
+// placeholder has the same box and colour, so there is no flash while it loads.
+const HeroReveal = dynamic(() => import("./components/HeroReveal"), {
+  ssr: false,
+  loading: () => <div className="hero-reveal" aria-hidden="true" />,
+});
 
 const BOTTOM_MARQUEE_COPIES = 3;
 

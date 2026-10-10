@@ -53,7 +53,14 @@
   width: max-content;
   gap: 0;
   animation: heroBottomMarquee 32s linear infinite;
+  /* Hidden behind the full-size stage until the card shrinks; don't keep the
+     page producing frames for it until then (see HeroAnimations). */
+  animation-play-state: paused;
   will-change: transform;
+}
+
+.hero--card .hero__bottom-marquee-track {
+  animation-play-state: running;
 }
 
 .hero__bottom-marquee-track span {
