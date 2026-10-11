@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -512,13 +511,12 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                   onTouchEnd={handleTouchEnd}
                 >
                   <article
-                    className={`winner-spotlight-box winner-spotlight-box--${
-                      safeWinnerIndex === 0
-                        ? "first"
-                        : safeWinnerIndex === 1
+                    className={`winner-spotlight-box winner-spotlight-box--${safeWinnerIndex === 0
+                      ? "first"
+                      : safeWinnerIndex === 1
                         ? "second"
                         : "third"
-                    }`}
+                      }`}
                     key={currentWinner.place}
                   >
                     {/* Left Side: Rectangular Photo Space */}
@@ -532,40 +530,40 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                           className="winner-photo-slot__image"
                         />
                       ) : (
-                      <div className="winner-photo-slot">
-                        <div
-                          className="winner-photo-slot__icon"
-                          aria-hidden="true"
-                        >
-                          <svg
-                            width="36"
-                            height="36"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+                        <div className="winner-photo-slot">
+                          <div
+                            className="winner-photo-slot__icon"
+                            aria-hidden="true"
                           >
-                            <rect
-                              x="3"
-                              y="3"
-                              width="18"
-                              height="18"
-                              rx="2"
-                              ry="2"
-                            />
-                            <circle cx="8.5" cy="8.5" r="1.5" />
-                            <polyline points="21 15 16 10 5 21" />
-                          </svg>
+                            <svg
+                              width="36"
+                              height="36"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <rect
+                                x="3"
+                                y="3"
+                                width="18"
+                                height="18"
+                                rx="2"
+                                ry="2"
+                              />
+                              <circle cx="8.5" cy="8.5" r="1.5" />
+                              <polyline points="21 15 16 10 5 21" />
+                            </svg>
+                          </div>
+                          <span className="winner-photo-slot__label">
+                            {currentWinner.photoCaption || "Team Photo Space"}
+                          </span>
+                          <span className="winner-photo-slot__tag">
+                            PHOTO SPACE RESERVED
+                          </span>
                         </div>
-                        <span className="winner-photo-slot__label">
-                          {currentWinner.photoCaption || "Team Photo Space"}
-                        </span>
-                        <span className="winner-photo-slot__tag">
-                          PHOTO SPACE RESERVED
-                        </span>
-                      </div>
                       )}
                     </div>
 
@@ -676,11 +674,12 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                               <span className="event-sponsor-card__beacon" aria-hidden="true" />
                               <div className="event-sponsor-card__logo-frame event-sponsor-card__logo-frame--lg">
                                 {partner.logo ? (
-                                  <img
-                                    src={partner.logo}
-                                    alt={`${partner.name} logo`}
-                                    className="event-sponsor-card__logo event-sponsor-card__logo--lg"
-                                    loading="lazy"
+                                  <Image
+                                    src={event.image}
+                                    alt={event.title}
+                                    width={800}
+                                    height={450}
+                                    className="event-image"
                                   />
                                 ) : (
                                   <span className="event-sponsor-card__logo-text event-sponsor-card__logo-text--lg">{partner.name}</span>
@@ -712,10 +711,12 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                             <span className="event-sponsor-card__beacon" aria-hidden="true" />
                             <div className="event-sponsor-card__logo-frame event-sponsor-card__logo-frame--lg">
                               {event.sponsorsPresenting.logo ? (
-                                <img
+                                <Image
                                   src={event.sponsorsPresenting.logo}
                                   alt={`${event.sponsorsPresenting.name} logo`}
                                   className="event-sponsor-card__logo event-sponsor-card__logo--lg"
+                                  width={200}
+                                  height={100}
                                   loading="lazy"
                                 />
                               ) : (
@@ -760,10 +761,12 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
 
                         <div className="event-sponsor-card__logo-frame">
                           {sponsor.logo ? (
-                            <img
+                            <Image
                               src={sponsor.logo}
                               alt={`${sponsor.name} logo`}
                               className="event-sponsor-card__logo"
+                              width={200}
+                              height={100}
                               loading="lazy"
                             />
                           ) : (

@@ -322,50 +322,22 @@
   width: 100%;
 }
 
-/* Row 1: 2 items [ Nokia ] [ Red Bull ] */
-.row-1 {
-  justify-content: center;
-  gap: 120px;
-}
-
-.col-r1-left,
-.col-r1-right {
-  width: 215px;
-}
-
-/* Row 2: 4 items [ Belgian ] [ TVS ] [ Herody ] [ Mercedes ] */
-.row-2 {
+.row-1,
+.row-2,
+.row-3,
+.row-4,
+.row-5 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  justify-content: center;
   gap: 20px;
 }
 
-.col-r2-1,
-.col-r2-2,
-.col-r2-3,
-.col-r2-4 {
-  width: 100%;
-}
-
-/* Row 3: 3 items [ Atty's ] [ Cube ] [ Justvend ] */
-.row-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  max-width: 780px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* Row 4: 2 items [ EasyBites ] [ Mile ] */
-.row-4 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  max-width: 500px;
-  margin: 0 auto;
-  width: 100%;
-}
+.row-1,
+.row-5 { grid-template-columns: repeat(3, 144px); }
+.row-2,
+.row-4 { grid-template-columns: repeat(5, 144px); }
+.row-3 { grid-template-columns: repeat(6, 144px); }
 
 /* Subtle micro-offsets for organic constellation feeling while preserving grid alignment */
 .node-nokia {
@@ -604,26 +576,13 @@
     display: none;
   }
 
-  .row-1 {
-    gap: 20px;
-    max-width: 480px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .col-r1-left,
-  .col-r1-right {
-    width: 100%;
-  }
-
-  .row-2 {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .row-3 {
-    grid-template-columns: repeat(3, 1fr);
+  .row-1,
+  .row-2,
+  .row-3,
+  .row-4,
+  .row-5 {
+    grid-template-columns: repeat(2, 144px);
+    justify-content: center;
     gap: 16px;
   }
 }
@@ -667,20 +626,6 @@
     display: contents;
   }
 
-  .col-r1-left,
-  .col-r1-right,
-  .col-r2-1,
-  .col-r2-2,
-  .col-r2-3,
-  .col-r2-4,
-  .col-r3-1,
-  .col-r3-2,
-  .col-r3-3,
-  .col-r4-1,
-  .col-r4-2 {
-    width: 100%;
-  }
-
   .sponsor-card-inner {
     height: 72px;
     padding: 8px 10px;
@@ -711,11 +656,6 @@
     transform: translateY(6px);
   }
 
-  .col-r4-2 {
-    grid-column: span 2;
-    max-width: 220px;
-    margin: 0 auto;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -13,6 +13,17 @@ import nokiaLogo from "../../assets/logos/nokia.webp";
 import tvsLogo from "../../assets/logos/tvs.webp";
 import waffleLogo from "../../assets/logos/waffle.svg";
 import redbull from "../../assets/logos/redbull.webp";
+import arkLogo from "../../assets/logos/ARK LOGO-01 .webp";
+import fitMuscleLogo from "../../assets/logos/fit-muscle.webp";
+import fiveSpeedLogo from "../../assets/logos/fivespeed bike rental.webp";
+import hoogwayLogo from "../../assets/logos/hoogway.webp";
+import hpLogo from "../../assets/logos/hp.webp";
+import ixigoLogo from "../../assets/logos/ixigo.webp";
+import mahindraLogo from "../../assets/logos/mahindra.webp";
+import studio11Logo from "../../assets/logos/studio 11.svg";
+import tazishLogo from "../../assets/logos/tazish.webp";
+import technosportLogo from "../../assets/logos/technosport.webp";
+import wafflingStationLogo from "../../assets/logos/waffling station.webp";
 import "./Sponsors.css";
 
 export interface SponsorItem {
@@ -26,24 +37,45 @@ export interface SponsorItem {
 }
 
 const SPONSORS_CONSTELLATION: SponsorItem[] = [
-  // Row 1: 2 items (North Pioneers)
+  // Row 1: 3 items (North Pioneers)
   { id: "node-nokia", name: "Nokia", logo: nokiaLogo, logoKey: "nokia", tier: "featured", row: 1, url: "https://www.nokia.com/" },
   { id: "node-redbull", name: "Red Bull", logo: redbull, tier: "featured", row: 1, url: "https://www.redbull.com/" },
+  { id: "node-hoogway", name: "Hoogway", logo: hoogwayLogo, tier: "core", row: 1, url:"https://hoogway.ai/" },
 
-  // Row 2: 4 items (Mid-North Anchors)
+  // Row 2: 5 items (Mid-North Anchors)
   { id: "node-waffle", name: "The Belgian Waffle Co.", logo: waffleLogo, tier: "core", row: 2, url: "https://thebelgianwaffle.co/" },
   { id: "node-tvs", name: "TVS Prakruthi Bikes", logo: tvsLogo, tier: "core", row: 2, url: "https://tvsmotor.com" },
   { id: "node-herody", name: "Herody", logo: herodyLogo, logoKey: "herody", tier: "featured", row: 2, url: "https://herody.in" },
   { id: "node-merc", name: "Akshaya Motors", logo: mercLogo, tier: "featured", row: 2, url: "https://www.mercedes-benz.co.in/" },
+  { id: "node-waffling-station", name: "Waffling Station", logo: wafflingStationLogo, tier: "core", row: 2, url:"https://www.thewafflestation.com/" },
 
   // Row 3: 3 items (Mid-South Growth Network)
-  { id: "node-attys", name: "Atty's Bakery & Confectionery", logo: attysLogo, tier: "core", row: 3 },
+  { id: "node-attys", name: "Atty's Bakery & Confectionery", logo: attysLogo, tier: "core", row: 3, url: "https://attysbakery.dotpe.in/" },
   { id: "node-cube", name: "Cube", logo: cubeLogo, tier: "core", row: 3 },
   { id: "node-justvend", name: "Justvend", logo: justvendLogo, tier: "core", row: 3, url: "https://www.justvend.in" },
 
   // Row 4: 2 items (South Base Connectors)
   { id: "node-easybites", name: "EasyBites", logo: easyBitesLogo, tier: "core", row: 4, url: "https://easybites.in/" },
   { id: "node-mile", name: "mile", logo: mileLogo, tier: "core", row: 4, url: "https://www.mile.tech/" },
+
+  // Additional partner logos — add each respective URL here when available.
+  { id: "node-ark", name: "ARK", logo: arkLogo, tier: "core", row: 5, url:"https://www.arkinfo.in/" },
+  { id: "node-fit-muscle", name: "Fit Muscle", logo: fitMuscleLogo, tier: "core", row: 5, url: "https://www.fitmusclepremiumfitness.store/" },
+  { id: "node-fivespeed", name: "FiveSpeed Bike Rental", logo: fiveSpeedLogo, tier: "core", row: 5, url: "https://fivespeedbike.com/" },
+  { id: "node-hp", name: "HP", logo: hpLogo, tier: "core", row: 5, url: "https://www.hp.com/in-en/home.html" },
+  { id: "node-ixigo", name: "ixigo", logo: ixigoLogo, tier: "core", row: 5, url: "https://www.ixigo.com/" },
+  { id: "node-mahindra", name: "Mahindra", logo: mahindraLogo, tier: "core", row: 5, url: "https://www.mahindra.com/" },
+  { id: "node-studio-11", name: "Studio 11", logo: studio11Logo, tier: "core", row: 5, url: "https://www.studio11.in/" },
+  { id: "node-tazish", name: "Tazish", logo: tazishLogo, tier: "core", row: 5 },
+  { id: "node-technosport", name: "Technosport", logo: technosportLogo, tier: "core", row: 5, url:"https://www.technosport.in/" },
+];
+
+const SPONSOR_ROWS = [
+  SPONSORS_CONSTELLATION.slice(0, 3),
+  SPONSORS_CONSTELLATION.slice(3, 8),
+  SPONSORS_CONSTELLATION.slice(8, 14),
+  SPONSORS_CONSTELLATION.slice(14, 19),
+  SPONSORS_CONSTELLATION.slice(19, 22),
 ];
 
 export default function Sponsors(): React.ReactElement {
@@ -341,6 +373,7 @@ const wipeCtx = gsap.context(() => {
       const row2Cards = gsap.utils.toArray<HTMLElement>(".row-2 .sponsor-card-inner");
       const row3Cards = gsap.utils.toArray<HTMLElement>(".row-3 .sponsor-card-inner");
       const row4Cards = gsap.utils.toArray<HTMLElement>(".row-4 .sponsor-card-inner");
+      const row5Cards = gsap.utils.toArray<HTMLElement>(".row-5 .sponsor-card-inner");
 
       // Row 1 Cards (Pioneers) materialize
       if (row1Cards.length > 0) {
@@ -442,6 +475,23 @@ const wipeCtx = gsap.context(() => {
         );
       }
 
+      if (row5Cards.length > 0) {
+        storyTl.fromTo(
+          row5Cards,
+          { opacity: 0, scale: 0.88, y: 12, filter: "blur(6px)" },
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.45,
+            stagger: 0.06,
+            ease: "power3.out",
+          },
+          1.45
+        );
+      }
+
       // ══════════════════════════════════════════════════════════════
       // ── PHASE 4: LOGOS (Living Signal Lock-In) ──
       // Logos surge with exposure/contrast before settling into crisp clarity
@@ -483,7 +533,7 @@ const wipeCtx = gsap.context(() => {
 
       // 1. Left and right cards collapse towards center axis with blur & scale down
       exitTl.to(
-        ".col-r1-left, .col-r2-1, .col-r2-2, .col-r3-1, .col-r4-1",
+        ".constellation-col:nth-child(odd)",
         {
           x: 140,
           scale: 0.2,
@@ -496,7 +546,7 @@ const wipeCtx = gsap.context(() => {
       );
 
       exitTl.to(
-        ".col-r1-right, .col-r2-3, .col-r2-4, .col-r3-2, .col-r3-3, .col-r4-2",
+        ".constellation-col:nth-child(even)",
         {
           x: -140,
           scale: 0.2,
@@ -787,133 +837,24 @@ const wipeCtx = gsap.context(() => {
           />
         </svg>
 
-        {/* Structured Constellation Grid Matrix */}
+        {/* Sponsor rows: 3 / 5 / 6 / 5 / 3 logos */}
         <div className="constellation-grid">
-          {/* Row 1: 2 items [ Nokia ] [ Red Bull ] */}
-          <div className="constellation-row row-1">
-            <div className="constellation-col col-r1-left">
-              <div className="constellation-node node-nokia">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[0]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[0].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[0].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
+          {SPONSOR_ROWS.map((row, rowIndex) => (
+            <div className={`constellation-row row-${rowIndex + 1}`} key={rowIndex}>
+              {row.map((item) => (
+                <div className="constellation-col" key={item.id}>
+                  <div className={`constellation-node ${item.id}`}>
+                    <SponsorCard
+                      item={item}
+                      isHovered={hoveredNode === item.id}
+                      onMouseEnter={() => setHoveredNode(item.id)}
+                      onMouseLeave={() => setHoveredNode(null)}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="constellation-col col-r1-right">
-              <div className="constellation-node node-redbull">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[1]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[1].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[1].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Row 2: 4 items [ Belgian ] [ TVS ] [ Herody ] [ Mercedes ] */}
-          <div className="constellation-row row-2">
-            <div className="constellation-col col-r2-1">
-              <div className="constellation-node node-waffle">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[2]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[2].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[2].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-            <div className="constellation-col col-r2-2">
-              <div className="constellation-node node-tvs">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[3]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[3].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[3].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-            <div className="constellation-col col-r2-3">
-              <div className="constellation-node node-herody">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[4]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[4].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[4].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-            <div className="constellation-col col-r2-4">
-              <div className="constellation-node node-merc">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[5]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[5].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[5].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Row 3: 3 items [ Atty's ] [ Cube ] [ Justvend ] */}
-          <div className="constellation-row row-3">
-            <div className="constellation-col col-r3-1">
-              <div className="constellation-node node-attys">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[6]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[6].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[6].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-            <div className="constellation-col col-r3-2">
-              <div className="constellation-node node-cube">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[7]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[7].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[7].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-            <div className="constellation-col col-r3-3">
-              <div className="constellation-node node-justvend">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[8]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[8].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[8].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Row 4: 2 items [ EasyBites ] [ Mile ] */}
-          <div className="constellation-row row-4">
-            <div className="constellation-col col-r4-1">
-              <div className="constellation-node node-easybites">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[9]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[9].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[9].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-            <div className="constellation-col col-r4-2">
-              <div className="constellation-node node-mile">
-                <SponsorCard
-                  item={SPONSORS_CONSTELLATION[10]}
-                  isHovered={hoveredNode === SPONSORS_CONSTELLATION[10].id}
-                  onMouseEnter={() => setHoveredNode(SPONSORS_CONSTELLATION[10].id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                />
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
