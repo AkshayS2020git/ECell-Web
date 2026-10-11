@@ -8,6 +8,10 @@ import { buildLetter, type Letter } from "../webgl/letters";
 import { GALAXY_FRAG, GALAXY_VERT, buildGalaxy } from "../webgl/galaxy";
 import { isPageScrollLocked } from "@/src/utils/scrollLock";
 
+// Fraction of the hero height the nebula's core is raised above centre
+// (0.3 puts it ~20% from the top).
+const GALAXY_SHIFT_UP = 0.3;
+
 /**
  * Hero title with a liquid ink reveal. Moving the pointer pours ink over the
  * flat title; inside it, glass balloon letters float over a particle nebula.
@@ -292,7 +296,9 @@ export default function HeroReveal(): React.ReactElement {
       camera.aspect = w / h;
       // Pull back on narrow screens so the disc still reads as a spiral.
       camera.position.setLength(w / h < 1 ? 4.2 : 2.9);
-      camera.updateProjectionMatrix();
+      // Lens-shift the nebula up so its core sits at the top centre of the
+      // hero instead of the middle (the camera still orbits the origin).
+      camera.setViewOffset(w, h, 0, h * GALAXY_SHIFT_UP, w, h);
       galaxyMaterial.uniforms.uSizeScale.value = h * pixelRatio * 0.0045;
 
       // World units are CSS pixels at z = 0, so letters line up with the flat text.
