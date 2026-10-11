@@ -78,6 +78,310 @@ const SPONSOR_ROWS = [
   SPONSORS_CONSTELLATION.slice(19, 22),
 ];
 
+// Deterministic so the server and client render the same backdrop.
+function seededRandom(seed: number): () => number {
+  let s = seed;
+  return () => {
+    s = (s * 16807) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+
+const rand = seededRandom(20260611);
+// Extra twinkling stars layered on top of the six hand-placed ones.
+const BACKDROP_STARS = Array.from({ length: 56 }, () => ({
+  top: (rand() * 100).toFixed(2),
+  left: (rand() * 100).toFixed(2),
+  size: (1 + rand() * 1.8).toFixed(2),
+  delay: (rand() * 5).toFixed(2),
+  duration: (3 + rand() * 4).toFixed(2),
+  dim: rand() < 0.45,
+}));
+
+// Small star figures drawn faintly in the margins (points in a 100 x 70 box).
+const BACKDROP_CONSTELLATIONS: Array<{
+  id: string;
+  points: Array<[number, number]>;
+  edges: Array<[number, number]>;
+}> = [
+  { id: "tl", points: [[6, 40], [24, 22], [44, 30], [62, 12], [86, 18], [56, 54]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5]] },
+  { id: "tr", points: [[10, 14], [30, 30], [52, 24], [74, 42], [92, 34], [40, 60]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [1, 5]] },
+  { id: "ml", points: [[14, 10], [22, 34], [12, 58], [46, 46], [70, 62]], edges: [[0, 1], [1, 2], [1, 3], [3, 4]] },
+  { id: "mr", points: [[20, 56], [38, 36], [62, 40], [80, 16], [90, 52]], edges: [[0, 1], [1, 2], [2, 3], [2, 4]] },
+  { id: "bl", points: [[8, 50], [28, 58], [48, 40], [66, 52], [88, 30], [60, 14]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5]] },
+  { id: "br", points: [[12, 30], [34, 18], [54, 34], [76, 22], [70, 58]], edges: [[0, 1], [1, 2], [2, 3], [2, 4]] },
+];
+
+// How far each body shifts with the cursor (px at the section edge): nearer
+// bodies move more, which reads as depth.
+const PLANET_DEPTH = { sun: 10, ringed: 26, moon: 36, giant: 16 } as const;
+
+/**
+ * Decorative sun and planets for the backdrop, lit from the sun's side.
+ *
+ * Layers per body, each owning one transform so they never fight:
+ * `.bg-planet` (GSAP intro/exit) > `.bg-planet__parallax` (cursor parallax)
+ * > `.bg-planet__body` (hover, click spin, sun flare) > `.bg-planet__art`
+ * (slow CSS drift). Hover hit-testing uses the painted shapes only.
+ */
+function BackdropPlanets(): React.ReactElement {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const bodies = Array.from(root.querySelectorAll<HTMLElement>(".bg-planet__body"));
+    const sunBody = root.querySelector<HTMLElement>(".bg-planet--sun .bg-planet__body");
+    const sunWave = root.querySelector<HTMLElement>(".bg-sun-wave");
+    const cleanups: Array<() => void> = [];
+
+    // Cursor parallax, eased, and only while the section is on screen.
+    if (!reduceMotion && !coarse) {
+      const layers = Array.from(root.querySelectorAll<HTMLElement>("[data-depth]"));
+      const target = { x: 0, y: 0 };
+      const current = { x: 0, y: 0 };
+      let raf = 0;
+      let visible = false;
+      const tick = () => {
+        raf = 0;
+        current.x += (target.x - current.x) * 0.08;
+        current.y += (target.y - current.y) * 0.08;
+        for (const layer of layers) {
+          const depth = Number(layer.dataset.depth);
+          layer.style.transform = `translate3d(${(-current.x * depth).toFixed(2)}px, ${(-current.y * depth).toFixed(2)}px, 0)`;
+        }
+        if (Math.abs(target.x - current.x) > 0.0005 || Math.abs(target.y - current.y) > 0.0005) {
+          raf = requestAnimationFrame(tick);
+        }
+      };
+      const onMove = (e: PointerEvent) => {
+        if (!visible) return;
+        const rect = root.getBoundingClientRect();
+        target.x = (e.clientX - rect.left) / rect.width - 0.5;
+        target.y = (e.clientY - rect.top) / rect.height - 0.5;
+        if (!raf) raf = requestAnimationFrame(tick);
+      };
+      const io = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+      });
+      io.observe(root);
+      window.addEventListener("pointermove", onMove, { passive: true });
+      cleanups.push(() => {
+        window.removeEventListener("pointermove", onMove);
+        io.disconnect();
+        cancelAnimationFrame(raf);
+      });
+    }
+
+    // Click a planet: it spins once.
+    const onPlanetClick = (e: Event) => {
+      if (reduceMotion) return;
+      gsap.to(e.currentTarget as HTMLElement, { rotation: "+=360", duration: 1.4, ease: "power3.inOut" });
+    };
+
+    // Click the sun to switch it off and on. Light takes time to travel:
+    // each planet goes dark (or lights up again) only once the change
+    // reaches it, nearest first. Turning it on also sends out a light wave.
+    const artOf = (body: HTMLElement) => body.querySelector<SVGSVGElement>(".bg-planet__art");
+    let sunOn = true;
+    const onSunClick = () => {
+      if (!sunBody) return;
+      sunOn = !sunOn;
+      const sun = sunBody.getBoundingClientRect();
+      const sx = sun.left + sun.width / 2;
+      const sy = sun.top + sun.height / 2;
+      for (const body of bodies) {
+        if (body === sunBody) continue;
+        const r = body.getBoundingClientRect();
+        const dist = Math.hypot(r.left + r.width / 2 - sx, r.top + r.height / 2 - sy);
+        const delay = reduceMotion ? 0 : dist / 900;
+        body.parentElement?.style.setProperty("--light-delay", `${delay.toFixed(2)}s`);
+        const art = artOf(body);
+        if (sunOn && art) {
+          // The flash goes on the art, not the body, so it doesn't fight the
+          // body's CSS hover transition on `filter`.
+          gsap.fromTo(art, { filter: "brightness(1)" }, {
+            filter: "brightness(1.9) drop-shadow(0 0 16px rgba(255, 196, 120, 0.55))",
+            duration: 0.35,
+            delay,
+            yoyo: true,
+            repeat: 1,
+            ease: "power2.out",
+            clearProps: "filter",
+          });
+        }
+      }
+      root.classList.toggle("is-sun-off", !sunOn);
+      // Relighting flares the sun itself, so it visibly glows again.
+      const sunArt = artOf(sunBody);
+      if (sunOn && sunArt) {
+        gsap.fromTo(sunArt, { filter: "brightness(1)" }, {
+          filter: "brightness(1.6) drop-shadow(0 0 24px rgba(255, 180, 90, 0.6))",
+          duration: 0.45,
+          yoyo: true,
+          repeat: 1,
+          ease: "power2.out",
+          clearProps: "filter",
+        });
+      }
+      if (sunOn && sunWave && !reduceMotion) {
+        gsap.fromTo(sunWave, { scale: 0.3, opacity: 0.9 }, { scale: 26, opacity: 0, duration: 2.2, ease: "power2.out" });
+      }
+    };
+
+    for (const body of bodies) {
+      const handler = body === sunBody ? onSunClick : onPlanetClick;
+      body.addEventListener("click", handler);
+      cleanups.push(() => body.removeEventListener("click", handler));
+    }
+
+    return () => {
+      cleanups.forEach((fn) => fn());
+      gsap.killTweensOf([...bodies, ...bodies.map(artOf), sunWave].filter(Boolean));
+    };
+  }, []);
+
+  return (
+    <div ref={rootRef} className="bg-planets">
+      {/* Sun: the light source the planets are shaded from */}
+      <div className="bg-planet bg-planet--sun">
+        <div className="bg-planet__parallax" data-depth={PLANET_DEPTH.sun}>
+          <span className="bg-sun-wave" />
+          <div className="bg-planet__body">
+            <svg className="bg-planet__art" viewBox="0 0 200 200" fill="none">
+              <defs>
+                <radialGradient id="sp-sun-core" cx="44%" cy="40%" r="62%">
+                  <stop offset="0%" stopColor="#fffaf0" />
+                  <stop offset="35%" stopColor="#ffe2a3" />
+                  <stop offset="75%" stopColor="#ffae4a" />
+                  <stop offset="100%" stopColor="#ff6a1a" />
+                </radialGradient>
+                <radialGradient id="sp-sun-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#ffc46b" stopOpacity="0.55" />
+                  <stop offset="40%" stopColor="#ff9a3c" stopOpacity="0.18" />
+                  <stop offset="100%" stopColor="#ff9a3c" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              <circle className="bg-sun__glow" cx="100" cy="100" r="98" fill="url(#sp-sun-glow)" />
+              <g className="bg-sun__rays" stroke="#ffd79a" strokeOpacity="0.4" strokeWidth="1.2" strokeLinecap="round">
+                {Array.from({ length: 12 }, (_, i) => {
+                  const a = (i / 12) * Math.PI * 2;
+                  const outer = i % 2 === 0 ? 64 : 54;
+                  return (
+                    <line
+                      key={i}
+                      x1={(100 + Math.cos(a) * 44).toFixed(2)}
+                      y1={(100 + Math.sin(a) * 44).toFixed(2)}
+                      x2={(100 + Math.cos(a) * outer).toFixed(2)}
+                      y2={(100 + Math.sin(a) * outer).toFixed(2)}
+                    />
+                  );
+                })}
+              </g>
+              <circle cx="100" cy="100" r="36" fill="url(#sp-sun-core)" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* Ringed planet: the ring passes behind the body, then in front of it */}
+      <div className="bg-planet bg-planet--ringed">
+        <div className="bg-planet__parallax" data-depth={PLANET_DEPTH.ringed}>
+          <div className="bg-planet__body">
+            <svg className="bg-planet__art" viewBox="0 0 200 140" fill="none">
+              <defs>
+                <radialGradient id="sp-ringed-body" cx="36%" cy="30%" r="78%">
+                  <stop offset="0%" stopColor="#fff1d6" />
+                  <stop offset="45%" stopColor="#b89f86" />
+                  <stop offset="100%" stopColor="#1a1716" />
+                </radialGradient>
+                <linearGradient id="sp-ring" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#f4f4f2" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#f4f4f2" stopOpacity="0.7" />
+                  <stop offset="100%" stopColor="#f4f4f2" stopOpacity="0" />
+                </linearGradient>
+                <clipPath id="sp-ring-front">
+                  <rect x="0" y="70" width="200" height="70" />
+                </clipPath>
+                <clipPath id="sp-ringed-clip">
+                  <circle cx="100" cy="70" r="40" />
+                </clipPath>
+              </defs>
+              <g transform="rotate(-16 100 70)">
+                <ellipse cx="100" cy="70" rx="90" ry="19" stroke="url(#sp-ring)" strokeWidth="1.6" opacity="0.55" />
+                <ellipse cx="100" cy="70" rx="76" ry="15" stroke="url(#sp-ring)" strokeWidth="0.8" opacity="0.4" />
+              </g>
+              <circle cx="100" cy="70" r="40" fill="url(#sp-ringed-body)" />
+              <g clipPath="url(#sp-ringed-clip)" opacity="0.22">
+                <ellipse cx="100" cy="56" rx="48" ry="4" fill="#fff1d6" />
+                <ellipse cx="100" cy="72" rx="48" ry="2.5" fill="#1a1716" />
+                <ellipse cx="100" cy="84" rx="48" ry="3.5" fill="#fff1d6" />
+              </g>
+              <g transform="rotate(-16 100 70)" clipPath="url(#sp-ring-front)">
+                <ellipse cx="100" cy="70" rx="90" ry="19" stroke="url(#sp-ring)" strokeWidth="2" />
+                <ellipse cx="100" cy="70" rx="76" ry="15" stroke="url(#sp-ring)" strokeWidth="1" opacity="0.7" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* Small cratered moon, lit from the sun at its upper right */}
+      <div className="bg-planet bg-planet--moon">
+        <div className="bg-planet__parallax" data-depth={PLANET_DEPTH.moon}>
+          <div className="bg-planet__body">
+            <svg className="bg-planet__art" viewBox="0 0 60 60" fill="none">
+              <defs>
+                <radialGradient id="sp-moon" cx="64%" cy="30%" r="80%">
+                  <stop offset="0%" stopColor="#f4f4f2" />
+                  <stop offset="55%" stopColor="#8a8a8e" />
+                  <stop offset="100%" stopColor="#151517" />
+                </radialGradient>
+              </defs>
+              <circle cx="30" cy="30" r="24" fill="url(#sp-moon)" />
+              <g fill="#151517" opacity="0.28">
+                <circle cx="24" cy="24" r="4" />
+                <circle cx="36" cy="36" r="5.5" />
+                <circle cx="37" cy="19" r="2.2" />
+                <circle cx="20" cy="38" r="2" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* Large dim planet half off the left edge, with a thin atmosphere */}
+      <div className="bg-planet bg-planet--giant">
+        <div className="bg-planet__parallax" data-depth={PLANET_DEPTH.giant}>
+          <div className="bg-planet__body">
+            <svg className="bg-planet__art" viewBox="0 0 200 200" fill="none">
+              <defs>
+                <radialGradient id="sp-giant" cx="62%" cy="34%" r="80%">
+                  <stop offset="0%" stopColor="#7d8cff" />
+                  <stop offset="40%" stopColor="#2f45ff" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#07081a" />
+                </radialGradient>
+                <clipPath id="sp-giant-clip">
+                  <circle cx="100" cy="100" r="80" />
+                </clipPath>
+              </defs>
+              <circle cx="100" cy="100" r="86" stroke="#7d8cff" strokeOpacity="0.18" strokeWidth="6" />
+              <circle cx="100" cy="100" r="80" fill="url(#sp-giant)" />
+              <g clipPath="url(#sp-giant-clip)" opacity="0.16">
+                <path d="M10 78 C 60 70, 140 92, 190 80" stroke="#c9d0ff" strokeWidth="5" />
+                <path d="M10 112 C 70 104, 130 124, 190 110" stroke="#c9d0ff" strokeWidth="3" />
+                <path d="M10 140 C 60 134, 140 150, 190 138" stroke="#c9d0ff" strokeWidth="4" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Sponsors(): React.ReactElement {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const sponsorsSectionRef = useRef<HTMLElement | null>(null);
@@ -91,6 +395,19 @@ export default function Sponsors(): React.ReactElement {
     if (!hoveredNode) return false;
     return nodes.includes(hoveredNode);
   };
+
+  // Decorative CSS loops (twinkling stars, planet drift, sun rays) pause
+  // whenever the section is off screen, so they cost nothing elsewhere.
+  useEffect(() => {
+    const section = sponsorsSectionRef.current;
+    if (!section) return;
+    const io = new IntersectionObserver(
+      ([entry]) => section.classList.toggle("is-offscreen", !entry.isIntersecting),
+      { rootMargin: "100px 0px" }
+    );
+    io.observe(section);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const section = sponsorsSectionRef.current;
@@ -245,6 +562,50 @@ const wipeCtx = gsap.context(() => {
           { opacity: 0, scale: 0 },
           { opacity: 0.7, scale: 1, duration: 0.4, stagger: 0.04, ease: "power2.out" },
           0
+        );
+      }
+
+      // Extra backdrop stars fade up, and the faint margin constellations
+      // trace themselves in, behind the main network
+      const backdropStars = gsap.utils.toArray<HTMLElement>(".backdrop-star");
+      if (backdropStars.length > 0) {
+        storyTl.fromTo(
+          backdropStars,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.5, stagger: { amount: 0.8, from: "random" }, ease: "power2.out" },
+          0
+        );
+      }
+
+      const planets = gsap.utils.toArray<HTMLElement>(".bg-planet");
+      if (planets.length > 0) {
+        storyTl.fromTo(
+          planets,
+          { opacity: 0, y: 24, scale: 0.92 },
+          { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.15, ease: "power3.out" },
+          0
+        );
+      }
+
+      const backdropLines = gsap.utils.toArray<SVGPathElement>(".bg-constellation-line");
+      backdropLines.forEach((path) => {
+        const length = path.getTotalLength ? path.getTotalLength() : 40;
+        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+      });
+      const backdropFigureStars = gsap.utils.toArray<SVGElement>(".bg-constellation-star");
+      if (backdropFigureStars.length > 0) {
+        storyTl.fromTo(
+          backdropFigureStars,
+          { opacity: 0, scale: 0 },
+          { opacity: 1, scale: 1, duration: 0.4, stagger: { amount: 0.6, from: "random" }, ease: "back.out(2)" },
+          0.05
+        );
+      }
+      if (backdropLines.length > 0) {
+        storyTl.to(
+          backdropLines,
+          { strokeDashoffset: 0, duration: 0.6, stagger: { amount: 0.9 }, ease: "power2.inOut" },
+          0.2
         );
       }
 
@@ -560,7 +921,7 @@ const wipeCtx = gsap.context(() => {
 
       // 2. Nodes and dots implode to center
       exitTl.to(
-        ".constellation-anchor-node, .constellation-junction-dot, .node-ping-ring, .constellation-star",
+        ".constellation-anchor-node, .constellation-junction-dot, .node-ping-ring, .constellation-star, .backdrop-star, .bg-constellation, .bg-planet",
         {
           scale: 0,
           opacity: 0,
@@ -640,6 +1001,40 @@ const wipeCtx = gsap.context(() => {
         <span className="constellation-star star-4" />
         <span className="constellation-star star-5" />
         <span className="constellation-star star-6" />
+        {BACKDROP_STARS.map((star, i) => (
+          <span
+            key={i}
+            className={`backdrop-star${star.dim ? " is-dim" : ""}`}
+            style={{
+              top: `${star.top}%`,
+              left: `${star.left}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              animationDelay: `${star.delay}s`,
+              animationDuration: `${star.duration}s`,
+            }}
+          />
+        ))}
+        <BackdropPlanets />
+        {BACKDROP_CONSTELLATIONS.map((figure) => (
+          <svg
+            key={figure.id}
+            className={`bg-constellation bg-constellation--${figure.id}`}
+            viewBox="0 0 100 70"
+            fill="none"
+          >
+            {figure.edges.map(([from, to]) => (
+              <path
+                key={`${from}-${to}`}
+                className="bg-constellation-line"
+                d={`M ${figure.points[from][0]} ${figure.points[from][1]} L ${figure.points[to][0]} ${figure.points[to][1]}`}
+              />
+            ))}
+            {figure.points.map(([cx, cy], i) => (
+              <circle key={i} className="bg-constellation-star" cx={cx} cy={cy} r={i === 0 ? 1.6 : 1.1} />
+            ))}
+          </svg>
+        ))}
       </div>
 
       <div ref={headerRef} className="wrap sponsors-header">
@@ -896,7 +1291,7 @@ function SponsorCard({
           src={item.logo}
           alt={item.name}
           fill
-          sizes="(max-width: 768px) 130px, 180px"
+          sizes="(max-width: 768px) 112px, 132px"
           style={{ objectFit: "contain" }}
           loading="lazy"
         />
