@@ -557,7 +557,11 @@
   }
 
   .events-card-media {
-    position: static;
+    /* Back in normal flow, but still positioned: the next/image `fill`
+       photos inside need a positioned parent. `inset: auto` drops the
+       desktop top/right offsets so relative behaves like static here. */
+    position: relative;
+    inset: auto;
     transform: none;
     width: 100%;
     height: clamp(160px, 23svh, 210px);

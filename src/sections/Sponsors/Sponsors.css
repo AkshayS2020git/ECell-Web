@@ -175,15 +175,40 @@
   stroke-width: 0.45;
 }
 
-.bg-constellation-star {
+.bg-constellation-star,
+.bg-wordmark-star {
   fill: #ffffff;
   transform-box: fill-box;
   transform-origin: center;
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
 }
 
-.bg-constellation--tl { top: 4%; left: 2%; }
-.bg-constellation--tr { top: 9%; right: 2%; }
+/* The ECELL RVU wordmark, split across the top margins: ECELL on the left,
+   RVU mirrored on the right. Both sit below the fixed nav, level with the
+   header, clear of the sun (left: 21%) and the moon and ringed planet below.
+   RVU is 60/100 of ECELL's width, so the letters match in size. Thin strokes
+   keep them a backdrop, not a headline. */
+.bg-wordmark {
+  top: 124px;
+  opacity: 0.6;
+}
+
+.bg-wordmark--ecell {
+  left: 2.5%;
+  width: clamp(170px, 15vw, 280px);
+}
+
+.bg-wordmark--rvu {
+  right: 2.5%;
+  width: clamp(102px, 9vw, 168px);
+}
+
+.bg-wordmark-line {
+  stroke: rgba(244, 244, 242, 0.42);
+  stroke-width: 0.32;
+  stroke-linecap: round;
+}
+
 .bg-constellation--ml { top: 44%; left: 0.5%; }
 .bg-constellation--mr { top: 52%; right: 0.5%; }
 
@@ -895,6 +920,14 @@
     opacity: 0.3;
   }
 
+  /* The header spans the full width here, but the two-column grid leaves
+     wide side margins: drop both words into them, below the moon and the
+     ringed planet. */
+  .bg-wordmark {
+    top: 320px;
+    opacity: 0.55;
+  }
+
   .bg-planet--sun {
     top: 2%;
     left: 4%;
@@ -949,6 +982,25 @@
   .bg-constellation--ml,
   .bg-constellation--mr {
     display: none;
+  }
+
+  /* No side margins on phones: sign off as one line, "ECELL RVU", under the
+     sponsor grid, centred between the games button and the black hole. */
+  .bg-wordmark {
+    top: auto;
+    bottom: 22px;
+    opacity: 0.6;
+  }
+
+  .bg-wordmark--ecell {
+    left: calc(50% - 110px);
+    width: 130px;
+  }
+
+  .bg-wordmark--rvu {
+    right: auto;
+    left: calc(50% + 32px);
+    width: 78px;
   }
 
   .bg-planet--giant,
