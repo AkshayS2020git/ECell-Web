@@ -1,18 +1,12 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/src/utils/constants";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [
-      {
-        userAgent: "Googlebot",
-        allow: "/",
-      },
-      {
-        userAgent: "*",
-        allow: "/",
-      },
-    ],
-    sitemap: "https://ecell-rvu.vercel.app/sitemap.xml",
-    host: "https://ecell-rvu.vercel.app",
+    // Everything public is crawlable. Legacy paths such as /Argonyx-26 stay
+    // allowed so crawlers can follow their redirects to the canonical URLs.
+    rules: [{ userAgent: "*", allow: "/" }],
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import SubNav from "@/src/sections/Nav/SubNav";
 import EventsArchive from "@/src/components/EventsArchive/EventsArchive";
-
-const SITE_URL = "https://ecell-rvu.vercel.app";
+import { SITE_URL } from "@/src/utils/constants";
 
 export const metadata: Metadata = {
   title: "Events & Workshops",

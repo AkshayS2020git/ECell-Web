@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getEventBySlug, getAllEventSlugs } from "@/src/data/eventsData";
+import { SITE_URL } from "@/src/utils/constants";
 import EventDetailClient from "./EventDetailClient";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
-
-const SITE_URL = "https://ecell-rvu.vercel.app";
 
 export async function generateStaticParams() {
   const slugs = getAllEventSlugs();
@@ -20,12 +19,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!event) {
     return {
-      title: "Event Not Found | ECell RV University",
+      title: "Event Not Found",
     };
   }
 
   return {
-    title: event.metaTitle,
+    // metaTitle already ends with the site name, so skip the layout template.
+    title: { absolute: event.metaTitle },
     description: event.metaDescription,
     openGraph: {
       title: event.metaTitle,
