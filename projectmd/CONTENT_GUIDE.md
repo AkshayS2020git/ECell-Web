@@ -67,7 +67,7 @@ External links should use HTTPS, have a clear destination, and be checked before
 
 Keep page titles concise and unique. Write descriptions for humans, not keyword lists. Ensure Open Graph/Twitter content agrees with visible event facts. Root metadata applies a title template, so review the final rendered title when child metadata already includes the site name.
 
-`app/sitemap.ts` currently lists only the homepage. New public routes are not included automatically unless sitemap generation is expanded.
+`app/sitemap.ts` lists the homepage, `/events`, every event in `EVENTS_DATA`, and the Argonyx gallery, with their images. New events are picked up automatically; a new standalone route must be added to the sitemap by hand. Every page should set its own `alternates.canonical`, otherwise it inherits the homepage canonical from the root layout.
 
 ## Editorial checklist
 

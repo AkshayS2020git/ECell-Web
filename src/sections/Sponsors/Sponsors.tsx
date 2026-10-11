@@ -104,10 +104,49 @@ const BACKDROP_CONSTELLATIONS: Array<{
   points: Array<[number, number]>;
   edges: Array<[number, number]>;
 }> = [
-  { id: "tl", points: [[6, 40], [24, 22], [44, 30], [62, 12], [86, 18], [56, 54]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5]] },
-  { id: "tr", points: [[10, 14], [30, 30], [52, 24], [74, 42], [92, 34], [40, 60]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [1, 5]] },
   { id: "ml", points: [[14, 10], [22, 34], [12, 58], [46, 46], [70, 62]], edges: [[0, 1], [1, 2], [1, 3], [3, 4]] },
   { id: "mr", points: [[20, 56], [38, 36], [62, 40], [80, 16], [90, 52]], edges: [[0, 1], [1, 2], [2, 3], [2, 4]] },
+];
+
+// "ECELL" and "RVU" spelled in stars across the top margins, one word on each
+// side of the header. Points sit in a box 31 high and 20 wide per letter, so
+// both words share one letter size. Corners are nudged off-grid so they read
+// as constellations, not a font; the first star of each letter is the bright
+// one. Letters trace in reading order, ECELL then RVU.
+type WordmarkLetter = {
+  points: Array<[number, number]>;
+  edges: Array<[number, number]>;
+};
+
+const WORDMARKS: Array<{ id: string; width: number; letters: WordmarkLetter[] }> = [
+  {
+    id: "ecell",
+    width: 100,
+    letters: [
+      // E
+      { points: [[2.5, 4], [14, 4.6], [2, 15], [11, 15.6], [2.6, 26], [14.4, 25.4]], edges: [[1, 0], [0, 2], [2, 3], [2, 4], [4, 5]] },
+      // C
+      { points: [[35, 6.4], [27, 4], [23, 10.6], [23.2, 19.6], [27.2, 26], [35.4, 24]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]] },
+      // E
+      { points: [[44, 4.2], [56.4, 5], [44.4, 15.4], [52.6, 15], [44, 26.4], [56, 26]], edges: [[1, 0], [0, 2], [2, 3], [2, 4], [4, 5]] },
+      // L
+      { points: [[65.4, 4], [65, 26], [76, 25.6]], edges: [[0, 1], [1, 2]] },
+      // L
+      { points: [[84.4, 4.4], [84, 26.2], [95.6, 26.6]], edges: [[0, 1], [1, 2]] },
+    ],
+  },
+  {
+    id: "rvu",
+    width: 60,
+    letters: [
+      // R
+      { points: [[2.4, 4], [11, 4.6], [14.2, 9.6], [11.2, 14.8], [2, 15], [2.6, 26], [14.4, 26]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [0, 4], [4, 5], [3, 6]] },
+      // V
+      { points: [[23, 4.4], [26.2, 15.4], [29.2, 26], [32.4, 15], [35.4, 4]], edges: [[0, 1], [1, 2], [2, 3], [3, 4]] },
+      // U
+      { points: [[44.2, 4], [44, 19], [47.6, 26], [52.8, 26.2], [56.4, 19.4], [56, 4.4]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]] },
+    ],
+  },
 ];
 
 // How far each body shifts with the cursor (px at the section edge): nearer
@@ -760,6 +799,29 @@ const wipeCtx = gsap.context(() => {
         );
       }
 
+      // The ECELL RVU wordmark spells itself out: each letter's stars light up,
+      // then its strokes trace, before the next letter begins.
+      gsap.utils.toArray<SVGGElement>(".bg-wordmark-letter").forEach((letter, i) => {
+        const at = 0.15 + i * 0.28;
+        const letterStars = letter.querySelectorAll<SVGCircleElement>(".bg-wordmark-star");
+        const letterLines = Array.from(letter.querySelectorAll<SVGPathElement>(".bg-wordmark-line"));
+        letterLines.forEach((path) => {
+          const length = path.getTotalLength ? path.getTotalLength() : 20;
+          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+        });
+        storyTl.fromTo(
+          letterStars,
+          { opacity: 0, scale: 0 },
+          { opacity: 1, scale: 1, duration: 0.3, stagger: 0.04, ease: "back.out(2)" },
+          at
+        );
+        storyTl.to(
+          letterLines,
+          { strokeDashoffset: 0, duration: 0.22, stagger: 0.07, ease: "power1.inOut" },
+          at + 0.08
+        );
+      });
+
       // Top anchor nodes & central hub ignite first
       if (anchorNodes.length > 0) {
         storyTl.fromTo(
@@ -1183,6 +1245,29 @@ const wipeCtx = gsap.context(() => {
             ))}
             {figure.points.map(([cx, cy], i) => (
               <circle key={i} className="bg-constellation-star" cx={cx} cy={cy} r={i === 0 ? 1.6 : 1.1} />
+            ))}
+          </svg>
+        ))}
+        {WORDMARKS.map((word) => (
+          <svg
+            key={word.id}
+            className={`bg-constellation bg-wordmark bg-wordmark--${word.id}`}
+            viewBox={`0 0 ${word.width} 31`}
+            fill="none"
+          >
+            {word.letters.map((letter, li) => (
+              <g key={li} className="bg-wordmark-letter">
+                {letter.edges.map(([from, to]) => (
+                  <path
+                    key={`${from}-${to}`}
+                    className="bg-wordmark-line"
+                    d={`M ${letter.points[from][0]} ${letter.points[from][1]} L ${letter.points[to][0]} ${letter.points[to][1]}`}
+                  />
+                ))}
+                {letter.points.map(([cx, cy], i) => (
+                  <circle key={i} className="bg-wordmark-star" cx={cx} cy={cy} r={i === 0 ? 0.95 : 0.65} />
+                ))}
+              </g>
             ))}
           </svg>
         ))}

@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import PageTransition from "@/src/components/PageTransition/PageTransition";
 import RouteScrollManager from "@/src/components/RouteScrollManager/RouteScrollManager";
 import SmoothScroll from "@/src/components/SmoothScroll/SmoothScroll";
+import { SITE_URL } from "@/src/utils/constants";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -35,8 +36,6 @@ const inter = Inter({
   display: "swap",
 });
 
-const SITE_URL = "https://ecell-rvu.vercel.app";
-
 export const viewport: Viewport = {
   themeColor: "#000000",
 };
@@ -52,7 +51,10 @@ export const metadata: Metadata = {
     "ECell RV University is the official entrepreneurship cell at RV University, Bengaluru. We build a thriving campus community for founders, innovators, and future entrepreneurs through events, mentorship, and startup resources.",
   applicationName: "ECell RV University",
   keywords: [
+    "ECell",
+    "E-Cell",
     "ECell RV University",
+    "E-Cell RV University",
     "ECell RVU",
     "E-Cell RVU",
     "ECell RV",
@@ -150,6 +152,7 @@ const jsonLd = {
       alternateName: [
         "ECell RVU",
         "E-Cell RVU",
+        "E-Cell RV University",
         "ECell RV",
         "Entrepreneurship Cell RV University",
       ],
@@ -167,6 +170,7 @@ const jsonLd = {
       alternateName: [
         "ECell RVU",
         "E-Cell RVU",
+        "E-Cell RV University",
         "Entrepreneurship Cell RV University",
       ],
       url: `${SITE_URL}/`,

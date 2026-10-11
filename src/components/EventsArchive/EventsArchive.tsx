@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "@/src/utils/gsapSetup";
 import { refreshScroll, scrollToElement } from "@/src/utils/lenis";
+import { SITE_URL } from "@/src/utils/constants";
 import { TRANSITION_REVEAL_EVENT } from "@/src/components/PageTransition/PageTransition";
 import talkStartupWithMe from "@/src/assets/events/events_photo/TalkStartupWithMe.webp";
 import winterTechTalk from "@/src/assets/events/events_photo/WinterTechTalk.webp";
@@ -167,7 +168,7 @@ function buildStructuredData(upcoming: EventItem[]) {
       organizer: {
         "@type": "Organization",
         name: "ECell RV University",
-        url: "https://ecell-rvu.vercel.app",
+        url: SITE_URL,
       },
 
       location: {
