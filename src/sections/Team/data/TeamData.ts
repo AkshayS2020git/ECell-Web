@@ -2,7 +2,6 @@ import { StaticImageData } from "next/image";
 import President from "@/src/assets/team/President.webp";
 import VicePresident from "@/src/assets/team/vicePres.webp";
 import HeadTech from "@/src/assets/team/HeadTech.webp";
-import HeadPr from "@/src/assets/team/HeadPr.webp";
 import HeadDocumentation from "@/src/assets/team/HeadDocumentation.webp";
 import Advisory from "@/src/assets/team/Advisory.webp";
 import AdvisoryHead from "@/src/assets/team/AdvisoryHead.webp";
@@ -92,18 +91,6 @@ const teamMembers: TeamMember[] = [
     directoryImagePosition: "center 40%",
     linkedin: "https://www.linkedin.com/in/akash-bisht-601268322?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     accentColor: "#3B82F6",
-  },
-  {
-    id: "member-7",
-    name: "Aryav Agrawal",
-    role: "Head of PR Team",
-    description:
-      "Crafting compelling narratives and managing public relations to elevate the club's brand and community engagement.",
-    image: HeadPr,
-    imagePosition: "center 20%",
-    directoryImagePosition: "center 0%",
-    linkedin: "https://www.linkedin.com/in/aryav-agrawal-42649b293",
-    accentColor: "#FB923C",
   },
   {
     id: "member-8",
