@@ -392,6 +392,9 @@
   z-index: 1;
   text-align: center;
   margin-bottom: 32px;
+  /* The header box is full width and sits above the backdrop, so it covered
+     the lower part of the sun. It has nothing interactive: let clicks through. */
+  pointer-events: none;
 }
 
 .sponsors-badge-container {
