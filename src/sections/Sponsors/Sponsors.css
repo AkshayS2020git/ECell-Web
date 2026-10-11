@@ -186,8 +186,6 @@
 .bg-constellation--tr { top: 9%; right: 2%; }
 .bg-constellation--ml { top: 44%; left: 0.5%; }
 .bg-constellation--mr { top: 52%; right: 0.5%; }
-.bg-constellation--bl { bottom: 4%; left: 6%; }
-.bg-constellation--br { bottom: 7%; right: 5%; }
 
 /* Decorative sun and planets. GSAP fades `.bg-planet` in and out, JS moves
    `__parallax`, `__body` takes hover/click, and `__art` drifts on its own,
@@ -244,7 +242,7 @@
 
 .bg-planet--sun .bg-planet__body:hover {
   scale: 1.1;
-  filter: brightness(1.25) drop-shadow(0 0 22px rgba(255, 180, 90, 0.45));
+  filter: brightness(1.25) drop-shadow(0 0 22px rgba(255, 241, 214, 0.45));
 }
 
 .bg-sun__rays {
@@ -268,10 +266,66 @@
   height: 60px;
   margin: -30px 0 0 -30px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 200, 130, 0.55);
-  box-shadow: 0 0 12px rgba(255, 180, 90, 0.25);
+  border: 1px solid rgba(255, 241, 214, 0.55);
+  box-shadow: 0 0 12px rgba(255, 241, 214, 0.25);
   opacity: 0;
   pointer-events: none;
+}
+
+/* Black hole low on the right, half off the edge like the blue planet is
+   on the left. Its event horizon sits at (50%, 55%) of the artwork. */
+.bg-planet--blackhole {
+  --bh-w: clamp(220px, 20vw, 320px);
+  bottom: 6%;
+  right: calc(var(--bh-w) * -0.35);
+  width: var(--bh-w);
+}
+
+.bg-planet--blackhole .bg-planet__art {
+  opacity: 0.85;
+  animation: none;
+  transition: filter 0.8s ease;
+}
+
+.bg-planet--blackhole .bg-planet__body:hover {
+  scale: 1.04;
+  filter: brightness(1.2) drop-shadow(0 0 18px rgba(255, 241, 214, 0.2));
+}
+
+/* The accretion disk streams around the hole. */
+.bg-bh__disk {
+  stroke-dasharray: 60 18;
+  animation: bhDiskFlow 6s linear infinite;
+}
+
+/* While it has eaten, the disk churns faster and glows hotter. */
+.bg-planets.is-devouring .bg-bh__disk {
+  animation-duration: 1.6s;
+}
+
+.bg-planets.is-devouring .bg-planet--blackhole .bg-planet__art {
+  filter: brightness(1.25) drop-shadow(0 0 20px rgba(255, 241, 214, 0.3));
+}
+
+/* Shockwave when the black hole spits everything back out. */
+.bg-bh-wave {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 241, 214, 0.6);
+  box-shadow: 0 0 14px rgba(255, 241, 214, 0.3);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes bhDiskFlow {
+  to {
+    stroke-dashoffset: -156;
+  }
 }
 
 .bg-planet--ringed {
@@ -342,7 +396,7 @@
   transition: filter 0.9s ease var(--light-delay, 0s);
 }
 
-.bg-planets.is-sun-off .bg-planet__parallax {
+.bg-planets.is-sun-off .bg-planet:not(.bg-planet--blackhole) .bg-planet__parallax {
   filter: brightness(0.3) saturate(0.4);
 }
 
@@ -381,7 +435,8 @@
   .constellation-junction-dot,
   .bg-planet__art,
   .bg-sun__rays,
-  .bg-sun__glow
+  .bg-sun__glow,
+  .bg-bh__disk
 ) {
   animation-play-state: paused;
 }
@@ -901,6 +956,10 @@
     display: none;
   }
 
+  .bg-planet--blackhole {
+    --bh-w: 200px;
+  }
+
   .bg-planet--sun {
     top: 1%;
     left: 2%;
@@ -955,6 +1014,7 @@
   .bg-planet__art,
   .bg-sun__rays,
   .bg-sun__glow,
+  .bg-bh__disk,
   .constellation-junction-dot {
     animation: none;
   }

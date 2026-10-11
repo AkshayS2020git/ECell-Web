@@ -108,13 +108,11 @@ const BACKDROP_CONSTELLATIONS: Array<{
   { id: "tr", points: [[10, 14], [30, 30], [52, 24], [74, 42], [92, 34], [40, 60]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [1, 5]] },
   { id: "ml", points: [[14, 10], [22, 34], [12, 58], [46, 46], [70, 62]], edges: [[0, 1], [1, 2], [1, 3], [3, 4]] },
   { id: "mr", points: [[20, 56], [38, 36], [62, 40], [80, 16], [90, 52]], edges: [[0, 1], [1, 2], [2, 3], [2, 4]] },
-  { id: "bl", points: [[8, 50], [28, 58], [48, 40], [66, 52], [88, 30], [60, 14]], edges: [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5]] },
-  { id: "br", points: [[12, 30], [34, 18], [54, 34], [76, 22], [70, 58]], edges: [[0, 1], [1, 2], [2, 3], [2, 4]] },
 ];
 
 // How far each body shifts with the cursor (px at the section edge): nearer
 // bodies move more, which reads as depth.
-const PLANET_DEPTH = { sun: 10, ringed: 26, moon: 36, giant: 16 } as const;
+const PLANET_DEPTH = { sun: 10, ringed: 26, moon: 36, giant: 16, blackhole: 8 } as const;
 
 /**
  * Decorative sun and planets for the backdrop, lit from the sun's side.
@@ -135,6 +133,8 @@ function BackdropPlanets(): React.ReactElement {
     const bodies = Array.from(root.querySelectorAll<HTMLElement>(".bg-planet__body"));
     const sunBody = root.querySelector<HTMLElement>(".bg-planet--sun .bg-planet__body");
     const sunWave = root.querySelector<HTMLElement>(".bg-sun-wave");
+    const holeBody = root.querySelector<HTMLElement>(".bg-planet--blackhole .bg-planet__body");
+    const holeWave = root.querySelector<HTMLElement>(".bg-bh-wave");
     const cleanups: Array<() => void> = [];
 
     // Cursor parallax, eased, and only while the section is on screen.
@@ -193,7 +193,7 @@ function BackdropPlanets(): React.ReactElement {
       const sx = sun.left + sun.width / 2;
       const sy = sun.top + sun.height / 2;
       for (const body of bodies) {
-        if (body === sunBody) continue;
+        if (body === sunBody || body === holeBody) continue;
         const r = body.getBoundingClientRect();
         const dist = Math.hypot(r.left + r.width / 2 - sx, r.top + r.height / 2 - sy);
         const delay = reduceMotion ? 0 : dist / 900;
@@ -203,7 +203,7 @@ function BackdropPlanets(): React.ReactElement {
           // The flash goes on the art, not the body, so it doesn't fight the
           // body's CSS hover transition on `filter`.
           gsap.fromTo(art, { filter: "brightness(1)" }, {
-            filter: "brightness(1.9) drop-shadow(0 0 16px rgba(255, 196, 120, 0.55))",
+            filter: "brightness(1.9) drop-shadow(0 0 16px rgba(255, 241, 214, 0.55))",
             duration: 0.35,
             delay,
             yoyo: true,
@@ -218,7 +218,7 @@ function BackdropPlanets(): React.ReactElement {
       const sunArt = artOf(sunBody);
       if (sunOn && sunArt) {
         gsap.fromTo(sunArt, { filter: "brightness(1)" }, {
-          filter: "brightness(1.6) drop-shadow(0 0 24px rgba(255, 180, 90, 0.6))",
+          filter: "brightness(1.6) drop-shadow(0 0 24px rgba(255, 241, 214, 0.6))",
           duration: 0.45,
           yoyo: true,
           repeat: 1,
@@ -231,15 +231,121 @@ function BackdropPlanets(): React.ReactElement {
       }
     };
 
+    // Click the black hole: it swallows the sun, planets, stars and star
+    // figures, nearest first, each curving in as it falls (x and y use
+    // different eases). Click again and it spits them all back out.
+    const field = root.parentElement;
+    let devoured = false;
+    let prey: Array<{ el: Element; opacity: number; twinkles: boolean }> = [];
+    const onHoleClick = () => {
+      const holeArt = holeBody && artOf(holeBody);
+      if (!field || !holeArt) return;
+      devoured = !devoured;
+      root.classList.toggle("is-devouring", devoured);
+      const a = holeArt.getBoundingClientRect();
+      // The event horizon sits at (50%, 55%) of the black hole artwork.
+      const hx = a.left + a.width * 0.5;
+      const hy = a.top + a.height * 0.55;
+
+      if (devoured) {
+        prey = Array.from(
+          field.querySelectorAll(".bg-planet:not(.bg-planet--blackhole), .backdrop-star, .constellation-star, .bg-constellation")
+        ).map((el) => ({
+          el,
+          opacity: Number(gsap.getProperty(el, "opacity")) || 1,
+          twinkles: el.classList.contains("backdrop-star") || el.classList.contains("constellation-star"),
+        }));
+        for (const p of prey) {
+          // Twinkling is a CSS animation on transform/opacity, which would
+          // override the tween, so it is switched off until they come back.
+          if (p.twinkles) (p.el as HTMLElement).style.animation = "none";
+          if (reduceMotion) {
+            gsap.to(p.el, { opacity: 0, duration: 0.4, overwrite: "auto" });
+            continue;
+          }
+          const r = p.el.getBoundingClientRect();
+          const dx = hx - (r.left + r.width / 2);
+          const dy = hy - (r.top + r.height / 2);
+          const dist = Math.hypot(dx, dy);
+          const duration = 0.9 + dist / 1400;
+          const delay = dist / 2600 + Math.random() * 0.2;
+          gsap.to(p.el, { x: `+=${dx}`, duration, delay, ease: "power2.in", overwrite: "auto" });
+          gsap.to(p.el, { y: `+=${dy}`, duration, delay, ease: "power4.in", overwrite: "auto" });
+          gsap.to(p.el, {
+            scale: 0,
+            rotation: `+=${dx < 0 ? -540 : 540}`,
+            opacity: 0,
+            duration,
+            delay,
+            ease: "power3.in",
+            overwrite: "auto",
+          });
+        }
+        // A satisfied gulp once most of it has gone in.
+        gsap.fromTo(holeArt, { scale: 1 }, {
+          scale: 1.1,
+          duration: 0.35,
+          delay: reduceMotion ? 0 : 1.2,
+          yoyo: true,
+          repeat: 1,
+          ease: "power2.out",
+          transformOrigin: "50% 55%",
+        });
+      } else {
+        if (holeWave && !reduceMotion) {
+          gsap.fromTo(holeWave, { scale: 0.3, opacity: 0.9 }, { scale: 24, opacity: 0, duration: 1.8, ease: "power2.out" });
+        }
+        for (const p of prey) {
+          const restoreTwinkle = () => {
+            if (p.twinkles) (p.el as HTMLElement).style.animation = "";
+          };
+          if (reduceMotion) {
+            gsap.to(p.el, { opacity: p.opacity, duration: 0.4, overwrite: "auto", onComplete: restoreTwinkle });
+            continue;
+          }
+          gsap.to(p.el, {
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotation: 0,
+            opacity: p.opacity,
+            duration: 1.1 + Math.random() * 0.6,
+            delay: Math.random() * 0.15,
+            ease: "expo.out",
+            overwrite: "auto",
+            onComplete: restoreTwinkle,
+          });
+        }
+        prey = [];
+      }
+    };
+
+    // Leaving the section with everything swallowed quietly puts it all back,
+    // so the section's intro does not later replay on bodies still bunched
+    // up at the black hole.
+    const restoreIo = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting || !devoured) return;
+      devoured = false;
+      root.classList.remove("is-devouring");
+      for (const p of prey) {
+        gsap.killTweensOf(p.el);
+        gsap.set(p.el, { x: 0, y: 0, scale: 1, rotation: 0, opacity: p.opacity });
+        if (p.twinkles) (p.el as HTMLElement).style.animation = "";
+      }
+      prey = [];
+    });
+    restoreIo.observe(root);
+    cleanups.push(() => restoreIo.disconnect());
+
     for (const body of bodies) {
-      const handler = body === sunBody ? onSunClick : onPlanetClick;
+      const handler = body === sunBody ? onSunClick : body === holeBody ? onHoleClick : onPlanetClick;
       body.addEventListener("click", handler);
       cleanups.push(() => body.removeEventListener("click", handler));
     }
 
     return () => {
       cleanups.forEach((fn) => fn());
-      gsap.killTweensOf([...bodies, ...bodies.map(artOf), sunWave].filter(Boolean));
+      gsap.killTweensOf([...bodies, ...bodies.map(artOf), sunWave, holeWave, ...prey.map((p) => p.el)].filter(Boolean));
     };
   }, []);
 
@@ -252,20 +358,23 @@ function BackdropPlanets(): React.ReactElement {
           <div className="bg-planet__body">
             <svg className="bg-planet__art" viewBox="0 0 200 200" fill="none">
               <defs>
+                {/* Cream-white, like the hero nebula's core, with a faint warm edge */}
                 <radialGradient id="sp-sun-core" cx="44%" cy="40%" r="62%">
-                  <stop offset="0%" stopColor="#fffaf0" />
-                  <stop offset="35%" stopColor="#ffe2a3" />
-                  <stop offset="75%" stopColor="#ffae4a" />
-                  <stop offset="100%" stopColor="#ff6a1a" />
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="45%" stopColor="#fffaf0" />
+                  <stop offset="80%" stopColor="#fff1d6" />
+                  <stop offset="100%" stopColor="#ecd2b0" />
                 </radialGradient>
+                {/* Cream glow with a whisper of ECell red at its outer edge */}
                 <radialGradient id="sp-sun-glow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#ffc46b" stopOpacity="0.55" />
-                  <stop offset="40%" stopColor="#ff9a3c" stopOpacity="0.18" />
-                  <stop offset="100%" stopColor="#ff9a3c" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#fff1d6" stopOpacity="0.5" />
+                  <stop offset="45%" stopColor="#fff1d6" stopOpacity="0.14" />
+                  <stop offset="75%" stopColor="#ff001a" stopOpacity="0.05" />
+                  <stop offset="100%" stopColor="#ff001a" stopOpacity="0" />
                 </radialGradient>
               </defs>
               <circle className="bg-sun__glow" cx="100" cy="100" r="98" fill="url(#sp-sun-glow)" />
-              <g className="bg-sun__rays" stroke="#ffd79a" strokeOpacity="0.4" strokeWidth="1.2" strokeLinecap="round">
+              <g className="bg-sun__rays" stroke="#fff1d6" strokeOpacity="0.4" strokeWidth="1.2" strokeLinecap="round">
                 {Array.from({ length: 12 }, (_, i) => {
                   const a = (i / 12) * Math.PI * 2;
                   const outer = i % 2 === 0 ? 64 : 54;
@@ -346,6 +455,48 @@ function BackdropPlanets(): React.ReactElement {
                 <circle cx="36" cy="36" r="5.5" />
                 <circle cx="37" cy="19" r="2.2" />
                 <circle cx="20" cy="38" r="2" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* Black hole half off the right edge, low down: event horizon with a thin photon
+          ring, an accretion disk whose far side passes behind it, and light
+          bent over the top. Click to feed it; click again to make it spit. */}
+      <div className="bg-planet bg-planet--blackhole">
+        <div className="bg-planet__parallax" data-depth={PLANET_DEPTH.blackhole}>
+          <span className="bg-bh-wave" />
+          <div className="bg-planet__body">
+            <svg className="bg-planet__art" viewBox="0 0 300 200" fill="none">
+              <defs>
+                <radialGradient id="sp-bh-glow" cx="50%" cy="55%" r="50%">
+                  <stop offset="0%" stopColor="#fff1d6" stopOpacity="0.22" />
+                  <stop offset="50%" stopColor="#fff1d6" stopOpacity="0.06" />
+                  <stop offset="100%" stopColor="#fff1d6" stopOpacity="0" />
+                </radialGradient>
+                <linearGradient id="sp-bh-disk" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#ecd2b0" stopOpacity="0" />
+                  <stop offset="22%" stopColor="#ecd2b0" stopOpacity="0.5" />
+                  <stop offset="50%" stopColor="#fffaf0" stopOpacity="0.95" />
+                  <stop offset="78%" stopColor="#ecd2b0" stopOpacity="0.5" />
+                  <stop offset="100%" stopColor="#ecd2b0" stopOpacity="0" />
+                </linearGradient>
+                <clipPath id="sp-bh-back">
+                  <rect x="0" y="0" width="300" height="110" />
+                </clipPath>
+                <clipPath id="sp-bh-front">
+                  <rect x="0" y="110" width="300" height="90" />
+                </clipPath>
+              </defs>
+              {/* Tilted like the ringed planet; the clips rotate with it */}
+              <g transform="rotate(-18 150 110)">
+                <ellipse cx="150" cy="110" rx="150" ry="95" fill="url(#sp-bh-glow)" />
+                <ellipse className="bg-bh__disk" cx="150" cy="110" rx="128" ry="22" stroke="url(#sp-bh-disk)" strokeWidth="7" opacity="0.6" clipPath="url(#sp-bh-back)" />
+                <circle cx="150" cy="110" r="57" stroke="url(#sp-bh-disk)" strokeWidth="3" opacity="0.65" clipPath="url(#sp-bh-back)" />
+                <circle cx="150" cy="110" r="46" fill="#000000" stroke="#fff1d6" strokeOpacity="0.55" strokeWidth="1.2" />
+                <ellipse className="bg-bh__disk" cx="150" cy="110" rx="128" ry="22" stroke="url(#sp-bh-disk)" strokeWidth="9" clipPath="url(#sp-bh-front)" />
+                <ellipse cx="150" cy="110" rx="100" ry="15" stroke="#fffaf0" strokeOpacity="0.3" strokeWidth="1" clipPath="url(#sp-bh-front)" />
               </g>
             </svg>
           </div>
@@ -921,7 +1072,7 @@ const wipeCtx = gsap.context(() => {
 
       // 2. Nodes and dots implode to center
       exitTl.to(
-        ".constellation-anchor-node, .constellation-junction-dot, .node-ping-ring, .constellation-star, .backdrop-star, .bg-constellation, .bg-planet",
+        ".constellation-anchor-node, .constellation-junction-dot, .node-ping-ring, .constellation-star, .backdrop-star, .bg-constellation, .bg-planet:not(.bg-planet--blackhole)",
         {
           scale: 0,
           opacity: 0,

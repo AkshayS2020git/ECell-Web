@@ -46,9 +46,47 @@ describe("Sponsors backdrop sun", () => {
     fireEvent.click(container.querySelector(".bg-planet--sun .bg-planet__art > circle:last-of-type")!);
 
     const delays = Array.from(
-      container.querySelectorAll<HTMLElement>(".bg-planet:not(.bg-planet--sun) .bg-planet__parallax")
+      container.querySelectorAll<HTMLElement>(
+        ".bg-planet:not(.bg-planet--sun):not(.bg-planet--blackhole) .bg-planet__parallax"
+      )
     ).map((layer) => layer.style.getPropertyValue("--light-delay"));
     expect(delays).toHaveLength(3);
     delays.forEach((delay) => expect(delay).toMatch(/^\d+(\.\d+)?s$/));
+  });
+});
+
+describe("Sponsors black hole", () => {
+  beforeEach(() => {
+    vi.stubGlobal("IntersectionObserver", ObserverStub);
+    vi.stubGlobal("ResizeObserver", ObserverStub);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  const clickHole = (container: HTMLElement) =>
+    fireEvent.click(container.querySelector(".bg-planet--blackhole .bg-planet__art circle")!);
+
+  it("swallows the backdrop on click and spits it back out on the next", () => {
+    const { container } = render(<Sponsors />);
+    const planets = container.querySelector(".bg-planets")!;
+    const star = container.querySelector<HTMLElement>(".backdrop-star")!;
+
+    clickHole(container);
+    expect(planets).toHaveClass("is-devouring");
+    // Twinkling is paused so it cannot override the fall into the hole.
+    expect(star.style.animation).toBe("none");
+
+    clickHole(container);
+    expect(planets).not.toHaveClass("is-devouring");
+  });
+
+  it("is not darkened when the sun switches off", () => {
+    const { container } = render(<Sponsors />);
+    fireEvent.click(container.querySelector(".bg-planet--sun .bg-planet__art > circle:last-of-type")!);
+
+    const hole = container.querySelector<HTMLElement>(".bg-planet--blackhole .bg-planet__parallax")!;
+    expect(hole.style.getPropertyValue("--light-delay")).toBe("");
   });
 });
