@@ -205,8 +205,11 @@ export default function FloatingLogo(): React.ReactElement {
         navLabelEl.style.opacity = `${smoothstep(0.35, 0.85, rawT)}`;
       }
 
-      // --- Notify when logo is fully settled in navbar ---
-      const inNavNow = rawT > 0.95;
+      // --- Notify when logo is visibly settled in navbar ---
+      // Position is eased, so by rawT 0.85 the logo is within ~1px of its
+      // slot and the "ECELL" label is fully in; waiting longer left a
+      // stretch where the logo sat in the corner with no hint.
+      const inNavNow = rawT >= 0.85;
       if (inNavNow !== lastInNavState) {
         lastInNavState = inNavNow;
         window.dispatchEvent(

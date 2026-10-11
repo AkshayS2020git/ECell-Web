@@ -216,10 +216,12 @@ export default function HeroReveal(): React.ReactElement {
           const warmMaterial = letterMaterial.clone();
           warmMaterial.alphaMap = warmAlpha;
           const warmMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), warmMaterial);
-          Promise.all([
-            renderer.compileAsync(warmMesh, letterCamera, letterScene),
-            renderer.compileAsync(galaxy, camera, scene),
-          ])
+          // compileAsync logs a warning where the parallel-compile extension
+          // is missing (e.g. Firefox), and is synchronous there anyway.
+          const parallel = renderer.extensions.has("KHR_parallel_shader_compile");
+          const warm = (obj: THREE.Object3D, cam: THREE.Camera, target: THREE.Scene) =>
+            parallel ? renderer.compileAsync(obj, cam, target) : Promise.resolve(renderer.compile(obj, cam, target));
+          Promise.all([warm(warmMesh, letterCamera, letterScene), warm(galaxy, camera, scene)])
             .catch(() => {})
             .finally(() => {
               warmMesh.geometry.dispose();

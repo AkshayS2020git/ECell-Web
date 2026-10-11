@@ -13,6 +13,8 @@ export default function LogoHint({ visible, onClick }: LogoHintProps): React.Rea
       type="button"
       className={`nav__logo-hint ${visible ? "is-visible" : ""}`}
       onClick={onClick}
+      tabIndex={visible ? undefined : -1}
+      aria-hidden={visible ? undefined : true}
       aria-label="Click to explore our logo story"
     >
       <svg
