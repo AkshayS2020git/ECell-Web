@@ -22,7 +22,7 @@ import {
 } from "react";
 import Image, { type StaticImageData } from "next/image";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/utils/cn";
 import { gsap } from "@/src/utils/gsapSetup";
 
 export interface CircularTestimonial {

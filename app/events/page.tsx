@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import SubNav from "@/src/sections/Nav/SubNav";
-import EventsArchive from "@/src/components/EventsArchive";
+import EventsArchive from "@/src/components/EventsArchive/EventsArchive";
 
 const SITE_URL = "https://ecell-rvu.vercel.app";
 

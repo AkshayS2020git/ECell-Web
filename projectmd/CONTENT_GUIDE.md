@@ -10,11 +10,11 @@ The website does not use a CMS or database. Text, links, dates, people, and medi
 | --- | --- |
 | Event detail records | `src/data/events/<event>.ts` |
 | Event lookup, aliases, and route slugs | `src/data/eventsData.ts` |
-| Events archive cards/rows | `src/components/EventsArchive.tsx` |
+| Events archive cards/rows | `src/components/EventsArchive/EventsArchive.tsx` |
 | Homepage event showcase | `src/sections/Events/Events.tsx` |
 | Argonyx gallery catalog | `app/events/argonyx-26/gallery/_data/galleryData.ts` |
 | Team members | `src/sections/Team/data/TeamData.ts` |
-| Speaker content | `src/sections/Speakers/components/Speakers.tsx` |
+| Speaker content | `src/sections/Speakers/data/speakers.ts` |
 | Sponsor content | `src/sections/Sponsors/Sponsors.tsx` |
 | WhatsApp simulated responses | `src/sections/WhatsAppCommunity/WhatsAppCommunity.tsx` |
 | Root SEO and structured data | `app/layout.tsx` |
@@ -26,7 +26,7 @@ The website does not use a CMS or database. Text, links, dates, people, and medi
 Event information is currently duplicated. A complete event edit may require all of these locations:
 
 1. `src/data/events/<event>.ts` for the canonical detail record and `src/data/eventsData.ts` for lookup and static slug registration.
-2. `src/components/EventsArchive.tsx` for archive summaries, filters, calendar, and status.
+2. `src/components/EventsArchive/EventsArchive.tsx` for archive summaries, filters, calendar, and status.
 3. `src/sections/Events/Events.tsx` for the homepage card.
 4. Gallery data and media if the event has a gallery.
 5. `app/sitemap.ts` if the route should appear in the public sitemap.

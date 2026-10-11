@@ -2,9 +2,9 @@
 import React from "react";
 import Link from "next/link";
 import ChaptersDropdown from "./ChaptersDropdown";
-import { useChaptersMenu } from "./useChaptersMenu";
-import { useSectionNavigation } from "./useSectionNavigation";
-import { useHomeScroll } from "./useHomeScroll";
+import { useChaptersMenu } from "./hooks/useChaptersMenu";
+import { useSectionNavigation } from "./hooks/useSectionNavigation";
+import { useHomeScroll } from "./hooks/useHomeScroll";
 import "./Nav.css";
 
 interface NavBarProps {

@@ -4,6 +4,8 @@
 
 The application is hosted on Vercel and deployed through GitHub Actions. Pull requests to `main` receive preview deployments; pushes to `main` trigger production deployment. `vercel.json` declares the Next.js framework and `.next` output directory.
 
+The repository is also configured to run on Cloudflare Workers through the OpenNext adapter (see [Cloudflare Workers](#cloudflare-workers)). No GitHub workflow in this repository deploys to Cloudflare; those deployments are run from the npm scripts or from Cloudflare's own Git integration.
+
 ## Continuous integration
 
 `.github/workflows/ci.yml` runs on pushes and pull requests targeting `main`:
@@ -39,6 +41,27 @@ Configure these in repository Actions secrets:
 - `VERCEL_PROJECT_ID`
 
 Never commit their values. `.vercel/project.json` is a local project link and `.vercel/` is ignored; it is not the source for public documentation.
+
+## Cloudflare Workers
+
+| File | Purpose |
+| --- | --- |
+| `open-next.config.ts` | OpenNext adapter config; no incremental cache is configured because the site is fully static |
+| `wrangler.jsonc` | Worker name (`ecell-web`), compatibility flags, static asset and image bindings, observability |
+| `public/_headers` | Edge cache headers for immutable `/_next/static/*` assets |
+| `scripts/deploy-cloudflare.mjs` | Runs `opennextjs-cloudflare deploy` with `WRANGLER_CI_MATCH_TAG` unset, working around a Workers Builds preview-branch bug (cloudflare/workers-sdk#15682) |
+| `.dev.vars.example` | Template for local Worker variables (`.dev.vars*` is ignored) |
+
+Commands:
+
+```bash
+npm run preview            # build with OpenNext and run locally in the Workers runtime
+npm run deploy             # build and deploy
+npm run deploy:cloudflare  # deploy an existing OpenNext build via the wrapper script
+npm run upload             # build and upload a version without promoting it
+```
+
+`next.config.ts` calls `initOpenNextCloudflareForDev()` so `next dev` exposes Cloudflare bindings locally. Generated `.open-next/` and `.wrangler/` directories are ignored.
 
 ## Release checklist
 

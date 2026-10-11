@@ -46,7 +46,7 @@ Add `"use client"` only where browser APIs, effects, event handlers, or client s
 | Route | Entry | Main implementation |
 | --- | --- | --- |
 | `/` | `app/page.tsx` | `src/sections/*` and shared interactive components |
-| `/events` | `app/events/page.tsx` | `src/components/EventsArchive.tsx` |
+| `/events` | `app/events/page.tsx` | `src/components/EventsArchive/EventsArchive.tsx` |
 | `/events/[slug]` | `app/events/[slug]/page.tsx` | `EventDetailClient.tsx`, `src/data/eventsData.ts`, and per-event records in `src/data/events/` |
 | `/events/argonyx-26/gallery` | gallery `page.tsx` | `GalleryClient`, `_components`, `_hooks`, and `_data` |
 | legacy event paths | redirect page/config | canonical `/events/...` destinations |
@@ -55,9 +55,9 @@ Add `"use client"` only where browser APIs, effects, event handlers, or client s
 
 ## Component boundaries
 
-`src/sections/` contains homepage domains. A section should encapsulate its markup, styles, local animation, local data, and nested components. `src/components/` contains experiences reused across routes or that operate outside one homepage section, such as smooth scrolling, transitions, the logo overlay, event archive, horizontal flow, and games.
+`src/sections/` contains homepage domains. A section should encapsulate its markup, styles, local animation, local data, hooks, and nested components. `src/components/` contains experiences reused across routes or that operate outside one homepage section, such as smooth scrolling, transitions, the logo overlay, event archive, horizontal flow, and games. Each shared component lives in its own folder; `src/components/ui/` holds generic presentational primitives.
 
-Avoid placing general utilities in a section. Move genuinely shared animation, constants, math, scrolling, and input normalization to `src/utils/`.
+Avoid placing general utilities in a section. Move genuinely shared animation, constants, math, scrolling, input normalization, and class-name helpers to `src/utils/`. All non-routing source lives under `src/`; there is no top-level `lib/`. See [Folder structure](./FOLDER_STRUCTURE.md) for placement rules.
 
 ## Scroll and animation system
 
@@ -75,6 +75,12 @@ Use its exported helpers for scroll-to, reset, refresh, acquire, or lock behavio
 
 `HorizontalFlow` translates a vertical ScrollTrigger range into a pinned horizontal track for Speakers, WhatsApp Community, and Footer. Navigation to panels uses a custom `horizontal-flow:navigate` event to map a target panel to the trigger's vertical coordinate.
 
+### Hero reveal and floating logo
+
+The hero title is drawn by `src/sections/Hero/components/HeroReveal.tsx`, a Three.js renderer loaded with `next/dynamic` so the library stays out of the main bundle. Moving the pointer runs a small ink simulation; inside the ink, glass letters float over a particle nebula. The loop is visibility-aware: it stops when the hero is offscreen or the tab is hidden, idles once the ink fades, and while the loader or a modal holds the scroll lock it only draws the flat title once. The heavier 3D scene is prepared in idle time on first need.
+
+`FloatingLogo` scrubs the logo from the hero centre into the nav and dispatches `ecell:logo-in-nav` once it has settled. `Nav` uses that event to enable the logo button and show the "Click to explore" hint, so neither is interactive while the slot is empty.
+
 ### Page transition
 
 The Events section dispatches `ecell:events-transition`. The globally mounted `PageTransition` prefetches `/events`, displays the transition, navigates, and includes a fail-safe so a failed sequence cannot permanently block the page.
@@ -84,7 +90,7 @@ The Events section dispatches `ecell:events-transition`. The globally mounted `P
 There is no centralized content service. The principal sources are:
 
 - event detail records: `src/data/events/` with lookup and aliases in `src/data/eventsData.ts`;
-- event archive records: local data in `src/components/EventsArchive.tsx`;
+- event archive records: local data in `src/components/EventsArchive/EventsArchive.tsx`;
 - homepage event cards: local data in `src/sections/Events/Events.tsx`;
 - gallery records: gallery `_data/galleryData.ts`;
 - team data: `src/sections/Team/data/TeamData.ts`;

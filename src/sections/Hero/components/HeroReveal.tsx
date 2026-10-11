@@ -417,9 +417,21 @@ export default function HeroReveal(): React.ReactElement {
     const tick = (timestamp: number) => {
       raf = requestAnimationFrame(tick);
       timer.update(timestamp);
+      if (!visible || document.hidden) return;
       // Covered by the entry loader or a modal (both hold the scroll lock):
-      // nothing to show, so do no work.
-      if (!visible || document.hidden || isPageScrollLocked()) return;
+      // skip the ink and 3D work, but still draw the flat title once, so it is
+      // already there as the loader's curtain lifts instead of popping in after.
+      if (isPageScrollLocked()) {
+        if (dirty) {
+          dirty = false;
+          finalMaterial.uniforms.uInk.value = 0;
+          finalMaterial.uniforms.uDark.value = dark;
+          finalMaterial.uniforms.uTitleFade.value = titleFade;
+          renderer.setRenderTarget(null);
+          renderer.render(finalScene, quadCamera);
+        }
+        return;
+      }
       pending += timer.getDelta();
       if (pending < minFrame) return;
       // Real elapsed time drives fading; the motion sim gets a capped step so

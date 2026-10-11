@@ -2,53 +2,74 @@
 
 First of all, thank you for contributing ❤️
 
-Please read this guide before creating a pull request.
+Please read this guide before creating a pull request. For the full file map and placement rules, see [`projectmd/FOLDER_STRUCTURE.md`](./projectmd/FOLDER_STRUCTURE.md).
 
 ---
 
 # Project Structure
 
 ```
+app/                     # Next.js routes only (page.tsx, layout.tsx, metadata)
 src/
-├── assets/
-├── components/
+├── assets/              # Imported images, grouped by feature
+├── components/          # Shared components, one folder per component
+│   ├── FloatingLogo/
+│   ├── EventsArchive/
+│   ├── ...
+│   └── ui/              # Generic primitives
+├── data/                # Data shared by several features (events)
+├── sections/            # Homepage sections, one folder per section
 │   ├── Hero/
-│   ├── Story/
-│   ├── Events/
+│   ├── Nav/
 │   ├── Team/
 │   └── ...
-├── utils/
-├── hooks/
-├── styles/
-└── App.jsx
+├── styles/              # Global tokens and shared transitions
+├── types/
+└── utils/               # Shared helpers (gsapSetup, lenis, math, cn, ...)
+tests/                   # Mirrors app/ and src/
 ```
 
-Each section should live inside its own folder.
+The homepage is composed in `app/page.tsx`. There is no top-level `lib/`, and no loose files directly in `src/components/`.
 
-Example:
+Each section lives inside its own folder. A small section can stay flat:
+
+```
+Story/
+├── Story.tsx
+└── Story.css
+```
+
+A larger one splits into subfolders:
 
 ```
 Hero/
-├── Hero.jsx
-├── Hero.css
-├── HeroAnimations.js
+├── Hero.tsx
+├── HeroAnimations.ts
+├── components/
+├── styles/
+└── webgl/
 ```
+
+Other common subfolders are `data/`, `hooks/` and `animations/`. If the entry component moves into `components/`, add an `index.ts` that re-exports it (see `Team/`).
 
 ---
 
 # Development Setup
 
+Use Node.js 24 (`.nvmrc`).
+
 Clone the repository
 
 ```bash
-git clone <repo-url>
-cd website
+git clone https://github.com/ECell-RVUniversity/ECell-Web.git
+cd ECell-Web
 ```
 
 Install dependencies
 
 ```bash
-npm install
+nvm use
+npm ci
 ```
 
 Run development server
@@ -82,14 +103,16 @@ refactor/utils
 
 ## Components
 
+- Use TypeScript (`.tsx` / `.ts`) and type your props and data.
 - Use functional components.
 - Export default components.
+- Add `"use client"` only when the component needs state, effects, event handlers, or browser APIs.
 
 Example
 
-```jsx
-export default function Hero() {
-    return (...);
+```tsx
+export default function Hero(): React.ReactElement {
+  return (...);
 }
 ```
 
@@ -97,7 +120,7 @@ export default function Hero() {
 
 ## Folder Naming
 
-Use PascalCase.
+Use PascalCase for component and section folders.
 
 ✅
 
@@ -119,18 +142,31 @@ storySection/
 ## File Naming
 
 ```
-Hero.jsx
-Hero.css
-HeroAnimations.js
+Hero.tsx            # Component
+Hero.css            # Styles
+HeroAnimations.ts   # GSAP timelines
+useHeroThing.ts     # Hook (inside hooks/)
 ```
+
+---
+
+## Where Does My File Go?
+
+- Only used by one section → inside that section's folder.
+- Used by several sections or routes → `src/components/<Name>/<Name>.tsx`.
+- A shared helper with no React → `src/utils/<name>.ts`.
+- Data used in more than one place → `src/data/`.
+- A test → the matching path under `tests/`.
+
+Import across folders with the `@/` alias, for example `import { cn } from "@/src/utils/cn"`.
 
 ---
 
 ## CSS
 
-- Do not use global styles.
-- Scope styles to your section.
-- Use existing CSS variables.
+- Section `.css` files are global, so prefix every selector with your section name (`.hero__...`, `.team-...`).
+- Do not use bare element or generic selectors that can leak.
+- Use existing CSS variables from `src/styles/global.css`.
 - Do not modify another section's CSS.
 
 ---
@@ -138,7 +174,9 @@ HeroAnimations.js
 ## Animations
 
 - Keep animations inside your section.
+- Import GSAP from `src/utils/gsapSetup.ts`, and scroll with the helpers in `src/utils/lenis.ts`.
 - GSAP code belongs in a separate file when possible.
+- Clean up timelines, listeners, and animation frames on unmount, and respect reduced motion.
 - Avoid affecting other sections.
 
 ---
@@ -182,14 +220,19 @@ done
 
 # Pull Requests
 
-Before opening a PR ensure
+Before opening a PR ensure all checks pass:
 
-- Project builds successfully
+```bash
+npm run typecheck && npm run lint && npm run test && npm run build
+```
+
+And that there are
+
 - No console errors
-- Responsive on mobile
+- No layout issues on mobile
 - No unused files
 - No unnecessary comments
-- Code is formatted
+- No unrelated formatting changes
 
 ---
 
@@ -209,7 +252,7 @@ Each section should work independently.
 
 Do not assume what comes before or after your section.
 
-Your component should render correctly if placed anywhere inside `App.jsx`.
+Your section should render correctly wherever it is placed in `app/page.tsx`.
 
 Avoid:
 

@@ -137,7 +137,7 @@ describe("Events dynamic routes data", () => {
 
   it("renders EventsArchive with clickable event links", async () => {
     const { render, screen } = await import("@testing-library/react");
-    const EventsArchive = (await import("@/src/components/EventsArchive")).default;
+    const EventsArchive = (await import("@/src/components/EventsArchive/EventsArchive")).default;
 
     render(<EventsArchive />);
     expect(screen.getByText(/EVENTS & WORKSHOPS/)).toBeInTheDocument();
@@ -151,7 +151,7 @@ describe("Events dynamic routes data", () => {
 
   it("renders RouteScrollManager and resets scroll on mount", async () => {
     const { render } = await import("@testing-library/react");
-    const RouteScrollManager = (await import("@/src/components/RouteScrollManager")).default;
+    const RouteScrollManager = (await import("@/src/components/RouteScrollManager/RouteScrollManager")).default;
     const scrollToSpy = vi.spyOn(window, "scrollTo");
 
     render(<RouteScrollManager />);

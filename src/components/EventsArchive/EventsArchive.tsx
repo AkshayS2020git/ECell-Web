@@ -6,12 +6,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "@/src/utils/gsapSetup";
 import { refreshScroll, scrollToElement } from "@/src/utils/lenis";
 import { TRANSITION_REVEAL_EVENT } from "@/src/components/PageTransition/PageTransition";
-import talkStartupWithMe from "../assets/events/events_photo/TalkStartupWithMe.webp";
-import winterTechTalk from "../assets/events/events_photo/WinterTechTalk.webp";
-import argonyx from "../assets/events/events_photo/argonyx.webp";
-import argonyx2 from "../assets/events/events_photo/argoynx2.webp";
+import talkStartupWithMe from "@/src/assets/events/events_photo/TalkStartupWithMe.webp";
+import winterTechTalk from "@/src/assets/events/events_photo/WinterTechTalk.webp";
+import argonyx from "@/src/assets/events/events_photo/argonyx.webp";
+import argonyx2 from "@/src/assets/events/events_photo/argoynx2.webp";
 // Same Argonyx '26 poster as the home page's "Explore all events" card.
-import argonyx26Poster from "../assets/events/events_photo/cta.webp";
+import argonyx26Poster from "@/src/assets/events/events_photo/cta.webp";
 import "./EventsArchive.css";
 import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 

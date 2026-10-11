@@ -30,6 +30,7 @@ Tests currently exercise areas including:
 - event data lookup, archive behavior, and detail rendering;
 - route scroll reset behavior;
 - GameLauncher behavior;
+- Nav logo button and "Click to explore" hint gating on the logo landing;
 - Speakers, Team, and WhatsApp Community interactions;
 - shared math and wheel/input utilities.
 
@@ -38,7 +39,7 @@ There is no configured end-to-end browser framework, coverage threshold, or snap
 ## Test placement
 
 - Route and metadata tests: `tests/app/`
-- Components, sections, data, and utilities: `tests/src/`
+- Components, sections, data, and utilities: `tests/src/`, mirroring the `src/` path (`tests/src/components/`, `tests/src/sections/`, `tests/src/utils/`)
 - Global mocks and cleanup: `tests/setup.ts`
 
 Name files `*.test.ts` for non-React code and `*.test.tsx` for rendered components.

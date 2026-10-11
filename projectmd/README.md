@@ -38,9 +38,11 @@ npm run build
 
 - The application uses Next.js 16.3 App Router, React 19, and strict TypeScript.
 - Content is stored in source files and local media; there is no CMS, application API, or database.
-- Motion uses GSAP/ScrollTrigger and Lenis. Three.js powers the WebGL laser effect.
+- Motion uses GSAP/ScrollTrigger and Lenis. Three.js powers the hero ink reveal and the WhatsApp Community laser effect.
 - Section `.css` files are conventional global styles with feature-prefixed selectors, not CSS Modules.
 - Event information currently appears in multiple datasets. Read [Content guide](./CONTENT_GUIDE.md) before changing an event.
+- All non-routing source lives under `src/`; see [Folder structure](./FOLDER_STRUCTURE.md) before adding files.
+- Vercel (via GitHub Actions) and Cloudflare Workers (via OpenNext) are both configured; see [Deployment](./DEPLOYMENT.md).
 - The manifest and icons provide install metadata, but the project has no service worker or offline cache.
 
 ## Documentation maintenance

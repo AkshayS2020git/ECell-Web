@@ -15,7 +15,7 @@ vi.mock("next/image", () => ({
 }));
 
 // Mock GSAP
-vi.mock("../../src/utils/gsapSetup", () => ({
+vi.mock("@/src/utils/gsapSetup", () => ({
   gsap: {
     timeline: () => ({
       fromTo: vi.fn().mockReturnThis(),

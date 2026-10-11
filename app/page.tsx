@@ -17,7 +17,7 @@ import WhatsAppCommunity from "@/src/sections/WhatsAppCommunity/WhatsAppCommunit
 import { CinematicFooter } from "@/src/components/ui/motion-footer";
 import FloatingLogo from "@/src/components/FloatingLogo/FloatingLogo";
 import GameLauncher from "@/src/components/GameLauncher/GameLauncher";
-import Team from "@/src/sections/Team/Team";
+import Team from "@/src/sections/Team";
 
 // The entry loader is an intro, not a per-mount effect: once it has played,
 // coming back to "/" from another page (client-side navigation keeps this

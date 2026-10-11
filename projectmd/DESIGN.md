@@ -61,7 +61,7 @@ Every substantial motion experience should:
 4. Refresh ScrollTrigger after meaningful layout changes.
 5. Preserve native-feeling keyboard and anchor navigation.
 
-The Hero already pauses video while offscreen or when the document is hidden. Apply the same visibility-aware principle to new continuous media or rendering work.
+The Hero WebGL reveal stops rendering while offscreen, when the document is hidden, or while the loader or a modal covers it, and idles once its ink has faded. Apply the same visibility-aware principle to new continuous media or rendering work.
 
 ## Responsive behavior
 
