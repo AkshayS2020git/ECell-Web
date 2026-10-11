@@ -16,6 +16,7 @@ import {
 } from "./_data/galleryData";
 import { useGalleryFinaleAnimation } from "./_hooks/useGalleryFinaleAnimation";
 import { useGalleryNavigation } from "./_hooks/useGalleryNavigation";
+import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 
 export default function GalleryClient() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -84,6 +85,7 @@ export default function GalleryClient() {
       <GalleryFilters activeFilter={activeFilter} onSelect={selectFilter} />
       <GalleryTimeline activeFilter={activeFilter} sections={filteredSections} registerSection={registerSection} onPhotoOpen={openLightbox} />
       <GalleryFinale finaleStageRef={finaleStageRef} finalePinRef={finalePinRef} loveLayerRef={loveLayerRef} teamLayerRef={teamLayerRef} teamImgWrapRef={teamImgWrapRef} teamOverlayRef={teamOverlayRef} onPhotoOpen={() => openLightbox("team-photo", 0)} />
+      <SiteCredit />
       {lightboxIndex !== null && currentPhotos[lightboxIndex] && (
         <GalleryLightbox photo={currentPhotos[lightboxIndex]} onClose={closeLightbox} onPrev={showPreviousPhoto} onNext={showNextPhoto} currentIndex={lightboxIndex} totalCount={currentPhotos.length} />
       )}

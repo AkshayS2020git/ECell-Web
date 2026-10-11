@@ -10,7 +10,10 @@ import talkStartupWithMe from "../assets/events/events_photo/TalkStartupWithMe.w
 import winterTechTalk from "../assets/events/events_photo/WinterTechTalk.webp";
 import argonyx from "../assets/events/events_photo/argonyx.webp";
 import argonyx2 from "../assets/events/events_photo/argoynx2.webp";
+// Same Argonyx '26 poster as the home page's "Explore all events" card.
+import argonyx26Poster from "../assets/events/events_photo/cta.webp";
 import "./EventsArchive.css";
+import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 
 /* =====================================================
    DATA
@@ -70,7 +73,7 @@ const EVENTS: EventItem[] = [
     title: "Argonyx '26",
     description:
       "A 24-hour national hackathon for ambitious builders. Build, break and ship.",
-    image: argonyx2,
+    image: argonyx26Poster,
     status: "ARCHIVE",
     link: "/events/argonyx-26",
   },
@@ -204,6 +207,7 @@ export default function EventsArchive(): React.ReactElement {
   const calendarRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const archiveRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const upcomingEvents = useMemo(
     () => EVENTS.filter((event) => event.status === "UPCOMING"),
@@ -455,6 +459,66 @@ export default function EventsArchive(): React.ReactElement {
   /* =====================================================
      RETURN
   ===================================================== */
+
+  // Previous events: hovering a row floats that event's photo beside the
+  // cursor. Mouse/trackpad only, and off for reduced motion.
+  useEffect(() => {
+    const archive = archiveRef.current;
+    const preview = previewRef.current;
+    if (!archive || !preview) return;
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!finePointer || reduced) return;
+
+    const images = Array.from(preview.querySelectorAll("img"));
+    gsap.set(preview, { xPercent: -50, yPercent: -50, x: -9999, y: 0, scale: 0.85, rotation: 0 });
+    const xTo = gsap.quickTo(preview, "x", { duration: 0.5, ease: "power3.out" });
+    const yTo = gsap.quickTo(preview, "y", { duration: 0.5, ease: "power3.out" });
+    const tilt = gsap.quickTo(preview, "rotation", { duration: 0.6, ease: "power3.out" });
+    let placed = false;
+    let lastX = 0;
+
+    const onMove = (event: PointerEvent) => {
+      // Sit to the right of the cursor, kept inside the viewport.
+      const half = preview.offsetWidth / 2;
+      const x = Math.min(event.clientX + half + 40, window.innerWidth - half - 16);
+      const y = event.clientY;
+      if (!placed) {
+        gsap.set(preview, { x, y });
+        placed = true;
+      }
+      xTo(x);
+      yTo(y);
+      tilt(gsap.utils.clamp(-7, 7, (event.clientX - lastX) * 0.35));
+      lastX = event.clientX;
+    };
+    const onOver = (event: PointerEvent) => {
+      const row = (event.target as HTMLElement).closest<HTMLElement>(".ea-archive-row");
+      if (!row) {
+        preview.classList.remove("is-visible");
+        return;
+      }
+      const index = Number(row.dataset.index);
+      images.forEach((img, i) => img.classList.toggle("is-active", i === index));
+      preview.classList.add("is-visible");
+      gsap.to(preview, { scale: 1, duration: 0.4, ease: "power3.out", overwrite: "auto" });
+    };
+    const onLeave = () => {
+      preview.classList.remove("is-visible");
+      gsap.to(preview, { scale: 0.85, duration: 0.3, ease: "power2.out", overwrite: "auto" });
+      placed = false;
+    };
+
+    archive.addEventListener("pointermove", onMove);
+    archive.addEventListener("pointerover", onOver);
+    archive.addEventListener("pointerleave", onLeave);
+    return () => {
+      archive.removeEventListener("pointermove", onMove);
+      archive.removeEventListener("pointerover", onOver);
+      archive.removeEventListener("pointerleave", onLeave);
+      gsap.killTweensOf(preview);
+    };
+  }, [archivedEvents]);
 
   return (
     <main className="ea-page">
@@ -798,9 +862,7 @@ export default function EventsArchive(): React.ReactElement {
                   </div>
 
                   <time>
-                    {day}
-                    <br />
-                    {month}
+                    <span>{day}</span> <span>{month}</span>
                   </time>
 
                 </div>
@@ -861,6 +923,7 @@ export default function EventsArchive(): React.ReactElement {
                 <Link
                   href={event.link}
                   className="ea-archive-row ea-archive-row--link"
+                  data-index={index}
                   key={event.title}
                   aria-label={`View details for past event ${event.title}`}
                 >
@@ -869,6 +932,7 @@ export default function EventsArchive(): React.ReactElement {
               ) : (
                 <div
                   className="ea-archive-row"
+                  data-index={index}
                   key={event.title}
                 >
                   {rowContent}
@@ -884,6 +948,14 @@ export default function EventsArchive(): React.ReactElement {
       {/* =================================================
           FOOTER
       ================================================= */}
+
+      {/* Cursor-following photo for the previous-events list. Lives outside
+          the animated sections so their transforms can't offset it. */}
+      <div ref={previewRef} className="ea-archive-preview" aria-hidden="true">
+        {archivedEvents.map((event) => (
+          <Image key={event.title} src={event.image} alt="" fill sizes="300px" />
+        ))}
+      </div>
 
       <footer className="ea-footer">
 
@@ -904,6 +976,8 @@ export default function EventsArchive(): React.ReactElement {
         </Link>
 
       </footer>
+
+      <SiteCredit />
 
     </main>
   );

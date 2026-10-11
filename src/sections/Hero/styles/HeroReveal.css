@@ -47,3 +47,46 @@
   line-height: 1;
   white-space: nowrap;
 }
+
+/* "—— BUILT BY ECELL TECH TEAM", right-aligned under the end of the title.
+   Position, size and colour come from HeroReveal so it tracks the "VU" on
+   every screen and follows the light -> dark card theme. (No blend mode: it
+   sits inside the scaling card, where blending makes the shrink stutter.) */
+.hero-reveal__credit {
+  position: absolute;
+  top: var(--credit-top, 70%);
+  right: var(--credit-right, 24px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9em;
+  margin: 0;
+  color: var(--credit-ink, #000000);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: var(--credit-size, 13px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-reveal--ready .hero-reveal__credit {
+  opacity: calc(0.8 * (1 - var(--title-fade, 0)));
+}
+
+.hero-reveal__credit-rule {
+  display: block;
+  width: 3.2em;
+  height: 1px;
+  background: currentColor;
+}
+
+/* Without WebGL the title is plain text, so drop the anchored credit. */
+.hero-reveal--fallback .hero-reveal__credit {
+  display: none;
+}

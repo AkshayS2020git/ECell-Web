@@ -1,0 +1,48 @@
+/* Matches the home footer credit: small, tracked, uppercase, muted. Sits on
+   the dark page backgrounds without a background of its own. */
+.site-credit {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 22px 16px calc(26px + env(safe-area-inset-bottom));
+  /* 0.45 fell just under the 4.5:1 contrast minimum on the dark pages. */
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.6;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.site-credit__heart {
+  display: inline-block;
+  color: #ff4d6d;
+  font-size: 0.9rem;
+  animation: siteCreditBeat 1.6s ease-in-out infinite;
+}
+
+@keyframes siteCreditBeat {
+  0%,
+  60%,
+  100% {
+    transform: scale(1);
+  }
+  15%,
+  35% {
+    transform: scale(1.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-credit__heart {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-credit {
+    font-size: 0.6rem;
+  }
+}

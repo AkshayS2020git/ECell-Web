@@ -1,5 +1,6 @@
 import type { EventDetailData } from "./types";
-import argonyx from "../../assets/events/events_photo/argonyx.webp";
+// Official Argonyx '26 poster (also on the home "Explore all events" card).
+import argonyx26Poster from "../../assets/events/events_photo/cta.webp";
 import winnerPhoto from "../../assets/Argonyx26/winningTeams/winner.webp";
 import runnerUpPhoto from "../../assets/Argonyx26/winningTeams/runnerups.webp";
 import secondRunnerUpPhoto from "../../assets/Argonyx26/winningTeams/secondrunnerup.webp";
@@ -31,7 +32,8 @@ export const argonyx26Event: EventDetailData = {
   registrationHeadline: "Argonyx '26 has",
   registrationAccent: "successfully concluded.",
   registrationHint: "Official hackathon archive on Unstop.",
-  image: argonyx,
+  image: argonyx26Poster,
+  imageIsPoster: true,
   ledger: [
     {
       number: "01",

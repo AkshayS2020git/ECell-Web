@@ -175,7 +175,6 @@ export default function About(): React.ReactElement {
       <div
         ref={wordsRef}
         className="about-words"
-        aria-label="Build. Connect. Create."
       >
         <span className="about-word">Build.</span>
         <span className="about-word">Connect.</span>

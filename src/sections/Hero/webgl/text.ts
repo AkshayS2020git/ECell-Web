@@ -14,6 +14,10 @@ export interface Layout {
   size: number;
   font: string;
   glyphs: Glyph[];
+  /** Ink right edge of the last line, CSS px from the left. */
+  right: number;
+  /** Baseline of the last line, CSS px from the top. */
+  baseline: number;
 }
 
 export function layoutText(w: number, h: number, family: string): Layout {
@@ -52,7 +56,9 @@ export function layoutText(w: number, h: number, family: string): Layout {
     }
     y += step;
   }
-  return { size, font, glyphs };
+  const last = glyphs[glyphs.length - 1];
+  const right = last.x + ctx.measureText(last.char).actualBoundingBoxRight;
+  return { size, font, glyphs, right, baseline: last.y };
 }
 
 export function drawFlatText(canvas: HTMLCanvasElement, layout: Layout, cssW: number, cssH: number, scale: number) {

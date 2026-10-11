@@ -25,6 +25,15 @@ export function setupHeroAnimations({
   const label = labelRef.current;
   const intro = introRef.current;
   const scrollHint = scrollHintRef?.current;
+  const hero = heroRef.current;
+  // The bottom marquee sits behind the full-size stage and is invisible until
+  // the card shrinks; its CSS animation only runs while `hero--card` is set.
+  let cardShown = false;
+  const setCardShown = (shown: boolean) => {
+    if (shown === cardShown || !hero) return;
+    cardShown = shown;
+    hero.classList.toggle("hero--card", shown);
+  };
   const reduceMotion = typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false;
   const isMobile = typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false;
 
@@ -34,7 +43,8 @@ export function setupHeroAnimations({
       opacity: 1,
     });
     gsap.set(marquee, { clearProps: "all", opacity: marqueeMaxOpacity });
-    return () => {};
+    setCardShown(true);
+    return () => setCardShown(false);
   }
 
   if (isMobile) {
@@ -56,6 +66,7 @@ export function setupHeroAnimations({
         end: "bottom bottom",
         scrub: 0.3,
         invalidateOnRefresh: true,
+        onUpdate: (self) => setCardShown(self.progress > 0.04),
       },
     });
 
@@ -65,7 +76,7 @@ export function setupHeroAnimations({
         {
           scale: 0.38,
           borderRadius: "16px",
-          boxShadow: "0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12)",
+          boxShadow: "0 16px 40px rgba(0, 0, 0, 0.5)",
           opacity: 0.4,
           ease: "none",
           duration: 1,
@@ -83,6 +94,7 @@ export function setupHeroAnimations({
     return () => {
       if (mobileTimeline.scrollTrigger) mobileTimeline.scrollTrigger.kill();
       mobileTimeline.kill();
+      setCardShown(false);
     };
   }
 
@@ -146,9 +158,10 @@ export function setupHeroAnimations({
       scale,
       opacity,
       borderRadius: `${cardP * 20}px`,
-      boxShadow: `0 ${cardP * 24}px ${cardP * 60}px rgba(0,0,0,${cardP * 0.5}), 0 0 0 1px rgba(255,255,255,${cardP * 0.12})`,
+      boxShadow: `0 ${cardP * 24}px ${cardP * 60}px rgba(0,0,0,${cardP * 0.5})`,
     });
     marqueeOpacity(reveal * marqueeMaxOpacity);
+    setCardShown(progress > 0.04);
     labelOpacity(reveal);
     const introAlpha = 1 - smoothstep(0.05, 0.25, progress);
     introOpacity(introAlpha);
@@ -168,5 +181,6 @@ export function setupHeroAnimations({
     disposed = true;
     gsap.ticker.remove(updateHero);
     trigger.kill();
+    setCardShown(false);
   };
 }

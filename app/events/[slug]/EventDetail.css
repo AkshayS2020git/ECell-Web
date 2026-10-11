@@ -4,7 +4,8 @@
   --event-panel-2: #232322;
   --event-white: #f4f3ef;
   --event-gray: #9c9b96;
-  --event-gray-dim: #6f6e6a;
+  /* #6f6e6a was ~3.6:1 on the dark panels; this keeps dim labels >= 4.5:1. */
+  --event-gray-dim: #8a8984;
   --event-line: rgba(244, 243, 239, 0.14);
   --font-sans: var(--font-archivo), system-ui, sans-serif;
   --font-serif-italic: var(--font-fraunces), Georgia, serif;
