@@ -623,8 +623,12 @@ export default function HeroReveal(): React.ReactElement {
       finalMaterial.dispose();
       quad.dispose();
       timer.dispose();
-      renderer.dispose();
       renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
+      renderer.dispose();
+      // Release the GL context now instead of at GC: browsers cap live
+      // contexts per page and drop the oldest (e.g. the WhatsApp laser) when
+      // remounts pile them up.
+      renderer.forceContextLoss();
       renderer.domElement.remove();
     };
   }, []);
