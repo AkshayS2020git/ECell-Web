@@ -9,9 +9,9 @@ import { TRANSITION_REVEAL_EVENT } from "@/src/components/PageTransition/PageTra
 import talkStartupWithMe from "@/src/assets/events/events_photo/TalkStartupWithMe.webp";
 import winterTechTalk from "@/src/assets/events/events_photo/WinterTechTalk.webp";
 import argonyx from "@/src/assets/events/events_photo/argonyx.webp";
-import argonyx2 from "@/src/assets/events/events_photo/argoynx2.webp";
-// Same Argonyx '26 poster as the home page's "Explore all events" card.
+// Official Argonyx '26 poster.
 import argonyx26Poster from "@/src/assets/events/events_photo/cta.webp";
+import hacktoberPoster from "@/src/assets/events/Posters/Hackotber.png";
 import "./EventsArchive.css";
 import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 
@@ -28,6 +28,8 @@ interface EventItem {
   title: string;
   description: string;
   image: StaticImageData;
+  /** Portrait poster: shown whole inside the box over a blurred copy of itself, never cropped. */
+  imageIsPoster?: boolean;
   status: "UPCOMING" | "ARCHIVE";
   link?: string;
 }
@@ -40,7 +42,8 @@ const EVENTS: EventItem[] = [
     title: "Hacktoberfest '26",
     description:
       "A hands-on mini-hackathon celebrating open source with open-source AI and open-weight models, hosted by ECell and AWS SBG RVU.",
-    image: argonyx2,
+    image: hacktoberPoster,
+    imageIsPoster: true,
     status: "UPCOMING",
     link: "/events/hacktoberfest-26",
   },
@@ -596,12 +599,24 @@ export default function EventsArchive(): React.ReactElement {
             )}
 
             <div
-              className="ea-feature-art"
+              className={`ea-feature-art${featuredEvent.imageIsPoster ? " ea-feature-art--poster" : ""}`}
               style={{
                 position: "relative",
               }}
             >
+              {featuredEvent.imageIsPoster && (
+                <Image
+                  className="ea-poster-backdrop"
+                  src={featuredEvent.image}
+                  alt=""
+                  aria-hidden="true"
+                  fill
+                  sizes="(max-width: 900px) 88vw, 40vw"
+                  quality={40}
+                />
+              )}
               <Image
+                className={featuredEvent.imageIsPoster ? "ea-poster-fit" : undefined}
                 src={featuredEvent.image}
                 alt={featuredEvent.title}
                 fill
@@ -826,10 +841,22 @@ export default function EventsArchive(): React.ReactElement {
                 )}
 
                 <div
-                  className="ea-card-image"
+                  className={`ea-card-image${event.imageIsPoster ? " ea-card-image--poster" : ""}`}
                   style={{ position: "relative" }}
                 >
+                  {event.imageIsPoster && (
+                    <Image
+                      className="ea-poster-backdrop"
+                      src={event.image}
+                      alt=""
+                      aria-hidden="true"
+                      fill
+                      sizes="(max-width: 700px) 90vw, 45vw"
+                      quality={40}
+                    />
+                  )}
                   <Image
+                    className={event.imageIsPoster ? "ea-poster-fit" : undefined}
                     src={event.image}
                     alt={event.title}
                     fill

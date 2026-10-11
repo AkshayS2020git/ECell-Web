@@ -1,5 +1,5 @@
 import type { EventDetailData } from "./types";
-import argonyx from "../../assets/events/events_photo/argonyx.webp";
+import hacktoberPoster from "../../assets/events/Posters/Hackotber.png";
 
 export const hacktoberfest26Event: EventDetailData = {
   slug: "hacktoberfest-26",
@@ -27,7 +27,8 @@ export const hacktoberfest26Event: EventDetailData = {
   registrationAccent: "open-source AI.",
   registrationHint:
     "Limited to 25 offline teams (4 members per team / 100 participants total). Free lunch provided to registered participants.",
-  image: argonyx,
+  image: hacktoberPoster,
+  imageIsPoster: true,
   ledger: [
     {
       number: "01",
