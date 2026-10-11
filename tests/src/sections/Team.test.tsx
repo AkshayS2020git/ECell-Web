@@ -33,8 +33,8 @@ vi.mock("@/src/utils/gsapSetup", () => ({
 }));
 
 describe("Team Data", () => {
-  it("contains all 7 core team members with valid image positions", () => {
-    expect(teamMembers.length).toBe(7);
+  it("contains all 8 core team members with valid image positions", () => {
+    expect(teamMembers.length).toBe(8);
     teamMembers.forEach((member) => {
       expect(member.name).toBeTruthy();
       expect(member.role).toBeTruthy();
@@ -74,7 +74,7 @@ describe("TeamDirectory Component", () => {
     );
 
     expect(screen.getByText("TEAM DIRECTORY")).toBeInTheDocument();
-    expect(screen.getByText("7 Core Members")).toBeInTheDocument();
+    expect(screen.getByText("8 Core Members")).toBeInTheDocument();
 
     teamMembers.forEach((member) => {
       expect(screen.getByText(member.name)).toBeInTheDocument();

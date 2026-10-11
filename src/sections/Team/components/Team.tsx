@@ -23,6 +23,7 @@ function getSpotlightAccent(member: (typeof teamMembers)[number]): string {
     "member-4": "#F472B6",
     "member-5": "#34D399",
     "member-6": "#3B82F6",
+    "member-7": "#A78BFA",
     "member-8": "#2DD4BF",
   };
 
