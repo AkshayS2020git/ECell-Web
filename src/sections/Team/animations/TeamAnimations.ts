@@ -1,5 +1,6 @@
 import { RefObject, CSSProperties } from "react";
 import { gsap } from "@/src/utils/gsapSetup";
+import { revealCardText } from "./TeamInteractions";
 
 // Motion Constants - Slow, gentle, luxurious transitions
 const ANIM_DURATION = 0.85;
@@ -225,6 +226,8 @@ export function selectMember(
       yPercent: -50,
       x: 0,
       y: 20 * direction,
+      rotationX: 0,
+      rotationY: 0,
       scale: 0.96,
       opacity: 0,
       zIndex: 20,
@@ -247,6 +250,8 @@ export function selectMember(
       0
     );
   }
+
+  revealCardText(targetCard);
 
   // Ensure all other cards stay hidden cleanly
   cardRefs.forEach((card, i) => {

@@ -2,6 +2,7 @@ import { StaticImageData } from "next/image";
 import President from "@/src/assets/team/President.webp";
 import VicePresident from "@/src/assets/team/vicePres.webp";
 import HeadTech from "@/src/assets/team/HeadTech.webp";
+import HeadDesign from "@/src/assets/team/HeadDesign.webp";
 import HeadDocumentation from "@/src/assets/team/HeadDocumentation.webp";
 import Advisory from "@/src/assets/team/Advisory.webp";
 import AdvisoryHead from "@/src/assets/team/AdvisoryHead.webp";
@@ -91,6 +92,18 @@ const teamMembers: TeamMember[] = [
     directoryImagePosition: "center 40%",
     linkedin: "https://www.linkedin.com/in/akash-bisht-601268322?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     accentColor: "#3B82F6",
+  },
+  {
+    id: "member-7",
+    name: "Anagha Anish",
+    role: "Head of Design",
+    description:
+      "Shaping the club's visual identity and crafting design systems that bring every event and initiative to life.",
+    image: HeadDesign,
+    imagePosition: "center 25%",
+    directoryImagePosition: "center 25%",
+    linkedin: "https://www.linkedin.com/in/anagha-anish/",
+    accentColor: "#A78BFA",
   },
   {
     id: "member-8",

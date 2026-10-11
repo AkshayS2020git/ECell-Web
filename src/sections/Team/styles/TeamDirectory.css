@@ -70,6 +70,10 @@
   display: flex;
   gap: 14px;
   overflow-x: auto;
+  /* overflow-x alone makes the strip vertically scrollable too: the scaled
+     spotlight card and its glow overflow it, so the wheel scrolled the cards
+     up inside the strip instead of scrolling the page. */
+  overflow-y: hidden;
   padding: 6px 4px 10px;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
@@ -233,6 +237,30 @@
 .team-directory__card.is-active .team-directory__image-photo {
   transform: scale(1.04);
   filter: contrast(1.06) brightness(1.02) saturate(1.05);
+}
+
+/* The photo drifts against the cursor; --drift-* is set from TeamInteractions.ts. */
+.team-directory__card:hover .team-directory__image-photo {
+  transform: scale(1.1) translate(var(--drift-x, 0px), var(--drift-y, 0px));
+}
+
+.team-directory__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    220px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    color-mix(in srgb, var(--team-accent) 22%, transparent),
+    transparent 65%
+  );
+  transition: opacity 400ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.team-directory__card:hover .team-directory__glow {
+  opacity: 1;
 }
 
 .team-directory__info {

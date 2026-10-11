@@ -10,6 +10,7 @@ import {
   getIsAnimating,
   cleanupTeamAnimations,
 } from "../animations/TeamAnimations";
+import { setupTeamInteractions } from "../animations/TeamInteractions";
 import "../styles/Team.css";
 import "../styles/TeamLayout.css";
 import "../styles/TeamResponsive.css";
@@ -23,6 +24,7 @@ function getSpotlightAccent(member: (typeof teamMembers)[number]): string {
     "member-4": "#F472B6",
     "member-5": "#34D399",
     "member-6": "#3B82F6",
+    "member-7": "#A78BFA",
     "member-8": "#2DD4BF",
   };
 
@@ -45,6 +47,8 @@ export default function Team(): React.ReactElement {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const stackRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
+  const prevBtnRef = useRef<HTMLButtonElement | null>(null);
+  const nextBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
@@ -59,6 +63,17 @@ export default function Team(): React.ReactElement {
       cleanupScroll?.();
       cleanupTeamAnimations();
     };
+  }, []);
+
+  // Cursor tilt, glow and magnetic buttons (mouse/trackpad only).
+  useEffect(() => {
+    return setupTeamInteractions({
+      stage: stageRef.current,
+      getActiveCard: () =>
+        stackRef.current?.querySelector<HTMLElement>('.team__card[data-active="true"]') ?? null,
+      magnets: [prevBtnRef.current, nextBtnRef.current],
+      directory: teamRef.current?.querySelector<HTMLElement>(".team-directory") ?? null,
+    });
   }, []);
 
   // Start the spotlight as the team section enters the viewport.
@@ -208,6 +223,7 @@ export default function Team(): React.ReactElement {
             {/* Prev / Next Slider Buttons */}
             <div className="team__slider-nav">
               <button
+                ref={prevBtnRef}
                 className="team__slider-btn team__slider-btn--prev"
                 onClick={() => navigateMember("prev")}
                 aria-label="Previous team member"
@@ -218,6 +234,7 @@ export default function Team(): React.ReactElement {
               </button>
 
               <button
+                ref={nextBtnRef}
                 className="team__slider-btn team__slider-btn--next"
                 onClick={() => navigateMember("next")}
                 aria-label="Next team member"
@@ -251,6 +268,7 @@ export default function Team(): React.ReactElement {
                   data-active={isActive}
                   data-spotlight={spotlightIndex === index}
                 >
+                  <span className="team__card-glow" aria-hidden="true" />
                   <div className="team__image-wrapper">
                     <div className="team__image">
                       <Image

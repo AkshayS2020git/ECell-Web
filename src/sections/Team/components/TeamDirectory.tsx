@@ -19,6 +19,7 @@ function getMemberAccent(member: TeamMember): string {
     "member-4": "#F472B6",
     "member-5": "#34D399",
     "member-6": "#3B82F6",
+    "member-7": "#A78BFA",
     "member-8": "#2DD4BF",
   };
 
@@ -119,6 +120,7 @@ export default function TeamDirectory({
               onKeyDown={(e) => handleKeyDown(e, index)}
               style={{ "--team-accent": accentColor } as React.CSSProperties}
             >
+              <span className="team-directory__glow" aria-hidden="true" />
               <span className="team-directory__image">
                 <Image
                   src={member.image}

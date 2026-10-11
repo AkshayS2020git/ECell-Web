@@ -1,15 +1,16 @@
-/* Top-left tagline + "Join now" pill, in the style of an editorial studio. */
+/* Top-left tagline + "Join now" pill, in the style of an editorial studio.
+   No z-index, will-change or opacity here: any of them would make the intro
+   its own group and the heading could not blend with the ink beneath it.
+   It still paints above the canvas, which comes first in the stage. */
 .hero__intro {
   position: absolute;
   top: clamp(20px, 2.2vw, 32px);
   left: clamp(16px, 1.25vw, 24px);
-  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: clamp(20px, 1.6vw, 30px);
   pointer-events: none;
-  will-change: opacity;
 }
 
 .hero__heading {
@@ -27,6 +28,16 @@
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: -0.03em;
+}
+
+/* White + difference reads black on the white hero and flips to white
+   wherever the ink passes underneath (same trick as the bottom bar). */
+.hero--ink-blend .hero__heading {
+  mix-blend-mode: difference;
+}
+
+.hero--ink-blend .hero__heading-line {
+  color: #ffffff;
 }
 
 .hero__cta {
