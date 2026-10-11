@@ -675,11 +675,12 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                               <div className="event-sponsor-card__logo-frame event-sponsor-card__logo-frame--lg">
                                 {partner.logo ? (
                                   <Image
-                                    src={event.image}
-                                    alt={event.title}
-                                    width={800}
-                                    height={450}
-                                    className="event-image"
+                                    src={partner.logo}
+                                    alt={`${partner.name} logo`}
+                                    className="event-sponsor-card__logo event-sponsor-card__logo--lg"
+                                    width={200}
+                                    height={100}
+                                    loading="lazy"
                                   />
                                 ) : (
                                   <span className="event-sponsor-card__logo-text event-sponsor-card__logo-text--lg">{partner.name}</span>

@@ -117,6 +117,10 @@ describe("Events dynamic routes data", () => {
 
     expect(screen.getAllByText("DigitalOcean").length).toBeGreaterThan(0);
     expect(screen.getByAltText("GitHub logo")).toBeInTheDocument();
+    // "Powered by" cards show each partner's logo, not the event poster.
+    expect(screen.getByAltText("MLH logo")).toBeInTheDocument();
+    expect(screen.getByAltText("DEV logo")).toBeInTheDocument();
+    expect(screen.getAllByAltText(event!.title)).toHaveLength(1);
     expect(screen.getByText("Register for Hack Day ↗")).toBeInTheDocument();
     expect(screen.getByText("Nishit")).toBeInTheDocument();
     expect(screen.getByText("Pranav")).toBeInTheDocument();
