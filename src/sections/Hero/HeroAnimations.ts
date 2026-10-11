@@ -34,6 +34,18 @@ export function setupHeroAnimations({
     cardShown = shown;
     hero.classList.toggle("hero--card", shown);
   };
+  // The tagline and credit flip colour over the ink with a difference blend.
+  // Blending inside the scaling stage makes the shrink stutter, so it is only
+  // on while that text is still visible near the top of the hero.
+  let inkBlend = false;
+  const setInkBlend = (on: boolean) => {
+    if (on === inkBlend || !hero) return;
+    inkBlend = on;
+    hero.classList.toggle("hero--ink-blend", on);
+  };
+  // Fade the intro's children, not the intro itself: an intro with opacity
+  // becomes its own group and the heading could no longer blend with the ink.
+  const introParts = intro ? Array.from(intro.children) : [];
   const reduceMotion = typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false;
   const isMobile = typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false;
 
@@ -44,7 +56,11 @@ export function setupHeroAnimations({
     });
     gsap.set(marquee, { clearProps: "all", opacity: marqueeMaxOpacity });
     setCardShown(true);
-    return () => setCardShown(false);
+    setInkBlend(true);
+    return () => {
+      setCardShown(false);
+      setInkBlend(false);
+    };
   }
 
   if (isMobile) {
@@ -56,7 +72,7 @@ export function setupHeroAnimations({
       transformOrigin: "center center",
     });
     gsap.set([marquee, label], { opacity: 0 });
-    gsap.set(intro, { opacity: 1 });
+    gsap.set(introParts, { opacity: 1 });
     if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
 
     const mobileTimeline = gsap.timeline({
@@ -66,7 +82,10 @@ export function setupHeroAnimations({
         end: "bottom bottom",
         scrub: 0.3,
         invalidateOnRefresh: true,
-        onUpdate: (self) => setCardShown(self.progress > 0.04),
+        onUpdate: (self) => {
+          setCardShown(self.progress > 0.04);
+          setInkBlend(self.progress < 0.4);
+        },
       },
     });
 
@@ -85,7 +104,7 @@ export function setupHeroAnimations({
       )
       .to(marquee, { opacity: marqueeMaxOpacity, ease: "none", duration: 0.3 }, 0.08)
       .to(label, { opacity: 1, ease: "none", duration: 0.28 }, 0.12)
-      .to(intro, { autoAlpha: 0, ease: "none", duration: 0.18 }, 0.02);
+      .to(introParts, { autoAlpha: 0, ease: "none", duration: 0.18 }, 0.02);
 
     if (scrollHint) {
       mobileTimeline.to(scrollHint, { autoAlpha: 0, ease: "none", duration: 0.15 }, 0);
@@ -95,12 +114,13 @@ export function setupHeroAnimations({
       if (mobileTimeline.scrollTrigger) mobileTimeline.scrollTrigger.kill();
       mobileTimeline.kill();
       setCardShown(false);
+      setInkBlend(false);
     };
   }
 
   const marqueeOpacity = marquee ? gsap.quickSetter(marquee, "opacity") : () => {};
   const labelOpacity = label ? gsap.quickSetter(label, "opacity") : () => {};
-  const introOpacity = intro ? gsap.quickSetter(intro, "opacity") : () => {};
+  const introOpacity = introParts.length ? gsap.quickSetter(introParts, "opacity") : () => {};
   const scrollHintOpacity = scrollHint
     ? gsap.quickSetter(scrollHint, "opacity")
     : null;
@@ -113,8 +133,9 @@ export function setupHeroAnimations({
     transformOrigin: "center center",
   });
   gsap.set([marquee, label], { opacity: 0 });
-  gsap.set(intro, { opacity: 1 });
+  gsap.set(introParts, { opacity: 1 });
   if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
+  setInkBlend(true);
 
   let targetProgress = 0;
   let heroSmoothed = 0;
@@ -162,6 +183,8 @@ export function setupHeroAnimations({
     });
     marqueeOpacity(reveal * marqueeMaxOpacity);
     setCardShown(progress > 0.04);
+    // The credit has finished fading by ~0.36 of the hero scroll.
+    setInkBlend(progress < 0.4);
     labelOpacity(reveal);
     const introAlpha = 1 - smoothstep(0.05, 0.25, progress);
     introOpacity(introAlpha);
@@ -182,5 +205,6 @@ export function setupHeroAnimations({
     gsap.ticker.remove(updateHero);
     trigger.kill();
     setCardShown(false);
+    setInkBlend(false);
   };
 }

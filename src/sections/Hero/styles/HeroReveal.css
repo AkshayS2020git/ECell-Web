@@ -50,8 +50,10 @@
 
 /* "—— BUILT BY ECELL TECH TEAM", right-aligned under the end of the title.
    Position, size and colour come from HeroReveal so it tracks the "VU" on
-   every screen and follows the light -> dark card theme. (No blend mode: it
-   sits inside the scaling card, where blending makes the shrink stutter.) */
+   every screen and follows the light -> dark card theme. Near the top of the
+   hero it blends (below) so it flips over the ink; HeroAnimations drops the
+   blend once it has faded, as blending inside the scaling card makes the
+   shrink stutter. */
 .hero-reveal__credit {
   position: absolute;
   top: var(--credit-top, 70%);
@@ -77,6 +79,13 @@
 
 .hero-reveal--ready .hero-reveal__credit {
   opacity: calc(0.8 * (1 - var(--title-fade, 0)));
+}
+
+/* White + difference: black on the white hero, white over the ink, and light
+   on the dark card, so it no longer needs --credit-ink while blending. */
+.hero--ink-blend .hero-reveal__credit {
+  color: #ffffff;
+  mix-blend-mode: difference;
 }
 
 .hero-reveal__credit-rule {

@@ -120,6 +120,7 @@ export default function TeamDirectory({
               onKeyDown={(e) => handleKeyDown(e, index)}
               style={{ "--team-accent": accentColor } as React.CSSProperties}
             >
+              <span className="team-directory__glow" aria-hidden="true" />
               <span className="team-directory__image">
                 <Image
                   src={member.image}

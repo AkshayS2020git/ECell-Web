@@ -102,7 +102,7 @@ const teamMembers: TeamMember[] = [
     image: HeadDesign,
     imagePosition: "center 25%",
     directoryImagePosition: "center 25%",
-    linkedin: "TODO: LinkedIn URL",
+    linkedin: "https://www.linkedin.com/in/anagha-anish/",
     accentColor: "#A78BFA",
   },
   {

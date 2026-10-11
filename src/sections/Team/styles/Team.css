@@ -369,3 +369,40 @@
   color: var(--fg-dim, rgba(255, 255, 255, 0.7));
   margin: 0;
 }
+
+/* ─── Pointer Interactions (driven by TeamInteractions.ts) ─── */
+.team__card-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    480px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    color-mix(in srgb, var(--team-spotlight-accent, #ffffff) 16%, transparent),
+    transparent 62%
+  );
+  transition: opacity 0.45s ease;
+}
+
+.team__card.is-hovered .team__card-glow {
+  opacity: 1;
+}
+
+.team__image-wrapper,
+.team__content {
+  position: relative;
+  z-index: 1;
+}
+
+.team__image img {
+  will-change: transform;
+}
+
+/* GSAP moves the slider buttons magnetically, so CSS must not ease transform too. */
+@media (hover: hover) and (pointer: fine) {
+  .team__slider-btn {
+    transition-property: background, border-color, color, box-shadow;
+  }
+}
