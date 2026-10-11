@@ -781,3 +781,27 @@
         min-height: 44px
     }
 }
+
+/* Portrait posters (imageIsPoster) fit the box whole instead of being
+   cropped: the poster is contained and centred, over a blurred, darkened
+   copy of itself that fills the sides. Selectors are specific enough to beat
+   the generic image and hover rules above. */
+.ea-feature-art img.ea-poster-backdrop,
+.ea-card-image img.ea-poster-backdrop,
+.ea-card:hover .ea-card-image img.ea-poster-backdrop {
+    object-fit: cover;
+    filter: blur(22px) brightness(.4) saturate(.8);
+    transform: scale(1.2);
+}
+
+.ea-feature-art img.ea-poster-fit,
+.ea-card-image img.ea-poster-fit {
+    object-fit: contain;
+    filter: none;
+}
+
+/* Lighter bottom shade so the foot of the poster stays readable. */
+.ea-feature-art--poster:after,
+.ea-card-image--poster:after {
+    background: linear-gradient(180deg, transparent 62%, rgba(13, 13, 13, .7));
+}

@@ -8,6 +8,10 @@ import { buildLetter, type Letter } from "../webgl/letters";
 import { GALAXY_FRAG, GALAXY_VERT, buildGalaxy } from "../webgl/galaxy";
 import { isPageScrollLocked } from "@/src/utils/scrollLock";
 
+// Fraction of the hero height the nebula's core is raised above centre
+// (0.3 puts it ~20% from the top).
+const GALAXY_SHIFT_UP = 0.3;
+
 /**
  * Hero title with a liquid ink reveal. Moving the pointer pours ink over the
  * flat title; inside it, glass balloon letters float over a particle nebula.
@@ -212,10 +216,12 @@ export default function HeroReveal(): React.ReactElement {
           const warmMaterial = letterMaterial.clone();
           warmMaterial.alphaMap = warmAlpha;
           const warmMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), warmMaterial);
-          Promise.all([
-            renderer.compileAsync(warmMesh, letterCamera, letterScene),
-            renderer.compileAsync(galaxy, camera, scene),
-          ])
+          // compileAsync logs a warning where the parallel-compile extension
+          // is missing (e.g. Firefox), and is synchronous there anyway.
+          const parallel = renderer.extensions.has("KHR_parallel_shader_compile");
+          const warm = (obj: THREE.Object3D, cam: THREE.Camera, target: THREE.Scene) =>
+            parallel ? renderer.compileAsync(obj, cam, target) : Promise.resolve(renderer.compile(obj, cam, target));
+          Promise.all([warm(warmMesh, letterCamera, letterScene), warm(galaxy, camera, scene)])
             .catch(() => {})
             .finally(() => {
               warmMesh.geometry.dispose();
@@ -292,7 +298,9 @@ export default function HeroReveal(): React.ReactElement {
       camera.aspect = w / h;
       // Pull back on narrow screens so the disc still reads as a spiral.
       camera.position.setLength(w / h < 1 ? 4.2 : 2.9);
-      camera.updateProjectionMatrix();
+      // Lens-shift the nebula up so its core sits at the top centre of the
+      // hero instead of the middle (the camera still orbits the origin).
+      camera.setViewOffset(w, h, 0, h * GALAXY_SHIFT_UP, w, h);
       galaxyMaterial.uniforms.uSizeScale.value = h * pixelRatio * 0.0045;
 
       // World units are CSS pixels at z = 0, so letters line up with the flat text.
@@ -409,9 +417,21 @@ export default function HeroReveal(): React.ReactElement {
     const tick = (timestamp: number) => {
       raf = requestAnimationFrame(tick);
       timer.update(timestamp);
+      if (!visible || document.hidden) return;
       // Covered by the entry loader or a modal (both hold the scroll lock):
-      // nothing to show, so do no work.
-      if (!visible || document.hidden || isPageScrollLocked()) return;
+      // skip the ink and 3D work, but still draw the flat title once, so it is
+      // already there as the loader's curtain lifts instead of popping in after.
+      if (isPageScrollLocked()) {
+        if (dirty) {
+          dirty = false;
+          finalMaterial.uniforms.uInk.value = 0;
+          finalMaterial.uniforms.uDark.value = dark;
+          finalMaterial.uniforms.uTitleFade.value = titleFade;
+          renderer.setRenderTarget(null);
+          renderer.render(finalScene, quadCamera);
+        }
+        return;
+      }
       pending += timer.getDelta();
       if (pending < minFrame) return;
       // Real elapsed time drives fading; the motion sim gets a capped step so
@@ -603,8 +623,12 @@ export default function HeroReveal(): React.ReactElement {
       finalMaterial.dispose();
       quad.dispose();
       timer.dispose();
-      renderer.dispose();
       renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
+      renderer.dispose();
+      // Release the GL context now instead of at GC: browsers cap live
+      // contexts per page and drop the oldest (e.g. the WhatsApp laser) when
+      // remounts pile them up.
+      renderer.forceContextLoss();
       renderer.domElement.remove();
     };
   }, []);

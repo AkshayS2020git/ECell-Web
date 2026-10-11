@@ -4,8 +4,8 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import PageTransition from "@/src/components/PageTransition/PageTransition";
-import RouteScrollManager from "@/src/components/RouteScrollManager";
-import SmoothScroll from "@/src/components/SmoothScroll";
+import RouteScrollManager from "@/src/components/RouteScrollManager/RouteScrollManager";
+import SmoothScroll from "@/src/components/SmoothScroll/SmoothScroll";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 

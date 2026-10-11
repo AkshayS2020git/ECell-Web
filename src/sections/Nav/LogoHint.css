@@ -21,13 +21,19 @@
     color 180ms ease;
 }
 
+/* Beats `.site-nav button { pointer-events: auto }`, which otherwise lets the
+   hidden hint be hovered (and its :hover opacity show it) over the hero. */
+.site-nav .nav__logo-hint:not(.is-visible) {
+  pointer-events: none;
+}
+
 .nav__logo-hint.is-visible {
   opacity: 0.85;
   pointer-events: auto;
   transform: translateX(0);
 }
 
-.nav__logo-hint:hover {
+.nav__logo-hint.is-visible:hover {
   opacity: 1;
   color: var(--fg);
 }

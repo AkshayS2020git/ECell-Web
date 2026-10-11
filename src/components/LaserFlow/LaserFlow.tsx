@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import './LaserFlow.css';
 
@@ -323,6 +323,9 @@ export const LaserFlow: React.FC<LaserFlowProps> = ({
   const emaDtRef = useRef<number>(16.7); // ms
   const pausedRef = useRef<boolean>(false);
   const inViewRef = useRef<boolean>(true);
+  // Bumped to rebuild the renderer when the browser drops the WebGL context
+  // and never restores it.
+  const [contextGeneration, setContextGeneration] = useState(0);
 
   const hexToRGB = (hex: string) => {
     let c = hex.trim();
@@ -339,6 +342,13 @@ export const LaserFlow: React.FC<LaserFlowProps> = ({
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
+
+    // Refs outlive this effect (Strict Mode runs it twice in dev, and Fast
+    // Refresh re-runs it). A new renderer must always be sized, so forget the
+    // previous one's size; otherwise setSizeNow skips it and the laser renders
+    // at 1x1 resolution, i.e. not at all.
+    lastSizeRef.current = { width: 0, height: 0, dpr: 0 };
+    pausedRef.current = typeof document !== 'undefined' ? document.hidden : false;
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -494,11 +504,17 @@ export const LaserFlow: React.FC<LaserFlowProps> = ({
     canvas.addEventListener('pointerenter', onMove, { passive: true });
     canvas.addEventListener('pointerleave', onLeave, { passive: true });
 
+    // If the browser drops the context (GPU reset, too many contexts) and
+    // does not give it back, rebuild the renderer rather than stay blank.
+    let lostTimer = 0;
     const onCtxLost = (e: Event) => {
       e.preventDefault();
       pausedRef.current = true;
+      window.clearTimeout(lostTimer);
+      lostTimer = window.setTimeout(() => setContextGeneration(g => g + 1), 1000);
     };
     const onCtxRestored = () => {
+      window.clearTimeout(lostTimer);
       pausedRef.current = false;
       scheduleResize();
     };
@@ -584,6 +600,7 @@ export const LaserFlow: React.FC<LaserFlowProps> = ({
 
     return () => {
       cancelAnimationFrame(raf);
+      window.clearTimeout(lostTimer);
       if (resizeRaf) cancelAnimationFrame(resizeRaf);
       ro?.disconnect();
       io?.disconnect();
@@ -603,7 +620,7 @@ export const LaserFlow: React.FC<LaserFlowProps> = ({
       if (mount.contains(canvas)) mount.removeChild(canvas);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dpr]);
+  }, [dpr, contextGeneration]);
 
   useEffect(() => {
     const uniforms = uniformsRef.current;

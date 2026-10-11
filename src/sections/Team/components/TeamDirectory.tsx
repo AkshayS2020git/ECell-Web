@@ -19,7 +19,6 @@ function getMemberAccent(member: TeamMember): string {
     "member-4": "#F472B6",
     "member-5": "#34D399",
     "member-6": "#3B82F6",
-    "member-7": "#FB923C",
     "member-8": "#2DD4BF",
   };
 
@@ -28,7 +27,6 @@ function getMemberAccent(member: TeamMember): string {
 
   const normalizedName = member.name.toLowerCase();
   if (normalizedName.includes("akash")) return "#3B82F6";
-  if (normalizedName.includes("aryav")) return "#FB923C";
 
   const normalizedRole = member.role.toLowerCase();
   if (normalizedRole.includes("president")) return "#8edcff";

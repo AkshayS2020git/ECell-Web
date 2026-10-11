@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/utils/cn";
 import { gsap } from "@/src/utils/gsapSetup";
 import { scrollToY } from "@/src/utils/lenis";
 import { navigateToSection } from "@/src/sections/Nav/navUtils";

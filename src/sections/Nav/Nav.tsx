@@ -34,10 +34,14 @@ export default function Nav(): React.ReactElement {
   const showHint =
     pathname === "/" && isLogoInNavOnHome && !hasDismissedHint && !isLogoModalOpen;
 
+  // On home the logo button is an empty slot until the floating logo lands in it.
+  const logoReady = pathname !== "/" || isLogoInNavOnHome;
+
   return (
     <>
       <NavBar
         onLogoClick={handleLogoClick}
+        logoReady={logoReady}
         logoHint={<LogoHint visible={showHint} onClick={handleLogoClick} />}
       />
       <LogoModal isOpen={isLogoModalOpen} onClose={() => setIsLogoModalOpen(false)} />

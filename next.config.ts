@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["monsoon-suspend-uncloak.ngrok-free.dev"],
   images: {
     qualities: [100, 75, 85, 95],
+    // Remote sponsor logos used by event pages (src/data/events). Add a host
+    // here before referencing a new one, or next/image throws at render.
+    remotePatterns: [
+      new URL("https://cdn.simpleicons.org/**"),
+      new URL("https://bookface-images.s3.amazonaws.com/small_logos/**"),
+      new URL("https://upload.wikimedia.org/wikipedia/commons/**"),
+    ],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

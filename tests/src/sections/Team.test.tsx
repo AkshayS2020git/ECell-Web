@@ -15,7 +15,7 @@ vi.mock("next/image", () => ({
 }));
 
 // Mock GSAP
-vi.mock("../../src/utils/gsapSetup", () => ({
+vi.mock("@/src/utils/gsapSetup", () => ({
   gsap: {
     timeline: () => ({
       fromTo: vi.fn().mockReturnThis(),
@@ -33,8 +33,8 @@ vi.mock("../../src/utils/gsapSetup", () => ({
 }));
 
 describe("Team Data", () => {
-  it("contains all 8 core team members with valid image positions", () => {
-    expect(teamMembers.length).toBe(8);
+  it("contains all 7 core team members with valid image positions", () => {
+    expect(teamMembers.length).toBe(7);
     teamMembers.forEach((member) => {
       expect(member.name).toBeTruthy();
       expect(member.role).toBeTruthy();
@@ -43,11 +43,13 @@ describe("Team Data", () => {
     });
   });
 
-  it("assigns accent colors to Akash and Aryav", () => {
+  it("assigns Akash his accent color", () => {
     const akash = teamMembers.find((m) => m.name.toLowerCase().includes("akash"));
-    const aryav = teamMembers.find((m) => m.name.toLowerCase().includes("aryav"));
     expect(akash?.accentColor).toBe("#3B82F6");
-    expect(aryav?.accentColor).toBe("#FB923C");
+  });
+
+  it("no longer lists Aryav", () => {
+    expect(teamMembers.some((m) => m.name.toLowerCase().includes("aryav"))).toBe(false);
   });
 });
 
@@ -72,7 +74,7 @@ describe("TeamDirectory Component", () => {
     );
 
     expect(screen.getByText("TEAM DIRECTORY")).toBeInTheDocument();
-    expect(screen.getByText("8 Core Members")).toBeInTheDocument();
+    expect(screen.getByText("7 Core Members")).toBeInTheDocument();
 
     teamMembers.forEach((member) => {
       expect(screen.getByText(member.name)).toBeInTheDocument();

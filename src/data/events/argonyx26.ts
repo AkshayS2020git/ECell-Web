@@ -1,5 +1,5 @@
 import type { EventDetailData } from "./types";
-// Official Argonyx '26 poster (also on the home "Explore all events" card).
+// Official Argonyx '26 poster.
 import argonyx26Poster from "../../assets/events/events_photo/cta.webp";
 import winnerPhoto from "../../assets/Argonyx26/winningTeams/winner.webp";
 import runnerUpPhoto from "../../assets/Argonyx26/winningTeams/runnerups.webp";

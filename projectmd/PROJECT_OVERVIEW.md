@@ -38,11 +38,11 @@ The homepage is assembled in `app/page.tsx` in this order:
 9. Sponsors
 10. A pinned horizontal flow containing Speakers, WhatsApp Community, and Footer
 
-Notable interactions include the responsive video hero, floating SVG logo, smooth section navigation, horizontal scroll sequence, sponsor network, team and speaker experiences, simulated WhatsApp conversation, and four browser games.
+Notable interactions include the WebGL liquid-ink hero, floating SVG logo, smooth section navigation, horizontal scroll sequence, sponsor network, team and speaker experiences, simulated WhatsApp conversation, and four browser games.
 
 ### Event archive (`/events`)
 
-`src/components/EventsArchive.tsx` renders the event listing with a featured event, calendar strip, event-type filters, upcoming cards, previous-event rows, entrance animation, and Event JSON-LD. Cards navigate to event detail routes.
+`src/components/EventsArchive/EventsArchive.tsx` renders the event listing with a featured event, calendar strip, event-type filters, upcoming cards, previous-event rows, entrance animation, and Event JSON-LD. Cards navigate to event detail routes.
 
 The current implementation does **not** provide free-text search or modal event details.
 
@@ -53,6 +53,7 @@ Canonical statically generated slugs are:
 - `/events/argonyx-26`
 - `/events/pitch-e-thon`
 - `/events/e-summit`
+- `/events/hacktoberfest-26`
 
 Unknown slugs return the Next.js not-found response. Argonyx aliases are accepted by data lookup, while only canonical slugs are generated. Upcoming events show registration/contact content; completed Argonyx content includes winners and a gallery preview.
 
@@ -75,11 +76,11 @@ The gallery supports category filters, a chronological timeline, special team-ph
 | UI | React 19.2 |
 | Language | TypeScript 5, strict mode |
 | Styling | Tailwind CSS 4 entry point plus feature-local vanilla CSS |
-| Animation | GSAP 3.15, ScrollTrigger, Lenis 1.3 |
-| WebGL | Three.js 0.185 with custom shaders |
+| Animation | GSAP 3.14, ScrollTrigger, Lenis 1.3 |
+| WebGL | Three.js 0.185 with custom shaders (hero reveal, LaserFlow) |
 | Testing | Vitest 4, React Testing Library, JSDOM |
 | Quality | ESLint 9 and TypeScript compiler |
-| Hosting | Vercel through GitHub Actions |
+| Hosting | Vercel through GitHub Actions; Cloudflare Workers via OpenNext also configured |
 | Telemetry | Vercel Analytics and Speed Insights |
 
 ## System boundaries
@@ -90,6 +91,5 @@ The repository is a frontend application with checked-in content and media. No A
 
 - Event facts are duplicated across detail, archive, and homepage datasets and can drift.
 - The sitemap currently contains only the homepage.
-- Some root README descriptions no longer match the implementation.
 - Install metadata exists, but offline/PWA behavior is not implemented.
 - Rendered metadata titles should be checked when title templates or event titles change.

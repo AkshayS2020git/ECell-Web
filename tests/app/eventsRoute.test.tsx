@@ -117,6 +117,10 @@ describe("Events dynamic routes data", () => {
 
     expect(screen.getAllByText("DigitalOcean").length).toBeGreaterThan(0);
     expect(screen.getByAltText("GitHub logo")).toBeInTheDocument();
+    // "Powered by" cards show each partner's logo, not the event poster.
+    expect(screen.getByAltText("MLH logo")).toBeInTheDocument();
+    expect(screen.getByAltText("DEV logo")).toBeInTheDocument();
+    expect(screen.getAllByAltText(event!.title)).toHaveLength(1);
     expect(screen.getByText("Register for Hack Day ↗")).toBeInTheDocument();
     expect(screen.getByText("Nishit")).toBeInTheDocument();
     expect(screen.getByText("Pranav")).toBeInTheDocument();
@@ -137,7 +141,7 @@ describe("Events dynamic routes data", () => {
 
   it("renders EventsArchive with clickable event links", async () => {
     const { render, screen } = await import("@testing-library/react");
-    const EventsArchive = (await import("@/src/components/EventsArchive")).default;
+    const EventsArchive = (await import("@/src/components/EventsArchive/EventsArchive")).default;
 
     render(<EventsArchive />);
     expect(screen.getByText(/EVENTS & WORKSHOPS/)).toBeInTheDocument();
@@ -151,7 +155,7 @@ describe("Events dynamic routes data", () => {
 
   it("renders RouteScrollManager and resets scroll on mount", async () => {
     const { render } = await import("@testing-library/react");
-    const RouteScrollManager = (await import("@/src/components/RouteScrollManager")).default;
+    const RouteScrollManager = (await import("@/src/components/RouteScrollManager/RouteScrollManager")).default;
     const scrollToSpy = vi.spyOn(window, "scrollTo");
 
     render(<RouteScrollManager />);

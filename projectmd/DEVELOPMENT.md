@@ -29,6 +29,12 @@ Then open `http://localhost:3000`. Use `npm ci` for a reproducible installation 
 | `npm run lint` | Run ESLint |
 | `npm run test` | Run Vitest once |
 | `npm run test:watch` | Run Vitest interactively in watch mode |
+| `npm run build:cloudflare` | Build the Cloudflare Worker bundle with OpenNext |
+| `npm run preview` | Build with OpenNext and preview it locally in the Workers runtime |
+| `npm run deploy` | Build with OpenNext and deploy to Cloudflare (see [Deployment](./DEPLOYMENT.md)) |
+| `npm run deploy:cloudflare` | Deploy an existing OpenNext build through `scripts/deploy-cloudflare.mjs` |
+| `npm run upload` | Build and upload a new Worker version without promoting it |
+| `npm run cf-typegen` | Generate `cloudflare-env.d.ts` binding types from `wrangler.jsonc` |
 
 ## Recommended workflow
 
@@ -50,7 +56,10 @@ npm run build
 - Use TypeScript and type public data shapes and component props.
 - Follow the existing default-export convention for components.
 - Use PascalCase component and section directory names.
-- Keep feature-only CSS, data, hooks, and animations with the feature.
+- Give every shared component its own folder in `src/components/`; do not add loose files there.
+- Keep feature-only CSS, data, hooks, and animations with the feature (for example `src/sections/Nav/hooks/`).
+- Put shared non-React helpers in `src/utils/` (class names go through `cn` from `src/utils/cn.ts`).
+- Import across folders with the `@/` alias (`@/src/...`); use relative imports only inside one feature.
 - Keep sections independently placeable and responsive.
 - Avoid negative-margin contracts or selectors that depend on sibling internals.
 - Reuse shared tokens from `src/styles/global.css`.

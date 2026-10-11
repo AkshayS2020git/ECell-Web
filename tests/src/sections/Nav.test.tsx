@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import Nav from "@/src/sections/Nav/Nav";
 import SubNav from "@/src/sections/Nav/SubNav";
@@ -19,10 +19,18 @@ describe("SubNav (events)", () => {
 });
 
 describe("Nav (home)", () => {
-  it("keeps the logo hint and opens the logo modal", () => {
+  it("shows the logo hint only once the logo settles in the nav, and opens the logo modal", () => {
     render(<Nav />);
 
-    expect(screen.getByRole("button", { name: "Click to explore our logo story" })).toBeInTheDocument();
+    // Hidden (and unreachable) while the logo is still in the hero.
+    expect(screen.queryByRole("button", { name: "Click to explore our logo story" })).toBeNull();
+    // The empty logo slot isn't clickable before the logo lands in it either.
+    expect(screen.queryByRole("button", { name: "View our logo symbolism" })).toBeNull();
+
+    act(() => {
+      window.dispatchEvent(new CustomEvent("ecell:logo-in-nav", { detail: { inNav: true } }));
+    });
+    expect(screen.getByRole("button", { name: "Click to explore our logo story" })).toHaveClass("is-visible");
 
     fireEvent.click(screen.getByRole("button", { name: "View our logo symbolism" }));
     expect(within(screen.getByRole("dialog")).getByText("OUR LOGO")).toBeInTheDocument();

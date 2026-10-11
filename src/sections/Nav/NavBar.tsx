@@ -2,9 +2,9 @@
 import React from "react";
 import Link from "next/link";
 import ChaptersDropdown from "./ChaptersDropdown";
-import { useChaptersMenu } from "./useChaptersMenu";
-import { useSectionNavigation } from "./useSectionNavigation";
-import { useHomeScroll } from "./useHomeScroll";
+import { useChaptersMenu } from "./hooks/useChaptersMenu";
+import { useSectionNavigation } from "./hooks/useSectionNavigation";
+import { useHomeScroll } from "./hooks/useHomeScroll";
 import "./Nav.css";
 
 interface NavBarProps {
@@ -19,9 +19,14 @@ interface NavBarProps {
    * Ignored in sub-nav mode (no onLogoClick).
    */
   logoHint?: React.ReactNode;
+  /**
+   * Home nav only: false while the floating logo is still in the hero, so
+   * the empty top-left slot is not clickable before the logo lands in it.
+   */
+  logoReady?: boolean;
 }
 
-export default function NavBar({ onLogoClick, logoHint }: NavBarProps): React.ReactElement {
+export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavBarProps): React.ReactElement {
   const { isOpen, toggleRef, dropdownRef, toggle, close } = useChaptersMenu();
   const { pathname, openEvents, scrollToSection } = useSectionNavigation({
     closeMenu: close,
@@ -41,11 +46,13 @@ export default function NavBar({ onLogoClick, logoHint }: NavBarProps): React.Re
           ) : (
             <>
               <button
-                className="logo nav__logo-container nav__logo-button"
+                className={`logo nav__logo-container nav__logo-button${logoReady ? "" : " is-inactive"}`}
                 onClick={onLogoClick}
                 type="button"
+                tabIndex={logoReady ? undefined : -1}
+                aria-hidden={logoReady ? undefined : true}
                 aria-label="View our logo symbolism"
-                title="Click to view our logo story"
+                title={logoReady ? "Click to view our logo story" : undefined}
               >
                 <div className="nav__logo-icon-target" />
               </button>

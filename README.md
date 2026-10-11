@@ -6,7 +6,7 @@
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![GSAP](https://img.shields.io/badge/GSAP-3.15-88CE02?style=for-the-badge&logo=greensock)](https://greensock.com/)
+[![GSAP](https://img.shields.io/badge/GSAP-3.14-88CE02?style=for-the-badge&logo=greensock)](https://greensock.com/)
 [![Three.js](https://img.shields.io/badge/Three.js-0.185-white?style=for-the-badge&logo=three.js&logoColor=black)](https://threejs.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-4.1-FCC72B?style=for-the-badge&logo=vitest&logoColor=black)](https://vitest.dev/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel)](https://ecell-rvu.vercel.app)
@@ -35,7 +35,7 @@ The **ECell RV University Website** serves as the central flagship platform for 
 - **In-Browser Arcade** with four custom retro and reflex games.
 - **Interactive Sponsor Constellation** featuring animated network graphs and dynamic node connections.
 - **Team & Speaker Spotlights** with 3D carousel stacks, domain filtering, and dedicated director views.
-- **Events Archive Route** (`/events`) with search, category filtering, and modal event deep-dives.
+- **Events Archive Route** (`/events`) with a featured event, calendar strip, event-type filters, and per-event detail pages.
 
 ---
 
@@ -49,7 +49,7 @@ The **ECell RV University Website** serves as the central flagship platform for 
 ### 2. 🌀 Morphing SVG Floating Logo
 - Central brand mark constructed from hand-calculated SVG curves and stroke paths.
 - Animates dynamically across the Hero scroll journey using dynamic `getTotalLength()` stroke offsets (`strokeDasharray` / `strokeDashoffset`).
-- Seamlessly flies and docks directly into the sticky top navigation bar (`ecell:logo-in-nav` custom event).
+- Seamlessly flies and docks directly into the sticky top navigation bar (`ecell:logo-in-nav` custom event). The nav logo button and its "Click to explore" hint only become interactive once the logo has settled.
 - Clickable brand mark opens an interactive **Logo Breakdown Modal** illustrating the brand geometry and symbolism.
 
 ### 3. ↔️ Pinned Horizontal Flow Section
@@ -93,8 +93,8 @@ Floating interactive game launcher with 4 fully playable, state-managed minigame
 | **UI Library** | [React 19](https://react.dev/) | Component architecture, React hooks, concurrent features |
 | **Language** | [TypeScript 5](https://www.typescriptlang.org/) | Strict static typing, interfaces for data models and animation options |
 | **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) + PostCSS | Modern CSS utility tokens, `@theme` integration, responsive design |
-| **Custom Styling** | Vanilla CSS Modules & Scoped Styles | Isolated section styling, GPU-accelerated motion classes, CSS variables |
-| **Animation Engine** | [GSAP 3.15](https://greensock.com/) + ScrollTrigger | Timeline choreography, scroll-pinned scenes, kinetic typography |
+| **Custom Styling** | Feature-colocated vanilla CSS | Section-prefixed global selectors, GPU-accelerated motion classes, CSS variables |
+| **Animation Engine** | [GSAP 3.14](https://greensock.com/) + ScrollTrigger | Timeline choreography, scroll-pinned scenes, kinetic typography |
 | **3D & Shaders** | [Three.js 0.185](https://threejs.org/) | Interactive WebGL canvas, custom GLSL vertex/fragment shaders |
 | **Smooth Scrolling** | [Lenis 1.3](https://github.com/darkroomengineering/lenis) | Momentum-based smooth wheel scrolling synchronized with GSAP |
 | **Typography** | [Next Font Google](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) | Variable font loading (`Archivo`, `Bebas Neue`, `Fraunces`, `Inter`) |
@@ -102,6 +102,7 @@ Floating interactive game launcher with 4 fully playable, state-managed minigame
 | **Testing** | [Vitest 4](https://vitest.dev/) + React Testing Library + JSDOM | Fast unit and component testing suite |
 | **Code Quality** | ESLint 9 (`eslint-config-next`) + TypeScript Compiler | Static code analysis, linting, zero TypeScript emit verification |
 | **CI/CD** | GitHub Actions | Automated lint, typecheck, test, preview, and production deploy |
+| **Hosting** | Vercel + Cloudflare Workers ([OpenNext](https://opennext.js.org/cloudflare)) | Vercel via GitHub Actions; Cloudflare via npm scripts |
 
 ---
 
@@ -126,8 +127,9 @@ src/sections/Team/
 ├── styles/
 │   ├── Team.css
 │   ├── TeamDirectory.css
-│   └── TeamLayout.css
-└── index.ts                   # Clean unified barrel export
+│   ├── TeamLayout.css
+│   └── TeamResponsive.css
+└── index.ts                   # Barrel: app/page.tsx imports "@/src/sections/Team"
 ```
 
 ### 2. Smooth Scrolling & Shared Lenis Lifecycle
@@ -180,7 +182,7 @@ The interactive background in the WhatsApp Community section compiles custom GLS
 
 ### 7. Performance & Reduced Motion
 - Every GSAP animation checks `window.matchMedia("(prefers-reduced-motion: reduce)").matches`. If active, animations immediately resolve to their final visible state with zero motion overhead.
-- Videos are throttled and paused when out of the viewport using `IntersectionObserver`.
+- Continuous WebGL rendering (hero reveal, `LaserFlow`) pauses when offscreen or in background tabs, using `IntersectionObserver` and `document.hidden`.
 - Styles use GPU-accelerated properties (`transform`, `opacity`, `filter`) to avoid layout thrashing.
 
 ### 8. SEO, OpenGraph & Structured Schema
@@ -192,72 +194,56 @@ The interactive background in the WhatsApp Community section compiles custom GLS
 
 ## 📁 Project Structure
 
+Routing lives in `app/`; everything else lives in `src/`. Each shared component and each homepage section gets its own folder. See [`projectmd/FOLDER_STRUCTURE.md`](./projectmd/FOLDER_STRUCTURE.md) for the full map and placement rules.
+
 ```text
 ECell-Web/
-├── .github/
-│   └── workflows/
-│       ├── ci.yml              # CI: Typecheck, lint, vitest, and next build
-│       ├── pr-cd.yml           # CD: Automated Vercel preview environments for PRs
-│       └── vercel-cd.yml       # CD: Automated production deployments on main push
-├── app/                        # Next.js 16 App Router
+├── .github/workflows/          # CI (typecheck, lint, test, build) + Vercel preview/production
+├── app/                        # Next.js 16 App Router (routes and metadata only)
 │   ├── events/
-│   │   └── page.tsx            # Dedicated /events archive page
+│   │   ├── [slug]/             # Statically generated event detail pages
+│   │   ├── argonyx-26/gallery/ # Argonyx gallery (_components, _data, _hooks)
+│   │   └── page.tsx            # /events archive
 │   ├── globals.css             # Tailwind v4 import & global styles
-│   ├── layout.tsx              # Root HTML, font declarations, JSON-LD, metadata
-│   ├── manifest.ts             # PWA Web App Manifest
-│   ├── page.tsx                # Main Landing Page (Hero, Sections, Horizontal Flow)
-│   ├── robots.ts               # Robots.txt configuration
-│   └── sitemap.ts              # Dynamic sitemap generator
-├── public/                     # Static assets (favicons, logos, manifest)
-│   ├── favicon.*               # Multi-resolution icons & SVGs
-│   └── og-image.webp           # Social preview banner
-├── src/                        # Core application source code
-│   ├── assets/                 # Component images, photos, and SVG assets
-│   ├── components/             # Reusable interactive components
-│   │   ├── EventsArchive.tsx   # Filterable events archive grid & modals
-│   │   ├── FloatingLogo/       # Scroll-driven morphing SVG brand mark
-│   │   ├── GameLauncher/       # In-browser arcade (Snake, 2048, Memory, Sprint)
+│   ├── layout.tsx              # Root HTML, fonts, JSON-LD, metadata, analytics
+│   ├── manifest.ts             # Web App Manifest
+│   ├── page.tsx                # Landing page composition
+│   ├── robots.ts               # robots.txt
+│   └── sitemap.ts              # sitemap.xml
+├── public/                     # Stable-URL files (favicons, logos, og-image, _headers)
+├── scripts/                    # Cloudflare deploy wrapper
+├── src/
+│   ├── assets/                 # Imported images, grouped by feature
+│   ├── components/             # Shared components, one folder each
+│   │   ├── EventsArchive/      # /events listing, filters, calendar
+│   │   ├── FloatingLogo/       # Scroll-driven SVG logo that docks into the nav
+│   │   ├── GameLauncher/       # In-browser arcade (Sprint, Snake, Memory, 2048)
 │   │   ├── HorizontalFlow/     # ScrollTrigger horizontal pinning container
-│   │   ├── LaserFlow/          # Three.js custom GLSL shader canvas
-│   │   ├── LogoModal/          # Brand geometry breakdown dialog
-│   │   └── PageTransition/     # Full-page curtain transition overlay
-│   ├── sections/               # Independent modular page sections
-│   │   ├── About/              # Purpose & vision statement with kinetic typography
-│   │   ├── Events/             # Flagship events showcase cards
-│   │   ├── Footer/             # Navigation, social links, watermark emblem
-│   │   ├── Hero/               # WebGL ink-reveal hero, ScrollTrigger shrink, marquee
-│   │   ├── Loader/             # Initial SVG path-draw preloader
-│   │   ├── Nav/                # Responsive navigation bar & mobile drawer
-│   │   ├── Speakers/           # Keynote speakers spotlight & carousel
-│   │   ├── Sponsors/           # Constellation sponsor graph with SVG connectors
-│   │   ├── Story/              # Narrative reveal section with parallax imagery
-│   │   ├── Team/               # 3D team card stack & full member directory
-│   │   ├── WhatsAppCommunity/  # Interactive simulated chat & WhatsApp link
-│   │   └── WhyJoin/            # Interactive value-proposition feature cards
-│   ├── styles/                 # Global styles and motion primitives
-│   │   ├── global.css          # Color variables, CSS reset, font bindings
-│   │   └── SectionTransitions.css # Awwwards-tier wipes, blooms, masks
-│   ├── types/                  # Global TypeScript ambient definitions
-│   │   └── assets.d.ts         # Image & video asset module declarations
-│   └── utils/                  # Core utility helpers
-│       ├── animations.ts       # Shared GSAP tween builders & quickSetters
-│       ├── constants.ts        # Color tokens, animation timings, breakpoints
-│       ├── gsapSetup.ts        # Centralized GSAP & ScrollTrigger registration
-│       ├── lenis.ts            # Shared reference-counted Lenis instance
-│       └── math.ts             # Lerp, smoothstep, and numeric helpers
-├── tests/                      # Automated test suite
-│   ├── app/                    # Route and layout tests
-│   ├── setup.ts                # Vitest test setup and DOM polyfills
-│   └── src/                    # Component and utility unit tests
-├── .nvmrc                      # Node.js runtime version pin (24.x)
-├── CONTRIBUTING.md              # Contributor guidelines and rules
-├── eslint.config.mjs           # ESLint 9 configuration
-├── next.config.ts              # Next.js build and security headers configuration
-├── package.json                # Project dependencies, scripts, engines
-├── postcss.config.mjs          # PostCSS configuration for Tailwind v4
-├── tsconfig.json               # TypeScript compiler configuration
-├── vercel.json                 # Vercel deployment specification
-└── vitest.config.mts           # Vitest runner configuration
+│   │   ├── InfiniteSpiral/     # Event-detail gallery preview
+│   │   ├── LaserFlow/          # Three.js GLSL laser/fog shader
+│   │   ├── LogoModal/          # Logo story dialog
+│   │   ├── PageTransition/     # Full-page curtain transition overlay
+│   │   ├── RouteScrollManager/ # Scroll reset between routes
+│   │   ├── SiteCredit/         # "Built by" credit
+│   │   ├── SmoothScroll/       # Shared Lenis lifecycle
+│   │   └── ui/                 # Generic primitives (timeline, footer, carousels)
+│   ├── data/                   # Shared event records and lookup (eventsData.ts, events/)
+│   ├── sections/               # Independent landing-page sections
+│   │   ├── About/  Events/  Footer/  Loader/  Speakers/  Sponsors/
+│   │   ├── Story/  Team/  WhatsAppCommunity/  WhyJoin/
+│   │   ├── Hero/               # components/, webgl/ (ink, nebula, glass letters), styles/
+│   │   └── Nav/                # Nav, NavBar, LogoHint, ChaptersDropdown, hooks/
+│   ├── styles/                 # global.css tokens/reset, SectionTransitions.css
+│   ├── types/                  # Ambient asset module declarations
+│   └── utils/                  # gsapSetup, lenis, scrollLock, animations, math, wheel, cn
+├── tests/                      # Vitest suite (app/ and src/ mirror the source tree)
+├── projectmd/                  # Project documentation
+├── next.config.ts              # Images and legacy-route redirects
+├── open-next.config.ts         # OpenNext (Cloudflare) adapter config
+├── wrangler.jsonc              # Cloudflare Worker config
+├── vercel.json                 # Vercel framework/output settings
+├── tsconfig.json               # Strict TypeScript, `@/*` → repo root
+└── vitest.config.mts           # Vitest + JSDOM
 ```
 
 ---
@@ -307,6 +293,8 @@ nvm use
 | `npm run typecheck` | Validates TypeScript types across the entire codebase (`tsc --noEmit`) |
 | `npm run test` | Executes the Vitest automated test suite once |
 | `npm run test:watch` | Runs Vitest in interactive watch mode for TDD |
+| `npm run preview` | Builds with OpenNext and previews locally in the Cloudflare Workers runtime |
+| `npm run deploy` | Builds with OpenNext and deploys to Cloudflare Workers |
 
 ---
 
@@ -326,7 +314,8 @@ npm run test:watch
 
 Automated tests cover:
 - **App Routes**: Route mounting and metadata validation (`tests/app/routes.test.ts`).
-- **Sections**: Renders, interactions, and keyboard accessibility for `Speakers`, `Team`, and `WhatsAppCommunity`.
+- **Events**: Event lookup, the `/events` archive, detail pages, and route scroll reset (`tests/app/eventsRoute.test.tsx`).
+- **Sections**: Renders, interactions, and keyboard accessibility for `Nav`, `Speakers`, `Team`, and `WhatsAppCommunity`.
 - **Arcade Launcher**: Minigame mounting, score progression, and window lifecycle.
 - **Math & Utilities**: Pure math algorithms (`lerp`, `clamp`, `smoothstep`).
 
@@ -334,7 +323,7 @@ Automated tests cover:
 
 ## 🚢 CI/CD & Deployment Workflows
 
-The repository includes a 3-tier GitHub Actions continuous integration and continuous deployment pipeline:
+The repository includes a 3-workflow GitHub Actions continuous integration and continuous deployment pipeline:
 
 ### 1. Continuous Integration (`.github/workflows/ci.yml`)
 Triggered on every push and pull request to the `main` branch. Executes:
@@ -351,6 +340,10 @@ Triggered on every push and pull request to the `main` branch. Executes:
 ### 3. Production Deployment (`.github/workflows/vercel-cd.yml`)
 - Triggered automatically on merge/push to `main`.
 - Pre-builds and ships the optimized production build directly to Vercel production.
+
+### 4. Cloudflare Workers (OpenNext)
+- `open-next.config.ts`, `wrangler.jsonc`, and `public/_headers` configure a Cloudflare Workers deployment.
+- Deployed with `npm run deploy` (or `npm run deploy:cloudflare` for an existing build) rather than a GitHub workflow. See [`projectmd/DEPLOYMENT.md`](./projectmd/DEPLOYMENT.md).
 
 #### Setting up Deployment Secrets in GitHub
 To configure Vercel deployments, configure these secrets in **Repository Settings → Secrets and variables → Actions**:
