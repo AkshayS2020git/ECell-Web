@@ -195,6 +195,15 @@ describe("submitApplication", () => {
     expect(state.message).toMatch(/try again/i);
   });
 
+  it("doesn't claim a timed-out application was lost", async () => {
+    fetchMock.mockRejectedValue(new DOMException("The operation was aborted due to timeout", "TimeoutError"));
+
+    const state = await submitApplication(IDLE, formData());
+
+    expect(state.status).toBe("error");
+    expect(state.message).toMatch(/already applied, it went through/);
+  });
+
   it("refuses to drop applications in production when unconfigured", async () => {
     vi.stubEnv("RECRUITMENT_SCRIPT_URL", "");
     vi.stubEnv("NODE_ENV", "production");

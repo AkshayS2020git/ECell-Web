@@ -3,9 +3,11 @@
 import { RECRUITMENT } from "@/src/data/recruitment";
 import { validateApplication, type ApplicationState } from "./application";
 
-// Apps Script cold starts can take a few seconds; past this we give up and let
-// the applicant retry rather than leave the button spinning.
-const SCRIPT_TIMEOUT_MS = 15_000;
+// Apps Script is slow: even a trivial request takes 5–9s, and a write (lock,
+// sheet tabs, rows, notify email) adds more, especially on its first run.
+// Past this we give up and let the applicant retry. Keep it under the page's
+// maxDuration in app/recruit/page.tsx.
+const SCRIPT_TIMEOUT_MS = 45_000;
 
 const GENERIC_ERROR = `Something went wrong on our side and your application wasn't saved. Please try again in a minute, or email ${RECRUITMENT.contactEmail}.`;
 
@@ -84,6 +86,15 @@ export async function submitApplication(
     console.error("[recruit] Apps Script rejected the application:", response.status, body);
   } catch (error) {
     console.error("[recruit] Could not reach Apps Script:", error);
+    // A slow Apps Script may still save the row after we stop waiting, so
+    // don't claim it wasn't saved. A retry then reports "already applied".
+    if ((error as Error | null)?.name === "TimeoutError") {
+      return {
+        status: "error",
+        message:
+          "This is taking longer than usual, so we couldn't confirm your application was saved. Please submit again: if it says you've already applied, it went through.",
+      };
+    }
   }
 
   return { status: "error", message: GENERIC_ERROR };

@@ -12,6 +12,10 @@ import { SITE_URL } from "@/src/utils/constants";
 import RecruitForm from "./RecruitForm";
 import "./Recruit.css";
 
+// The application Server Action waits on Apps Script, which can take well
+// over 10s; give it room on hosts whose default limit is shorter.
+export const maxDuration = 60;
+
 const description =
   "ECell RV University is recruiting. Join the PR, social media and content, design, documentation or tech team and help build the startup community on campus.";
 
