@@ -19,7 +19,6 @@ export const APPLICATION_FIELDS = [
   "year",
   "program",
   "firstChoice",
-  "secondChoice",
   "why",
   "experience",
   "link",
@@ -35,7 +34,6 @@ export const STEP_ONE_FIELDS: readonly ApplicationField[] = [
   "year",
   "program",
   "firstChoice",
-  "secondChoice",
 ];
 
 export const LIMITS = {
@@ -52,7 +50,9 @@ export const LIMITS = {
 
 export interface TeamAnswers {
   team: string;
-  choice: "First" | "Second";
+  // Applicants pick one team now. The sheet's team tabs still have a Choice
+  // column from when a second choice was allowed, so keep filling it.
+  choice: "First";
   answers: { question: string; answer: string }[];
 }
 
@@ -64,7 +64,6 @@ export interface Application {
   year: string;
   program: string;
   firstChoice: string;
-  secondChoice: string;
   why: string;
   experience: string;
   link: string;
@@ -85,6 +84,15 @@ export interface ApplicationState {
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Only RV University students can apply, so only their college email counts. */
+export const COLLEGE_EMAIL_DOMAIN = "rvu.edu.in";
+export const COLLEGE_EMAIL_ERROR = `Use your college email, ending in @${COLLEGE_EMAIL_DOMAIN}.`;
+
+export function isCollegeEmail(value: string): boolean {
+  const email = value.trim().toLowerCase();
+  return EMAIL_PATTERN.test(email) && email.endsWith(`@${COLLEGE_EMAIL_DOMAIN}`);
+}
 // Indian mobile numbers: 10 digits starting 6–9, with an optional +91 / 0 prefix.
 const PHONE_PATTERN = /^(?:\+?91|0)?([6-9]\d{9})$/;
 
@@ -121,7 +129,6 @@ function isHttpUrl(value: string): boolean {
 function validateTeamAnswers(
   formData: FormData,
   team: RecruitmentTeam,
-  choice: TeamAnswers["choice"],
   errors: ApplicationErrors,
 ): TeamAnswers {
   const answers = team.questions.map((question) => {
@@ -141,7 +148,7 @@ function validateTeamAnswers(
     return { question: question.label, answer };
   });
 
-  return { team: team.name, choice, answers };
+  return { team: team.name, choice: "First", answers };
 }
 
 export function validateApplication(formData: FormData): ValidationResult {
@@ -153,7 +160,9 @@ export function validateApplication(formData: FormData): ValidationResult {
 
   const email = text(formData, "email").toLowerCase();
   if (!EMAIL_PATTERN.test(email) || email.length > LIMITS.email) {
-    errors.email = "Enter a valid email address.";
+    errors.email = "Enter a valid college email address.";
+  } else if (!isCollegeEmail(email)) {
+    errors.email = COLLEGE_EMAIL_ERROR;
   }
 
   const phone = normalizePhone(text(formData, "phone"));
@@ -173,19 +182,9 @@ export function validateApplication(formData: FormData): ValidationResult {
   const firstChoice = getTeamById(text(formData, "firstChoice"));
   if (!firstChoice) errors.firstChoice = "Choose the team you want to join.";
 
-  const secondChoiceId = text(formData, "secondChoice");
-  let secondChoice = secondChoiceId ? getTeamById(secondChoiceId) : undefined;
-  if (secondChoiceId && !secondChoice) {
-    errors.secondChoice = "Choose a team from the list.";
-  } else if (secondChoice && secondChoice.id === firstChoice?.id) {
-    errors.secondChoice = "Pick a different team from your first choice.";
-    secondChoice = undefined;
-  }
-
-  // Only the chosen teams' questions count; answers to any others are ignored.
+  // Only the chosen team's questions count; answers to any others are ignored.
   const teamAnswers: TeamAnswers[] = [];
-  if (firstChoice) teamAnswers.push(validateTeamAnswers(formData, firstChoice, "First", errors));
-  if (secondChoice) teamAnswers.push(validateTeamAnswers(formData, secondChoice, "Second", errors));
+  if (firstChoice) teamAnswers.push(validateTeamAnswers(formData, firstChoice, errors));
 
   const why = text(formData, "why");
   if (why.length < LIMITS.whyMin) {
@@ -217,7 +216,6 @@ export function validateApplication(formData: FormData): ValidationResult {
       year,
       program,
       firstChoice: firstChoice.name,
-      secondChoice: secondChoice?.name ?? "",
       why,
       experience,
       link,

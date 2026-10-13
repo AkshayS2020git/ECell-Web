@@ -12,8 +12,11 @@ import {
 import { scrollToElement } from "@/src/utils/lenis";
 import { submitApplication } from "./actions";
 import {
+  COLLEGE_EMAIL_DOMAIN,
+  COLLEGE_EMAIL_ERROR,
   LIMITS,
   STEP_ONE_FIELDS,
+  isCollegeEmail,
   normalizePhone,
   questionFieldName,
   questionLimit,
@@ -41,7 +44,6 @@ async function submitSafely(
   }
 }
 
-const pad = (value: number) => value.toString().padStart(2, "0");
 const fieldId = (name: string) => `rc-${name.replace(/\./g, "-")}`;
 
 /** Shared accessibility wiring for an input and its error line. */
@@ -108,7 +110,6 @@ function QuestionField({
 export default function RecruitForm(): React.ReactElement {
   const [step, setStep] = useState<Step>(1);
   const [firstChoiceId, setFirstChoiceId] = useState("");
-  const [secondChoiceId, setSecondChoiceId] = useState("");
   const [whyLength, setWhyLength] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const stepOneRef = useRef<HTMLDivElement>(null);
@@ -125,12 +126,7 @@ export default function RecruitForm(): React.ReactElement {
     INITIAL_STATE,
   );
 
-  const firstTeam = getTeamById(firstChoiceId);
-  const secondTeam = secondChoiceId !== firstChoiceId ? getTeamById(secondChoiceId) : undefined;
-  const chosenTeams = [
-    firstTeam && { team: firstTeam, label: "First choice" },
-    secondTeam && { team: secondTeam, label: "Second choice" },
-  ].filter((entry) => entry !== undefined);
+  const chosenTeam = getTeamById(firstChoiceId);
 
   useEffect(() => {
     if (state.status === "success") {
@@ -173,14 +169,15 @@ export default function RecruitForm(): React.ReactElement {
     const form = formRef.current;
     if (!form) return;
 
-    // Checks the browser can't express as HTML attributes.
+    // Checks the browser can't express as HTML attributes. Step 2 stays
+    // locked until the applicant uses their college email.
+    const email = form.elements.namedItem("email") as HTMLInputElement;
+    email.setCustomValidity(
+      email.value && !isCollegeEmail(email.value) ? COLLEGE_EMAIL_ERROR : "",
+    );
     const phone = form.elements.namedItem("phone") as HTMLInputElement;
     phone.setCustomValidity(
       phone.value && !normalizePhone(phone.value) ? "Enter a 10-digit mobile number." : "",
-    );
-    const second = form.elements.namedItem("secondChoice") as HTMLSelectElement;
-    second.setCustomValidity(
-      second.value && second.value === firstChoiceId ? "Pick a different team from your first choice." : "",
     );
 
     if (stepIsValid(stepOneRef.current)) showStep(2);
@@ -223,7 +220,7 @@ export default function RecruitForm(): React.ReactElement {
     <form ref={formRef} className="rc-form" onSubmit={handleSubmit} noValidate>
       <ol className="rc-progress" aria-label="Application steps">
         <li className={step === 1 ? "is-current" : "is-done"} aria-current={step === 1 ? "step" : undefined}>
-          <span>01</span> You &amp; your team
+          <span>01</span> About you &amp; select your team
         </li>
         <li className={step === 2 ? "is-current" : ""} aria-current={step === 2 ? "step" : undefined}>
           <span>02</span> Your answers
@@ -250,8 +247,16 @@ export default function RecruitForm(): React.ReactElement {
             </div>
 
             <div className="rc-field">
-              <label htmlFor="rc-email">Email</label>
-              <input {...fieldProps("email", errors)} type="email" autoComplete="email" required maxLength={LIMITS.email} placeholder="you@rvu.edu.in" />
+              <label htmlFor="rc-email">College email</label>
+              <input
+                {...fieldProps("email", errors)}
+                type="email"
+                autoComplete="email"
+                required
+                maxLength={LIMITS.email}
+                placeholder={`you@${COLLEGE_EMAIL_DOMAIN}`}
+                onChange={(event) => event.currentTarget.setCustomValidity("")}
+              />
               <ErrorLine name="email" errors={errors} />
             </div>
           </div>
@@ -295,53 +300,29 @@ export default function RecruitForm(): React.ReactElement {
         </fieldset>
 
         <fieldset className="rc-fieldset" disabled={pending}>
-          <legend>02 · Your team</legend>
+          <legend>02 · Select your team</legend>
 
-          <div className="rc-row">
-            <div className="rc-field">
-              <label htmlFor="rc-firstChoice">First choice</label>
-              <select
-                {...fieldProps("firstChoice", errors)}
-                required
-                value={firstChoiceId}
-                onChange={(event) => setFirstChoiceId(event.currentTarget.value)}
-              >
-                <option value="" disabled>
-                  Select a team
+          <div className="rc-field">
+            <label htmlFor="rc-firstChoice">Team</label>
+            <select
+              {...fieldProps("firstChoice", errors)}
+              required
+              value={firstChoiceId}
+              onChange={(event) => setFirstChoiceId(event.currentTarget.value)}
+            >
+              <option value="" disabled>
+                Select a team
+              </option>
+              {RECRUITMENT_TEAMS.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
                 </option>
-                {RECRUITMENT_TEAMS.map((team) => (
-                  <option key={team.id} value={team.id}>
-                    {team.name}
-                  </option>
-                ))}
-              </select>
-              <ErrorLine name="firstChoice" errors={errors} />
-            </div>
-
-            <div className="rc-field">
-              <label htmlFor="rc-secondChoice">
-                Second choice <span>Optional</span>
-              </label>
-              <select
-                {...fieldProps("secondChoice", errors)}
-                value={secondChoiceId}
-                onChange={(event) => {
-                  event.currentTarget.setCustomValidity("");
-                  setSecondChoiceId(event.currentTarget.value);
-                }}
-              >
-                <option value="">No second choice</option>
-                {RECRUITMENT_TEAMS.map((team) => (
-                  <option key={team.id} value={team.id}>
-                    {team.name}
-                  </option>
-                ))}
-              </select>
-              <ErrorLine name="secondChoice" errors={errors} />
-            </div>
+              ))}
+            </select>
+            <ErrorLine name="firstChoice" errors={errors} />
           </div>
           <p className="rc-fieldset__note">
-            Each team has its own questions. You&apos;ll answer them on the next step.
+            Each team has its own questions. You&apos;ll answer your team&apos;s on the next step.
           </p>
         </fieldset>
 
@@ -355,22 +336,20 @@ export default function RecruitForm(): React.ReactElement {
         </div>
       </div>
 
-      {/* Step 2 renders the chosen teams' questions; switching teams on step 1
+      {/* Step 2 renders the chosen team's questions; switching teams on step 1
           swaps them out. */}
       <div ref={stepTwoRef} className="rc-step-panel" hidden={step !== 2}>
-        {chosenTeams.map(({ team, label }, index) => (
-          <fieldset className="rc-fieldset" disabled={pending} key={team.id}>
-            <legend>
-              {pad(index + 3)} · {team.name} <span>{label}</span>
-            </legend>
-            {team.questions.map((question) => (
-              <QuestionField key={question.id} team={team} question={question} errors={errors} />
+        {chosenTeam && (
+          <fieldset className="rc-fieldset" disabled={pending} key={chosenTeam.id}>
+            <legend>03 · {chosenTeam.name}</legend>
+            {chosenTeam.questions.map((question) => (
+              <QuestionField key={question.id} team={chosenTeam} question={question} errors={errors} />
             ))}
           </fieldset>
-        ))}
+        )}
 
         <fieldset className="rc-fieldset" disabled={pending}>
-          <legend>{pad(chosenTeams.length + 3)} · In your words</legend>
+          <legend>{chosenTeam ? "04" : "03"} · In your words</legend>
 
           <div className="rc-field">
             <label htmlFor="rc-why">Why do you want to join ECell?</label>

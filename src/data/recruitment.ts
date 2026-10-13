@@ -230,7 +230,7 @@ export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
   {
     question: "Can I apply to more than one team?",
     answer:
-      "Pick a first choice and, optionally, a second. If your first choice is full we'll consider you for the second.",
+      "No, each application is for one team, so pick the one you most want to join.",
   },
   {
     question: "How much time does it take?",
