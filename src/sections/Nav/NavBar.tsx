@@ -70,6 +70,13 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
           >
             Events
           </button>
+          <Link
+            href="/recruit"
+            className={`nav-events-link ${pathname === "/recruit" ? "is-active" : ""}`}
+            aria-current={pathname === "/recruit" ? "page" : undefined}
+          >
+            Join Us
+          </Link>
           <button
             ref={toggleRef}
             className="chapters-toggle"

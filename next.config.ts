@@ -43,6 +43,16 @@ const nextConfig: NextConfig = {
         destination: "/events/hacktoberfest-26",
         permanent: false,
       },
+      {
+        source: "/join",
+        destination: "/recruit",
+        permanent: false,
+      },
+      {
+        source: "/recruitment",
+        destination: "/recruit",
+        permanent: false,
+      },
     ];
   },
 };
