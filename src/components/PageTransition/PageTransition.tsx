@@ -4,15 +4,44 @@ import { usePathname, useRouter } from "next/navigation";
 import { gsap } from "@/src/utils/gsapSetup";
 import "./PageTransition.css";
 
-const TARGET_PATH = "/events";
 const COLUMN_COUNT = 5;
 // Keep the cover up at least this long so the title always finishes its
-// entrance, even when the events route is already prefetched.
+// entrance, even when the target route is already prefetched.
 const MIN_COVER_MS = 1300;
 // If navigation stalls, never leave the site stuck behind the curtain.
 const MAX_COVER_MS = 8000;
 
 export const TRANSITION_REVEAL_EVENT = "ecell:transition-reveal";
+export const PAGE_TRANSITION_EVENT = "ecell:page-transition";
+// Older trigger kept for the home events section and the nav's Events button.
+const EVENTS_TRANSITION_EVENT = "ecell:events-transition";
+
+interface TransitionCopy {
+  eyebrow: string;
+  lines: [string, string];
+  meta: string;
+}
+
+// The curtain's title for each route it can carry the visitor to.
+const TRANSITION_COPY = {
+  "/events": {
+    eyebrow: "Events & Workshops",
+    lines: ["Where ideas", "get moving."],
+    meta: "Loading events",
+  },
+  "/recruit": {
+    eyebrow: "Recruitment",
+    lines: ["Your seat", "is waiting."],
+    meta: "Loading recruitment",
+  },
+} satisfies Record<string, TransitionCopy>;
+
+export type TransitionPath = keyof typeof TRANSITION_COPY;
+
+/** Cover the screen with the branded curtain, then navigate to `path`. */
+export function startPageTransition(path: TransitionPath): void {
+  window.dispatchEvent(new CustomEvent(PAGE_TRANSITION_EVENT, { detail: { path } }));
+}
 
 // The same three strokes the entry loader draws, so the transition reads as
 // part of the brand rather than a generic wipe.
@@ -26,6 +55,8 @@ type TransitionPhase = "idle" | "entering" | "covered" | "revealing";
 
 export default function PageTransition(): React.ReactElement {
   const [phase, setPhase] = useState<TransitionPhase>("idle");
+  const [target, setTarget] = useState<TransitionPath>("/events");
+  const targetRef = useRef<TransitionPath>("/events");
   const phaseRef = useRef<TransitionPhase>("idle");
   const coveredAtRef = useRef(0);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -56,17 +87,19 @@ export default function PageTransition(): React.ReactElement {
 
   // Cover the screen, then navigate.
   useEffect(() => {
-    const startTransition = () => {
+    const startTransition = (path: TransitionPath) => {
       if (phaseRef.current !== "idle") return;
 
       const overlay = overlayRef.current;
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reducedMotion || !overlay) {
-        router.push(TARGET_PATH);
+        router.push(path);
         return;
       }
 
-      router.prefetch(TARGET_PATH);
+      targetRef.current = path;
+      setTarget(path);
+      router.prefetch(path);
       setTransitionPhase("entering");
 
       const columns = columnsRef.current.filter(Boolean);
@@ -99,7 +132,7 @@ export default function PageTransition(): React.ReactElement {
       tl.call(() => {
         coveredAtRef.current = performance.now();
         setTransitionPhase("covered");
-        router.push(TARGET_PATH);
+        router.push(path);
         failsafeTimerRef.current = window.setTimeout(() => {
           if (phaseRef.current !== "covered") return;
           timelineRef.current?.kill();
@@ -120,15 +153,23 @@ export default function PageTransition(): React.ReactElement {
         .to(progressRef.current, { scaleX: 1, duration: MIN_COVER_MS / 1000, ease: "power1.inOut" }, 0.5);
     };
 
-    window.addEventListener("ecell:events-transition", startTransition);
+    const handlePageTransition = (event: Event) => {
+      const path = (event as CustomEvent<{ path?: string }>).detail?.path;
+      if (path && path in TRANSITION_COPY) startTransition(path as TransitionPath);
+    };
+    const handleEventsTransition = () => startTransition("/events");
+
+    window.addEventListener(PAGE_TRANSITION_EVENT, handlePageTransition);
+    window.addEventListener(EVENTS_TRANSITION_EVENT, handleEventsTransition);
     return () => {
-      window.removeEventListener("ecell:events-transition", startTransition);
+      window.removeEventListener(PAGE_TRANSITION_EVENT, handlePageTransition);
+      window.removeEventListener(EVENTS_TRANSITION_EVENT, handleEventsTransition);
     };
   }, [router]);
 
-  // Once the events route has rendered, lift the curtain.
+  // Once the target route has rendered, lift the curtain.
   useEffect(() => {
-    if (pathname !== TARGET_PATH || phaseRef.current !== "covered") return;
+    if (pathname !== targetRef.current || phaseRef.current !== "covered") return;
 
     const reveal = () => {
       if (failsafeTimerRef.current !== null) window.clearTimeout(failsafeTimerRef.current);
@@ -159,7 +200,7 @@ export default function PageTransition(): React.ReactElement {
           ease: "power4.inOut",
           stagger: { each: 0.06, from: "start" },
         }, 0.3)
-        // Let the events hero start its entrance as the curtain lifts.
+        // Let the new page's hero start its entrance as the curtain lifts.
         .call(() => {
           window.dispatchEvent(new CustomEvent(TRANSITION_REVEAL_EVENT));
         }, [], 0.55);
@@ -192,6 +233,8 @@ export default function PageTransition(): React.ReactElement {
       delete document.documentElement.dataset.pageTransition;
     };
   }, []);
+
+  const copy = TRANSITION_COPY[target];
 
   return (
     <div
@@ -231,18 +274,18 @@ export default function PageTransition(): React.ReactElement {
 
         <p className="pt-eyebrow" ref={eyebrowRef}>
           <span ref={ruleRef} />
-          Events &amp; Workshops
+          {copy.eyebrow}
         </p>
 
         <h2 className="pt-title">
           <span className="pt-line-mask">
             <span className="pt-line" ref={(el) => { linesRef.current[0] = el; }}>
-              Where ideas
+              {copy.lines[0]}
             </span>
           </span>
           <span className="pt-line-mask">
             <span className="pt-line" ref={(el) => { linesRef.current[1] = el; }}>
-              <em>get moving.</em>
+              <em>{copy.lines[1]}</em>
             </span>
           </span>
         </h2>
@@ -253,9 +296,9 @@ export default function PageTransition(): React.ReactElement {
         <span className="pt-progress">
           <span ref={progressRef} />
         </span>
-        <span>Loading events</span>
+        <span>{copy.meta}</span>
       </div>
-      <span className="pt-sr">{phase === "idle" ? "" : "Loading events"}</span>
+      <span className="pt-sr">{phase === "idle" ? "" : copy.meta}</span>
     </div>
   );
 }

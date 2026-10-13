@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { startPageTransition } from "@/src/components/PageTransition/PageTransition";
 import ChaptersDropdown from "./ChaptersDropdown";
 import { useChaptersMenu } from "./hooks/useChaptersMenu";
 import { useSectionNavigation } from "./hooks/useSectionNavigation";
@@ -74,6 +75,13 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
             href="/recruit"
             className={`nav-events-link ${pathname === "/recruit" ? "is-active" : ""}`}
             aria-current={pathname === "/recruit" ? "page" : undefined}
+            onNavigate={(event) => {
+              // Same curtain as Events; it navigates once the screen is covered.
+              // New-tab and modified clicks never reach here.
+              event.preventDefault();
+              close();
+              if (pathname !== "/recruit") startPageTransition("/recruit");
+            }}
           >
             Join Us
           </Link>

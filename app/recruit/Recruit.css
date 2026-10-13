@@ -191,6 +191,48 @@
     }
 }
 
+/* Hero entrance. Plays on load; when the page transition curtain is
+   carrying the visitor here, it holds on its first frame until the curtain
+   starts to lift, then waits out the .3s the curtain spends clearing its own
+   title, so the hero rises in behind the lifting columns. */
+.rc-hero-copy>*,
+.rc-status {
+    animation: rc-rise .9s cubic-bezier(.16, 1, .3, 1) both;
+    animation-delay: calc(var(--rc-enter-offset, 0s) + var(--rc-enter-step, 0s))
+}
+
+.rc-hero-copy>:nth-child(2) {
+    --rc-enter-step: .08s
+}
+
+.rc-hero-copy>:nth-child(3) {
+    --rc-enter-step: .18s
+}
+
+.rc-hero-copy>:nth-child(4) {
+    --rc-enter-step: .26s
+}
+
+.rc-status {
+    --rc-enter-step: .32s
+}
+
+:root[data-page-transition] .rc-hero {
+    --rc-enter-offset: .3s
+}
+
+:root[data-page-transition="entering"] :is(.rc-hero-copy>*, .rc-status),
+:root[data-page-transition="covered"] :is(.rc-hero-copy>*, .rc-status) {
+    animation-play-state: paused
+}
+
+@keyframes rc-rise {
+    from {
+        opacity: 0;
+        transform: translateY(36px)
+    }
+}
+
 .rc-status dl {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -717,7 +759,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .rc-status__state.is-open i {
+    .rc-status__state.is-open i,
+    .rc-hero-copy>*,
+    .rc-status {
         animation: none
     }
 }
