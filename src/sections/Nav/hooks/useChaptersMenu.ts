@@ -9,6 +9,11 @@ export function useChaptersMenu() {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node | null;
+      // Both the "Chapters" text and the menu icon toggle the menu; neither
+      // click counts as outside, or the menu would close as it opens.
+      if (target instanceof Element && target.closest('[aria-controls="chapters-menu"]')) {
+        return;
+      }
       if (
         toggleRef.current &&
         target &&

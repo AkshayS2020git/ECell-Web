@@ -80,6 +80,7 @@
   font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .chapters-toggle {
@@ -232,5 +233,20 @@
   .site-nav--sub .nav-events-link,
   .site-nav--sub .chapters-toggle {
     min-height: 44px;
+  }
+}
+
+/* Narrow phones can't fit Events, Join Us and Chapters on one line. The
+   "Chapters" text and the menu icon open the same menu, so swap the text for
+   the icon here. The base icon's lines are inset to zero width, so give them
+   a visible width at this size. */
+@media (max-width: 400px) {
+  .chapters-toggle {
+    display: none;
+  }
+
+  .menu-icon span {
+    left: 2px;
+    right: 2px;
   }
 }
