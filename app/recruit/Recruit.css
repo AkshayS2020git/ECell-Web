@@ -727,8 +727,6 @@
     background: rgba(10, 10, 10, .72);
     backdrop-filter: blur(4px);
     color: var(--rc-paper);
-    font-size: .95rem;
-    letter-spacing: .02em;
     text-align: center;
     animation: rc-fade-in .25s ease-out both
 }
@@ -737,6 +735,24 @@
     from {
         opacity: 0
     }
+}
+
+/* Re-keyed on every change, so each new fact fades in. */
+.rc-pending__fact {
+    max-width: 34ch;
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-size: clamp(1.15rem, 2.6vw, 1.5rem);
+    font-style: italic;
+    line-height: 1.35;
+    animation: rc-fade-in .4s ease-out both
+}
+
+.rc-pending__status {
+    color: var(--rc-muted);
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase
 }
 
 .rc-spinner {
@@ -1024,7 +1040,8 @@
         transform: none
     }
 
-    .rc-pending {
+    .rc-pending,
+    .rc-pending__fact {
         animation: none
     }
 

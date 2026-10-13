@@ -4,6 +4,7 @@ import React, { startTransition, useActionState, useEffect, useRef, useState } f
 import { createPortal } from "react-dom";
 import {
   RECRUITMENT,
+  RECRUITMENT_FUN_FACTS,
   RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
   RECRUITMENT_YEARS,
@@ -32,6 +33,7 @@ import {
 
 type Step = 1 | 2;
 const STEP_COUNT = 2;
+const FACT_INTERVAL_MS = 5000;
 
 type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
@@ -203,12 +205,37 @@ function QuestionField({
  * the page still underneath until the save finishes.
  */
 function SavingOverlay() {
+  // Only ever rendered in the browser after a submit, so picking at random
+  // here can't cause a hydration mismatch.
+  const [factIndex, setFactIndex] = useState(() =>
+    Math.floor(Math.random() * RECRUITMENT_FUN_FACTS.length),
+  );
+
   useEffect(() => lockPageScroll(), []);
 
+  // A slow save shouldn't leave them staring at one line: move to a different
+  // fact every few seconds.
+  useEffect(() => {
+    if (RECRUITMENT_FUN_FACTS.length < 2) return;
+    const timer = window.setInterval(() => {
+      setFactIndex((current) => {
+        const offset = 1 + Math.floor(Math.random() * (RECRUITMENT_FUN_FACTS.length - 1));
+        return (current + offset) % RECRUITMENT_FUN_FACTS.length;
+      });
+    }, FACT_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, []);
+
   return createPortal(
-    <div className="rc-pending" role="status">
+    <div className="rc-pending">
       <span className="rc-spinner" aria-hidden="true" />
-      <p>Taking a while, please wait…</p>
+      <p className="rc-pending__fact" key={factIndex}>
+        {RECRUITMENT_FUN_FACTS[factIndex]}
+      </p>
+      {/* Only this line is announced; the rotating facts would be noise. */}
+      <p className="rc-pending__status" role="status">
+        Saving your data…
+      </p>
     </div>,
     document.body,
   );

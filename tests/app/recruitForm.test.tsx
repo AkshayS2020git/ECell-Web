@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import RecruitForm from "@/app/recruit/RecruitForm";
 import { submitApplication } from "@/app/recruit/actions";
+import { RECRUITMENT_FUN_FACTS } from "@/src/data/recruitment";
 
 vi.mock("@/app/recruit/actions", () => ({ submitApplication: vi.fn() }));
 
@@ -108,7 +109,7 @@ describe("RecruitForm", () => {
     expect(within(panel).getByText("What happens next")).toBeInTheDocument();
     expect(within(panel).getByText("Shortlisting")).toBeInTheDocument();
     expect(panel).toHaveFocus();
-    expect(screen.queryByText(/taking a while/i)).toBeNull();
+    expect(screen.queryByText(/saving your data/i)).toBeNull();
     expect(document.body.style.overflow).toBe("");
   });
 
@@ -134,7 +135,7 @@ describe("RecruitForm", () => {
     expect(submitMock).toHaveBeenCalledOnce();
   });
 
-  it("shows a spinner and a wait message while the application is saving", async () => {
+  it("shows a spinner with rotating fun facts while the application is saving", async () => {
     submitMock.mockReturnValue(new Promise(() => {}));
     render(<RecruitForm />);
     fillStepOne();
@@ -142,14 +143,28 @@ describe("RecruitForm", () => {
     type(/languages or frameworks/i, "TypeScript");
     type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
     type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
-    expect(screen.queryByText(/taking a while/i)).toBeNull();
+    expect(screen.queryByText(/saving your data/i)).toBeNull();
 
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
-    });
+    vi.useFakeTimers();
+    try {
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
+      });
 
-    expect(screen.getByText(/taking a while, please wait/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /sending/i })).toBeDisabled();
+      expect(screen.getByText(/saving your data/i)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /sending/i })).toBeDisabled();
+      const fact = () => document.querySelector(".rc-pending__fact")?.textContent;
+      const first = fact();
+      expect(RECRUITMENT_FUN_FACTS).toContain(first);
+
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+      expect(RECRUITMENT_FUN_FACTS).toContain(fact());
+      expect(fact()).not.toBe(first);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("doesn't submit step 2 with a missing answer", () => {

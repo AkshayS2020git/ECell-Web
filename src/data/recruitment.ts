@@ -249,6 +249,17 @@ export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
   },
 ];
 
+/** Shown one at a time, in random order, while an application is saving. */
+export const RECRUITMENT_FUN_FACTS: string[] = [
+  "Pigs are physically unable to look up at the sky.",
+  "Scotland's official national animal is the unicorn.",
+  "A shrimp's heart is located inside its head.",
+  "Mosquitoes are reportedly attracted more often to people who have recently eaten bananas.",
+  "A single day on Venus is longer than a full year on Venus.",
+  "Lobsters have blue blood.",
+  "You cannot hum while holding your nose. Don't try it right now.",
+];
+
 export function getTeamById(id: string): RecruitmentTeam | undefined {
   return RECRUITMENT_TEAMS.find((team) => team.id === id);
 }
