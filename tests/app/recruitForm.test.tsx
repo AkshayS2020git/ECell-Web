@@ -126,13 +126,38 @@ describe("RecruitForm", () => {
     });
     unmount();
 
+    // Reload: the form starts on "already submitted".
     render(<RecruitForm />);
+    const panel = screen.getByRole("status");
+    expect(within(panel).getByRole("heading", { name: /already submitted/i })).toBeInTheDocument();
+    expect(within(panel).getByText(/hi asha/i)).toBeInTheDocument();
+    expect(within(panel).getByText("Tech")).toBeInTheDocument();
+    expect(within(panel).getByText("asha.rao@rvu.edu.in")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Full name")).toBeNull();
+
+    // Someone else on the same browser can still apply, but not with that email.
+    fireEvent.click(screen.getByRole("button", { name: /apply with a different email/i }));
     fillStepOne("Asha.Rao@rvu.edu.in");
     next();
 
     expect(screen.getByText(/already applied/i)).toBeInTheDocument();
     expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
     expect(submitMock).toHaveBeenCalledOnce();
+  });
+
+  it("shows the form as usual when nothing was sent from this browser", () => {
+    render(<RecruitForm />);
+    expect(screen.getByLabelText("Full name")).toBeInTheDocument();
+    expect(screen.queryByText(/already/i)).toBeNull();
+  });
+
+  it("still recognises emails saved by the older storage format", () => {
+    window.localStorage.setItem("ecell-recruit-applied", JSON.stringify(["asha.rao@rvu.edu.in"]));
+    render(<RecruitForm />);
+
+    const panel = screen.getByRole("status");
+    expect(within(panel).getByText("asha.rao@rvu.edu.in")).toBeInTheDocument();
+    expect(within(panel).queryByText("Team")).toBeNull();
   });
 
   it("shows a spinner with rotating fun facts while the application is saving", async () => {

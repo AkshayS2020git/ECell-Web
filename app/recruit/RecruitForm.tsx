@@ -1,6 +1,14 @@
 "use client";
 
-import React, { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { createPortal } from "react-dom";
 import {
   RECRUITMENT,
@@ -64,26 +72,70 @@ async function submitSafely(
 const fieldId = (name: string) => `rc-${name.replace(/\./g, "-")}`;
 
 const APPLIED_KEY = "ecell-recruit-applied";
+// Fired after this tab writes APPLIED_KEY; the "storage" event only covers
+// writes from other tabs.
+const APPLIED_EVENT = "ecell-recruit-applied";
 
-// Emails that have already applied from this browser, so a second attempt is
-// stopped on step 1 instead of after the slow trip to the sheet. The sheet's
-// own check is what enforces one application per email.
-function appliedEmails(): string[] {
+// Applications sent from this browser, oldest first. After a reload the form
+// shows the latest one as already submitted, and a second attempt with the
+// same email is stopped on step 1 instead of after the slow trip to the sheet.
+// The sheet's own check is what enforces one application per email.
+function readApplied(): string {
   try {
-    const stored: unknown = JSON.parse(window.localStorage.getItem(APPLIED_KEY) ?? "[]");
-    return Array.isArray(stored) ? stored.filter((email) => typeof email === "string") : [];
+    return window.localStorage.getItem(APPLIED_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function parseApplied(raw: string): Submitted[] {
+  try {
+    const stored: unknown = JSON.parse(raw || "[]");
+    if (!Array.isArray(stored)) return [];
+    return stored.flatMap((entry: unknown): Submitted[] => {
+      // Earlier visits stored bare email strings.
+      if (typeof entry === "string") return [{ name: "", email: entry, team: "" }];
+      if (entry && typeof entry === "object" && "email" in entry && typeof entry.email === "string") {
+        return [
+          {
+            name: "name" in entry ? String(entry.name ?? "") : "",
+            email: entry.email,
+            team: "team" in entry ? String(entry.team ?? "") : "",
+          },
+        ];
+      }
+      return [];
+    });
   } catch {
     return [];
   }
 }
 
-function rememberApplied(email: string) {
+function appliedEmails(): string[] {
+  return parseApplied(readApplied()).map((entry) => entry.email);
+}
+
+function rememberApplied(applied: Submitted) {
   try {
-    const emails = appliedEmails();
-    if (!emails.includes(email)) window.localStorage.setItem(APPLIED_KEY, JSON.stringify([...emails, email]));
+    const entries = parseApplied(readApplied());
+    const known = entries.find((entry) => entry.email === applied.email);
+    // A duplicate reply doesn't say which team they applied to; keep what we had.
+    if (known && !applied.team) return;
+    const rest = entries.filter((entry) => entry.email !== applied.email);
+    window.localStorage.setItem(APPLIED_KEY, JSON.stringify([...rest, applied]));
+    window.dispatchEvent(new Event(APPLIED_EVENT));
   } catch {
     // Storage blocked: the sheet's check still catches a second application.
   }
+}
+
+function subscribeApplied(onChange: () => void): () => void {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(APPLIED_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(APPLIED_EVENT, onChange);
+  };
 }
 
 // What to say when a field is left empty. Fields not listed get ERRORS.required.
@@ -241,35 +293,65 @@ function SavingOverlay() {
   );
 }
 
-function SuccessPanel({ submitted }: { submitted: Submitted | null }) {
+/**
+ * The result of an application: straight after submitting, or, with
+ * `onApplyAgain`, on a later visit from a browser that has already applied.
+ */
+function SuccessPanel({
+  submitted,
+  onApplyAgain,
+}: {
+  submitted: Submitted | null;
+  onApplyAgain?: () => void;
+}) {
   const panelRef = useRef<HTMLDivElement>(null);
   const firstName = submitted?.name.split(/\s+/)[0];
+  const returning = onApplyAgain !== undefined;
 
   useEffect(() => {
+    // A returning visitor didn't just do anything, so leave their scroll alone.
+    if (returning) return;
     // The thank-you panel replaces a long form; bring its top into view and
     // move focus to it so screen readers and keyboards land on the result.
     scrollToElement("#apply", { offset: -90 });
     panelRef.current?.focus({ preventScroll: true });
-  }, []);
+  }, [returning]);
 
   return (
     <div className="rc-success" ref={panelRef} tabIndex={-1} role="status">
       <span className="rc-success__mark" aria-hidden="true">✓</span>
-      <h3>
-        Application <em>received.</em>
-      </h3>
-      <p>
-        {firstName ? `Thanks, ${firstName}. ` : "Thanks. "}
-        Your application is in and the team will read it after applications close on{" "}
-        {RECRUITMENT.deadline}.
-      </p>
+      {returning ? (
+        <>
+          <h3>
+            Already <em>submitted.</em>
+          </h3>
+          <p>
+            {firstName ? `Hi ${firstName}. ` : ""}
+            We already have your application, and the team will read it after applications close on{" "}
+            {RECRUITMENT.deadline}.
+          </p>
+        </>
+      ) : (
+        <>
+          <h3>
+            Application <em>received.</em>
+          </h3>
+          <p>
+            {firstName ? `Thanks, ${firstName}. ` : "Thanks. "}
+            Your application is in and the team will read it after applications close on{" "}
+            {RECRUITMENT.deadline}.
+          </p>
+        </>
+      )}
 
       {submitted && (
         <dl className="rc-success__summary">
-          <div>
-            <dt>Team</dt>
-            <dd>{submitted.team}</dd>
-          </div>
+          {submitted.team && (
+            <div>
+              <dt>Team</dt>
+              <dd>{submitted.team}</dd>
+            </div>
+          )}
           <div>
             <dt>We&apos;ll write to</dt>
             <dd>{submitted.email}</dd>
@@ -297,6 +379,13 @@ function SuccessPanel({ submitted }: { submitted: Submitted | null }) {
         Need to change something? Write to{" "}
         <a href={`mailto:${RECRUITMENT.contactEmail}`}>{RECRUITMENT.contactEmail}</a>.
       </p>
+
+      {/* Shared computers: someone else may want to apply from here too. */}
+      {onApplyAgain && (
+        <button className="rc-chosen__change rc-success__again" type="button" onClick={onApplyAgain}>
+          Not you? Apply with a different email
+        </button>
+      )}
     </div>
   );
 }
@@ -310,6 +399,11 @@ export default function RecruitForm(): React.ReactElement {
   const [clientErrors, setClientErrors] = useState<ApplicationErrors>({});
   const [stepMessage, setStepMessage] = useState("");
   const [submitted, setSubmitted] = useState<Submitted | null>(null);
+  // Read after hydration (the server always renders the form), then kept in
+  // sync with writes from this tab and others.
+  const appliedRaw = useSyncExternalStore(subscribeApplied, readApplied, () => "");
+  const lastApplied = useMemo(() => parseApplied(appliedRaw).at(-1) ?? null, [appliedRaw]);
+  const [applyingAgain, setApplyingAgain] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const stepOneRef = useRef<HTMLDivElement>(null);
   const stepTwoRef = useRef<HTMLDivElement>(null);
@@ -318,7 +412,12 @@ export default function RecruitForm(): React.ReactElement {
     async (previous: ApplicationState, formData: FormData) => {
       const next = await submitSafely(previous, formData);
       if (next.status === "success" || next.errors?.email === ERRORS.alreadyApplied) {
-        rememberApplied(String(formData.get("email") ?? "").trim().toLowerCase());
+        rememberApplied({
+          name: String(formData.get("name") ?? "").trim(),
+          email: String(formData.get("email") ?? "").trim().toLowerCase(),
+          // Only a success confirms the team; a duplicate may have been for another.
+          team: next.status === "success" ? (getTeamById(String(formData.get("firstChoice") ?? ""))?.name ?? "") : "",
+        });
       }
       // The server's verdict replaces whatever the browser last showed.
       setClientErrors({});
@@ -421,6 +520,9 @@ export default function RecruitForm(): React.ReactElement {
   };
 
   if (state.status === "success") return <SuccessPanel submitted={submitted} />;
+  if (lastApplied && !applyingAgain) {
+    return <SuccessPanel submitted={lastApplied} onApplyAgain={() => setApplyingAgain(true)} />;
+  }
 
   const status = stepMessage || (state.status === "error" ? (state.message ?? "") : "");
 

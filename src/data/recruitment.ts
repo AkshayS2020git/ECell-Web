@@ -56,7 +56,7 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     name: "PR",
     tagline: "Be the voice of ECell.",
     description:
-      "Handle announcements, talk to other clubs and the press, and represent ECell at events and across campus.",
+      "Bring in the sponsors, judges and speakers behind ECell's events, and look after them from the first email to the event day.",
     skills: ["Communication", "Public speaking", "Networking"],
     questions: [
       {

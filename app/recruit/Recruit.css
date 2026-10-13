@@ -879,6 +879,12 @@
     font-size: .85rem
 }
 
+/* "Not you?" link on the already-submitted panel. */
+.rc-chosen__change.rc-success__again {
+    margin: 10px 0 0;
+    color: var(--rc-muted)
+}
+
 /* Keyboard focus: a clear ring on everything you can tab to. Fields keep
    their own brighter border instead. */
 .rc-page :is(a, button, summary):focus-visible {
