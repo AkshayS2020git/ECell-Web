@@ -26,6 +26,11 @@ export interface RecruitmentTeam {
   tagline: string;
   description: string;
   skills: string[];
+  /**
+   * The team lead's `id` in src/sections/Team/data/TeamData.ts. When set, the
+   * team's card links to that person in the homepage's Meet the Team section.
+   */
+  leadMemberId?: string;
   /** Asked on step 2 to applicants who pick this team. */
   questions: RecruitmentQuestion[];
 }
@@ -115,6 +120,7 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     description:
       "Own how ECell looks: posters, decks, merch, social creatives and the visual identity of every event.",
     skills: ["Figma", "Branding", "Motion"],
+    leadMemberId: "member-7",
     questions: [
       {
         id: "portfolio",
@@ -145,6 +151,7 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     description:
       "Write event reports and recaps, keep minutes and records, and build the archive of everything ECell does.",
     skills: ["Writing", "Organisation", "Attention to detail"],
+    leadMemberId: "member-8",
     questions: [
       {
         id: "recap",
@@ -175,6 +182,7 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     description:
       "Build and maintain the website, event platforms and the small internal tools that keep the cell running.",
     skills: ["Web dev", "Automation", "Problem solving"],
+    leadMemberId: "member-6",
     questions: [
       {
         id: "stack",
@@ -208,8 +216,8 @@ export const RECRUITMENT_STEPS: RecruitmentStep[] = [
     description: "Fill in the form below. It takes about five minutes.",
   },
   {
-    title: "Task round",
-    description: "A short team-specific task, shared over email after the deadline.",
+    title: "Shortlisting",
+    description: "The team reads every application and shortlists candidates. You'll hear from us by email.",
   },
   {
     title: "Interview",
@@ -230,7 +238,7 @@ export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
   {
     question: "Can I apply to more than one team?",
     answer:
-      "Pick a first choice and, optionally, a second. If your first choice is full we'll consider you for the second.",
+      "No, each application is for one team, so pick the one you most want to join.",
   },
   {
     question: "How much time does it take?",

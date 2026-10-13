@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { validateApplication, type ApplicationState } from "@/app/recruit/application";
 import { submitApplication } from "@/app/recruit/actions";
+import { RECRUITMENT_TEAMS } from "@/src/data/recruitment";
+import teamMembers from "@/src/sections/Team/data/TeamData";
 
 const IDLE: ApplicationState = { status: "idle" };
 
@@ -13,7 +15,6 @@ function formData(overrides: Record<string, string> = {}): FormData {
     year: "2nd year",
     program: "B.Tech CSE",
     firstChoice: "tech",
-    secondChoice: "design",
     why: "I want to help run events and build tools that make the startup community on campus stronger.",
     experience: "",
     link: "https://github.com/asha",
@@ -41,7 +42,6 @@ describe("validateApplication", () => {
         year: "2nd year",
         program: "B.Tech CSE",
         firstChoice: "Tech",
-        secondChoice: "Design",
         why: expect.stringContaining("startup community"),
         experience: "",
         link: "https://github.com/asha",
@@ -55,38 +55,26 @@ describe("validateApplication", () => {
               { question: expect.stringContaining("GitHub"), answer: "" },
             ],
           },
-          {
-            team: "Design",
-            choice: "Second",
-            answers: [
-              { question: expect.stringContaining("Portfolio"), answer: "https://behance.net/asha" },
-              { question: expect.stringContaining("design tool"), answer: "Figma" },
-              { question: expect.stringContaining("love"), answer: expect.any(String) },
-            ],
-          },
         ],
       },
     });
   });
 
-  it("checks the chosen teams' questions by their field names", () => {
+  it("checks the chosen team's questions by their field names", () => {
     const result = validateApplication(
       formData({
         "q.tech.stack": "",
         "q.tech.github": "not a link",
-        "q.design.tool": "MS Paint",
       }),
     );
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(Object.keys(result.errors).sort()).toEqual(
-      ["q.design.tool", "q.tech.github", "q.tech.stack"],
-    );
+    expect(Object.keys(result.errors).sort()).toEqual(["q.tech.github", "q.tech.stack"]);
   });
 
   it("ignores questions for teams the applicant didn't pick", () => {
     const result = validateApplication(
-      formData({ secondChoice: "", "q.design.portfolio": "", "q.design.tool": "" }),
+      formData({ "q.design.portfolio": "", "q.design.tool": "MS Paint" }),
     );
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -94,7 +82,7 @@ describe("validateApplication", () => {
   });
 
   it("allows the optional fields to be empty", () => {
-    const result = validateApplication(formData({ secondChoice: "", link: "" }));
+    const result = validateApplication(formData({ link: "" }));
     expect(result.ok).toBe(true);
   });
 
@@ -118,11 +106,21 @@ describe("validateApplication", () => {
     );
   });
 
-  it("rejects the same team as both choices", () => {
-    const result = validateApplication(formData({ secondChoice: "tech" }));
-    expect(result.ok).toBe(false);
-    if (result.ok) return;
-    expect(result.errors.secondChoice).toBeDefined();
+  it("rejects an email that isn't a college email", () => {
+    for (const email of ["asha.rao@gmail.com", "asha@rvu.edu.in.evil.com", "asha@notrvu.edu.in"]) {
+      const result = validateApplication(formData({ email }));
+      expect(result.ok, email).toBe(false);
+      if (result.ok) continue;
+      expect(result.errors.email).toMatch(/college email/i);
+    }
+  });
+
+  it("ignores a second team choice sent by an old tab", () => {
+    const result = validateApplication(formData({ secondChoice: "design" }));
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.data).not.toHaveProperty("secondChoice");
+    expect(result.data.teamAnswers.map((entry) => entry.team)).toEqual(["Tech"]);
   });
 });
 
@@ -157,7 +155,7 @@ describe("submitApplication", () => {
     const body = JSON.parse(init.body);
     expect(body.secret).toBe("s3cret");
     expect(body.application).toMatchObject({ email: "asha.rao@rvu.edu.in", firstChoice: "Tech" });
-    expect(body.application.teamAnswers).toHaveLength(2);
+    expect(body.application.teamAnswers).toHaveLength(1);
   });
 
   it("returns field errors without calling Apps Script", async () => {
@@ -218,5 +216,14 @@ describe("submitApplication", () => {
 
     expect(await submitApplication(IDLE, formData())).toEqual({ status: "success" });
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("RECRUITMENT_TEAMS", () => {
+  it("links team cards only to leads who are on the homepage's team list", () => {
+    const memberIds = new Set(teamMembers.map((member) => member.id));
+    const linked = RECRUITMENT_TEAMS.filter((team) => team.leadMemberId);
+    expect(linked.map((team) => team.id).sort()).toEqual(["design", "documentation", "tech"]);
+    for (const team of linked) expect(memberIds.has(team.leadMemberId!), team.id).toBe(true);
   });
 });

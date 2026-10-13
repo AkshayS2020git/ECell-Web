@@ -10,6 +10,7 @@ import {
 } from "@/src/data/recruitment";
 import { SITE_URL } from "@/src/utils/constants";
 import RecruitForm from "./RecruitForm";
+import ScrollLink from "./ScrollLink";
 import "./Recruit.css";
 
 // The application Server Action waits on Apps Script, which can take well
@@ -67,6 +68,10 @@ export default function RecruitPage() {
               is <em>waiting.</em>
             </h1>
 
+            <p className="rc-hero-tagline">
+              Build things. Meet founders. Make things happen.
+            </p>
+
             <p className="rc-hero-intro">
               ECell is opening its doors again, and this time we&apos;re looking
               for new members to join our teams. Pick your team. Tell us who
@@ -75,13 +80,18 @@ export default function RecruitPage() {
 
             <div className="rc-actions">
               {RECRUITMENT.isOpen && (
-                <a className="rc-button rc-button--solid" href="#apply">
+                <ScrollLink
+                  className="rc-button rc-button--solid"
+                  href="#apply"
+                  targets={["#rc-form", "#apply"]}
+                  focusField
+                >
                   Register now <span aria-hidden="true">→</span>
-                </a>
+                </ScrollLink>
               )}
-              <a className="rc-button" href="#teams">
-                SEE THE TEAMS <span>↓</span>
-              </a>
+              <ScrollLink className="rc-button" href="#teams">
+                SEE THE TEAMS <span aria-hidden="true">↓</span>
+              </ScrollLink>
             </div>
           </div>
 
@@ -120,17 +130,37 @@ export default function RecruitPage() {
             </div>
 
             <ul className="rc-teams">
-              {RECRUITMENT_TEAMS.map((team, index) => (
-                <li className="rc-team" key={team.id}>
-                  <span className="rc-team__index">{pad(index + 1)}</span>
+              {RECRUITMENT_TEAMS.map((team) => (
+                <li
+                  className={`rc-team${team.leadMemberId ? " rc-team--linked" : ""}`}
+                  key={team.id}
+                >
+                  {team.leadMemberId && (
+                    // Same destination as the "Meet the head" link below, so
+                    // it's skipped by keyboard and screen readers.
+                    <Link
+                      className="rc-team__corner"
+                      href={`/?member=${team.leadMemberId}#teamSection`}
+                      tabIndex={-1}
+                      aria-hidden="true"
+                    >
+                      ↗
+                    </Link>
+                  )}
                   <h3>{team.name}</h3>
                   <p className="rc-team__tagline">{team.tagline}</p>
                   <p>{team.description}</p>
-                  <ul className="rc-team__skills" aria-label={`${team.name} skills`}>
-                    {team.skills.map((skill) => (
-                      <li key={skill}>{skill}</li>
-                    ))}
-                  </ul>
+                  {team.leadMemberId && (
+                    <div className="rc-team__footer">
+                      <Link
+                        className="rc-team__explore"
+                        href={`/?member=${team.leadMemberId}#teamSection`}
+                        aria-label={`Meet the head of the ${team.name} team`}
+                      >
+                        Meet the head <span aria-hidden="true">↗</span>
+                      </Link>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
