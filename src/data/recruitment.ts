@@ -22,6 +22,8 @@ export interface RecruitmentTeam {
   id: string;
   /** Also the name of the team's tab in the sheet. */
   name: string;
+  /** One-liner from the recruitment announcement. */
+  tagline: string;
   description: string;
   skills: string[];
   /** Asked on step 2 to applicants who pick this team. */
@@ -48,37 +50,68 @@ export const RECRUITMENT = {
 
 export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
   {
-    id: "tech",
-    name: "Tech",
+    id: "pr",
+    name: "PR",
+    tagline: "Be the voice of ECell.",
     description:
-      "Build and maintain the website, event platforms and the small internal tools that keep the cell running.",
-    skills: ["Web dev", "Automation", "Problem solving"],
+      "Handle announcements, talk to other clubs and the press, and represent ECell at events and across campus.",
+    skills: ["Communication", "Public speaking", "Networking"],
     questions: [
       {
-        id: "stack",
-        label: "Which languages or frameworks are you comfortable with?",
-        type: "text",
-        required: true,
-        placeholder: "e.g. JavaScript, React, Python",
-      },
-      {
-        id: "problem",
-        label: "Tell us about a bug or technical problem you solved, and how.",
+        id: "announcement",
+        label: "Write a two-line announcement for ECell's next event.",
         type: "textarea",
         required: true,
       },
       {
-        id: "github",
-        label: "GitHub or a project you've built",
+        id: "represented",
+        label: "Have you represented a club, team or event before? Tell us about it.",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "languages",
+        label: "Which languages do you speak comfortably?",
+        type: "text",
+        required: false,
+        placeholder: "e.g. English, Hindi, Kannada",
+      },
+    ],
+  },
+  {
+    id: "social",
+    name: "Social Media & Content Creation",
+    tagline: "Make ECell impossible to scroll past.",
+    description:
+      "Plan, shoot and edit reels, posts and stories, and run ECell's Instagram and LinkedIn.",
+    skills: ["Reels", "Copywriting", "Trends"],
+    questions: [
+      {
+        id: "idea",
+        label: "Pitch a reel or post idea that would make ECell impossible to scroll past.",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "tools",
+        label: "Which platforms and tools do you create with?",
+        type: "text",
+        required: true,
+        placeholder: "e.g. Instagram, CapCut, Canva",
+      },
+      {
+        id: "work",
+        label: "Link to content you've made",
         type: "url",
         required: false,
-        placeholder: "https://github.com/…",
+        placeholder: "https://",
       },
     ],
   },
   {
     id: "design",
     name: "Design",
+    tagline: "Turn ideas into visuals.",
     description:
       "Own how ECell looks: posters, decks, merch, social creatives and the visual identity of every event.",
     skills: ["Figma", "Branding", "Motion"],
@@ -106,89 +139,25 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     ],
   },
   {
-    id: "marketing",
-    name: "Marketing & Social",
+    id: "documentation",
+    name: "Documentation",
+    tagline: "Keep the story of ECell alive.",
     description:
-      "Plan campaigns, run our socials and get the word out so every event fills up.",
-    skills: ["Content", "Analytics", "Storytelling"],
+      "Write event reports and recaps, keep minutes and records, and build the archive of everything ECell does.",
+    skills: ["Writing", "Organisation", "Attention to detail"],
     questions: [
       {
-        id: "campaign",
-        label: "Pitch a campaign to get 200 students to an ECell event.",
+        id: "recap",
+        label: "Write a short recap (about 100 words) of any event you've attended.",
         type: "textarea",
         required: true,
       },
       {
-        id: "platforms",
-        label: "Which platforms do you know best?",
-        type: "text",
-        required: true,
-        placeholder: "e.g. Instagram, LinkedIn, YouTube",
-      },
-      {
-        id: "work",
-        label: "Link to content you've made",
-        type: "url",
-        required: false,
-        placeholder: "https://",
-      },
-    ],
-  },
-  {
-    id: "events",
-    name: "Events & Operations",
-    description:
-      "Turn ideas into events that run on time: venues, logistics, volunteers and everything on the day.",
-    skills: ["Planning", "Coordination", "Calm under pressure"],
-    questions: [
-      {
-        id: "experience",
-        label: "Have you organised or volunteered at an event? Tell us about it.",
-        type: "textarea",
-        required: true,
-      },
-      {
-        id: "hours",
-        label: "How many hours a week can you give in the weeks before an event?",
+        id: "organise",
+        label: "How do you usually keep notes and organise information?",
         type: "select",
         required: true,
-        options: ["Under 4", "4 to 8", "More than 8"],
-      },
-    ],
-  },
-  {
-    id: "outreach",
-    name: "Sponsorship & Outreach",
-    description:
-      "Bring in sponsors, speakers and partners, and look after those relationships after the event.",
-    skills: ["Communication", "Negotiation", "Networking"],
-    questions: [
-      {
-        id: "dream-guest",
-        label: "Which company or founder would you bring to campus, and why?",
-        type: "textarea",
-        required: true,
-      },
-      {
-        id: "pitch",
-        label: "Tell us about a time you convinced someone to say yes.",
-        type: "textarea",
-        required: true,
-      },
-    ],
-  },
-  {
-    id: "content",
-    name: "Content & Research",
-    description:
-      "Write the copy, newsletters and founder stories, and research the startup ecosystem for our sessions.",
-    skills: ["Writing", "Research", "Editing"],
-    questions: [
-      {
-        id: "startup",
-        label: "In about 150 words, tell us about a startup you find interesting.",
-        type: "textarea",
-        required: true,
+        options: ["Google Docs / Notion", "Spreadsheets", "Pen and paper", "Other"],
       },
       {
         id: "writing",
@@ -196,6 +165,36 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
         type: "url",
         required: false,
         placeholder: "https://",
+      },
+    ],
+  },
+  {
+    id: "tech",
+    name: "Tech",
+    tagline: "Build the digital backbone.",
+    description:
+      "Build and maintain the website, event platforms and the small internal tools that keep the cell running.",
+    skills: ["Web dev", "Automation", "Problem solving"],
+    questions: [
+      {
+        id: "stack",
+        label: "Which languages or frameworks are you comfortable with?",
+        type: "text",
+        required: true,
+        placeholder: "e.g. JavaScript, React, Python",
+      },
+      {
+        id: "problem",
+        label: "Tell us about a bug or technical problem you solved, and how.",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "github",
+        label: "GitHub or a project you've built",
+        type: "url",
+        required: false,
+        placeholder: "https://github.com/…",
       },
     ],
   },

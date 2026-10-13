@@ -85,7 +85,7 @@ function QuestionField({
       <label htmlFor={fieldId(name)}>
         {question.label} {!question.required && <span>Optional</span>}
       </label>
-      {question.type === "textarea" && <textarea {...props} rows={4} data-lenis-prevent />}
+      {question.type === "textarea" && <textarea {...props} rows={4} />}
       {question.type === "text" && <input {...props} type="text" />}
       {question.type === "url" && <input {...props} type="url" inputMode="url" />}
       {question.type === "select" && (
@@ -381,7 +381,7 @@ export default function RecruitForm(): React.ReactElement {
               minLength={LIMITS.whyMin}
               maxLength={LIMITS.why}
               onChange={(event) => setWhyLength(event.currentTarget.value.trim().length)}
-              data-lenis-prevent
+             
             />
             <p className="rc-field__count" aria-live="polite">
               {whyLength < LIMITS.whyMin
@@ -395,7 +395,7 @@ export default function RecruitForm(): React.ReactElement {
             <label htmlFor="rc-experience">
               Something you&apos;ve built, run or led <span>Optional</span>
             </label>
-            <textarea {...fieldProps("experience", errors)} rows={4} maxLength={LIMITS.experience} data-lenis-prevent />
+            <textarea {...fieldProps("experience", errors)} rows={4} maxLength={LIMITS.experience} />
             <ErrorLine name="experience" errors={errors} />
           </div>
 

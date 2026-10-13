@@ -13,7 +13,7 @@ import RecruitForm from "./RecruitForm";
 import "./Recruit.css";
 
 const description =
-  "Join ECell RV University. Apply to the tech, design, marketing, events, outreach or content team and help build the startup community on campus.";
+  "ECell RV University is recruiting. Join the PR, social media and content, design, documentation or tech team and help build the startup community on campus.";
 
 export const metadata: Metadata = {
   title: "Join the Team",
@@ -64,9 +64,9 @@ export default function RecruitPage() {
             </h1>
 
             <p className="rc-hero-intro">
-              ECell runs on students who want to build things: events, brands,
-              products and a community of founders. No startup or experience
-              needed, just the will to show up and make something happen.
+              ECell is opening its doors again, and this time we&apos;re looking
+              for new members to join our teams. Pick your team. Tell us who
+              you are. Let&apos;s build together.
             </p>
 
             <div className="rc-actions">
@@ -120,6 +120,7 @@ export default function RecruitPage() {
                 <li className="rc-team" key={team.id}>
                   <span className="rc-team__index">{pad(index + 1)}</span>
                   <h3>{team.name}</h3>
+                  <p className="rc-team__tagline">{team.tagline}</p>
                   <p>{team.description}</p>
                   <ul className="rc-team__skills" aria-label={`${team.name} skills`}>
                     {team.skills.map((skill) => (
