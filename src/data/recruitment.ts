@@ -208,8 +208,8 @@ export const RECRUITMENT_STEPS: RecruitmentStep[] = [
     description: "Fill in the form below. It takes about five minutes.",
   },
   {
-    title: "Task round",
-    description: "A short team-specific task, shared over email after the deadline.",
+    title: "Shortlisting",
+    description: "The team reads every application and shortlists candidates. You'll hear from us by email.",
   },
   {
     title: "Interview",

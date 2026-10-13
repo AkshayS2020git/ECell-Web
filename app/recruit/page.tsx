@@ -120,17 +120,11 @@ export default function RecruitPage() {
             </div>
 
             <ul className="rc-teams">
-              {RECRUITMENT_TEAMS.map((team, index) => (
+              {RECRUITMENT_TEAMS.map((team) => (
                 <li className="rc-team" key={team.id}>
-                  <span className="rc-team__index">{pad(index + 1)}</span>
                   <h3>{team.name}</h3>
                   <p className="rc-team__tagline">{team.tagline}</p>
                   <p>{team.description}</p>
-                  <ul className="rc-team__skills" aria-label={`${team.name} skills`}>
-                    {team.skills.map((skill) => (
-                      <li key={skill}>{skill}</li>
-                    ))}
-                  </ul>
                 </li>
               ))}
             </ul>
