@@ -131,36 +131,10 @@ export default function RecruitPage() {
 
             <ul className="rc-teams">
               {RECRUITMENT_TEAMS.map((team) => (
-                <li
-                  className={`rc-team${team.leadMemberId ? " rc-team--linked" : ""}`}
-                  key={team.id}
-                >
-                  {team.leadMemberId && (
-                    // Same destination as the "Meet the head" link below, so
-                    // it's skipped by keyboard and screen readers.
-                    <Link
-                      className="rc-team__corner"
-                      href={`/?member=${team.leadMemberId}#teamSection`}
-                      tabIndex={-1}
-                      aria-hidden="true"
-                    >
-                      ↗
-                    </Link>
-                  )}
+                <li className="rc-team" key={team.id}>
                   <h3>{team.name}</h3>
                   <p className="rc-team__tagline">{team.tagline}</p>
                   <p>{team.description}</p>
-                  {team.leadMemberId && (
-                    <div className="rc-team__footer">
-                      <Link
-                        className="rc-team__explore"
-                        href={`/?member=${team.leadMemberId}#teamSection`}
-                        aria-label={`Meet the head of the ${team.name} team`}
-                      >
-                        Meet the head <span aria-hidden="true">↗</span>
-                      </Link>
-                    </div>
-                  )}
                 </li>
               ))}
             </ul>
