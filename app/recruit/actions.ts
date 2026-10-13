@@ -1,10 +1,10 @@
 "use server";
 
 import { RECRUITMENT } from "@/src/data/recruitment";
-import { validateApplication, type ApplicationState } from "./application";
+import { ERRORS, validateApplication, type ApplicationState } from "./application";
 
-// Apps Script is slow: even a trivial request takes 5–9s, and a write (lock,
-// sheet tabs, rows, notify email) adds more, especially on its first run.
+// Apps Script is slow: even a trivial request takes 2–6s, and a write (lock,
+// duplicate check, sheet rows) adds more, especially on its first run.
 // Past this we give up and let the applicant retry. Keep it under the page's
 // maxDuration in app/recruit/page.tsx.
 const SCRIPT_TIMEOUT_MS = 45_000;
@@ -77,9 +77,7 @@ export async function submitApplication(
       return {
         status: "error",
         message: "We already have an application from this email.",
-        errors: {
-          email: `Already applied. To change your answers, email ${RECRUITMENT.contactEmail}.`,
-        },
+        errors: { email: ERRORS.alreadyApplied },
       };
     }
 

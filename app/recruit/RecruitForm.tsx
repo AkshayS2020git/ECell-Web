@@ -1,6 +1,7 @@
 "use client";
 
 import React, { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   RECRUITMENT,
   RECRUITMENT_STEPS,
@@ -12,6 +13,7 @@ import {
 } from "@/src/data/recruitment";
 import { scrollToElement } from "@/src/utils/lenis";
 import { padNumber as pad } from "@/src/utils/math";
+import { lockPageScroll } from "@/src/utils/scrollLock";
 import { submitApplication } from "./actions";
 import {
   COLLEGE_EMAIL_DOMAIN,
@@ -59,6 +61,29 @@ async function submitSafely(
 
 const fieldId = (name: string) => `rc-${name.replace(/\./g, "-")}`;
 
+const APPLIED_KEY = "ecell-recruit-applied";
+
+// Emails that have already applied from this browser, so a second attempt is
+// stopped on step 1 instead of after the slow trip to the sheet. The sheet's
+// own check is what enforces one application per email.
+function appliedEmails(): string[] {
+  try {
+    const stored: unknown = JSON.parse(window.localStorage.getItem(APPLIED_KEY) ?? "[]");
+    return Array.isArray(stored) ? stored.filter((email) => typeof email === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function rememberApplied(email: string) {
+  try {
+    const emails = appliedEmails();
+    if (!emails.includes(email)) window.localStorage.setItem(APPLIED_KEY, JSON.stringify([...emails, email]));
+  } catch {
+    // Storage blocked: the sheet's check still catches a second application.
+  }
+}
+
 // What to say when a field is left empty. Fields not listed get ERRORS.required.
 const MISSING_MESSAGES: Record<string, string> = {
   name: ERRORS.name,
@@ -85,6 +110,7 @@ function customError(field: FormField): string {
     return field.required && field.value ? (MISSING_MESSAGES[field.name] ?? ERRORS.required) : "";
   }
   if (field.name === "email" && !isCollegeEmail(value)) return ERRORS.collegeEmail;
+  if (field.name === "email" && appliedEmails().includes(value.toLowerCase())) return ERRORS.alreadyApplied;
   if (field.name === "phone" && !normalizePhone(value)) return ERRORS.phone;
   if (field.name === "name" && value.length < 2) return ERRORS.name;
   if (field.name === "why" && value.length < LIMITS.whyMin) return ERRORS.why;
@@ -171,6 +197,23 @@ function QuestionField({
   );
 }
 
+/**
+ * Full-screen spinner while the application is saved. Portalled to <body> so
+ * no transformed ancestor can pull it off the centre of the screen, and holds
+ * the page still underneath until the save finishes.
+ */
+function SavingOverlay() {
+  useEffect(() => lockPageScroll(), []);
+
+  return createPortal(
+    <div className="rc-pending" role="status">
+      <span className="rc-spinner" aria-hidden="true" />
+      <p>Taking a while, please wait…</p>
+    </div>,
+    document.body,
+  );
+}
+
 function SuccessPanel({ submitted }: { submitted: Submitted | null }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const firstName = submitted?.name.split(/\s+/)[0];
@@ -247,6 +290,9 @@ export default function RecruitForm(): React.ReactElement {
   const [state, formAction, pending] = useActionState(
     async (previous: ApplicationState, formData: FormData) => {
       const next = await submitSafely(previous, formData);
+      if (next.status === "success" || next.errors?.email === ERRORS.alreadyApplied) {
+        rememberApplied(String(formData.get("email") ?? "").trim().toLowerCase());
+      }
       // The server's verdict replaces whatever the browser last showed.
       setClientErrors({});
       // A rejected step-1 answer (e.g. an email that already applied) sends
@@ -587,8 +633,9 @@ export default function RecruitForm(): React.ReactElement {
             {pending ? "Sending…" : "Submit application"} <span aria-hidden="true">→</span>
           </button>
           <p className="rc-submit__status" role="status" aria-live="polite">
-            {step === 2 ? status : ""}
+            {step === 2 && !pending ? status : ""}
           </p>
+          {pending && <SavingOverlay />}
         </div>
       </div>
     </form>

@@ -1,4 +1,5 @@
 import {
+  RECRUITMENT,
   RECRUITMENT_YEARS,
   getTeamById,
   type RecruitmentQuestion,
@@ -99,6 +100,7 @@ export const ERRORS = {
   emailMissing: "Enter your college email.",
   email: "Enter a valid college email address.",
   collegeEmail: `Use your college email, ending in @${COLLEGE_EMAIL_DOMAIN}.`,
+  alreadyApplied: `Already applied. To change your answers, email ${RECRUITMENT.contactEmail}.`,
   phoneMissing: "Enter your WhatsApp number.",
   phone: "Enter a 10-digit mobile number.",
   year: "Choose your year.",

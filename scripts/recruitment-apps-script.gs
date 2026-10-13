@@ -25,10 +25,13 @@
  *     and to .env.local for local testing, then redeploy the site:
  *       RECRUITMENT_SCRIPT_URL=<the /exec URL>
  *       RECRUITMENT_SCRIPT_SECRET=<the same SECRET as step 3>
+ *  6. In the editor, pick installMailTrigger in the function dropdown and Run
+ *     it once. Emails go out from that trigger every few minutes instead of
+ *     inside the request, so applicants don't wait on Gmail.
  *
  * After editing this script: Deploy → Manage deployments → edit (pencil) →
  * Version: "New version" → Deploy. The /exec URL keeps serving the old code
- * until you do.
+ * until you do. The mail trigger always runs the latest saved code.
  *
  * Gmail accounts can send about 100 emails a day from Apps Script, so leave
  * SEND_CONFIRMATION off if you expect more applications than that per day.
@@ -50,7 +53,11 @@ const COLUMNS = [
   ["why", "Why ECell"],
   ["experience", "Built / ran / led"],
   ["link", "Link"],
+  // Filled in by sendPendingEmails(); empty means the emails are still to go.
+  ["emailedAt", "Emailed at"],
 ];
+
+const EMAIL_CHECK_MINUTES = 5;
 
 // Leading columns of every team tab. Question columns follow, added as new
 // questions appear, so renaming a question in the site's data starts a new
@@ -86,7 +93,8 @@ function doPost(e) {
   }
 
   try {
-    const sheet = getSheet();
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = getSheet(spreadsheet);
     if (hasApplied(sheet, email)) {
       return respond({ ok: false, error: "duplicate" });
     }
@@ -100,14 +108,14 @@ function doPost(e) {
       }),
     );
     teamAnswersOf(application).forEach((teamAnswers) =>
-      appendTeamRow(teamAnswers, application, email, submittedAt),
+      appendTeamRow(spreadsheet, teamAnswers, application, email, submittedAt),
     );
+    // Write the rows before letting the next request run its duplicate check.
     SpreadsheetApp.flush();
   } finally {
     lock.releaseLock();
   }
 
-  sendEmails(application, email);
   return respond({ ok: true });
 }
 
@@ -117,8 +125,7 @@ function doGet() {
   return ContentService.createTextOutput("ECell recruitment endpoint is running.");
 }
 
-function getSheet() {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+function getSheet(spreadsheet) {
   let sheet = spreadsheet.getSheetByName(SHEET_NAME);
 
   if (!sheet) {
@@ -138,8 +145,7 @@ function teamAnswersOf(application) {
   return Array.isArray(application.teamAnswers) ? application.teamAnswers : [];
 }
 
-function appendTeamRow(teamAnswers, application, email, submittedAt) {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+function appendTeamRow(spreadsheet, teamAnswers, application, email, submittedAt) {
   const name = String(teamAnswers.team || "Unknown team");
   const sheet = spreadsheet.getSheetByName(name) || spreadsheet.insertSheet(name);
 
@@ -156,11 +162,12 @@ function appendTeamRow(teamAnswers, application, email, submittedAt) {
   const missing = answers
     .map((entry) => String(entry.question))
     .filter((question) => !headers.includes(question));
+  // Only touch the header row when it changes; every call here is a round trip.
   if (missing.length > 0) {
     sheet.getRange(1, headers.length + 1, 1, missing.length).setValues([missing]);
     headers = headers.concat(missing);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
   }
-  sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
 
   const values = {
     "Submitted at": submittedAt,
@@ -179,15 +186,23 @@ function appendTeamRow(teamAnswers, application, email, submittedAt) {
   sheet.appendRow(headers.map((header) => (header in values ? values[header] : "")));
 }
 
+function columnOf(key) {
+  return COLUMNS.findIndex(([column]) => column === key) + 1;
+}
+
+// Searches inside Sheets instead of downloading the whole email column, so the
+// check stays quick as applications pile up. Case-insensitive by default.
 function hasApplied(sheet, email) {
   const rows = sheet.getLastRow() - 1;
   if (rows < 1) return false;
 
-  const column = COLUMNS.findIndex(([key]) => key === "email") + 1;
-  return sheet
-    .getRange(2, column, rows, 1)
-    .getValues()
-    .some(([value]) => String(value).trim().toLowerCase() === email);
+  return Boolean(
+    sheet
+      .getRange(2, columnOf("email"), rows, 1)
+      .createTextFinder(email)
+      .matchEntireCell(true)
+      .findNext(),
+  );
 }
 
 // Sheets turns text starting with = + - @ into formulas, and digit strings
@@ -198,46 +213,96 @@ function asText(value) {
   return /^[=+\-@\d]/.test(text) ? "'" + text : text;
 }
 
-function sendEmails(application, email) {
-  const properties = PropertiesService.getScriptProperties();
+/**
+ * Run once from the editor (step 6 of SETUP). Installs the trigger that sends
+ * application emails, replacing any earlier one, and marks every application
+ * already in the sheet as emailed so nobody gets a second email.
+ */
+function installMailTrigger() {
+  ScriptApp.getProjectTriggers()
+    .filter((trigger) => trigger.getHandlerFunction() === "sendPendingEmails")
+    .forEach((trigger) => ScriptApp.deleteTrigger(trigger));
 
-  // The row is already saved; a mail quota error must not fail the request.
-  try {
-    const notify = properties.getProperty("NOTIFY_EMAIL");
-    if (notify) {
-      MailApp.sendEmail({
-        to: notify,
-        subject: "New ECell application: " + application.name + " (" + application.firstChoice + ")",
-        body: COLUMNS.filter(([key]) => key !== "submittedAt")
-          .map(([key, header]) => header + ": " + (key === "email" ? email : application[key] || "-"))
-          .concat(
-            teamAnswersOf(application).map(
-              (teamAnswers) =>
-                "-- " + teamAnswers.team + " (" + teamAnswers.choice + " choice) --\n" +
-                (teamAnswers.answers || [])
-                  .map((entry) => entry.question + "\n" + (entry.answer || "-"))
-                  .join("\n\n"),
-            ),
-          )
-          .join("\n\n"),
-      });
-    }
-
-    if (properties.getProperty("SEND_CONFIRMATION") === "true") {
-      MailApp.sendEmail({
-        to: email,
-        name: "ECell RV University",
-        subject: "We got your ECell application",
-        body:
-          "Hi " + application.name + ",\n\n" +
-          "Thanks for applying to the " + application.firstChoice + " team at ECell RV University. " +
-          "We'll be in touch about the next round after applications close.\n\n" +
-          "ECell RV University",
-      });
-    }
-  } catch (error) {
-    console.error("Email failed: " + error);
+  const sheet = getSheet(SpreadsheetApp.getActiveSpreadsheet());
+  const column = columnOf("emailedAt");
+  sheet.getRange(1, column).setValue("Emailed at").setFontWeight("bold");
+  const rows = sheet.getLastRow() - 1;
+  if (rows > 0) {
+    const range = sheet.getRange(2, column, rows, 1);
+    range.setValues(range.getValues().map(([value]) => [value || "Before mail trigger"]));
   }
+
+  ScriptApp.newTrigger("sendPendingEmails").timeBased().everyMinutes(EMAIL_CHECK_MINUTES).create();
+}
+
+/**
+ * Sends the notify and confirmation emails for applications that don't have
+ * them yet. Runs from the trigger installMailTrigger() sets up.
+ */
+function sendPendingEmails() {
+  const properties = PropertiesService.getScriptProperties();
+  const notify = properties.getProperty("NOTIFY_EMAIL");
+  const confirm = properties.getProperty("SEND_CONFIRMATION") === "true";
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Claim the pending rows under the lock doPost uses, then send after
+  // releasing it, so applicants never queue behind Gmail.
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return;
+  const pending = [];
+  try {
+    const sheet = getSheet(spreadsheet);
+    const rows = sheet.getLastRow() - 1;
+    if (rows < 1) return;
+
+    const values = sheet.getRange(2, 1, rows, COLUMNS.length).getValues();
+    const emailedAt = columnOf("emailedAt") - 1;
+    const now = new Date();
+    values.forEach((row) => {
+      if (row[emailedAt] !== "") return;
+      pending.push(Object.fromEntries(COLUMNS.map(([key], index) => [key, row[index]])));
+      row[emailedAt] = now;
+    });
+    if (pending.length === 0) return;
+
+    sheet.getRange(2, emailedAt + 1, rows, 1).setValues(values.map((row) => [row[emailedAt]]));
+    SpreadsheetApp.flush();
+  } finally {
+    lock.releaseLock();
+  }
+
+  pending.forEach((application) => {
+    // A quota error on one email must not stop the rest.
+    try {
+      if (notify) {
+        MailApp.sendEmail({
+          to: notify,
+          subject: "New ECell application: " + application.name + " (" + application.firstChoice + ")",
+          body: COLUMNS.filter(([key]) => key !== "submittedAt" && key !== "emailedAt")
+            .map(([key, header]) => header + ": " + (application[key] || "-"))
+            .concat(
+              "Team answers are in the " + application.firstChoice + " tab: " + spreadsheet.getUrl(),
+            )
+            .join("\n\n"),
+        });
+      }
+
+      if (confirm) {
+        MailApp.sendEmail({
+          to: application.email,
+          name: "ECell RV University",
+          subject: "We got your ECell application",
+          body:
+            "Hi " + application.name + ",\n\n" +
+            "Thanks for applying to the " + application.firstChoice + " team at ECell RV University. " +
+            "We'll be in touch about the next round after applications close.\n\n" +
+            "ECell RV University",
+        });
+      }
+    } catch (error) {
+      console.error("Email failed for " + application.email + ": " + error);
+    }
+  });
 }
 
 function respond(body) {

@@ -27,6 +27,7 @@ function next() {
 describe("RecruitForm", () => {
   beforeEach(() => {
     submitMock.mockReset();
+    window.localStorage.clear();
   });
 
   it("shows inline messages instead of moving on when step 1 is incomplete", () => {
@@ -107,6 +108,48 @@ describe("RecruitForm", () => {
     expect(within(panel).getByText("What happens next")).toBeInTheDocument();
     expect(within(panel).getByText("Shortlisting")).toBeInTheDocument();
     expect(panel).toHaveFocus();
+    expect(screen.queryByText(/taking a while/i)).toBeNull();
+    expect(document.body.style.overflow).toBe("");
+  });
+
+  it("stops a second application from the same email on step 1", async () => {
+    submitMock.mockResolvedValue({ status: "success" });
+    const { unmount } = render(<RecruitForm />);
+    fillStepOne();
+    next();
+    type(/languages or frameworks/i, "TypeScript");
+    type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
+    type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
+    });
+    unmount();
+
+    render(<RecruitForm />);
+    fillStepOne("Asha.Rao@rvu.edu.in");
+    next();
+
+    expect(screen.getByText(/already applied/i)).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(submitMock).toHaveBeenCalledOnce();
+  });
+
+  it("shows a spinner and a wait message while the application is saving", async () => {
+    submitMock.mockReturnValue(new Promise(() => {}));
+    render(<RecruitForm />);
+    fillStepOne();
+    next();
+    type(/languages or frameworks/i, "TypeScript");
+    type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
+    type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+    expect(screen.queryByText(/taking a while/i)).toBeNull();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
+    });
+
+    expect(screen.getByText(/taking a while, please wait/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /sending/i })).toBeDisabled();
   });
 
   it("doesn't submit step 2 with a missing answer", () => {

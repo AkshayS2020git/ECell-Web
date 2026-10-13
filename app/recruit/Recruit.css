@@ -1,7 +1,10 @@
 /* /recruit — follows the events archive look: dark page, tracked uppercase
    labels, hairline rules and Fraunces italics for emphasis. */
 
-.rc-page {
+/* The saving overlay renders straight into <body>, outside .rc-page, so it
+   needs the palette too. */
+.rc-page,
+.rc-pending {
     --rc-bg: var(--bg, #1a1a1a);
     --rc-paper: var(--fg, #f4f4f2);
     --rc-muted: rgba(244, 244, 242, .6);
@@ -10,6 +13,9 @@
     --rc-accent: var(--primarycolor, #bababa);
     --rc-open: #8bce5d;
     --rc-error: #ff7a6b;
+}
+
+.rc-page {
     position: relative;
     min-height: 100vh;
     overflow: hidden;
@@ -706,6 +712,48 @@
     display: none
 }
 
+/* Covers the screen while the application is being saved, with the spinner
+   in the middle of wherever the applicant has scrolled to. */
+.rc-pending {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 24px;
+    background: rgba(10, 10, 10, .72);
+    backdrop-filter: blur(4px);
+    color: var(--rc-paper);
+    font-size: .95rem;
+    letter-spacing: .02em;
+    text-align: center;
+    animation: rc-fade-in .25s ease-out both
+}
+
+@keyframes rc-fade-in {
+    from {
+        opacity: 0
+    }
+}
+
+.rc-spinner {
+    width: 52px;
+    height: 52px;
+    border: 3px solid var(--rc-line);
+    border-top-color: var(--rc-paper);
+    border-radius: 50%;
+    animation: rc-spin .8s linear infinite
+}
+
+@keyframes rc-spin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
 /* Thank-you / closed panel */
 
 .rc-success {
@@ -974,6 +1022,15 @@
 
     .rc-team:hover {
         transform: none
+    }
+
+    .rc-pending {
+        animation: none
+    }
+
+    /* Still needs to show progress, so slow it down rather than stop it. */
+    .rc-spinner {
+        animation-duration: 2.4s
     }
 }
 
