@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { validateApplication, type ApplicationState } from "@/app/recruit/application";
 import { submitApplication } from "@/app/recruit/actions";
+import { RECRUITMENT_TEAMS } from "@/src/data/recruitment";
+import teamMembers from "@/src/sections/Team/data/TeamData";
 
 const IDLE: ApplicationState = { status: "idle" };
 
@@ -214,5 +216,14 @@ describe("submitApplication", () => {
 
     expect(await submitApplication(IDLE, formData())).toEqual({ status: "success" });
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("RECRUITMENT_TEAMS", () => {
+  it("links team cards only to leads who are on the homepage's team list", () => {
+    const memberIds = new Set(teamMembers.map((member) => member.id));
+    const linked = RECRUITMENT_TEAMS.filter((team) => team.leadMemberId);
+    expect(linked.map((team) => team.id).sort()).toEqual(["design", "documentation", "tech"]);
+    for (const team of linked) expect(memberIds.has(team.leadMemberId!), team.id).toBe(true);
   });
 });

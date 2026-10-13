@@ -3,6 +3,7 @@
 import React, { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import {
   RECRUITMENT,
+  RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
   RECRUITMENT_YEARS,
   getTeamById,
@@ -17,6 +18,7 @@ import {
   LIMITS,
   STEP_ONE_FIELDS,
   isCollegeEmail,
+  isHttpUrl,
   normalizePhone,
   questionFieldName,
   questionLimit,
@@ -25,6 +27,15 @@ import {
 } from "./application";
 
 type Step = 1 | 2;
+const STEP_COUNT = 2;
+
+type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+interface Submitted {
+  name: string;
+  email: string;
+  team: string;
+}
 
 const INITIAL_STATE: ApplicationState = { status: "idle" };
 
@@ -44,7 +55,59 @@ async function submitSafely(
   }
 }
 
+const pad = (value: number) => value.toString().padStart(2, "0");
 const fieldId = (name: string) => `rc-${name.replace(/\./g, "-")}`;
+
+// Worded like the server's messages in application.ts, so an answer gets the
+// same advice whichever side catches it.
+const MISSING_MESSAGES: Record<string, string> = {
+  name: "Enter your full name.",
+  email: "Enter your college email.",
+  phone: "Enter your WhatsApp number.",
+  year: "Choose your year.",
+  program: "Enter your programme, e.g. B.Tech CSE.",
+  firstChoice: "Choose the team you want to join.",
+  why: `Tell us a little more (at least ${LIMITS.whyMin} characters).`,
+};
+const LINK_ERROR = "Enter a full link starting with https://";
+
+function isFormField(target: EventTarget | null): target is FormField {
+  return (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLSelectElement ||
+    target instanceof HTMLTextAreaElement
+  );
+}
+
+/** Checks HTML attributes can't express. Whitespace counts as empty, as on the server. */
+function customError(field: FormField): string {
+  const value = field.value.trim();
+  if (!value) {
+    return field.required && field.value ? (MISSING_MESSAGES[field.name] ?? "Please answer this one.") : "";
+  }
+  if (field.name === "email" && !isCollegeEmail(value)) return COLLEGE_EMAIL_ERROR;
+  if (field.name === "phone" && !normalizePhone(value)) return "Enter a 10-digit mobile number.";
+  if (field.name === "name" && value.length < 2) return MISSING_MESSAGES.name;
+  if (field.name === "why" && value.length < LIMITS.whyMin) return MISSING_MESSAGES.why;
+  if (field.type === "url" && !isHttpUrl(value)) return LINK_ERROR;
+  return "";
+}
+
+/** The message to show under a field, or "" when its answer is fine. */
+function fieldError(field: FormField): string {
+  field.setCustomValidity(customError(field));
+  const { validity } = field;
+  if (validity.valid) return "";
+  if (validity.valueMissing) return MISSING_MESSAGES[field.name] ?? "Please answer this one.";
+  if (validity.typeMismatch) return field.type === "email" ? "Enter a valid college email address." : LINK_ERROR;
+  if (validity.customError) return field.validationMessage;
+  // Only inputs and textareas have length limits, so read the attributes.
+  if (validity.tooShort) {
+    return MISSING_MESSAGES[field.name] ?? `Use at least ${field.getAttribute("minlength")} characters.`;
+  }
+  if (validity.tooLong) return `Keep it under ${field.getAttribute("maxlength")} characters.`;
+  return field.validationMessage;
+}
 
 /** Shared accessibility wiring for an input and its error line. */
 function fieldProps(name: string, errors: ApplicationErrors | undefined) {
@@ -89,7 +152,9 @@ function QuestionField({
       </label>
       {question.type === "textarea" && <textarea {...props} rows={4} />}
       {question.type === "text" && <input {...props} type="text" />}
-      {question.type === "url" && <input {...props} type="url" inputMode="url" />}
+      {question.type === "url" && (
+        <input {...props} type="url" inputMode="url" autoCapitalize="none" spellCheck={false} />
+      )}
       {question.type === "select" && (
         <select {...fieldProps(name, errors)} required={question.required} defaultValue="">
           <option value="" disabled={question.required}>
@@ -107,10 +172,75 @@ function QuestionField({
   );
 }
 
+function SuccessPanel({ submitted }: { submitted: Submitted | null }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const firstName = submitted?.name.split(/\s+/)[0];
+
+  useEffect(() => {
+    // The thank-you panel replaces a long form; bring its top into view and
+    // move focus to it so screen readers and keyboards land on the result.
+    scrollToElement("#apply", { offset: -90 });
+    panelRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  return (
+    <div className="rc-success" ref={panelRef} tabIndex={-1} role="status">
+      <span className="rc-success__mark" aria-hidden="true">✓</span>
+      <h3>
+        Application <em>received.</em>
+      </h3>
+      <p>
+        {firstName ? `Thanks, ${firstName}. ` : "Thanks. "}
+        Your application is in and the team will read it after applications close on{" "}
+        {RECRUITMENT.deadline}.
+      </p>
+
+      {submitted && (
+        <dl className="rc-success__summary">
+          <div>
+            <dt>Team</dt>
+            <dd>{submitted.team}</dd>
+          </div>
+          <div>
+            <dt>We&apos;ll write to</dt>
+            <dd>{submitted.email}</dd>
+          </div>
+        </dl>
+      )}
+
+      <h4 className="rc-success__next">What happens next</h4>
+      <ol className="rc-success__steps">
+        {RECRUITMENT_STEPS.map((item, index) => (
+          <li key={item.title} className={index === 0 ? "is-done" : undefined}>
+            <span aria-hidden="true">{index === 0 ? "✓" : pad(index + 1)}</span>
+            <div>
+              <strong>
+                {item.title}
+                {index === 0 && <em> Done</em>}
+              </strong>
+              {index > 0 && <p>{item.description}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <p className="rc-success__help">
+        Need to change something? Write to{" "}
+        <a href={`mailto:${RECRUITMENT.contactEmail}`}>{RECRUITMENT.contactEmail}</a>.
+      </p>
+    </div>
+  );
+}
+
 export default function RecruitForm(): React.ReactElement {
   const [step, setStep] = useState<Step>(1);
   const [firstChoiceId, setFirstChoiceId] = useState("");
   const [whyLength, setWhyLength] = useState(0);
+  // Errors found in the browser. An empty string hides a stale server error
+  // for a field the applicant has since fixed.
+  const [clientErrors, setClientErrors] = useState<ApplicationErrors>({});
+  const [stepMessage, setStepMessage] = useState("");
+  const [submitted, setSubmitted] = useState<Submitted | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const stepOneRef = useRef<HTMLDivElement>(null);
   const stepTwoRef = useRef<HTMLDivElement>(null);
@@ -118,6 +248,8 @@ export default function RecruitForm(): React.ReactElement {
   const [state, formAction, pending] = useActionState(
     async (previous: ApplicationState, formData: FormData) => {
       const next = await submitSafely(previous, formData);
+      // The server's verdict replaces whatever the browser last showed.
+      setClientErrors({});
       // A rejected step-1 answer (e.g. an email that already applied) sends
       // the applicant back to where they can fix it.
       if (STEP_ONE_FIELDS.some((field) => next.errors?.[field])) setStep(1);
@@ -127,60 +259,74 @@ export default function RecruitForm(): React.ReactElement {
   );
 
   const chosenTeam = getTeamById(firstChoiceId);
+  const errors: ApplicationErrors = { ...state.errors, ...clientErrors };
 
   useEffect(() => {
-    if (state.status === "success") {
-      // The thank-you panel replaces a long form; bring its top into view.
-      scrollToElement("#apply", { offset: -90 });
-      return;
-    }
     // Send focus to the first answer the server rejected, in form order.
-    const errors = state.errors;
-    if (!errors || !formRef.current) return;
+    const serverErrors = state.errors;
+    if (!serverErrors || !formRef.current) return;
     const firstInvalid = Array.from(formRef.current.elements).find(
-      (element) => "name" in element && errors[(element as HTMLInputElement).name],
+      (element) => isFormField(element) && serverErrors[element.name],
     );
     if (firstInvalid instanceof HTMLElement) firstInvalid.focus();
   }, [state]);
 
-  const showStep = (next: Step) => {
+  const panelFor = (target: Step) => (target === 1 ? stepOneRef.current : stepTwoRef.current);
+
+  const showStep = (next: Step, focusSelector = "input, select, textarea") => {
     setStep(next);
-    scrollToElement("#apply", { offset: -90 });
+    setStepMessage("");
+    scrollToElement("#rc-form", { offset: -100 });
     // Wait for the step to render before moving focus into it.
     window.requestAnimationFrame(() => {
-      const panel = next === 1 ? stepOneRef.current : stepTwoRef.current;
-      panel?.querySelector<HTMLElement>("input, select, textarea")?.focus({ preventScroll: true });
+      panelFor(next)?.querySelector<HTMLElement>(focusSelector)?.focus({ preventScroll: true });
     });
   };
 
-  // The form is noValidate, because the browser would otherwise check the
-  // hidden step's required fields too. Each step checks its own fields here.
-  const stepIsValid = (panel: HTMLElement | null) => {
-    const invalid = Array.from(
-      panel?.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
-        "input, select, textarea",
-      ) ?? [],
-    ).find((field) => !field.checkValidity());
-    invalid?.reportValidity();
-    return !invalid;
+  // The form is noValidate so nothing pops up a browser bubble; each step
+  // checks its own fields and shows the messages inline instead.
+  const checkStep = (target: Step) => {
+    const fields = Array.from(panelFor(target)?.querySelectorAll<FormField>("input, select, textarea") ?? []);
+    const found: ApplicationErrors = {};
+    for (const field of fields) found[field.name] = fieldError(field);
+    setClientErrors((previous) => ({ ...previous, ...found }));
+
+    const invalid = fields.filter((field) => found[field.name]);
+    if (invalid.length === 0) {
+      setStepMessage("");
+      return true;
+    }
+    setStepMessage(
+      invalid.length === 1
+        ? "One answer needs fixing before you can continue."
+        : `${invalid.length} answers need fixing before you can continue.`,
+    );
+    invalid[0].focus({ preventScroll: true });
+    scrollToElement(invalid[0], { offset: -160 });
+    return false;
   };
 
   const goToStepTwo = () => {
-    const form = formRef.current;
-    if (!form) return;
+    if (checkStep(1)) showStep(2);
+  };
 
-    // Checks the browser can't express as HTML attributes. Step 2 stays
-    // locked until the applicant uses their college email.
-    const email = form.elements.namedItem("email") as HTMLInputElement;
-    email.setCustomValidity(
-      email.value && !isCollegeEmail(email.value) ? COLLEGE_EMAIL_ERROR : "",
-    );
-    const phone = form.elements.namedItem("phone") as HTMLInputElement;
-    phone.setCustomValidity(
-      phone.value && !normalizePhone(phone.value) ? "Enter a 10-digit mobile number." : "",
-    );
+  // Check an answer when the applicant leaves it. An empty field isn't
+  // flagged just for being tabbed past; Next and Submit catch those.
+  const handleBlur = (event: React.FocusEvent<HTMLFormElement>) => {
+    const field = event.target;
+    if (!isFormField(field) || !field.name || field.name === "company") return;
+    if (!field.value && !errors[field.name]) return;
+    const message = fieldError(field);
+    setClientErrors((previous) => ({ ...previous, [field.name]: message }));
+  };
 
-    if (stepIsValid(stepOneRef.current)) showStep(2);
+  // Once a field shows an error, re-check it as they type so the message
+  // goes away the moment the answer is fixed.
+  const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
+    const field = event.target;
+    if (!isFormField(field) || !errors[field.name]) return;
+    const message = fieldError(field);
+    setClientErrors((previous) => ({ ...previous, [field.name]: message }));
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -192,40 +338,43 @@ export default function RecruitForm(): React.ReactElement {
       goToStepTwo();
       return;
     }
-    if (!stepIsValid(stepTwoRef.current)) return;
+    if (!checkStep(2)) return;
     const formData = new FormData(event.currentTarget);
+    setSubmitted({
+      name: String(formData.get("name") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim().toLowerCase(),
+      team: chosenTeam?.name ?? "",
+    });
     startTransition(() => formAction(formData));
   };
 
-  if (state.status === "success") {
-    return (
-      <div className="rc-success" role="status">
-        <span className="rc-success__mark" aria-hidden="true">✓</span>
-        <h3>
-          Application <em>received.</em>
-        </h3>
-        <p>
-          Thanks for applying. We&apos;ll email you about the next round after the
-          deadline on {RECRUITMENT.deadline}. Questions? Write to{" "}
-          <a href={`mailto:${RECRUITMENT.contactEmail}`}>{RECRUITMENT.contactEmail}</a>.
-        </p>
-      </div>
-    );
-  }
+  if (state.status === "success") return <SuccessPanel submitted={submitted} />;
 
-  const errors = state.errors;
-  const status = state.status === "error" ? state.message : "";
+  const status = stepMessage || (state.status === "error" ? (state.message ?? "") : "");
 
   return (
-    <form ref={formRef} className="rc-form" onSubmit={handleSubmit} noValidate>
-      <ol className="rc-progress" aria-label="Application steps">
-        <li className={step === 1 ? "is-current" : "is-done"} aria-current={step === 1 ? "step" : undefined}>
-          <span>01</span> About you &amp; select your team
-        </li>
-        <li className={step === 2 ? "is-current" : ""} aria-current={step === 2 ? "step" : undefined}>
-          <span>02</span> Your answers
-        </li>
-      </ol>
+    <form
+      ref={formRef}
+      id="rc-form"
+      className="rc-form"
+      onSubmit={handleSubmit}
+      onBlur={handleBlur}
+      onChange={handleChange}
+      noValidate
+    >
+      <div className="rc-progress-wrap">
+        <p className="rc-progress__count" aria-live="polite">
+          Step {step} of {STEP_COUNT}
+        </p>
+        <ol className="rc-progress" aria-label="Application steps">
+          <li className={step === 1 ? "is-current" : "is-done"} aria-current={step === 1 ? "step" : undefined}>
+            <span>01</span> About you &amp; select your team
+          </li>
+          <li className={step === 2 ? "is-current" : ""} aria-current={step === 2 ? "step" : undefined}>
+            <span>02</span> Your answers
+          </li>
+        </ol>
+      </div>
 
       {/* Honeypot for bots. Hidden from people and assistive tech. */}
       <div className="rc-honeypot" aria-hidden="true">
@@ -242,7 +391,16 @@ export default function RecruitForm(): React.ReactElement {
           <div className="rc-row">
             <div className="rc-field">
               <label htmlFor="rc-name">Full name</label>
-              <input {...fieldProps("name", errors)} type="text" autoComplete="name" required minLength={2} maxLength={LIMITS.name} />
+              <input
+                {...fieldProps("name", errors)}
+                type="text"
+                autoComplete="name"
+                autoCapitalize="words"
+                enterKeyHint="next"
+                required
+                minLength={2}
+                maxLength={LIMITS.name}
+              />
               <ErrorLine name="name" errors={errors} />
             </div>
 
@@ -251,11 +409,14 @@ export default function RecruitForm(): React.ReactElement {
               <input
                 {...fieldProps("email", errors)}
                 type="email"
+                inputMode="email"
                 autoComplete="email"
+                autoCapitalize="none"
+                spellCheck={false}
+                enterKeyHint="next"
                 required
                 maxLength={LIMITS.email}
                 placeholder={`you@${COLLEGE_EMAIL_DOMAIN}`}
-                onChange={(event) => event.currentTarget.setCustomValidity("")}
               />
               <ErrorLine name="email" errors={errors} />
             </div>
@@ -269,9 +430,9 @@ export default function RecruitForm(): React.ReactElement {
                 type="tel"
                 autoComplete="tel"
                 inputMode="tel"
+                enterKeyHint="next"
                 required
                 placeholder="98765 43210"
-                onChange={(event) => event.currentTarget.setCustomValidity("")}
               />
               <ErrorLine name="phone" errors={errors} />
             </div>
@@ -294,7 +455,15 @@ export default function RecruitForm(): React.ReactElement {
 
           <div className="rc-field">
             <label htmlFor="rc-program">Programme</label>
-            <input {...fieldProps("program", errors)} type="text" required minLength={2} maxLength={LIMITS.program} placeholder="B.Tech CSE, BBA, B.Des…" />
+            <input
+              {...fieldProps("program", errors)}
+              type="text"
+              enterKeyHint="next"
+              required
+              minLength={2}
+              maxLength={LIMITS.program}
+              placeholder="B.Tech CSE, BBA, B.Des…"
+            />
             <ErrorLine name="program" errors={errors} />
           </div>
         </fieldset>
@@ -322,7 +491,9 @@ export default function RecruitForm(): React.ReactElement {
             <ErrorLine name="firstChoice" errors={errors} />
           </div>
           <p className="rc-fieldset__note">
-            Each team has its own questions. You&apos;ll answer your team&apos;s on the next step.
+            {chosenTeam
+              ? `${chosenTeam.tagline} Next, ${chosenTeam.questions.length} ${chosenTeam.questions.length === 1 ? "question" : "questions"} from the ${chosenTeam.name} team.`
+              : "Each team has its own questions. You'll answer your team's on the next step."}
           </p>
         </fieldset>
 
@@ -336,12 +507,27 @@ export default function RecruitForm(): React.ReactElement {
         </div>
       </div>
 
-      {/* Step 2 renders the chosen team's questions; switching teams on step 1
-          swaps them out. */}
+      {/* Step 2 renders only the chosen team's questions; switching teams on
+          step 1 swaps them out. */}
       <div ref={stepTwoRef} className="rc-step-panel" hidden={step !== 2}>
         {chosenTeam && (
+          <div className="rc-chosen">
+            <span className="rc-chosen__label">Applying to</span>
+            <span className="rc-chip">{chosenTeam.name}</span>
+            <button
+              className="rc-chosen__change"
+              type="button"
+              onClick={() => showStep(1, "#rc-firstChoice")}
+              disabled={pending}
+            >
+              Change team
+            </button>
+          </div>
+        )}
+
+        {chosenTeam && (
           <fieldset className="rc-fieldset" disabled={pending} key={chosenTeam.id}>
-            <legend>03 · {chosenTeam.name}</legend>
+            <legend>03 · {chosenTeam.name} questions</legend>
             {chosenTeam.questions.map((question) => (
               <QuestionField key={question.id} team={chosenTeam} question={question} errors={errors} />
             ))}
@@ -360,7 +546,6 @@ export default function RecruitForm(): React.ReactElement {
               minLength={LIMITS.whyMin}
               maxLength={LIMITS.why}
               onChange={(event) => setWhyLength(event.currentTarget.value.trim().length)}
-             
             />
             <p className="rc-field__count" aria-live="polite">
               {whyLength < LIMITS.whyMin
@@ -382,7 +567,15 @@ export default function RecruitForm(): React.ReactElement {
             <label htmlFor="rc-link">
               Portfolio, GitHub or LinkedIn <span>Optional</span>
             </label>
-            <input {...fieldProps("link", errors)} type="url" inputMode="url" maxLength={LIMITS.link} placeholder="https://" />
+            <input
+              {...fieldProps("link", errors)}
+              type="url"
+              inputMode="url"
+              autoCapitalize="none"
+              spellCheck={false}
+              maxLength={LIMITS.link}
+              placeholder="https://"
+            />
             <ErrorLine name="link" errors={errors} />
           </div>
         </fieldset>

@@ -128,6 +128,33 @@ export default function Team(): React.ReactElement {
     selectMemberDirect(targetIndex);
   }, [selectMemberDirect]);
 
+  // Deep links from elsewhere on the site, e.g. the recruitment page's team
+  // cards link to /?member=member-6#teamSection. Bring that member forward
+  // once the section is on screen, so the visitor sees the switch happen.
+  const selectDirectoryMemberRef = useRef(selectDirectoryMember);
+  useEffect(() => {
+    selectDirectoryMemberRef.current = selectDirectoryMember;
+  }, [selectDirectoryMember]);
+
+  useEffect(() => {
+    const memberId = new URLSearchParams(window.location.search).get("member");
+    const targetIndex = teamMembers.findIndex((member) => member.id === memberId);
+    const team = teamRef.current;
+    if (targetIndex < 0 || !team || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        selectDirectoryMemberRef.current(targetIndex);
+      },
+      { threshold: 0.28 }
+    );
+
+    observer.observe(team);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     setupTeamAnimations({
       cardRefs: cardRefs.current,
