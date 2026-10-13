@@ -26,11 +26,6 @@ export interface RecruitmentTeam {
   tagline: string;
   description: string;
   skills: string[];
-  /**
-   * The team lead's `id` in src/sections/Team/data/TeamData.ts. When set, the
-   * team's card links to that person in the homepage's Meet the Team section.
-   */
-  leadMemberId?: string;
   /** Asked on step 2 to applicants who pick this team. */
   questions: RecruitmentQuestion[];
 }
@@ -51,6 +46,8 @@ export const RECRUITMENT = {
   /** Shown as-is on the page. */
   deadline: "31 October 2026",
   contactEmail: "club_ecell@rvu.edu.in",
+  /** Who can apply, shown in the hero's details panel. */
+  openTo: "All RVU students",
 } as const;
 
 export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
@@ -59,7 +56,7 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     name: "PR",
     tagline: "Be the voice of ECell.",
     description:
-      "Handle announcements, talk to other clubs and the press, and represent ECell at events and across campus.",
+      "Bring in the sponsors, judges and speakers behind ECell's events, and look after them from the first email to the event day.",
     skills: ["Communication", "Public speaking", "Networking"],
     questions: [
       {
@@ -120,7 +117,6 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     description:
       "Own how ECell looks: posters, decks, merch, social creatives and the visual identity of every event.",
     skills: ["Figma", "Branding", "Motion"],
-    leadMemberId: "member-7",
     questions: [
       {
         id: "portfolio",
@@ -151,7 +147,6 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     description:
       "Write event reports and recaps, keep minutes and records, and build the archive of everything ECell does.",
     skills: ["Writing", "Organisation", "Attention to detail"],
-    leadMemberId: "member-8",
     questions: [
       {
         id: "recap",
@@ -182,7 +177,6 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     description:
       "Build and maintain the website, event platforms and the small internal tools that keep the cell running.",
     skills: ["Web dev", "Automation", "Problem solving"],
-    leadMemberId: "member-6",
     questions: [
       {
         id: "stack",
@@ -229,6 +223,9 @@ export const RECRUITMENT_STEPS: RecruitmentStep[] = [
   },
 ];
 
+/** The steps after applying; the page counts these as rounds. */
+export const RECRUITMENT_ROUNDS = RECRUITMENT_STEPS.slice(1);
+
 export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
   {
     question: "Who can apply?",
@@ -250,6 +247,17 @@ export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
     answer:
       "Within a week of the deadline. Everyone who applies gets a reply, whatever the result.",
   },
+];
+
+/** Shown one at a time, in random order, while an application is saving. */
+export const RECRUITMENT_FUN_FACTS: string[] = [
+  "Pigs are physically unable to look up at the sky.",
+  "Scotland's official national animal is the unicorn.",
+  "A shrimp's heart is located inside its head.",
+  "Mosquitoes are reportedly attracted more often to people who have recently eaten bananas.",
+  "A single day on Venus is longer than a full year on Venus.",
+  "Lobsters have blue blood.",
+  "You cannot hum while holding your nose. Don't try it right now.",
 ];
 
 export function getTeamById(id: string): RecruitmentTeam | undefined {

@@ -1,8 +1,18 @@
 "use client";
 
-import React, { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { createPortal } from "react-dom";
 import {
   RECRUITMENT,
+  RECRUITMENT_FUN_FACTS,
   RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
   RECRUITMENT_YEARS,
@@ -11,10 +21,12 @@ import {
   type RecruitmentTeam,
 } from "@/src/data/recruitment";
 import { scrollToElement } from "@/src/utils/lenis";
+import { padNumber as pad } from "@/src/utils/math";
+import { lockPageScroll } from "@/src/utils/scrollLock";
 import { submitApplication } from "./actions";
 import {
   COLLEGE_EMAIL_DOMAIN,
-  COLLEGE_EMAIL_ERROR,
+  ERRORS,
   LIMITS,
   STEP_ONE_FIELDS,
   isCollegeEmail,
@@ -22,12 +34,14 @@ import {
   normalizePhone,
   questionFieldName,
   questionLimit,
+  tooLongError,
   type ApplicationErrors,
   type ApplicationState,
 } from "./application";
 
 type Step = 1 | 2;
 const STEP_COUNT = 2;
+const FACT_INTERVAL_MS = 5000;
 
 type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
@@ -55,21 +69,85 @@ async function submitSafely(
   }
 }
 
-const pad = (value: number) => value.toString().padStart(2, "0");
 const fieldId = (name: string) => `rc-${name.replace(/\./g, "-")}`;
 
-// Worded like the server's messages in application.ts, so an answer gets the
-// same advice whichever side catches it.
+const APPLIED_KEY = "ecell-recruit-applied";
+// Fired after this tab writes APPLIED_KEY; the "storage" event only covers
+// writes from other tabs.
+const APPLIED_EVENT = "ecell-recruit-applied";
+
+// Applications sent from this browser, oldest first. After a reload the form
+// shows the latest one as already submitted, and a second attempt with the
+// same email is stopped on step 1 instead of after the slow trip to the sheet.
+// The sheet's own check is what enforces one application per email.
+function readApplied(): string {
+  try {
+    return window.localStorage.getItem(APPLIED_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function parseApplied(raw: string): Submitted[] {
+  try {
+    const stored: unknown = JSON.parse(raw || "[]");
+    if (!Array.isArray(stored)) return [];
+    return stored.flatMap((entry: unknown): Submitted[] => {
+      // Earlier visits stored bare email strings.
+      if (typeof entry === "string") return [{ name: "", email: entry, team: "" }];
+      if (entry && typeof entry === "object" && "email" in entry && typeof entry.email === "string") {
+        return [
+          {
+            name: "name" in entry ? String(entry.name ?? "") : "",
+            email: entry.email,
+            team: "team" in entry ? String(entry.team ?? "") : "",
+          },
+        ];
+      }
+      return [];
+    });
+  } catch {
+    return [];
+  }
+}
+
+function appliedEmails(): string[] {
+  return parseApplied(readApplied()).map((entry) => entry.email);
+}
+
+function rememberApplied(applied: Submitted) {
+  try {
+    const entries = parseApplied(readApplied());
+    const known = entries.find((entry) => entry.email === applied.email);
+    // A duplicate reply doesn't say which team they applied to; keep what we had.
+    if (known && !applied.team) return;
+    const rest = entries.filter((entry) => entry.email !== applied.email);
+    window.localStorage.setItem(APPLIED_KEY, JSON.stringify([...rest, applied]));
+    window.dispatchEvent(new Event(APPLIED_EVENT));
+  } catch {
+    // Storage blocked: the sheet's check still catches a second application.
+  }
+}
+
+function subscribeApplied(onChange: () => void): () => void {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(APPLIED_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(APPLIED_EVENT, onChange);
+  };
+}
+
+// What to say when a field is left empty. Fields not listed get ERRORS.required.
 const MISSING_MESSAGES: Record<string, string> = {
-  name: "Enter your full name.",
-  email: "Enter your college email.",
-  phone: "Enter your WhatsApp number.",
-  year: "Choose your year.",
-  program: "Enter your programme, e.g. B.Tech CSE.",
-  firstChoice: "Choose the team you want to join.",
-  why: `Tell us a little more (at least ${LIMITS.whyMin} characters).`,
+  name: ERRORS.name,
+  email: ERRORS.emailMissing,
+  phone: ERRORS.phoneMissing,
+  year: ERRORS.year,
+  program: ERRORS.program,
+  firstChoice: ERRORS.firstChoice,
+  why: ERRORS.why,
 };
-const LINK_ERROR = "Enter a full link starting with https://";
 
 function isFormField(target: EventTarget | null): target is FormField {
   return (
@@ -83,13 +161,14 @@ function isFormField(target: EventTarget | null): target is FormField {
 function customError(field: FormField): string {
   const value = field.value.trim();
   if (!value) {
-    return field.required && field.value ? (MISSING_MESSAGES[field.name] ?? "Please answer this one.") : "";
+    return field.required && field.value ? (MISSING_MESSAGES[field.name] ?? ERRORS.required) : "";
   }
-  if (field.name === "email" && !isCollegeEmail(value)) return COLLEGE_EMAIL_ERROR;
-  if (field.name === "phone" && !normalizePhone(value)) return "Enter a 10-digit mobile number.";
-  if (field.name === "name" && value.length < 2) return MISSING_MESSAGES.name;
-  if (field.name === "why" && value.length < LIMITS.whyMin) return MISSING_MESSAGES.why;
-  if (field.type === "url" && !isHttpUrl(value)) return LINK_ERROR;
+  if (field.name === "email" && !isCollegeEmail(value)) return ERRORS.collegeEmail;
+  if (field.name === "email" && appliedEmails().includes(value.toLowerCase())) return ERRORS.alreadyApplied;
+  if (field.name === "phone" && !normalizePhone(value)) return ERRORS.phone;
+  if (field.name === "name" && value.length < 2) return ERRORS.name;
+  if (field.name === "why" && value.length < LIMITS.whyMin) return ERRORS.why;
+  if (field.type === "url" && !isHttpUrl(value)) return ERRORS.link;
   return "";
 }
 
@@ -98,14 +177,14 @@ function fieldError(field: FormField): string {
   field.setCustomValidity(customError(field));
   const { validity } = field;
   if (validity.valid) return "";
-  if (validity.valueMissing) return MISSING_MESSAGES[field.name] ?? "Please answer this one.";
-  if (validity.typeMismatch) return field.type === "email" ? "Enter a valid college email address." : LINK_ERROR;
+  if (validity.valueMissing) return MISSING_MESSAGES[field.name] ?? ERRORS.required;
+  if (validity.typeMismatch) return field.type === "email" ? ERRORS.email : ERRORS.link;
   if (validity.customError) return field.validationMessage;
   // Only inputs and textareas have length limits, so read the attributes.
   if (validity.tooShort) {
     return MISSING_MESSAGES[field.name] ?? `Use at least ${field.getAttribute("minlength")} characters.`;
   }
-  if (validity.tooLong) return `Keep it under ${field.getAttribute("maxlength")} characters.`;
+  if (validity.tooLong) return tooLongError(field.getAttribute("maxlength") ?? "");
   return field.validationMessage;
 }
 
@@ -172,35 +251,107 @@ function QuestionField({
   );
 }
 
-function SuccessPanel({ submitted }: { submitted: Submitted | null }) {
+/**
+ * Full-screen spinner while the application is saved. Portalled to <body> so
+ * no transformed ancestor can pull it off the centre of the screen, and holds
+ * the page still underneath until the save finishes.
+ */
+function SavingOverlay() {
+  // Only ever rendered in the browser after a submit, so picking at random
+  // here can't cause a hydration mismatch.
+  const [factIndex, setFactIndex] = useState(() =>
+    Math.floor(Math.random() * RECRUITMENT_FUN_FACTS.length),
+  );
+
+  useEffect(() => lockPageScroll(), []);
+
+  // A slow save shouldn't leave them staring at one line: move to a different
+  // fact every few seconds.
+  useEffect(() => {
+    if (RECRUITMENT_FUN_FACTS.length < 2) return;
+    const timer = window.setInterval(() => {
+      setFactIndex((current) => {
+        const offset = 1 + Math.floor(Math.random() * (RECRUITMENT_FUN_FACTS.length - 1));
+        return (current + offset) % RECRUITMENT_FUN_FACTS.length;
+      });
+    }, FACT_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return createPortal(
+    <div className="rc-pending">
+      <span className="rc-spinner" aria-hidden="true" />
+      <p className="rc-pending__fact" key={factIndex}>
+        {RECRUITMENT_FUN_FACTS[factIndex]}
+      </p>
+      {/* Only this line is announced; the rotating facts would be noise. */}
+      <p className="rc-pending__status" role="status">
+        Saving your data…
+      </p>
+    </div>,
+    document.body,
+  );
+}
+
+/**
+ * The result of an application: straight after submitting, or, with
+ * `onApplyAgain`, on a later visit from a browser that has already applied.
+ */
+function SuccessPanel({
+  submitted,
+  onApplyAgain,
+}: {
+  submitted: Submitted | null;
+  onApplyAgain?: () => void;
+}) {
   const panelRef = useRef<HTMLDivElement>(null);
   const firstName = submitted?.name.split(/\s+/)[0];
+  const returning = onApplyAgain !== undefined;
 
   useEffect(() => {
+    // A returning visitor didn't just do anything, so leave their scroll alone.
+    if (returning) return;
     // The thank-you panel replaces a long form; bring its top into view and
     // move focus to it so screen readers and keyboards land on the result.
     scrollToElement("#apply", { offset: -90 });
     panelRef.current?.focus({ preventScroll: true });
-  }, []);
+  }, [returning]);
 
   return (
     <div className="rc-success" ref={panelRef} tabIndex={-1} role="status">
       <span className="rc-success__mark" aria-hidden="true">✓</span>
-      <h3>
-        Application <em>received.</em>
-      </h3>
-      <p>
-        {firstName ? `Thanks, ${firstName}. ` : "Thanks. "}
-        Your application is in and the team will read it after applications close on{" "}
-        {RECRUITMENT.deadline}.
-      </p>
+      {returning ? (
+        <>
+          <h3>
+            Already <em>submitted.</em>
+          </h3>
+          <p>
+            {firstName ? `Hi ${firstName}. ` : ""}
+            We already have your application, and the team will read it after applications close on{" "}
+            {RECRUITMENT.deadline}.
+          </p>
+        </>
+      ) : (
+        <>
+          <h3>
+            Application <em>received.</em>
+          </h3>
+          <p>
+            {firstName ? `Thanks, ${firstName}. ` : "Thanks. "}
+            Your application is in and the team will read it after applications close on{" "}
+            {RECRUITMENT.deadline}.
+          </p>
+        </>
+      )}
 
       {submitted && (
         <dl className="rc-success__summary">
-          <div>
-            <dt>Team</dt>
-            <dd>{submitted.team}</dd>
-          </div>
+          {submitted.team && (
+            <div>
+              <dt>Team</dt>
+              <dd>{submitted.team}</dd>
+            </div>
+          )}
           <div>
             <dt>We&apos;ll write to</dt>
             <dd>{submitted.email}</dd>
@@ -228,6 +379,13 @@ function SuccessPanel({ submitted }: { submitted: Submitted | null }) {
         Need to change something? Write to{" "}
         <a href={`mailto:${RECRUITMENT.contactEmail}`}>{RECRUITMENT.contactEmail}</a>.
       </p>
+
+      {/* Shared computers: someone else may want to apply from here too. */}
+      {onApplyAgain && (
+        <button className="rc-chosen__change rc-success__again" type="button" onClick={onApplyAgain}>
+          Not you? Apply with a different email
+        </button>
+      )}
     </div>
   );
 }
@@ -241,6 +399,11 @@ export default function RecruitForm(): React.ReactElement {
   const [clientErrors, setClientErrors] = useState<ApplicationErrors>({});
   const [stepMessage, setStepMessage] = useState("");
   const [submitted, setSubmitted] = useState<Submitted | null>(null);
+  // Read after hydration (the server always renders the form), then kept in
+  // sync with writes from this tab and others.
+  const appliedRaw = useSyncExternalStore(subscribeApplied, readApplied, () => "");
+  const lastApplied = useMemo(() => parseApplied(appliedRaw).at(-1) ?? null, [appliedRaw]);
+  const [applyingAgain, setApplyingAgain] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const stepOneRef = useRef<HTMLDivElement>(null);
   const stepTwoRef = useRef<HTMLDivElement>(null);
@@ -248,6 +411,14 @@ export default function RecruitForm(): React.ReactElement {
   const [state, formAction, pending] = useActionState(
     async (previous: ApplicationState, formData: FormData) => {
       const next = await submitSafely(previous, formData);
+      if (next.status === "success" || next.errors?.email === ERRORS.alreadyApplied) {
+        rememberApplied({
+          name: String(formData.get("name") ?? "").trim(),
+          email: String(formData.get("email") ?? "").trim().toLowerCase(),
+          // Only a success confirms the team; a duplicate may have been for another.
+          team: next.status === "success" ? (getTeamById(String(formData.get("firstChoice") ?? ""))?.name ?? "") : "",
+        });
+      }
       // The server's verdict replaces whatever the browser last showed.
       setClientErrors({});
       // A rejected step-1 answer (e.g. an email that already applied) sends
@@ -349,6 +520,9 @@ export default function RecruitForm(): React.ReactElement {
   };
 
   if (state.status === "success") return <SuccessPanel submitted={submitted} />;
+  if (lastApplied && !applyingAgain) {
+    return <SuccessPanel submitted={lastApplied} onApplyAgain={() => setApplyingAgain(true)} />;
+  }
 
   const status = stepMessage || (state.status === "error" ? (state.message ?? "") : "");
 
@@ -588,8 +762,9 @@ export default function RecruitForm(): React.ReactElement {
             {pending ? "Sending…" : "Submit application"} <span aria-hidden="true">→</span>
           </button>
           <p className="rc-submit__status" role="status" aria-live="polite">
-            {step === 2 ? status : ""}
+            {step === 2 && !pending ? status : ""}
           </p>
+          {pending && <SavingOverlay />}
         </div>
       </div>
     </form>

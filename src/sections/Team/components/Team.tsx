@@ -128,8 +128,7 @@ export default function Team(): React.ReactElement {
     selectMemberDirect(targetIndex);
   }, [selectMemberDirect]);
 
-  // Deep links from elsewhere on the site, e.g. the recruitment page's team
-  // cards link to /?member=member-6#teamSection. Bring that member forward
+  // Deep links like /?member=member-6#teamSection. Bring that member forward
   // once the section is on screen, so the visitor sees the switch happen.
   const selectDirectoryMemberRef = useRef(selectDirectoryMember);
   useEffect(() => {

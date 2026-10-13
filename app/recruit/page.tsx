@@ -5,10 +5,12 @@ import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 import {
   RECRUITMENT,
   RECRUITMENT_FAQ,
+  RECRUITMENT_ROUNDS,
   RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
 } from "@/src/data/recruitment";
-import { SITE_URL } from "@/src/utils/constants";
+import { INSTAGRAM, SITE_URL } from "@/src/utils/constants";
+import { padNumber as pad } from "@/src/utils/math";
 import RecruitForm from "./RecruitForm";
 import ScrollLink from "./ScrollLink";
 import "./Recruit.css";
@@ -46,8 +48,6 @@ export const metadata: Metadata = {
     canonical: `${SITE_URL}/recruit`,
   },
 };
-
-const pad = (value: number) => value.toString().padStart(2, "0");
 
 export default function RecruitPage() {
   return (
@@ -111,11 +111,11 @@ export default function RecruitPage() {
               </div>
               <div>
                 <dt>Rounds</dt>
-                <dd>{pad(RECRUITMENT_STEPS.length - 1)}</dd>
+                <dd>{pad(RECRUITMENT_ROUNDS.length)}</dd>
               </div>
               <div>
                 <dt>Open to</dt>
-                <dd>All RVU students</dd>
+                <dd>{RECRUITMENT.openTo}</dd>
               </div>
             </dl>
           </aside>
@@ -131,36 +131,10 @@ export default function RecruitPage() {
 
             <ul className="rc-teams">
               {RECRUITMENT_TEAMS.map((team) => (
-                <li
-                  className={`rc-team${team.leadMemberId ? " rc-team--linked" : ""}`}
-                  key={team.id}
-                >
-                  {team.leadMemberId && (
-                    // Same destination as the "Meet the head" link below, so
-                    // it's skipped by keyboard and screen readers.
-                    <Link
-                      className="rc-team__corner"
-                      href={`/?member=${team.leadMemberId}#teamSection`}
-                      tabIndex={-1}
-                      aria-hidden="true"
-                    >
-                      ↗
-                    </Link>
-                  )}
+                <li className="rc-team" key={team.id}>
                   <h3>{team.name}</h3>
                   <p className="rc-team__tagline">{team.tagline}</p>
                   <p>{team.description}</p>
-                  {team.leadMemberId && (
-                    <div className="rc-team__footer">
-                      <Link
-                        className="rc-team__explore"
-                        href={`/?member=${team.leadMemberId}#teamSection`}
-                        aria-label={`Meet the head of the ${team.name} team`}
-                      >
-                        Meet the head <span aria-hidden="true">↗</span>
-                      </Link>
-                    </div>
-                  )}
                 </li>
               ))}
             </ul>
@@ -213,8 +187,8 @@ export default function RecruitPage() {
                   </h3>
                   <p>
                     This round is over. Follow{" "}
-                    <a href="https://www.instagram.com/ecell_rvu/" target="_blank" rel="noreferrer">
-                      @ecell_rvu
+                    <a href={INSTAGRAM.url} target="_blank" rel="noreferrer">
+                      {INSTAGRAM.handle}
                     </a>{" "}
                     to hear when the next one opens.
                   </p>
