@@ -51,6 +51,8 @@ export const RECRUITMENT = {
   /** Shown as-is on the page. */
   deadline: "31 October 2026",
   contactEmail: "club_ecell@rvu.edu.in",
+  /** Who can apply, shown in the hero's details panel. */
+  openTo: "All RVU students",
 } as const;
 
 export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
@@ -228,6 +230,9 @@ export const RECRUITMENT_STEPS: RecruitmentStep[] = [
     description: "Meet the cell, get your team and start working on the next event.",
   },
 ];
+
+/** The steps after applying; the page counts these as rounds. */
+export const RECRUITMENT_ROUNDS = RECRUITMENT_STEPS.slice(1);
 
 export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
   {

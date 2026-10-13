@@ -5,10 +5,12 @@ import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 import {
   RECRUITMENT,
   RECRUITMENT_FAQ,
+  RECRUITMENT_ROUNDS,
   RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
 } from "@/src/data/recruitment";
-import { SITE_URL } from "@/src/utils/constants";
+import { INSTAGRAM, SITE_URL } from "@/src/utils/constants";
+import { padNumber as pad } from "@/src/utils/math";
 import RecruitForm from "./RecruitForm";
 import ScrollLink from "./ScrollLink";
 import "./Recruit.css";
@@ -46,8 +48,6 @@ export const metadata: Metadata = {
     canonical: `${SITE_URL}/recruit`,
   },
 };
-
-const pad = (value: number) => value.toString().padStart(2, "0");
 
 export default function RecruitPage() {
   return (
@@ -111,11 +111,11 @@ export default function RecruitPage() {
               </div>
               <div>
                 <dt>Rounds</dt>
-                <dd>{pad(RECRUITMENT_STEPS.length - 1)}</dd>
+                <dd>{pad(RECRUITMENT_ROUNDS.length)}</dd>
               </div>
               <div>
                 <dt>Open to</dt>
-                <dd>All RVU students</dd>
+                <dd>{RECRUITMENT.openTo}</dd>
               </div>
             </dl>
           </aside>
@@ -213,8 +213,8 @@ export default function RecruitPage() {
                   </h3>
                   <p>
                     This round is over. Follow{" "}
-                    <a href="https://www.instagram.com/ecell_rvu/" target="_blank" rel="noreferrer">
-                      @ecell_rvu
+                    <a href={INSTAGRAM.url} target="_blank" rel="noreferrer">
+                      {INSTAGRAM.handle}
                     </a>{" "}
                     to hear when the next one opens.
                   </p>

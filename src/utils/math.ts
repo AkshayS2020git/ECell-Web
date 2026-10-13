@@ -77,3 +77,11 @@ export function degToRad(deg: number): number {
 export function radToDeg(rad: number): number {
   return (rad * 180) / Math.PI;
 }
+
+/**
+ * Zero-pads a count for display.
+ * padNumber(3) -> "03"
+ */
+export function padNumber(value: number, width = 2): string {
+  return value.toString().padStart(width, "0");
+}

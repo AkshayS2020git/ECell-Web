@@ -11,10 +11,11 @@ import {
   type RecruitmentTeam,
 } from "@/src/data/recruitment";
 import { scrollToElement } from "@/src/utils/lenis";
+import { padNumber as pad } from "@/src/utils/math";
 import { submitApplication } from "./actions";
 import {
   COLLEGE_EMAIL_DOMAIN,
-  COLLEGE_EMAIL_ERROR,
+  ERRORS,
   LIMITS,
   STEP_ONE_FIELDS,
   isCollegeEmail,
@@ -22,6 +23,7 @@ import {
   normalizePhone,
   questionFieldName,
   questionLimit,
+  tooLongError,
   type ApplicationErrors,
   type ApplicationState,
 } from "./application";
@@ -55,21 +57,18 @@ async function submitSafely(
   }
 }
 
-const pad = (value: number) => value.toString().padStart(2, "0");
 const fieldId = (name: string) => `rc-${name.replace(/\./g, "-")}`;
 
-// Worded like the server's messages in application.ts, so an answer gets the
-// same advice whichever side catches it.
+// What to say when a field is left empty. Fields not listed get ERRORS.required.
 const MISSING_MESSAGES: Record<string, string> = {
-  name: "Enter your full name.",
-  email: "Enter your college email.",
-  phone: "Enter your WhatsApp number.",
-  year: "Choose your year.",
-  program: "Enter your programme, e.g. B.Tech CSE.",
-  firstChoice: "Choose the team you want to join.",
-  why: `Tell us a little more (at least ${LIMITS.whyMin} characters).`,
+  name: ERRORS.name,
+  email: ERRORS.emailMissing,
+  phone: ERRORS.phoneMissing,
+  year: ERRORS.year,
+  program: ERRORS.program,
+  firstChoice: ERRORS.firstChoice,
+  why: ERRORS.why,
 };
-const LINK_ERROR = "Enter a full link starting with https://";
 
 function isFormField(target: EventTarget | null): target is FormField {
   return (
@@ -83,13 +82,13 @@ function isFormField(target: EventTarget | null): target is FormField {
 function customError(field: FormField): string {
   const value = field.value.trim();
   if (!value) {
-    return field.required && field.value ? (MISSING_MESSAGES[field.name] ?? "Please answer this one.") : "";
+    return field.required && field.value ? (MISSING_MESSAGES[field.name] ?? ERRORS.required) : "";
   }
-  if (field.name === "email" && !isCollegeEmail(value)) return COLLEGE_EMAIL_ERROR;
-  if (field.name === "phone" && !normalizePhone(value)) return "Enter a 10-digit mobile number.";
-  if (field.name === "name" && value.length < 2) return MISSING_MESSAGES.name;
-  if (field.name === "why" && value.length < LIMITS.whyMin) return MISSING_MESSAGES.why;
-  if (field.type === "url" && !isHttpUrl(value)) return LINK_ERROR;
+  if (field.name === "email" && !isCollegeEmail(value)) return ERRORS.collegeEmail;
+  if (field.name === "phone" && !normalizePhone(value)) return ERRORS.phone;
+  if (field.name === "name" && value.length < 2) return ERRORS.name;
+  if (field.name === "why" && value.length < LIMITS.whyMin) return ERRORS.why;
+  if (field.type === "url" && !isHttpUrl(value)) return ERRORS.link;
   return "";
 }
 
@@ -98,14 +97,14 @@ function fieldError(field: FormField): string {
   field.setCustomValidity(customError(field));
   const { validity } = field;
   if (validity.valid) return "";
-  if (validity.valueMissing) return MISSING_MESSAGES[field.name] ?? "Please answer this one.";
-  if (validity.typeMismatch) return field.type === "email" ? "Enter a valid college email address." : LINK_ERROR;
+  if (validity.valueMissing) return MISSING_MESSAGES[field.name] ?? ERRORS.required;
+  if (validity.typeMismatch) return field.type === "email" ? ERRORS.email : ERRORS.link;
   if (validity.customError) return field.validationMessage;
   // Only inputs and textareas have length limits, so read the attributes.
   if (validity.tooShort) {
     return MISSING_MESSAGES[field.name] ?? `Use at least ${field.getAttribute("minlength")} characters.`;
   }
-  if (validity.tooLong) return `Keep it under ${field.getAttribute("maxlength")} characters.`;
+  if (validity.tooLong) return tooLongError(field.getAttribute("maxlength") ?? "");
   return field.validationMessage;
 }
 

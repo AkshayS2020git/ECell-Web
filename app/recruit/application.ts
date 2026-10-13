@@ -87,7 +87,29 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Only RV University students can apply, so only their college email counts. */
 export const COLLEGE_EMAIL_DOMAIN = "rvu.edu.in";
-export const COLLEGE_EMAIL_ERROR = `Use your college email, ending in @${COLLEGE_EMAIL_DOMAIN}.`;
+
+/**
+ * Every message an applicant can see under a field. The form checks answers in
+ * the browser before this file checks them again on the server, so both use
+ * these and an answer gets the same advice whichever side catches it.
+ */
+export const ERRORS = {
+  required: "Please answer this one.",
+  name: "Enter your full name.",
+  emailMissing: "Enter your college email.",
+  email: "Enter a valid college email address.",
+  collegeEmail: `Use your college email, ending in @${COLLEGE_EMAIL_DOMAIN}.`,
+  phoneMissing: "Enter your WhatsApp number.",
+  phone: "Enter a 10-digit mobile number.",
+  year: "Choose your year.",
+  program: "Enter your programme, e.g. B.Tech CSE.",
+  firstChoice: "Choose the team you want to join.",
+  why: `Tell us a little more (at least ${LIMITS.whyMin} characters).`,
+  link: "Enter a full link starting with https://",
+  option: "Choose one of the options.",
+} as const;
+
+export const tooLongError = (limit: number | string) => `Keep it under ${limit} characters.`;
 
 export function isCollegeEmail(value: string): boolean {
   const email = value.trim().toLowerCase();
@@ -136,13 +158,13 @@ function validateTeamAnswers(
     const answer = text(formData, field);
 
     if (!answer) {
-      if (question.required) errors[field] = "Please answer this one.";
+      if (question.required) errors[field] = ERRORS.required;
     } else if (question.type === "url" && !isHttpUrl(answer)) {
-      errors[field] = "Enter a full link starting with https://";
+      errors[field] = ERRORS.link;
     } else if (question.type === "select" && !question.options?.includes(answer)) {
-      errors[field] = "Choose one of the options.";
+      errors[field] = ERRORS.option;
     } else if (answer.length > questionLimit(question)) {
-      errors[field] = `Keep it under ${questionLimit(question)} characters.`;
+      errors[field] = tooLongError(questionLimit(question));
     }
 
     return { question: question.label, answer };
@@ -155,32 +177,32 @@ export function validateApplication(formData: FormData): ValidationResult {
   const errors: ApplicationErrors = {};
 
   const name = text(formData, "name");
-  if (name.length < 2) errors.name = "Enter your full name.";
-  else if (name.length > LIMITS.name) errors.name = `Keep it under ${LIMITS.name} characters.`;
+  if (name.length < 2) errors.name = ERRORS.name;
+  else if (name.length > LIMITS.name) errors.name = tooLongError(LIMITS.name);
 
   const email = text(formData, "email").toLowerCase();
   if (!EMAIL_PATTERN.test(email) || email.length > LIMITS.email) {
-    errors.email = "Enter a valid college email address.";
+    errors.email = ERRORS.email;
   } else if (!isCollegeEmail(email)) {
-    errors.email = COLLEGE_EMAIL_ERROR;
+    errors.email = ERRORS.collegeEmail;
   }
 
   const phone = normalizePhone(text(formData, "phone"));
-  if (!phone) errors.phone = "Enter a 10-digit mobile number.";
+  if (!phone) errors.phone = ERRORS.phone;
 
   const year = text(formData, "year");
   if (!(RECRUITMENT_YEARS as readonly string[]).includes(year)) {
-    errors.year = "Choose your year.";
+    errors.year = ERRORS.year;
   }
 
   const program = text(formData, "program");
-  if (program.length < 2) errors.program = "Enter your programme, e.g. B.Tech CSE.";
+  if (program.length < 2) errors.program = ERRORS.program;
   else if (program.length > LIMITS.program) {
-    errors.program = `Keep it under ${LIMITS.program} characters.`;
+    errors.program = tooLongError(LIMITS.program);
   }
 
   const firstChoice = getTeamById(text(formData, "firstChoice"));
-  if (!firstChoice) errors.firstChoice = "Choose the team you want to join.";
+  if (!firstChoice) errors.firstChoice = ERRORS.firstChoice;
 
   // Only the chosen team's questions count; answers to any others are ignored.
   const teamAnswers: TeamAnswers[] = [];
@@ -188,19 +210,19 @@ export function validateApplication(formData: FormData): ValidationResult {
 
   const why = text(formData, "why");
   if (why.length < LIMITS.whyMin) {
-    errors.why = `Tell us a little more (at least ${LIMITS.whyMin} characters).`;
+    errors.why = ERRORS.why;
   } else if (why.length > LIMITS.why) {
-    errors.why = `Keep it under ${LIMITS.why} characters.`;
+    errors.why = tooLongError(LIMITS.why);
   }
 
   const experience = text(formData, "experience");
   if (experience.length > LIMITS.experience) {
-    errors.experience = `Keep it under ${LIMITS.experience} characters.`;
+    errors.experience = tooLongError(LIMITS.experience);
   }
 
   const link = text(formData, "link");
   if (link && (link.length > LIMITS.link || !isHttpUrl(link))) {
-    errors.link = "Enter a full link starting with https://";
+    errors.link = ERRORS.link;
   }
 
   if (Object.keys(errors).length > 0 || !phone || !firstChoice) {
