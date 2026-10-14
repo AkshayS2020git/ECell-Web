@@ -75,6 +75,19 @@ describe("RecruitForm", () => {
     expect(screen.queryByLabelText(/recap/i)).toBeNull();
   });
 
+  it("reveals the Other outreach tool field only after Other is selected", () => {
+    render(<RecruitForm />);
+    fillStepOne();
+    type("Team", "pr");
+    next();
+
+    const otherDetail = /what tools or platforms have you used for communication and outreach.*other/i;
+    expect(screen.queryByLabelText(otherDetail)).toBeNull();
+    fireEvent.click(screen.getByLabelText("Other"));
+    expect(screen.getByLabelText(otherDetail)).toBeRequired();
+  });
+
+
   it("keeps answers when going back and forth between steps", () => {
     render(<RecruitForm />);
     fillStepOne();

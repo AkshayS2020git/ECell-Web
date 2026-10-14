@@ -157,14 +157,33 @@ function validateTeamAnswers(
 ): TeamAnswers {
   const answers = team.questions.map((question) => {
     const field = questionFieldName(team.id, question.id);
-    const answer = text(formData, field);
+    const selected = formData
+      .getAll(field)
+      .filter((value): value is string => typeof value === "string")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const other = text(formData, `${field}.other`);
+    const answer = question.type === "checkboxes"
+      ? selected.map((value) => value === "Other" && other ? `Other: ${other}` : value).join(", ")
+      : text(formData, field);
 
     if (!answer) {
       if (question.required) errors[field] = ERRORS.required;
     } else if (question.type === "url" && !isHttpUrl(answer)) {
       errors[field] = ERRORS.link;
-    } else if (question.type === "select" && !question.options?.includes(answer)) {
+    } else if (
+      (question.type === "select" || question.type === "rating") &&
+      !question.options?.includes(answer)
+    ) {
       errors[field] = ERRORS.option;
+    } else if (question.type === "checkboxes") {
+      if (!selected.every((value) => question.options?.includes(value))) {
+        errors[field] = ERRORS.option;
+      } else if (selected.includes("Other") && !other) {
+        errors[field] = ERRORS.required;
+      } else if (other.length > LIMITS.shortAnswer) {
+        errors[field] = tooLongError(LIMITS.shortAnswer);
+      }
     } else if (answer.length > questionLimit(question)) {
       errors[field] = tooLongError(questionLimit(question));
     }

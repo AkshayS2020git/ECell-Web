@@ -160,6 +160,12 @@ function isFormField(target: EventTarget | null): target is FormField {
 /** Checks HTML attributes can't express. Whitespace counts as empty, as on the server. */
 function customError(field: FormField): string {
   const value = field.value.trim();
+  if (field instanceof HTMLInputElement && field.type === "checkbox" && field.name.startsWith("q.")) {
+    const checked = field.form?.querySelector<HTMLInputElement>(
+      `input[type="checkbox"][name="${field.name}"]:checked`,
+    );
+    return checked ? "" : ERRORS.required;
+  }
   if (!value) {
     return field.required && field.value ? (MISSING_MESSAGES[field.name] ?? ERRORS.required) : "";
   }
@@ -217,6 +223,7 @@ function QuestionField({
   errors?: ApplicationErrors;
 }) {
   const name = questionFieldName(team.id, question.id);
+  const [otherSelected, setOtherSelected] = useState(false);
   const props = {
     ...fieldProps(name, errors),
     required: question.required,
@@ -245,6 +252,52 @@ function QuestionField({
             </option>
           ))}
         </select>
+      )}
+      {question.type === "checkboxes" && (
+        <div className="rc-choice-list" role="group" aria-describedby={errors?.[name] ? `${fieldId(name)}-error` : undefined}>
+          {question.options?.map((option, index) => (
+            <React.Fragment key={option}>
+              <label className="rc-choice">
+                <input
+                  id={index === 0 ? fieldId(name) : undefined}
+                  name={name}
+                  type="checkbox"
+                  value={option}
+                  aria-invalid={errors?.[name] ? true : undefined}
+                  onChange={(event) => {
+                    if (option === "Other") setOtherSelected(event.currentTarget.checked);
+                  }}
+                />
+                <span>{option}</span>
+              </label>
+              {option === "Other" && otherSelected && (
+                <input
+                  name={`${name}.other`}
+                  type="text"
+                  maxLength={LIMITS.shortAnswer}
+                  placeholder="Please specify"
+                  aria-label={`${question.label} — Other`}
+                  required
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      )}
+      {question.type === "rating" && (
+        <div className="rc-rating" role="radiogroup" aria-label={question.label} aria-describedby={errors?.[name] ? `${fieldId(name)}-error` : undefined}>
+          {question.options?.map((option) => (
+            <label className="rc-rating__option" key={option}>
+              <input
+                name={name}
+                type="radio"
+                value={option}
+                required={question.required}
+              />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
       )}
       <ErrorLine name={name} errors={errors} />
     </div>
