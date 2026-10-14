@@ -4,7 +4,8 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   allowedDevOrigins: ["monsoon-suspend-uncloak.ngrok-free.dev"],
   images: {
-    qualities: [100, 75, 85, 95],
+    // 40 is for the blurred poster backdrops in EventsArchive.
+    qualities: [40, 75, 85, 95, 100],
     // Remote sponsor logos used by event pages (src/data/events). Add a host
     // here before referencing a new one, or next/image throws at render.
     remotePatterns: [
