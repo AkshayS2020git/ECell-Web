@@ -2,7 +2,15 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { FINAL_FRAG, SIM_FRAG, VERT } from "../webgl/shaders";
+import {
+  ADVECT_FRAG,
+  DIVERGENCE_FRAG,
+  FINAL_FRAG,
+  GRADIENT_FRAG,
+  PRESSURE_FRAG,
+  SPLAT_FRAG,
+  VERT,
+} from "../webgl/shaders";
 import { drawFlatText, layoutText } from "../webgl/text";
 import { buildLetter, type Letter } from "../webgl/letters";
 import { GALAXY_FRAG, GALAXY_VERT, buildGalaxy } from "../webgl/galaxy";
@@ -11,6 +19,44 @@ import { isPageScrollLocked } from "@/src/utils/scrollLock";
 // Fraction of the hero height the nebula's core is raised above centre
 // (0.3 puts it ~20% from the top).
 const GALAXY_SHIFT_UP = 0.3;
+
+// Ink fluid, tuned to match noth.in's hero. Dissipation is per 60Hz frame.
+//
+// noth.in runs a square 256 / 512 grid over a canvas three viewports tall
+// (their whole hero wrapper). To get the same ink at the same pixel scale on
+// a one-viewport hero, the grids here keep their width but only a third of
+// their height, and the brush and vertical force are scaled to match.
+const DOMAIN_SCALE = 3;
+const FLUID = {
+  simWidth: 256,
+  simHeight: Math.round(256 / DOMAIN_SCALE),
+  dyeWidth: 512,
+  dyeHeight: Math.round(512 / DOMAIN_SCALE),
+  velocityDissipation: 0.962,
+  // Once the pointer pauses, leftover momentum dies a little sooner so the
+  // ink settles instead of drifting further out.
+  idleVelocityDissipation: 0.94,
+  // How long after the last splat the pointer counts as paused.
+  idleAfterMs: 120,
+  dyeDissipation: 0.988,
+  // Ink clears faster once the hero has scrolled into the card.
+  scrolledDyeDissipation: 0.97,
+  pressureIterations: 20,
+  // Gaussian radius (squared, in hero heights).
+  splatRadius: 6e-5 * DOMAIN_SCALE * DOMAIN_SCALE,
+  splatForce: 5900,
+  // Dye * revealSize above 0.5 is ink.
+  revealSize: 3.9,
+  edgeWidth: 0.01,
+};
+// Dye is visible once it exceeds this level.
+const INK_THRESHOLD = 0.5 / FLUID.revealSize;
+
+type DoubleTarget = {
+  read: THREE.WebGLRenderTarget;
+  write: THREE.WebGLRenderTarget;
+  swap: () => void;
+};
 
 /**
  * Hero title with a liquid ink reveal. Moving the pointer pours ink over the
@@ -121,50 +167,135 @@ export default function HeroReveal(): React.ReactElement {
       magFilter: THREE.LinearFilter,
       depthBuffer: false,
     };
-    let simA = new THREE.WebGLRenderTarget(1, 1, rtOpts);
-    let simB = new THREE.WebGLRenderTarget(1, 1, rtOpts);
     const sceneRT = new THREE.WebGLRenderTarget(1, 1, { ...rtOpts, depthBuffer: true, samples: coarse ? 0 : 2 });
     renderer.autoClear = false;
+
+    // --- Ink fluid ---
+    type Filter = typeof THREE.LinearFilter | typeof THREE.NearestFilter;
+    const fluidTarget = (w: number, h: number, filter: Filter) =>
+      new THREE.WebGLRenderTarget(w, h, { ...rtOpts, minFilter: filter, magFilter: filter });
+    const doubleTarget = (w: number, h: number, filter: Filter): DoubleTarget => ({
+      read: fluidTarget(w, h, filter),
+      write: fluidTarget(w, h, filter),
+      swap() {
+        [this.read, this.write] = [this.write, this.read];
+      },
+    });
+    const { simWidth, simHeight, dyeWidth, dyeHeight } = FLUID;
+    const velocity = doubleTarget(simWidth, simHeight, THREE.LinearFilter);
+    const pressure = doubleTarget(simWidth, simHeight, THREE.NearestFilter);
+    const dye = doubleTarget(dyeWidth, dyeHeight, THREE.LinearFilter);
+    const divergenceRT = fluidTarget(simWidth, simHeight, THREE.NearestFilter);
+    const fluidTargets = [velocity.read, velocity.write, pressure.read, pressure.write, dye.read, dye.write, divergenceRT];
+    const simTexel = new THREE.Vector2(1 / simWidth, 1 / simHeight);
+    const dyeTexel = new THREE.Vector2(1 / dyeWidth, 1 / dyeHeight);
+    renderer.setClearColor(0x000000, 1);
+    for (const target of fluidTargets) {
+      renderer.setRenderTarget(target);
+      renderer.clear();
+    }
+    renderer.setRenderTarget(null);
+
+    const passMaterial = (fragmentShader: string, uniforms: Record<string, THREE.IUniform>) =>
+      new THREE.ShaderMaterial({ vertexShader: VERT, fragmentShader, uniforms, depthTest: false, depthWrite: false });
+    const splatMaterial = passMaterial(SPLAT_FRAG, {
+      uTarget: { value: null },
+      uAspect: { value: 1 },
+      uPoint: { value: new THREE.Vector2() },
+      uColor: { value: new THREE.Vector3() },
+      uRadius: { value: FLUID.splatRadius },
+    });
+    const advectMaterial = passMaterial(ADVECT_FRAG, {
+      uVelocity: { value: null },
+      uSource: { value: null },
+      uTexel: { value: simTexel },
+      uDt: { value: 1 },
+      uDissipation: { value: 1 },
+    });
+    const divergenceMaterial = passMaterial(DIVERGENCE_FRAG, {
+      uVelocity: { value: null },
+      uTexel: { value: simTexel },
+    });
+    const pressureMaterial = passMaterial(PRESSURE_FRAG, {
+      uPressure: { value: null },
+      uDivergence: { value: divergenceRT.texture },
+      uTexel: { value: simTexel },
+    });
+    const gradientMaterial = passMaterial(GRADIENT_FRAG, {
+      uPressure: { value: null },
+      uVelocity: { value: null },
+      uTexel: { value: simTexel },
+    });
+    const fluidMaterials = [splatMaterial, advectMaterial, divergenceMaterial, pressureMaterial, gradientMaterial];
+    const passMesh = new THREE.Mesh(quad, splatMaterial);
+    const passScene = new THREE.Scene();
+    passScene.add(passMesh);
+    const renderPass = (material: THREE.ShaderMaterial, target: THREE.WebGLRenderTarget) => {
+      passMesh.material = material;
+      renderer.setRenderTarget(target);
+      renderer.render(passScene, quadCamera);
+    };
+    const splat = (target: DoubleTarget, x: number, y: number, r: number, g: number, b: number) => {
+      const u = splatMaterial.uniforms;
+      u.uTarget.value = target.read.texture;
+      u.uPoint.value.set(x, y);
+      u.uColor.value.set(r, g, b);
+      renderPass(splatMaterial, target.write);
+      target.swap();
+    };
+    // One step of stable fluids: advect velocity and dye, then project the
+    // velocity back to divergence-free so the ink swirls instead of spreading.
+    const stepFluid = (frames: number, velocityDissipation: number, dyeDissipation: number) => {
+      const a = advectMaterial.uniforms;
+      a.uVelocity.value = velocity.read.texture;
+      a.uSource.value = velocity.read.texture;
+      a.uTexel.value = simTexel;
+      a.uDt.value = frames;
+      a.uDissipation.value = Math.pow(velocityDissipation, frames);
+      renderPass(advectMaterial, velocity.write);
+      velocity.swap();
+
+      a.uVelocity.value = velocity.read.texture;
+      a.uSource.value = dye.read.texture;
+      a.uTexel.value = dyeTexel;
+      a.uDissipation.value = dyeDissipation;
+      renderPass(advectMaterial, dye.write);
+      dye.swap();
+
+      divergenceMaterial.uniforms.uVelocity.value = velocity.read.texture;
+      renderPass(divergenceMaterial, divergenceRT);
+      renderer.setRenderTarget(pressure.read);
+      renderer.clear();
+      for (let i = 0; i < FLUID.pressureIterations; i++) {
+        pressureMaterial.uniforms.uPressure.value = pressure.read.texture;
+        renderPass(pressureMaterial, pressure.write);
+        pressure.swap();
+      }
+      gradientMaterial.uniforms.uPressure.value = pressure.read.texture;
+      gradientMaterial.uniforms.uVelocity.value = velocity.read.texture;
+      renderPass(gradientMaterial, velocity.write);
+      velocity.swap();
+    };
 
     const textCanvas = document.createElement("canvas");
     const textTexture = new THREE.CanvasTexture(textCanvas);
     textTexture.minFilter = THREE.LinearFilter;
     textTexture.generateMipmaps = false;
 
-    const simMaterial = new THREE.ShaderMaterial({
-      vertexShader: VERT,
-      fragmentShader: SIM_FRAG,
-      uniforms: {
-        uPrev: { value: null },
-        uMouse: { value: new THREE.Vector2(-10, -10) },
-        uPrevMouse: { value: new THREE.Vector2(-10, -10) },
-        uMouseVel: { value: new THREE.Vector2() },
-        uTexel: { value: new THREE.Vector2(1, 1) },
-        uAspect: { value: 1 },
-        uRadius: { value: 0.1 },
-        uStrength: { value: 0 },
-        uDecay: { value: 0.97 },
-        uVelDecay: { value: 0.93 },
-        uDt: { value: 1 / 60 },
-        uTime: { value: 0 },
-      },
-    });
     const finalMaterial = new THREE.ShaderMaterial({
       vertexShader: VERT,
       fragmentShader: FINAL_FRAG,
       uniforms: {
         uText: { value: textTexture },
         uScene: { value: sceneRT.texture },
-        uMask: { value: null },
-        uTime: { value: 0 },
-        uAspect: { value: 1 },
+        uDye: { value: dye.read.texture },
+        uRevealSize: { value: FLUID.revealSize },
+        uEdge: { value: FLUID.edgeWidth },
         uDark: { value: 0 },
         uTitleFade: { value: 0 },
         uInk: { value: 1 },
       },
     });
-    const simScene = new THREE.Scene();
-    simScene.add(new THREE.Mesh(quad, simMaterial));
     const finalScene = new THREE.Scene();
     finalScene.add(new THREE.Mesh(quad, finalMaterial));
 
@@ -172,8 +303,10 @@ export default function HeroReveal(): React.ReactElement {
     let cssW = 0;
     let cssH = 0;
     // Once the ink has fully faded there is nothing to draw, so the loop idles.
-    // Tracks the strongest ink left on screen, decayed exactly like the sim.
+    // An upper bound on the densest dye in the fluid: advection never raises
+    // the peak, so it only grows by what is splatted and decays like the dye.
     let inkLevel = 0;
+    let aspect = 1;
     let dirty = true;
     let disposed = false;
     // Glass letters are only needed once ink appears, and building them is
@@ -283,17 +416,6 @@ export default function HeroReveal(): React.ReactElement {
       renderer.setRenderTarget(sceneRT);
       renderer.clear();
       renderer.setRenderTarget(null);
-      const sw = Math.max(2, Math.round(w / 2));
-      const sh = Math.max(2, Math.round(h / 2));
-      simA.setSize(sw, sh);
-      simB.setSize(sw, sh);
-      simMaterial.uniforms.uTexel.value.set(1 / sw, 1 / sh);
-      renderer.setClearColor(0x000000, 1);
-      renderer.setRenderTarget(simA);
-      renderer.clear();
-      renderer.setRenderTarget(simB);
-      renderer.clear();
-      renderer.setRenderTarget(null);
 
       camera.aspect = w / h;
       // Pull back on narrow screens so the disc still reads as a spiral.
@@ -310,8 +432,8 @@ export default function HeroReveal(): React.ReactElement {
       letterCamera.far = letterCamera.position.z * 4;
       letterCamera.updateProjectionMatrix();
 
-      simMaterial.uniforms.uAspect.value = w / h;
-      finalMaterial.uniforms.uAspect.value = w / h;
+      aspect = w / h;
+      splatMaterial.uniforms.uAspect.value = aspect;
       buildText();
     };
 
@@ -319,6 +441,9 @@ export default function HeroReveal(): React.ReactElement {
     const pointer = new THREE.Vector2(-10, -10);
     const smoothed = new THREE.Vector2(-10, -10);
     const lastStamp = new THREE.Vector2(-10, -10);
+    // Where the last fluid splat landed; each new splat pushes along the move.
+    const lastSplat = new THREE.Vector2(-10, -10);
+    let lastSplatAt = -Infinity;
     const tilt = new THREE.Vector2();
     const tiltTarget = new THREE.Vector2();
     const wander = new THREE.Vector2();
@@ -334,20 +459,40 @@ export default function HeroReveal(): React.ReactElement {
     let wanderUntil = performance.now() + WANDER_MS;
     let atTop = true;
 
-    const onPointerMove = (e: PointerEvent) => {
+    const movePointer = (clientX: number, clientY: number) => {
       const rect = host.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
-      pointer.set((e.clientX - rect.left) / rect.width, 1 - (e.clientY - rect.top) / rect.height);
+      pointer.set((clientX - rect.left) / rect.width, 1 - (clientY - rect.top) / rect.height);
       if (!hasPointer) {
         smoothed.copy(pointer);
         lastStamp.copy(pointer);
+        lastSplat.copy(pointer);
         hasPointer = true;
       }
       lastInput = performance.now();
       wanderUntil = lastInput + 1500 + WANDER_MS;
     };
+    const onPointerMove = (e: PointerEvent) => movePointer(e.clientX, e.clientY);
+    // A new touch starts a fresh stroke where the finger lands.
+    const onPointerDown = (e: PointerEvent) => {
+      movePointer(e.clientX, e.clientY);
+      lastSplat.copy(pointer);
+    };
+    // Pointer events stop (pointercancel) once a finger starts scrolling the
+    // page; touch events keep coming, so swiping through the hero still
+    // drags ink on phones.
+    const onTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (touch) movePointer(touch.clientX, touch.clientY);
+    };
     window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("pointerdown", onPointerMove, { passive: true });
+    window.addEventListener("pointerdown", onPointerDown, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    // Pulling down at the top of the page would reload it (pull-to-refresh).
+    // On the hero that drag pours ink instead.
+    const root = document.documentElement;
+    const savedOverscrollY = root.style.overscrollBehaviorY;
+    if (coarse) root.style.overscrollBehaviorY = "none";
 
     // Scroll progress through the pinned hero drives the light -> dark theme
     // blend, timed with the card forming in HeroAnimations.
@@ -446,6 +591,9 @@ export default function HeroReveal(): React.ReactElement {
       // Touch screens have no hover: a blob wanders on its own, and a finger
       // dragging across the hero takes over until it lifts for a moment.
       let target = pointer;
+      // Ink is splatted at the raw pointer (or the wandering blob), unsmoothed,
+      // so it follows the stroke exactly; null while nothing is moving it.
+      let brush: THREE.Vector2 | null = hasPointer ? pointer : null;
       const touching = performance.now() - lastInput < 1500;
       if (coarse && !touching) {
         // Only wander during a burst while the hero is at the top; otherwise
@@ -458,16 +606,18 @@ export default function HeroReveal(): React.ReactElement {
           if (!hasPointer) {
             smoothed.copy(target);
             lastStamp.copy(target);
+            lastSplat.copy(target);
             hasPointer = true;
           }
+          brush = wander;
         } else {
           target = smoothed;
+          brush = null;
         }
       }
 
       smoothed.lerp(target, 1 - Math.pow(0.00001, dt));
-      const aspect = simMaterial.uniforms.uAspect.value as number;
-      // Ink only flows while the pointer moves: a resting cursor lets it fade.
+      // Smoothed pointer speed drives the nebula and letters.
       rawVel.copy(smoothed).sub(lastStamp).divideScalar(Math.max(dt, 1e-3)).clampLength(0, 8);
       vel.lerp(rawVel, 1 - Math.pow(0.0005, dt));
       const speed = Math.hypot(vel.x * aspect, vel.y);
@@ -498,34 +648,54 @@ export default function HeroReveal(): React.ReactElement {
         host.style.backgroundColor = `rgb(${paper}, ${paper}, ${paper})`;
       }
 
-      // Ink decays below the visible threshold ~2.3s after the pointer stops.
-      // From then on only the flat title is drawn (cheap), and nothing at all
-      // once the theme has settled, so scrolling the hero stays smooth.
-      const inkDecay = Math.pow(0.982, realDt * 60);
-      inkLevel = flow > 0.01 ? 1 : inkLevel * inkDecay;
-      const inkVisible = inkLevel > 0.08;
+      // As the hero scrolls into the card, new ink weakens and old ink clears
+      // faster (as on noth.in).
+      const scrolled = dark * dark;
+      const strength = 1 - scrolled;
+      // The sim moves in 60Hz frames; fading follows real time, so slow
+      // devices don't keep the ink (and the 3D scene) around for longer.
+      const frames = dt * 60;
+      const dyeDecay = Math.pow(
+        FLUID.dyeDissipation + (FLUID.scrolledDyeDissipation - FLUID.dyeDissipation) * scrolled,
+        realDt * 60,
+      );
+      let splatDx = 0;
+      let splatDy = 0;
+      let dyeAmount = 0;
+      if (brush) {
+        splatDx = brush.x - lastSplat.x;
+        splatDy = brush.y - lastSplat.y;
+        // A jump (finger lifted and put down elsewhere, the wander resuming)
+        // restarts the stroke instead of flinging ink across the hero.
+        const jump = Math.hypot(splatDx * aspect, splatDy) > 0.3;
+        if ((splatDx || splatDy) && !jump && strength > 0.001) {
+          dyeAmount = strength * Math.min(frames, 2);
+        }
+      }
+
+      // The fluid only runs while ink is moving or still visible; then only
+      // the flat title is drawn (cheap), and nothing at all once the theme
+      // has settled, so scrolling the hero stays smooth.
+      const inkVisible = dyeAmount > 0 || inkLevel > INK_THRESHOLD;
       if (inkVisible) prepareScene();
       if (!inkVisible && !dirty && !themeMoving) {
+        if (brush) lastSplat.copy(brush);
         lastStamp.copy(smoothed);
         return;
       }
       dirty = false;
+      if (brush) lastSplat.copy(brush);
 
       if (inkVisible) {
-        // Mask simulation
-        simMaterial.uniforms.uPrev.value = simA.texture;
-        simMaterial.uniforms.uPrevMouse.value.copy(lastStamp);
-        simMaterial.uniforms.uMouse.value.copy(smoothed);
-        simMaterial.uniforms.uMouseVel.value.copy(vel).multiplyScalar(0.45);
-        simMaterial.uniforms.uRadius.value = 0.07 + Math.min(speed * 0.06, 0.15);
-        simMaterial.uniforms.uStrength.value = hasPointer ? flow * Math.min(dt * 60, 1.5) * 0.5 : 0;
-        simMaterial.uniforms.uDecay.value = inkDecay;
-        simMaterial.uniforms.uVelDecay.value = Math.pow(0.93, dt * 60);
-        simMaterial.uniforms.uDt.value = dt;
-        simMaterial.uniforms.uTime.value = t;
-        renderer.setRenderTarget(simB);
-        renderer.render(simScene, quadCamera);
-        [simA, simB] = [simB, simA];
+        if (brush && dyeAmount > 0) {
+          const force = (FLUID.splatForce * strength) / frames;
+          splat(velocity, brush.x, brush.y, splatDx * force, (splatDy * force) / DOMAIN_SCALE, 0);
+          splat(dye, brush.x, brush.y, dyeAmount, dyeAmount, dyeAmount);
+          lastSplatAt = performance.now();
+        }
+        const idle = performance.now() - lastSplatAt > FLUID.idleAfterMs;
+        stepFluid(frames, idle ? FLUID.idleVelocityDissipation : FLUID.velocityDissipation, dyeDecay);
+        inkLevel = (inkLevel + dyeAmount) * dyeDecay;
         lastStamp.copy(smoothed);
 
         // Nebula: spins faster while the ink is moving, camera leans to the cursor.
@@ -581,8 +751,7 @@ export default function HeroReveal(): React.ReactElement {
       }
       finalMaterial.uniforms.uInk.value = inkVisible ? 1 : 0;
 
-      finalMaterial.uniforms.uMask.value = simA.texture;
-      finalMaterial.uniforms.uTime.value = t;
+      finalMaterial.uniforms.uDye.value = dye.read.texture;
       finalMaterial.uniforms.uDark.value = dark;
       finalMaterial.uniforms.uTitleFade.value = titleFade;
       renderer.render(finalScene, quadCamera);
@@ -604,7 +773,9 @@ export default function HeroReveal(): React.ReactElement {
       window.clearTimeout(resizeTimer);
       window.clearTimeout(fontTimeout);
       window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerdown", onPointerMove);
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("touchmove", onTouchMove);
+      if (coarse) root.style.overscrollBehaviorY = savedOverscrollY;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", measureHero);
       io.disconnect();
@@ -615,11 +786,10 @@ export default function HeroReveal(): React.ReactElement {
       envTexture?.dispose();
       galaxy.geometry.dispose();
       galaxyMaterial.dispose();
-      simA.dispose();
-      simB.dispose();
+      for (const target of fluidTargets) target.dispose();
+      for (const material of fluidMaterials) material.dispose();
       sceneRT.dispose();
       textTexture.dispose();
-      simMaterial.dispose();
       finalMaterial.dispose();
       quad.dispose();
       timer.dispose();
