@@ -32,6 +32,9 @@ const FLUID = {
   simHeight: Math.round(256 / DOMAIN_SCALE),
   dyeWidth: 512,
   dyeHeight: Math.round(512 / DOMAIN_SCALE),
+  // Slows how fast the ink flows outward (1 = noth.in's speed). Fading is
+  // unchanged, so slower ink also travels less far before it fades.
+  timeScale: 0.7,
   velocityDissipation: 0.962,
   // Once the pointer pauses, leftover momentum dies a little sooner so the
   // ink settles instead of drifting further out.
@@ -250,7 +253,7 @@ export default function HeroReveal(): React.ReactElement {
       a.uVelocity.value = velocity.read.texture;
       a.uSource.value = velocity.read.texture;
       a.uTexel.value = simTexel;
-      a.uDt.value = frames;
+      a.uDt.value = frames * FLUID.timeScale;
       a.uDissipation.value = Math.pow(velocityDissipation, frames);
       renderPass(advectMaterial, velocity.write);
       velocity.swap();
