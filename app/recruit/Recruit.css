@@ -709,6 +709,77 @@
     letter-spacing: .06em
 }
 
+.rc-choice-list {
+    display: grid;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--rc-line-strong);
+    border-radius: 12px;
+    background: rgba(244, 244, 242, .03)
+}
+
+.rc-choice {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 10px;
+    cursor: pointer
+}
+
+.rc-choice input,
+.rc-rating__option input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--rc-paper)
+}
+
+.rc-choice-list > input {
+    margin-left: 26px;
+    width: calc(100% - 26px)
+}
+
+.rc-rating {
+    display: flex;
+    gap: 8px
+}
+
+.rc-rating__option {
+    position: relative;
+    display: block !important;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--rc-line-strong);
+    border-radius: 50%;
+    color: var(--rc-paper);
+    cursor: pointer;
+    text-align: center
+}
+
+.rc-rating__option span {
+    position: absolute;
+    inset: 0;
+    display: grid !important;
+    place-items: center;
+    color: inherit !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    line-height: 1 !important;
+    text-transform: none !important
+}
+
+.rc-rating__option:has(input:checked) {
+    border-color: var(--rc-paper);
+    background: var(--rc-paper);
+    color: #111
+}
+
+.rc-rating__option input {
+    position: absolute;
+    opacity: 0
+}
+
 .rc-fieldset:disabled {
     opacity: .6
 }

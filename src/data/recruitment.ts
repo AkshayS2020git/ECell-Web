@@ -10,10 +10,10 @@ export interface RecruitmentQuestion {
   id: string;
   /** Also the column header in the team's sheet tab. */
   label: string;
-  type: "text" | "textarea" | "url" | "select";
+  type: "text" | "textarea" | "url" | "select" | "checkboxes" | "rating";
   required: boolean;
   placeholder?: string;
-  /** Only for "select". */
+  /** Choices for select, checkboxes, and rating fields. */
   options?: string[];
 }
 
@@ -67,23 +67,50 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Communication", "Public speaking", "Networking"],
     questions: [
       {
-        id: "announcement",
-        label: "Write a two-line announcement for ECell's next event.",
+        id: "experience",
+        label: "Do you have prior experience in communications, outreach or collaborations? (Clubs, events, sponsorship outreach, etc.)",
         type: "textarea",
         required: true,
       },
       {
-        id: "represented",
-        label: "Have you represented a club, team or event before? Tell us about it.",
+        id: "networkingComfort",
+        label: "How comfortable are you with networking and communicating with external organizations?",
+        type: "select",
+        required: true,
+        options: ["Very Comfortable", "Comfortable", "Somewhat Comfortable", "Not Comfortable"],
+      },
+      {
+        id: "visibilityStrategies",
+        label: "What strategies would you use to increase the visibility of ECell?",
         type: "textarea",
         required: true,
       },
       {
-        id: "languages",
-        label: "Which languages do you speak comfortably?",
-        type: "text",
-        required: false,
-        placeholder: "e.g. English, Hindi, Kannada",
+        id: "sponsorshipExperience",
+        label: "Have you ever worked on sponsorship or partnership outreach before?",
+        type: "select",
+        required: true,
+        options: ["Yes", "No"],
+      },
+      {
+        id: "sponsorCommunication",
+        label: "If yes, how would you handle professional communication with sponsors or partners?\n(If not, fill \"Nil.\")",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "outreachTools",
+        label: "What tools or platforms have you used for communication and outreach?",
+        type: "checkboxes",
+        required: true,
+        options: ["Email", "LinkedIn", "WhatsApp", "Instagram", "Other"],
+      },
+      {
+        id: "confidence",
+        label: "Rate your communication & networking confidence",
+        type: "rating",
+        required: true,
+        options: ["1", "2", "3", "4", "5"],
       },
     ],
   },
@@ -101,24 +128,76 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Reels", "Copywriting", "Trends"],
     questions: [
       {
-        id: "idea",
-        label: "Pitch a reel or post idea that would make ECell impossible to scroll past.",
+        id: "motivation",
+        label: "Why do you want to join the Social Media and Content Creation Team of ECell?",
         type: "textarea",
         required: true,
       },
       {
-        id: "tools",
-        label: "Which platforms and tools do you create with?",
-        type: "text",
+        id: "platforms",
+        label: "Which social media platforms do you use frequently?",
+        type: "checkboxes",
         required: true,
-        placeholder: "e.g. Instagram, CapCut, Canva",
+        options: ["Instagram", "LinkedIn", "Twitter/X", "YouTube", "Other"],
       },
       {
-        id: "work",
-        label: "Link to content you've made",
-        type: "url",
+        id: "contentPreference",
+        label: "What type of content do you enjoy creating the most?",
+        type: "select",
+        required: true,
+        options: ["Social Media Captions", "Blogs / Articles", "Event Promotions", "Video Scripts", "Reels / Short Content"],
+      },
+      {
+        id: "managementExperience",
+        label: "Do you have experience managing social media pages for clubs, businesses, or personal brands?",
+        type: "select",
+        required: true,
+        options: ["Yes", "No"],
+      },
+      {
+        id: "contentLinks",
+        label: "Share links to any pages, posts, or content you have created. (If none, write \"Nil.\")",
+        type: "textarea",
         required: false,
-        placeholder: "https://",
+      },
+      {
+        id: "studentEngagement",
+        label: "How would you make ECell content more engaging for students?",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "engagementStrategies",
+        label: "What strategies would you use to increase engagement on our social media pages?",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "studentContent",
+        label: "What type of content do you think performs best for student communities?",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "metricsComfort",
+        label: "How comfortable are you with analyzing engagement metrics (reach, impressions, analytics)?",
+        type: "select",
+        required: true,
+        options: ["Beginner", "Intermediate", "Advanced"],
+      },
+      {
+        id: "brainstormingComfort",
+        label: "How comfortable are you with brainstorming new content ideas?",
+        type: "select",
+        required: true,
+        options: ["Very Comfortable", "Comfortable", "Somewhat Comfortable", "Not Comfortable"],
+      },
+      {
+        id: "creativeIdeation",
+        label: "Rate your creative ideation & brainstorming ability",
+        type: "rating",
+        required: true,
+        options: ["1", "2", "3", "4", "5"],
       },
     ],
   },

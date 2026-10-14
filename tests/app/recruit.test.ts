@@ -79,6 +79,59 @@ describe("validateApplication", () => {
     expect(result.data.teamAnswers.map((entry) => entry.team)).toEqual(["Tech"]);
   });
 
+  it("stores checked PR outreach tools, including a specified Other answer", () => {
+    const data = formData({
+      firstChoice: "pr",
+      "q.pr.experience": "I handled sponsor outreach for our college fest.",
+      "q.pr.networkingComfort": "Comfortable",
+      "q.pr.visibilityStrategies": "Use student ambassadors and consistent social content.",
+      "q.pr.sponsorshipExperience": "Yes",
+      "q.pr.sponsorCommunication": "I would be concise, respectful, and follow up promptly.",
+      "q.pr.confidence": "4",
+    });
+    data.append("q.pr.outreachTools", "Email");
+    data.append("q.pr.outreachTools", "Other");
+    data.set("q.pr.outreachTools.other", "Discord");
+
+    const result = validateApplication(data);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.data.teamAnswers[0].answers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ question: "What tools or platforms have you used for communication and outreach?", answer: "Email, Other: Discord" }),
+        expect.objectContaining({ question: "Rate your communication & networking confidence", answer: "4" }),
+      ]),
+    );
+  });
+
+  it("stores Social Media & Content Creation platform choices and its creative rating", () => {
+    const data = formData({
+      firstChoice: "social",
+      "q.social.motivation": "I want to turn ECell events into stories students want to share.",
+      "q.social.contentPreference": "Reels / Short Content",
+      "q.social.managementExperience": "Yes",
+      "q.social.contentLinks": "Nil.",
+      "q.social.studentEngagement": "Use student voices, timely formats, and interactive prompts.",
+      "q.social.engagementStrategies": "Use a consistent calendar and respond to relevant community comments.",
+      "q.social.studentContent": "Short practical event highlights and relatable founder stories.",
+      "q.social.metricsComfort": "Intermediate",
+      "q.social.brainstormingComfort": "Very Comfortable",
+      "q.social.creativeIdeation": "5",
+    });
+    data.append("q.social.platforms", "Instagram");
+    data.append("q.social.platforms", "YouTube");
+
+    const result = validateApplication(data);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.data.teamAnswers[0].answers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ question: "Which social media platforms do you use frequently?", answer: "Instagram, YouTube" }),
+        expect.objectContaining({ question: "Rate your creative ideation & brainstorming ability", answer: "5" }),
+      ]),
+    );
+  });
+
   it("allows the optional fields to be empty", () => {
     const result = validateApplication(formData({ link: "" }));
     expect(result.ok).toBe(true);
