@@ -11,6 +11,7 @@ import {
 } from "@/src/data/recruitment";
 import { INSTAGRAM, SITE_URL } from "@/src/utils/constants";
 import { padNumber as pad } from "@/src/utils/math";
+import EventsLink from "./EventsLink";
 import RecruitForm from "./RecruitForm";
 import ScrollLink from "./ScrollLink";
 import "./Recruit.css";
@@ -135,6 +136,11 @@ export default function RecruitPage() {
                   <h3>{team.name}</h3>
                   <p className="rc-team__tagline">{team.tagline}</p>
                   <p>{team.description}</p>
+                  <ul className="rc-team__duties">
+                    {team.responsibilities.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
                 </li>
               ))}
             </ul>
@@ -213,6 +219,25 @@ export default function RecruitPage() {
                   <p>{item.answer}</p>
                 </details>
               ))}
+            </div>
+          </section>
+
+          {/* ============ EVENTS ============ */}
+          <section className="rc-section rc-explore" aria-labelledby="rc-explore-title">
+            <div className="rc-section-head">
+              <h2 id="rc-explore-title">WHILE YOU&apos;RE HERE</h2>
+              <span>EVENTS &amp; WORKSHOPS</span>
+            </div>
+
+            <div className="rc-explore__body">
+              <h3>
+                See what you&apos;d
+                <br />
+                <em>be building.</em>
+              </h3>
+              <EventsLink className="rc-button rc-button--solid">
+                Explore events <span aria-hidden="true">→</span>
+              </EventsLink>
             </div>
           </section>
         </div>

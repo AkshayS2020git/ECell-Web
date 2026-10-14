@@ -25,6 +25,8 @@ export interface RecruitmentTeam {
   /** One-liner from the recruitment announcement. */
   tagline: string;
   description: string;
+  /** Shown as a bullet list on the team's card. */
+  responsibilities: string[];
   skills: string[];
   /** Asked on step 2 to applicants who pick this team. */
   questions: RecruitmentQuestion[];
@@ -55,8 +57,13 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     id: "pr",
     name: "PR",
     tagline: "Be the voice of ECell.",
-    description:
-      "Bring in the sponsors, judges and speakers behind ECell's events, and look after them from the first email to the event day.",
+    description: "The voice of ECell to the outside world.",
+    responsibilities: [
+      "Reach out to startups, founders, companies and alumni for talks and workshops",
+      "Handle sponsorships and partnerships (proposals, emails, follow-ups)",
+      "Coordinate with other clubs and colleges for collaborations",
+      "Represent ECell at events and networking sessions",
+    ],
     skills: ["Communication", "Public speaking", "Networking"],
     questions: [
       {
@@ -84,8 +91,13 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     id: "social",
     name: "Social Media & Content Creation",
     tagline: "Make ECell impossible to scroll past.",
-    description:
-      "Plan, shoot and edit reels, posts and stories, and run ECell's Instagram and LinkedIn.",
+    description: "Runs ECell's online presence — from posting to the ideas behind every post.",
+    responsibilities: [
+      "Manage Instagram, LinkedIn and other pages",
+      "Write captions, scripts and plan reels/content",
+      "Track engagement and grow the audience",
+      "Work with the Design Team to bring ideas to life",
+    ],
     skills: ["Reels", "Copywriting", "Trends"],
     questions: [
       {
@@ -114,8 +126,13 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     id: "design",
     name: "Design",
     tagline: "Turn ideas into visuals.",
-    description:
-      "Own how ECell looks: posters, decks, merch, social creatives and the visual identity of every event.",
+    description: "Gives ECell its look and feel.",
+    responsibilities: [
+      "Create posters, banners, social media creatives and event branding",
+      "Keep colours, fonts and style consistent across everything ECell puts out",
+      "Deliver designs on time before events and campaigns",
+      "Work closely with the Social Media and Content teams",
+    ],
     skills: ["Figma", "Branding", "Motion"],
     questions: [
       {
@@ -144,8 +161,13 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     id: "documentation",
     name: "Documentation",
     tagline: "Keep the story of ECell alive.",
-    description:
-      "Write event reports and recaps, keep minutes and records, and build the archive of everything ECell does.",
+    description: "Keeps the official record of everything ECell does.",
+    responsibilities: [
+      "Take notes and capture details during events and meetings",
+      "Write post-event reports (attendance, highlights, outcomes, learnings)",
+      "Maintain minutes of meetings, records and shared files",
+      "Support the team with letters, proposals and paperwork when needed",
+    ],
     skills: ["Writing", "Organisation", "Attention to detail"],
     questions: [
       {
@@ -174,8 +196,13 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     id: "tech",
     name: "Tech",
     tagline: "Build the digital backbone.",
-    description:
-      "Build and maintain the website, event platforms and the small internal tools that keep the cell running.",
+    description: "Builds and maintains ECell's digital side.",
+    responsibilities: [
+      "Develop and update the ECell website",
+      "Build tools for event registrations, forms and automation",
+      "Manage data and digital platforms",
+      "Handle tech support at events",
+    ],
     skills: ["Web dev", "Automation", "Problem solving"],
     questions: [
       {

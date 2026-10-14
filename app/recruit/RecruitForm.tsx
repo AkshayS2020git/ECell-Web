@@ -383,7 +383,10 @@ function SuccessPanel({
       {/* Shared computers: someone else may want to apply from here too. */}
       {onApplyAgain && (
         <button className="rc-chosen__change rc-success__again" type="button" onClick={onApplyAgain}>
-          Not you? Apply with a different email
+          <span className="rc-success__again-q">Not you?</span>
+          <span className="rc-success__again-cta">
+            Apply with a different email <i aria-hidden="true">→</i>
+          </span>
         </button>
       )}
     </div>
