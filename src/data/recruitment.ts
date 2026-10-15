@@ -201,6 +201,7 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
       },
     ],
   },
+
   {
     id: "design",
     name: "Design",
@@ -215,27 +216,82 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Figma", "Branding", "Motion"],
     questions: [
       {
-        id: "portfolio",
-        label: "Portfolio link (Behance, Dribbble, Drive folder…)",
-        type: "url",
-        required: true,
-        placeholder: "https://",
-      },
-      {
-        id: "tool",
-        label: "Which design tool do you use most?",
-        type: "select",
-        required: true,
-        options: ["Figma", "Adobe Photoshop / Illustrator", "Canva", "Blender / 3D tools", "Other"],
-      },
-      {
-        id: "admire",
-        label: "Pick a poster, brand or website you love and tell us why.",
+        id: "motivation",
+        label: "Why do you want to join the Design Team of ECell?",
         type: "textarea",
         required: true,
+        placeholder: "Tell us why you want to join the ECell Design Team.",
+      },
+      {
+        id: "tools",
+        label: "Which design tools are you familiar with?",
+        type: "checkboxes",
+        required: true,
+        options: [
+          "Canva",
+          "Figma",
+          "Adobe Photoshop",
+          "Adobe Illustrator",
+          "Other",
+        ],
+      },
+      {
+        id: "experience",
+        label: "Have you designed materials for events or organizations before?",
+        type: "select",
+        required: true,
+        options: ["Yes", "No"],
+      },
+      {
+        id: "deadline_comfort",
+        label:
+          "How comfortable are you with creating posters or promotional material under deadlines?",
+        type: "select",
+        required: true,
+        options: [
+          "Very Comfortable",
+          "Comfortable",
+          "Somewhat Comfortable",
+          "Not Comfortable",
+        ],
+      },
+      {
+        id: "design_principles",
+        label:
+          "What design principles do you think are important for social media creatives?",
+        type: "textarea",
+        required: true,
+        placeholder:
+          "Consider readability, visual hierarchy, colors, typography, and audience engagement.",
+      },
+      {
+        id: "brand_consistency",
+        label:
+          "How would you maintain consistency in design and branding across posts?",
+        type: "textarea",
+        required: true,
+        placeholder:
+          "Explain how you would maintain consistent colors, fonts, layouts, and branding.",
+      },
+      {
+        id: "collaboration",
+        label:
+          "Are you comfortable collaborating with the Content Creation and Social Media teams for creative outputs?",
+        type: "select",
+        required: true,
+        options: ["Yes", "No"],
+      },
+      {
+        id: "deadline_rating",
+        label: "Rate your ability to work under deadlines",
+        type: "rating",
+        required: true,
+        options: ["1", "2", "3", "4", "5"],
       },
     ],
   },
+
+
   {
     id: "documentation",
     name: "Documentation",
@@ -250,27 +306,66 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Writing", "Organisation", "Attention to detail"],
     questions: [
       {
-        id: "recap",
-        label: "Write a short recap (about 100 words) of any event you've attended.",
+        id: "motivation",
+        label: "Why do you want to join the Documentation Team of ECell?",
         type: "textarea",
         required: true,
+        placeholder:
+          "Tell us why you are interested in documentation and how you can contribute to ECell.",
       },
       {
-        id: "organise",
-        label: "How do you usually keep notes and organise information?",
+        id: "experience",
+        label:
+          "Do you have experience in writing reports or maintaining documentation?",
         type: "select",
         required: true,
-        options: ["Google Docs / Notion", "Spreadsheets", "Pen and paper", "Other"],
+        options: ["Yes", "No"],
       },
       {
-        id: "writing",
-        label: "Link to something you've written",
-        type: "url",
-        required: false,
-        placeholder: "https://",
+        id: "writingComfort",
+        label:
+          "How comfortable are you with writing structured reports and summaries?",
+        type: "select",
+        required: true,
+        options: [
+          "Very Comfortable",
+          "Comfortable",
+          "Somewhat Comfortable",
+          "Not Comfortable",
+        ],
+      },
+      {
+        id: "tools",
+        label: "Which tools have you used for documentation?",
+        type: "checkboxes",
+        required: true,
+        options: [
+          "Notion",
+          "Microsoft Word",
+          "Google Docs",
+          "Other",
+        ],
+      },
+      {
+        id: "accuracy",
+        label:
+          "How would you ensure accurate documentation of events and activities?",
+        type: "textarea",
+        required: true,
+        placeholder:
+          "Explain how you would record important details, verify information, and avoid missing key points.",
+      },
+      {
+        id: "reportStructure",
+        label: "How would you structure a post-event report?",
+        type: "textarea",
+        required: true,
+        placeholder:
+          "Describe the sections you would include, such as event details, attendance, highlights, outcomes, and feedback.",
       },
     ],
   },
+
   {
     id: "tech",
     name: "Tech",
