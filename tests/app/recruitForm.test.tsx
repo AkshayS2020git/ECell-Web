@@ -25,6 +25,21 @@ function next() {
   fireEvent.click(screen.getByRole("button", { name: /next: your answers/i }));
 }
 
+/** Answers the Tech questions on step 2 and moves on to step 3. */
+function fillStepTwo() {
+  type(/languages or frameworks/i, "TypeScript");
+  type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
+  fireEvent.click(screen.getByRole("button", { name: /next: final details/i }));
+}
+
+function fillStepThree() {
+  type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+  type(/hours per week/i, "3–5 hours");
+  type(/team meetings and on-ground events/i, "Yes");
+  type(/known clashes/i, "Nil");
+  for (const agree of screen.getAllByLabelText("Yes, I agree")) fireEvent.click(agree);
+}
+
 describe("RecruitForm", () => {
   beforeEach(() => {
     submitMock.mockReset();
@@ -33,7 +48,7 @@ describe("RecruitForm", () => {
 
   it("shows inline messages instead of moving on when step 1 is incomplete", () => {
     render(<RecruitForm />);
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
 
     next();
 
@@ -42,7 +57,7 @@ describe("RecruitForm", () => {
     expect(screen.getByLabelText("Full name")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText("Full name")).toHaveFocus();
     expect(screen.getByText(/6 answers need fixing/i)).toBeInTheDocument();
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
   });
 
   it("checks an answer on blur and clears the message once it's fixed", () => {
@@ -69,7 +84,7 @@ describe("RecruitForm", () => {
     fillStepOne();
     next();
 
-    expect(screen.getByText("Step 2 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
     expect(screen.getByText("Tech", { selector: ".rc-chip" })).toBeInTheDocument();
     expect(screen.getByLabelText(/languages or frameworks/i)).toBeInTheDocument();
     expect(screen.queryByLabelText(/recap/i)).toBeNull();
@@ -95,7 +110,7 @@ describe("RecruitForm", () => {
     type(/languages or frameworks/i, "TypeScript");
 
     fireEvent.click(screen.getByRole("button", { name: /change team/i }));
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
     expect(screen.getByLabelText("Full name")).toHaveValue("Asha Rao");
 
     next();
@@ -107,9 +122,8 @@ describe("RecruitForm", () => {
     render(<RecruitForm />);
     fillStepOne("Asha.Rao@RVU.edu.in");
     next();
-    type(/languages or frameworks/i, "TypeScript");
-    type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
-    type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+    fillStepTwo();
+    fillStepThree();
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
@@ -131,9 +145,8 @@ describe("RecruitForm", () => {
     const { unmount } = render(<RecruitForm />);
     fillStepOne();
     next();
-    type(/languages or frameworks/i, "TypeScript");
-    type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
-    type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+    fillStepTwo();
+    fillStepThree();
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
     });
@@ -154,7 +167,7 @@ describe("RecruitForm", () => {
     next();
 
     expect(screen.getByText(/already applied/i)).toBeInTheDocument();
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
     expect(submitMock).toHaveBeenCalledOnce();
   });
 
@@ -178,9 +191,8 @@ describe("RecruitForm", () => {
     render(<RecruitForm />);
     fillStepOne();
     next();
-    type(/languages or frameworks/i, "TypeScript");
-    type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
-    type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+    fillStepTwo();
+    fillStepThree();
     expect(screen.queryByText(/saving your data/i)).toBeNull();
 
     vi.useFakeTimers();
@@ -205,15 +217,33 @@ describe("RecruitForm", () => {
     }
   });
 
-  it("doesn't submit step 2 with a missing answer", () => {
+  it("doesn't move past step 2 with a missing answer", () => {
     render(<RecruitForm />);
     fillStepOne();
     next();
 
+    fireEvent.click(screen.getByRole("button", { name: /next: final details/i }));
+
+    expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
+    expect(screen.getAllByText("Please answer this one.")).toHaveLength(2);
+  });
+
+  it("asks every team the commitment and acknowledgement questions on step 3", () => {
+    render(<RecruitForm />);
+    fillStepOne();
+    next();
+    expect(screen.getByRole("button", { name: /submit application/i, hidden: true })).not.toBeVisible();
+
+    fillStepTwo();
+    expect(screen.getByText("Step 3 of 3")).toBeInTheDocument();
+    expect(screen.getByLabelText(/hours per week/i)).toBeVisible();
+    expect(screen.getAllByLabelText("Yes, I agree")).toHaveLength(2);
+
     fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
 
     expect(submitMock).not.toHaveBeenCalled();
-    expect(screen.getAllByText("Please answer this one.")).toHaveLength(2);
+    // Hours, meetings, clashes and both acknowledgements.
+    expect(screen.getAllByText("Please answer this one.")).toHaveLength(5);
     expect(screen.getByText(/at least 50 characters/i)).toBeInTheDocument();
   });
 });

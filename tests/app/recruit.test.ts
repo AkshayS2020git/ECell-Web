@@ -4,6 +4,16 @@ import { submitApplication } from "@/app/recruit/actions";
 
 const IDLE: ApplicationState = { status: "idle" };
 
+// Every team asks these on the last step, under its own field names.
+const FINAL_ANSWERS: Record<string, string> = {
+  weekly_hours: "3–5 hours",
+  availability: "Yes",
+  clashes: "Nil",
+  anything_else: "",
+  confirm_accurate: "Yes, I agree",
+  confirm_mismatch: "Yes, I agree",
+};
+
 function formData(overrides: Record<string, string> = {}): FormData {
   const data = new FormData();
   const values: Record<string, string> = {
@@ -24,7 +34,10 @@ function formData(overrides: Record<string, string> = {}): FormData {
     "q.design.admire": "The Stripe Press covers: calm, confident type.",
     ...overrides,
   };
-  for (const [key, value] of Object.entries(values)) data.set(key, value);
+  const finalAnswers = Object.fromEntries(
+    Object.entries(FINAL_ANSWERS).map(([id, answer]) => [`q.${values.firstChoice}.${id}`, answer]),
+  );
+  for (const [key, value] of Object.entries({ ...finalAnswers, ...values })) data.set(key, value);
   return data;
 }
 
@@ -51,6 +64,12 @@ describe("validateApplication", () => {
               { question: expect.stringContaining("languages"), answer: "TypeScript, React" },
               { question: expect.stringContaining("bug"), answer: expect.stringContaining("race") },
               { question: expect.stringContaining("GitHub"), answer: "" },
+              { question: expect.stringContaining("hours per week"), answer: "3–5 hours" },
+              { question: expect.stringContaining("team meetings"), answer: "Yes" },
+              { question: expect.stringContaining("clashes"), answer: "Nil" },
+              { question: expect.stringContaining("Anything else"), answer: "" },
+              { question: expect.stringContaining("true to the best"), answer: "Yes, I agree" },
+              { question: expect.stringContaining("mismatch"), answer: "Yes, I agree" },
             ],
           },
         ],
@@ -130,6 +149,32 @@ describe("validateApplication", () => {
         expect.objectContaining({ question: "Rate your creative ideation & brainstorming ability", answer: "5" }),
       ]),
     );
+  });
+
+  it("requires the commitment and acknowledgement answers for any team", () => {
+    const result = validateApplication(
+      formData({
+        firstChoice: "design",
+        "q.design.motivation": "I want to shape how ECell looks.",
+        "q.design.tools": "Figma",
+        "q.design.experience": "Yes",
+        "q.design.deadline_comfort": "Comfortable",
+        "q.design.design_principles": "Hierarchy first.",
+        "q.design.brand_consistency": "A shared kit.",
+        "q.design.collaboration": "Yes",
+        "q.design.deadline_rating": "4",
+        "q.design.availability": "Maybe",
+        "q.design.clashes": "",
+        "q.design.confirm_mismatch": "",
+      }),
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(Object.keys(result.errors).sort()).toEqual([
+      "q.design.availability",
+      "q.design.clashes",
+      "q.design.confirm_mismatch",
+    ]);
   });
 
   it("allows the optional fields to be empty", () => {

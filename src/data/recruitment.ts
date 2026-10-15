@@ -34,6 +34,11 @@ export interface RecruitmentTeam {
   questions: RecruitmentQuestion[];
 }
 
+export interface RecruitmentSection {
+  title: string;
+  questions: RecruitmentQuestion[];
+}
+
 export interface RecruitmentStep {
   title: string;
   description: string;
@@ -54,6 +59,64 @@ export const RECRUITMENT = {
    *  set, the hero shows an empty placeholder frame in its place. */
   poster: null as StaticImageData | null,
 } as const;
+
+/**
+ * Asked of every applicant on the last step, after their team's questions.
+ * Answers are saved with the team's other answers, so question ids here must
+ * not clash with any team's own question ids.
+ */
+export const RECRUITMENT_FINAL_SECTIONS: RecruitmentSection[] = [
+  {
+    title: "Commitment & availability",
+    questions: [
+      {
+        id: "weekly_hours",
+        label: "How many hours per week can you commit to ECell?",
+        type: "select",
+        required: true,
+        options: ["1–2 hours", "3–5 hours", "6+ hours"],
+      },
+      {
+        id: "availability",
+        label: "Are you available for regular team meetings and on-ground events?",
+        type: "select",
+        required: true,
+        options: ["Yes", "No", "Sometimes"],
+      },
+      {
+        id: "clashes",
+        label: "Do you have any known clashes coming up (exams, other commitments)? (If none, write \"Nil\")",
+        type: "text",
+        required: true,
+      },
+      {
+        id: "anything_else",
+        label: "Anything else you would like us to know?",
+        type: "textarea",
+        required: false,
+      },
+    ],
+  },
+  {
+    title: "Acknowledgement",
+    questions: [
+      {
+        id: "confirm_accurate",
+        label: "I confirm that the above information is true to the best of my knowledge, and I have carefully read and filled out this form.",
+        type: "checkboxes",
+        required: true,
+        options: ["Yes, I agree"],
+      },
+      {
+        id: "confirm_mismatch",
+        label: "I understand that any mismatch in the information provided will result in strict action.",
+        type: "checkboxes",
+        required: true,
+        options: ["Yes, I agree"],
+      },
+    ],
+  },
+];
 
 export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
   {
@@ -464,4 +527,9 @@ export const RECRUITMENT_FUN_FACTS: string[] = [
 
 export function getTeamById(id: string): RecruitmentTeam | undefined {
   return RECRUITMENT_TEAMS.find((team) => team.id === id);
+}
+
+/** Every question a team asks, in form order, final sections included. */
+export function teamQuestions(team: RecruitmentTeam): RecruitmentQuestion[] {
+  return [...team.questions, ...RECRUITMENT_FINAL_SECTIONS.flatMap((section) => section.questions)];
 }
