@@ -84,10 +84,12 @@ function doPost(e) {
   }
 
   // Two applicants submitting at once must not race on the duplicate check
-  // or on appendRow.
+  // or on appendRow. Each save holds the lock for a second or two, so a
+  // 30-second wait lets a burst of applicants queue up instead of failing.
+  // Keep it well under SCRIPT_TIMEOUT_MS in app/recruit/actions.ts.
   const lock = LockService.getScriptLock();
   try {
-    lock.waitLock(20000);
+    lock.waitLock(30000);
   } catch (error) {
     return respond({ ok: false, error: "busy" });
   }
