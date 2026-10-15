@@ -34,7 +34,7 @@ export function setupHeroAnimations({
     cardShown = shown;
     hero.classList.toggle("hero--card", shown);
   };
-  // The tagline and credit flip colour over the ink with a difference blend.
+  // The tagline flips colour over the ink with a difference blend.
   // Blending inside the scaling stage makes the shrink stutter, so it is only
   // on while that text is still visible near the top of the hero.
   let inkBlend = false;
@@ -206,7 +206,7 @@ export function setupHeroAnimations({
     });
     marqueeOpacity(reveal * marqueeMaxOpacity);
     setCardShown(progress > 0.04);
-    // The credit has finished fading by ~0.36 of the hero scroll.
+    // The tagline has finished fading well before ~0.4 of the hero scroll.
     setInkBlend(progress < 0.4);
     labelOpacity(reveal);
     const introAlpha = 1 - smoothstep(0.05, 0.25, progress);

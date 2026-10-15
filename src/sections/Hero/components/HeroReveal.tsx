@@ -11,7 +11,7 @@ import {
   SPLAT_FRAG,
   VERT,
 } from "../webgl/shaders";
-import { drawFlatText, layoutText } from "../webgl/text";
+import { CREDIT_TEXT, drawFlatText, layoutText } from "../webgl/text";
 import { buildLetter, type Letter } from "../webgl/letters";
 import { GALAXY_FRAG, GALAXY_VERT, buildGalaxy } from "../webgl/galaxy";
 import { isPageScrollLocked } from "@/src/utils/scrollLock";
@@ -34,7 +34,7 @@ const FLUID = {
   dyeHeight: Math.round(512 / DOMAIN_SCALE),
   // Slows how fast the ink flows outward (1 = noth.in's speed). Fading is
   // unchanged, so slower ink also travels less far before it fades.
-  timeScale: 0.7,
+  timeScale: 0.35,
   velocityDissipation: 0.962,
   // Once the pointer pauses, leftover momentum dies a little sooner so the
   // ink settles instead of drifting further out.
@@ -373,13 +373,11 @@ export default function HeroReveal(): React.ReactElement {
     const buildText = () => {
       if (!cssW || !cssH) return;
       const layout = layoutText(cssW, cssH, fontFamily);
-      // Anchor the DOM credit right-aligned just under the end of the title.
-      host.style.setProperty("--credit-right", `${cssW - layout.right}px`);
-      host.style.setProperty("--credit-top", `${layout.baseline + layout.size * 0.13}px`);
-      host.style.setProperty("--credit-size", `${Math.min(15, Math.max(10, layout.size * 0.042))}px`);
       host.classList.add("hero-reveal--ready");
       layoutSize = layout.size;
-      drawFlatText(textCanvas, layout, cssW, cssH, Math.min(pixelRatio, 2560 / cssW));
+      // The credit is drawn with the title so the ink can uncover the easter egg under it.
+      const creditFamily = getComputedStyle(host).getPropertyValue("--font-inter").trim() || "Inter";
+      drawFlatText(textCanvas, layout, cssW, cssH, Math.min(pixelRatio, 2560 / cssW), creditFamily);
       textTexture.needsUpdate = true;
       dirty = true;
 
@@ -510,8 +508,7 @@ export default function HeroReveal(): React.ReactElement {
     // the logo is the single focus instead of stacking on top of the text.
     let fadeTarget = 0;
     let titleFade = 0;
-    let lastCreditFade = -1;
-    let creditShade = -1;
+    let lastPaper = -1;
     const onScroll = () => {
       if (heroTravel <= 0) return;
       const progress = THREE.MathUtils.clamp((window.scrollY - heroTop) / heroTravel, 0, 1);
@@ -552,7 +549,12 @@ export default function HeroReveal(): React.ReactElement {
       fontFamily = getComputedStyle(host).getPropertyValue("--font-archivo").trim() || fontFamily;
       buildText();
     };
-    document.fonts?.load(`900 100px ${fontFamily}`).then(onFontsReady, onFontsReady);
+    // The title's font, and the credit's (now drawn on the canvas too).
+    const creditFont = getComputedStyle(host).getPropertyValue("--font-inter").trim() || "Inter";
+    document.fonts
+      ?.load(`900 100px ${fontFamily}`)
+      .then(() => document.fonts.load(`600 15px ${creditFont}`))
+      .then(onFontsReady, onFontsReady);
     // Never leave the hero without letters if the font request stalls.
     const fontTimeout = window.setTimeout(onFontsReady, 3000);
 
@@ -633,21 +635,13 @@ export default function HeroReveal(): React.ReactElement {
       const fadeMoving = Math.abs(fadeTarget - titleFade) > 0.001;
       titleFade = fadeMoving ? titleFade + (fadeTarget - titleFade) * ease : fadeTarget;
       const themeMoving = darkMoving || fadeMoving;
-      const creditFade = Math.round(titleFade * 100);
-      if (creditFade !== lastCreditFade) {
-        lastCreditFade = creditFade;
-        host.style.setProperty("--title-fade", String(creditFade / 100));
-      }
 
-      // The credit and backdrop follow the theme: black on white, light on the dark card.
-      const shade = Math.round(dark * 237);
-      if (shade !== creditShade) {
-        creditShade = shade;
-        host.style.setProperty("--credit-ink", `rgb(${shade}, ${shade}, ${shade - Math.round(dark * 5)})`);
-        // The container behind the canvas must match the card colour too:
-        // when the card is scaled, its anti-aliased edges sample this, and a
-        // white background showed up as thin white lines around the card.
-        const paper = Math.round(255 + (11 - 255) * dark);
+      // The container behind the canvas must match the card colour: when the
+      // card is scaled, its anti-aliased edges sample this, and a white
+      // background showed up as thin white lines around the card.
+      const paper = Math.round(255 + (11 - 255) * dark);
+      if (paper !== lastPaper) {
+        lastPaper = paper;
         host.style.backgroundColor = `rgb(${paper}, ${paper}, ${paper})`;
       }
 
@@ -811,10 +805,8 @@ export default function HeroReveal(): React.ReactElement {
       <span className="hero-reveal__fallback" aria-hidden="true">
         ECELL RVU
       </span>
-      <p className="hero-reveal__credit">
-        <span className="hero-reveal__credit-rule" aria-hidden="true" />
-        Built by ECell Tech Team
-      </p>
+      {/* Drawn on the canvas (see drawFlatText); kept here for screen readers. */}
+      <p className="hero-reveal__credit">{CREDIT_TEXT}</p>
     </div>
   );
 }

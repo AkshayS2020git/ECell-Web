@@ -123,7 +123,9 @@ vec3 toSRGB(vec3 c) {
 }
 
 void main() {
-  float textA = texture2D(uText, vUv).r;
+  // R: title, G: credit, B: the easter egg hidden under the credit.
+  vec3 layers = texture2D(uText, vUv).rgb;
+  float textA = max(layers.r, layers.g * 0.8);
   // White page / black title, easing into a dark card / light title as the
   // hero shrinks on scroll, so the card sits naturally on the dark site.
   vec3 paper = mix(vec3(1.0), vec3(0.045), uDark);
@@ -141,6 +143,8 @@ void main() {
   float reveal = smoothstep(0.5, 0.5 + width, raw);
 
   vec3 inner = toSRGB(aces(texture2D(uScene, vUv).rgb));
+  // Easter egg: where the ink covers the credit, a glowing line of code.
+  inner = mix(inner, vec3(0.5, 0.72, 1.0), layers.b * (1.0 - uTitleFade));
   gl_FragColor = vec4(mix(base, inner, reveal), 1.0);
 }
 `;
