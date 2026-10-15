@@ -298,14 +298,69 @@ describe("submitApplication", () => {
     expect(state.errors?.email).toMatch(/already applied/i);
   });
 
-  it("reports a retryable error when Apps Script fails or is unreachable", async () => {
+  it("doesn't retry when Apps Script rejects the request itself", async () => {
     scriptReplies({ ok: false, error: "unauthorized" });
-    expect((await submitApplication(IDLE, formData())).status).toBe("error");
 
-    fetchMock.mockRejectedValue(new TypeError("fetch failed"));
     const state = await submitApplication(IDLE, formData());
+
     expect(state.status).toBe("error");
     expect(state.message).toMatch(/try again/i);
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  describe("when Apps Script is overloaded", () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ["setTimeout"] });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    // Runs the action while skipping over the waits between retries.
+    const submit = async () => {
+      const pending = submitApplication(IDLE, formData());
+      await vi.runAllTimersAsync();
+      return pending;
+    };
+
+    it("retries until a save goes through", async () => {
+      fetchMock
+        .mockResolvedValueOnce(new Response(JSON.stringify({ ok: false, error: "busy" })))
+        .mockResolvedValueOnce(new Response("<html>Service unavailable</html>", { status: 503 }))
+        .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true })));
+
+      expect(await submit()).toEqual({ status: "success" });
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("tells the applicant to try again once retries run out", async () => {
+      fetchMock.mockImplementation(async () => new Response(JSON.stringify({ ok: false, error: "busy" })));
+
+      const state = await submit();
+
+      expect(state.status).toBe("error");
+      expect(state.message).toMatch(/lots of people are applying/i);
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("reports a retryable error when Apps Script stays unreachable", async () => {
+      fetchMock.mockRejectedValue(new TypeError("fetch failed"));
+
+      const state = await submit();
+
+      expect(state.status).toBe("error");
+      expect(state.message).toMatch(/try again/i);
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("treats a duplicate after an unclear failure as the first attempt saving", async () => {
+      fetchMock
+        .mockResolvedValueOnce(new Response("<html>Error</html>", { status: 500 }))
+        .mockResolvedValueOnce(new Response(JSON.stringify({ ok: false, error: "duplicate" })));
+
+      expect(await submit()).toEqual({ status: "success" });
+    });
   });
 
   it("doesn't claim a timed-out application was lost", async () => {
