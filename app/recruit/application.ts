@@ -2,6 +2,7 @@ import {
   RECRUITMENT,
   RECRUITMENT_YEARS,
   getTeamById,
+  teamQuestions,
   type RecruitmentQuestion,
   type RecruitmentTeam,
 } from "@/src/data/recruitment";
@@ -26,16 +27,6 @@ export const APPLICATION_FIELDS = [
 ] as const;
 
 export type ApplicationField = (typeof APPLICATION_FIELDS)[number];
-
-/** Fields on step 1 of the form; the rest of the form is step 2. */
-export const STEP_ONE_FIELDS: readonly ApplicationField[] = [
-  "name",
-  "email",
-  "phone",
-  "year",
-  "program",
-  "firstChoice",
-];
 
 export const LIMITS = {
   name: 80,
@@ -155,7 +146,7 @@ function validateTeamAnswers(
   team: RecruitmentTeam,
   errors: ApplicationErrors,
 ): TeamAnswers {
-  const answers = team.questions.map((question) => {
+  const answers = teamQuestions(team).map((question) => {
     const field = questionFieldName(team.id, question.id);
     const selected = formData
       .getAll(field)

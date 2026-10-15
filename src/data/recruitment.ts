@@ -5,6 +5,8 @@
 // drive details before announcing recruitment. Flip `isOpen` to close
 // applications without touching any page code.
 
+import type { StaticImageData } from "next/image";
+
 export interface RecruitmentQuestion {
   /** Part of the form field name; keep it unique within its team. */
   id: string;
@@ -13,6 +15,8 @@ export interface RecruitmentQuestion {
   type: "text" | "textarea" | "url" | "select" | "checkboxes" | "rating";
   required: boolean;
   placeholder?: string;
+  /** Shown under the label, for guidance the label is too short to give. */
+  description?: string;
   /** Choices for select, checkboxes, and rating fields. */
   options?: string[];
 }
@@ -32,6 +36,11 @@ export interface RecruitmentTeam {
   questions: RecruitmentQuestion[];
 }
 
+export interface RecruitmentSection {
+  title: string;
+  questions: RecruitmentQuestion[];
+}
+
 export interface RecruitmentStep {
   title: string;
   description: string;
@@ -48,9 +57,68 @@ export const RECRUITMENT = {
   /** Shown as-is on the page. */
   deadline: "31 October 2026",
   contactEmail: "club_ecell@rvu.edu.in",
-  /** Who can apply, shown in the hero's details panel. */
-  openTo: "All RVU students",
+  /** Hero poster, imported from src/assets (square works best). Until one is
+   *  set, the hero shows an empty placeholder frame in its place. */
+  poster: null as StaticImageData | null,
 } as const;
+
+/**
+ * Asked of every applicant on the last step, after their team's questions.
+ * Answers are saved with the team's other answers, so question ids here must
+ * not clash with any team's own question ids.
+ */
+export const RECRUITMENT_FINAL_SECTIONS: RecruitmentSection[] = [
+  {
+    title: "Commitment & availability",
+    questions: [
+      {
+        id: "weekly_hours",
+        label: "How many hours per week can you commit to ECell?",
+        type: "select",
+        required: true,
+        options: ["1–2 hours", "3–5 hours", "6+ hours"],
+      },
+      {
+        id: "availability",
+        label: "Are you available for regular team meetings and on-ground events?",
+        type: "select",
+        required: true,
+        options: ["Yes", "No", "Sometimes"],
+      },
+      {
+        id: "clashes",
+        label: "Do you have any known clashes coming up (exams, other commitments)? (If none, write \"Nil\")",
+        type: "text",
+        required: true,
+      },
+      {
+        id: "anything_else",
+        label: "Anything else you would like us to know?",
+        type: "textarea",
+        required: false,
+      },
+    ],
+  },
+  {
+    title: "Acknowledgement",
+    questions: [
+      {
+        id: "confirm_accurate",
+        label: "I confirm that the above information is true to the best of my knowledge, and I have carefully read and filled out this form.",
+        type: "checkboxes",
+        required: true,
+        options: ["Yes, I agree"],
+      },
+      {
+        id: "confirm_mismatch",
+        label: "I understand that any mismatch in the information provided will result in strict action.",
+        type: "checkboxes",
+        required: true,
+        options: ["Yes, I agree"],
+      },
+    ],
+  },
+];
 
 export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
   {
@@ -380,11 +448,96 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Web dev", "Automation", "Problem solving"],
     questions: [
       {
+        id: "motivation",
+        label: "Why do you want to join the ECell Tech team?",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "built",
+        label: "Tell us about something you've built or worked on: code, design, a club project, anything.",
+        description:
+          "Haven't built anything yet? Tell us about something technical you tried to learn, or what you want to build.",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "github",
+        label: "GitHub profile",
+        type: "url",
+        required: true,
+        placeholder: "https://github.com/…",
+      },
+      {
+        id: "liveProject",
+        label: "Link to a live project you've built",
+        description: "A deployed site, app or bot we can try out.",
+        type: "url",
+        required: false,
+        placeholder: "https://",
+      },
+      {
+        id: "openSource",
+        label: "Any open-source contributions?",
+        description: "Link the pull requests or repos and tell us what you changed. If you haven't made any yet, write \"None\".",
+        type: "textarea",
+        required: true,
+      },
+      {
         id: "stack",
         label: "Which languages or frameworks are you comfortable with?",
-        type: "text",
+        type: "checkboxes",
         required: true,
-        placeholder: "e.g. JavaScript, React, Python",
+        options: [
+          "HTML & CSS",
+          "JavaScript / TypeScript",
+          "React",
+          "Next.js",
+          "Node.js",
+          "Python",
+          "SQL / databases",
+          "None yet",
+          "Other",
+        ],
+      },
+      {
+        id: "interests",
+        label: "What kind of tech work interests you most?",
+        type: "checkboxes",
+        required: true,
+        options: [
+          "Frontend and UI",
+          "Backend and APIs",
+          "Automation: forms, bots, sheets",
+          "Data and dashboards",
+          "Event tech support",
+          "Other",
+        ],
+      },
+      {
+        id: "git",
+        label: "How comfortable are you with Git and GitHub?",
+        type: "select",
+        required: true,
+        options: [
+          "Never used them",
+          "Basic: clone, commit, push",
+          "Comfortable: branches and pull requests",
+          "Advanced: rebasing, resolving conflicts, reviewing code",
+        ],
+      },
+      {
+        id: "websiteStack",
+        label: "If you were building the ECell website from scratch, what tech would you use, and why?",
+        description: "There's no right answer. We want to see how you think about the choices.",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "websiteImprovement",
+        label: "What's one thing you would improve on the current ECell website?",
+        type: "textarea",
+        required: true,
       },
       {
         id: "problem",
@@ -393,11 +546,11 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
         required: true,
       },
       {
-        id: "github",
-        label: "GitHub or a project you've built",
-        type: "url",
-        required: false,
-        placeholder: "https://github.com/…",
+        id: "webRating",
+        label: "Rate your web development skills",
+        type: "rating",
+        required: true,
+        options: ["1", "2", "3", "4", "5"],
       },
     ],
   },
@@ -425,8 +578,6 @@ export const RECRUITMENT_STEPS: RecruitmentStep[] = [
 ];
 
 /** The steps after applying; the page counts these as rounds. */
-export const RECRUITMENT_ROUNDS = RECRUITMENT_STEPS.slice(1);
-
 export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
   {
     question: "Who can apply?",
@@ -463,4 +614,9 @@ export const RECRUITMENT_FUN_FACTS: string[] = [
 
 export function getTeamById(id: string): RecruitmentTeam | undefined {
   return RECRUITMENT_TEAMS.find((team) => team.id === id);
+}
+
+/** Every question a team asks, in form order, final sections included. */
+export function teamQuestions(team: RecruitmentTeam): RecruitmentQuestion[] {
+  return [...team.questions, ...RECRUITMENT_FINAL_SECTIONS.flatMap((section) => section.questions)];
 }

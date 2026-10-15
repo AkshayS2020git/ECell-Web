@@ -12,6 +12,7 @@ import React, {
 import { createPortal } from "react-dom";
 import {
   RECRUITMENT,
+  RECRUITMENT_FINAL_SECTIONS,
   RECRUITMENT_FUN_FACTS,
   RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
@@ -28,7 +29,6 @@ import {
   COLLEGE_EMAIL_DOMAIN,
   ERRORS,
   LIMITS,
-  STEP_ONE_FIELDS,
   isCollegeEmail,
   isHttpUrl,
   normalizePhone,
@@ -39,8 +39,10 @@ import {
   type ApplicationState,
 } from "./application";
 
-type Step = 1 | 2;
-const STEP_COUNT = 2;
+type Step = 1 | 2 | 3;
+const STEPS: readonly Step[] = [1, 2, 3];
+const STEP_LABELS = ["About you & select your team", "Your answers", "Final details"];
+const STEP_COUNT = STEPS.length;
 const FACT_INTERVAL_MS = 5000;
 
 type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -224,8 +226,13 @@ function QuestionField({
 }) {
   const name = questionFieldName(team.id, question.id);
   const [otherSelected, setOtherSelected] = useState(false);
+  const hintId = `${fieldId(name)}-hint`;
+  const describedBy =
+    [question.description && hintId, errors?.[name] && `${fieldId(name)}-error`].filter(Boolean).join(" ") ||
+    undefined;
   const props = {
     ...fieldProps(name, errors),
+    "aria-describedby": describedBy,
     required: question.required,
     maxLength: questionLimit(question),
     placeholder: question.placeholder,
@@ -236,13 +243,18 @@ function QuestionField({
       <label htmlFor={fieldId(name)}>
         {question.label} {!question.required && <span>Optional</span>}
       </label>
+      {question.description && (
+        <p className="rc-field__hint" id={hintId}>
+          {question.description}
+        </p>
+      )}
       {question.type === "textarea" && <textarea {...props} rows={4} />}
       {question.type === "text" && <input {...props} type="text" />}
       {question.type === "url" && (
         <input {...props} type="url" inputMode="url" autoCapitalize="none" spellCheck={false} />
       )}
       {question.type === "select" && (
-        <select {...fieldProps(name, errors)} required={question.required} defaultValue="">
+        <select {...fieldProps(name, errors)} aria-describedby={describedBy} required={question.required} defaultValue="">
           <option value="" disabled={question.required}>
             {question.required ? "Choose one" : "No answer"}
           </option>
@@ -254,7 +266,7 @@ function QuestionField({
         </select>
       )}
       {question.type === "checkboxes" && (
-        <div className="rc-choice-list" role="group" aria-describedby={errors?.[name] ? `${fieldId(name)}-error` : undefined}>
+        <div className="rc-choice-list" role="group" aria-describedby={describedBy}>
           {question.options?.map((option, index) => (
             <React.Fragment key={option}>
               <label className="rc-choice">
@@ -285,7 +297,7 @@ function QuestionField({
         </div>
       )}
       {question.type === "rating" && (
-        <div className="rc-rating" role="radiogroup" aria-label={question.label} aria-describedby={errors?.[name] ? `${fieldId(name)}-error` : undefined}>
+        <div className="rc-rating" role="radiogroup" aria-label={question.label} aria-describedby={describedBy}>
           {question.options?.map((option) => (
             <label className="rc-rating__option" key={option}>
               <input
@@ -463,6 +475,11 @@ export default function RecruitForm(): React.ReactElement {
   const formRef = useRef<HTMLFormElement>(null);
   const stepOneRef = useRef<HTMLDivElement>(null);
   const stepTwoRef = useRef<HTMLDivElement>(null);
+  const stepThreeRef = useRef<HTMLDivElement>(null);
+
+  const panelFor = (target: Step) => [stepOneRef, stepTwoRef, stepThreeRef][target - 1].current;
+  const fieldsIn = (target: Step) =>
+    Array.from(panelFor(target)?.querySelectorAll<FormField>("input, select, textarea") ?? []);
 
   const [state, formAction, pending] = useActionState(
     async (previous: ApplicationState, formData: FormData) => {
@@ -477,9 +494,10 @@ export default function RecruitForm(): React.ReactElement {
       }
       // The server's verdict replaces whatever the browser last showed.
       setClientErrors({});
-      // A rejected step-1 answer (e.g. an email that already applied) sends
-      // the applicant back to where they can fix it.
-      if (STEP_ONE_FIELDS.some((field) => next.errors?.[field])) setStep(1);
+      // A rejected answer (e.g. an email that already applied) sends the
+      // applicant back to the step where they can fix it.
+      const errorStep = STEPS.find((target) => fieldsIn(target).some((field) => next.errors?.[field.name]));
+      if (errorStep) setStep(errorStep);
       return next;
     },
     INITIAL_STATE,
@@ -498,8 +516,6 @@ export default function RecruitForm(): React.ReactElement {
     if (firstInvalid instanceof HTMLElement) firstInvalid.focus();
   }, [state]);
 
-  const panelFor = (target: Step) => (target === 1 ? stepOneRef.current : stepTwoRef.current);
-
   const showStep = (next: Step, focusSelector = "input, select, textarea") => {
     setStep(next);
     setStepMessage("");
@@ -513,7 +529,7 @@ export default function RecruitForm(): React.ReactElement {
   // The form is noValidate so nothing pops up a browser bubble; each step
   // checks its own fields and shows the messages inline instead.
   const checkStep = (target: Step) => {
-    const fields = Array.from(panelFor(target)?.querySelectorAll<FormField>("input, select, textarea") ?? []);
+    const fields = fieldsIn(target);
     const found: ApplicationErrors = {};
     for (const field of fields) found[field.name] = fieldError(field);
     setClientErrors((previous) => ({ ...previous, ...found }));
@@ -533,8 +549,8 @@ export default function RecruitForm(): React.ReactElement {
     return false;
   };
 
-  const goToStepTwo = () => {
-    if (checkStep(1)) showStep(2);
+  const goToNextStep = () => {
+    if (checkStep(step)) showStep((step + 1) as Step);
   };
 
   // Check an answer when the applicant leaves it. An empty field isn't
@@ -560,12 +576,12 @@ export default function RecruitForm(): React.ReactElement {
     // Submitting through onSubmit instead of the `action` prop stops React from
     // resetting the form afterwards, so a rejected application keeps its answers.
     event.preventDefault();
-    // Enter on step 1 means "next", not "submit".
-    if (step === 1) {
-      goToStepTwo();
+    // Enter before the last step means "next", not "submit".
+    if (step < STEP_COUNT) {
+      goToNextStep();
       return;
     }
-    if (!checkStep(2)) return;
+    if (!checkStep(step)) return;
     const formData = new FormData(event.currentTarget);
     setSubmitted({
       name: String(formData.get("name") ?? "").trim(),
@@ -597,12 +613,15 @@ export default function RecruitForm(): React.ReactElement {
           Step {step} of {STEP_COUNT}
         </p>
         <ol className="rc-progress" aria-label="Application steps">
-          <li className={step === 1 ? "is-current" : "is-done"} aria-current={step === 1 ? "step" : undefined}>
-            <span>01</span> About you &amp; select your team
-          </li>
-          <li className={step === 2 ? "is-current" : ""} aria-current={step === 2 ? "step" : undefined}>
-            <span>02</span> Your answers
-          </li>
+          {STEP_LABELS.map((label, index) => (
+            <li
+              key={label}
+              className={step === index + 1 ? "is-current" : step > index + 1 ? "is-done" : ""}
+              aria-current={step === index + 1 ? "step" : undefined}
+            >
+              <span>{pad(index + 1)}</span> {label}
+            </li>
+          ))}
         </ol>
       </div>
 
@@ -728,7 +747,7 @@ export default function RecruitForm(): React.ReactElement {
         </fieldset>
 
         <div className="rc-submit">
-          <button className="rc-button rc-button--solid" type="button" onClick={goToStepTwo}>
+          <button className="rc-button rc-button--solid" type="button" onClick={goToNextStep}>
             Next: your answers <span aria-hidden="true">→</span>
           </button>
           <p className="rc-submit__status" role="status" aria-live="polite">
@@ -764,8 +783,22 @@ export default function RecruitForm(): React.ReactElement {
           </fieldset>
         )}
 
+        <div className="rc-submit">
+          <button className="rc-button rc-button--back" type="button" onClick={() => showStep(1)} disabled={pending}>
+            <span aria-hidden="true">←</span> Back
+          </button>
+          <button className="rc-button rc-button--solid" type="button" onClick={goToNextStep} disabled={pending}>
+            Next: {STEP_LABELS[2].toLowerCase()} <span aria-hidden="true">→</span>
+          </button>
+          <p className="rc-submit__status" role="status" aria-live="polite">
+            {step === 2 ? status : ""}
+          </p>
+        </div>
+      </div>
+
+      <div ref={stepThreeRef} className="rc-step-panel" hidden={step !== 3}>
         <fieldset className="rc-fieldset" disabled={pending}>
-          <legend>{chosenTeam ? "04" : "03"} · In your words</legend>
+          <legend>04 · In your words</legend>
 
           <div className="rc-field">
             <label htmlFor="rc-why">Why do you want to join ECell?</label>
@@ -795,7 +828,7 @@ export default function RecruitForm(): React.ReactElement {
 
           <div className="rc-field">
             <label htmlFor="rc-link">
-              Portfolio, GitHub or LinkedIn <span>Optional</span>
+              Portfolio or LinkedIn <span>Optional</span>
             </label>
             <input
               {...fieldProps("link", errors)}
@@ -810,15 +843,27 @@ export default function RecruitForm(): React.ReactElement {
           </div>
         </fieldset>
 
+        {chosenTeam &&
+          RECRUITMENT_FINAL_SECTIONS.map((section, index) => (
+            <fieldset className="rc-fieldset" disabled={pending} key={`${chosenTeam.id}-${section.title}`}>
+              <legend>
+                {pad(index + 5)} · {section.title}
+              </legend>
+              {section.questions.map((question) => (
+                <QuestionField key={question.id} team={chosenTeam} question={question} errors={errors} />
+              ))}
+            </fieldset>
+          ))}
+
         <div className="rc-submit">
-          <button className="rc-button rc-button--back" type="button" onClick={() => showStep(1)} disabled={pending}>
+          <button className="rc-button rc-button--back" type="button" onClick={() => showStep((step - 1) as Step)} disabled={pending}>
             <span aria-hidden="true">←</span> Back
           </button>
           <button className="rc-button rc-button--solid" type="submit" disabled={pending}>
             {pending ? "Sending…" : "Submit application"} <span aria-hidden="true">→</span>
           </button>
           <p className="rc-submit__status" role="status" aria-live="polite">
-            {step === 2 && !pending ? status : ""}
+            {step === 3 && !pending ? status : ""}
           </p>
           {pending && <SavingOverlay />}
         </div>
