@@ -26,7 +26,7 @@ function formData(overrides: Record<string, string> = {}): FormData {
     why: "I want to help run events and build tools that make the startup community on campus stronger.",
     experience: "",
     link: "https://github.com/asha",
-    "q.tech.motivation": "I want to keep the ECell site fast and useful.",
+    "q.tech.slowSite": "Check the network tab for large images and slow requests.",
     "q.tech.built": "A bot that tracks attendance for our club.",
     "q.tech.github": "https://github.com/asha",
     "q.tech.liveProject": "",
@@ -70,7 +70,7 @@ describe("validateApplication", () => {
             team: "Tech",
             choice: "First",
             answers: [
-              { question: expect.stringContaining("Tech team"), answer: expect.stringContaining("ECell site") },
+              { question: expect.stringContaining("feels slow to load"), answer: expect.stringContaining("network tab") },
               { question: expect.stringContaining("built or worked on"), answer: expect.stringContaining("bot") },
               { question: expect.stringContaining("GitHub profile"), answer: "https://github.com/asha" },
               { question: expect.stringContaining("live project"), answer: "" },
@@ -145,7 +145,7 @@ describe("validateApplication", () => {
   it("stores Social Media & Content Creation platform choices and its creative rating", () => {
     const data = formData({
       firstChoice: "social",
-      "q.social.motivation": "I want to turn ECell events into stories students want to share.",
+      "q.social.eventPromo": "A countdown reel with the founder's boldest quote as the hook.",
       "q.social.contentPreference": "Reels / Short Content",
       "q.social.managementExperience": "Yes",
       "q.social.contentLinks": "Nil.",
@@ -174,7 +174,7 @@ describe("validateApplication", () => {
     const result = validateApplication(
       formData({
         firstChoice: "design",
-        "q.design.motivation": "I want to shape how ECell looks.",
+        "q.design.designCritique": "Bold type and one clear focal point.",
         "q.design.tools": "Figma",
         "q.design.experience": "Yes",
         "q.design.deadline_comfort": "Comfortable",

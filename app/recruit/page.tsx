@@ -21,7 +21,7 @@ import "./Recruit.css";
 export const maxDuration = 60;
 
 const description =
-  "ECell RV University is recruiting. Join the PR, social media and content, design, photography, video editing, documentation or tech team and help build the startup community on campus.";
+  "ECell RV University is recruiting. Join the PR, sponsorship and engagement, social media and content, design, photography, video editing, documentation or tech team and help build the startup community on campus.";
 
 export const metadata: Metadata = {
   title: "Join the Team",

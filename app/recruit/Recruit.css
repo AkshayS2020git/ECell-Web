@@ -925,6 +925,25 @@
     font-size: .85rem
 }
 
+.rc-success__explore {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+    margin-top: 30px
+}
+
+.rc-success .rc-success__explore p {
+    margin: 0
+}
+
+/* Undo the panel's underlined text-link style for the button. */
+.rc-success a.rc-button--solid {
+    color: #111;
+    text-decoration: none
+}
+
 .rc-success .rc-success__help {
     margin-top: 30px;
     padding-top: 20px;

@@ -55,7 +55,7 @@ export const RECRUITMENT = {
   isOpen: true,
   season: "Recruitment 2026",
   /** Shown as-is on the page. */
-  deadline: "31 October 2026",
+  deadline: "24 October 2026",
   contactEmail: "club_ecell@rvu.edu.in",
   /** Hero poster, imported from src/assets (square works best). Until one is
    *  set, the hero shows an empty placeholder frame in its place. */
@@ -123,7 +123,7 @@ export const RECRUITMENT_FINAL_SECTIONS: RecruitmentSection[] = [
 export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
   {
     id: "pr",
-    name: "PR",
+    name: "PR, Sponsorship & Engagement",
     tagline: "Be the voice of ECell.",
     description: "The voice of ECell to the outside world.",
     responsibilities: [
@@ -186,7 +186,7 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     id: "social",
     name: "Social Media & Content Creation",
     tagline: "Make ECell impossible to scroll past.",
-    description: "Runs ECell's online presence — from posting to the ideas behind every post.",
+    description: "Runs ECell's online presence, from posting to the ideas behind every post.",
     responsibilities: [
       "Manage Instagram, LinkedIn and other pages",
       "Write captions, scripts and plan reels/content",
@@ -196,8 +196,8 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Reels", "Copywriting", "Trends"],
     questions: [
       {
-        id: "motivation",
-        label: "Why do you want to join the Social Media and Content Creation Team of ECell?",
+        id: "eventPromo",
+        label: "A startup founder is speaking at ECell next week. How would you promote the talk on Instagram, and what would your hook be?",
         type: "textarea",
         required: true,
       },
@@ -213,7 +213,7 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
         label: "What type of content do you enjoy creating the most?",
         type: "select",
         required: true,
-        options: ["Social Media Captions", "Blogs / Articles", "Event Promotions", "Video Scripts", "Reels / Short Content"],
+        options: ["Blogs / Articles", "Event Promotions", "Video Scripts", "Reels / Short Content"],
       },
       {
         id: "managementExperience",
@@ -284,11 +284,11 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Figma", "Branding", "Motion"],
     questions: [
       {
-        id: "motivation",
-        label: "Why do you want to join the Design Team of ECell?",
+        id: "designCritique",
+        label: "Pick a poster or social media post you like, from any brand, club or event. What makes it work?",
+        description: "Add a link to it if you can.",
         type: "textarea",
         required: true,
-        placeholder: "Tell us why you want to join the ECell Design Team.",
       },
       {
         id: "tools",
@@ -373,8 +373,8 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Photography", "Composition", "Lightroom"],
     questions: [
       {
-        id: "motivation",
-        label: "Why do you want to join the Photography Team of ECell?",
+        id: "lowLight",
+        label: "How would you photograph a speaker on stage in a dimly lit auditorium? Mention any settings or techniques you would use.",
         type: "textarea",
         required: true,
       },
@@ -384,6 +384,17 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
         type: "checkboxes",
         required: true,
         options: ["DSLR", "Mirrorless", "Smartphone", "Other"],
+      },
+      {
+        id: "cameraAtEvents",
+        label: "Do you have a camera (DSLR or mirrorless)? If yes, would you be able to bring it to RVU events?",
+        type: "select",
+        required: true,
+        options: [
+          "Yes, and I can bring it to events",
+          "Yes, but I can't always bring it",
+          "No, I don't have one",
+        ],
       },
       {
         id: "experience",
@@ -444,8 +455,8 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Premiere Pro", "Storytelling", "Reels"],
     questions: [
       {
-        id: "motivation",
-        label: "Why do you want to join the Video Editing Team of ECell?",
+        id: "aftermoviePacing",
+        label: "How do you decide on the music, pacing and cuts for an event aftermovie?",
         type: "textarea",
         required: true,
       },
@@ -516,12 +527,10 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Writing", "Organisation", "Attention to detail"],
     questions: [
       {
-        id: "motivation",
-        label: "Why do you want to join the Documentation Team of ECell?",
+        id: "summary",
+        label: "Summarise a talk, lecture or event you attended recently in 3–4 lines.",
         type: "textarea",
         required: true,
-        placeholder:
-          "Tell us why you are interested in documentation and how you can contribute to ECell.",
       },
       {
         id: "experience",
@@ -590,8 +599,8 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Web dev", "Automation", "Problem solving"],
     questions: [
       {
-        id: "motivation",
-        label: "Why do you want to join the ECell Tech team?",
+        id: "slowSite",
+        label: "A website feels slow to load. How would you find out why?",
         type: "textarea",
         required: true,
       },
@@ -732,7 +741,7 @@ export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
       "No, each application is for one team, so pick the one you most want to join.",
   },
   {
-    question: "How much time does it take?",
+    question: "How much time should I give to ECell?",
     answer:
       "Around 4 to 6 hours a week on average, more in the weeks before a big event.",
   },

@@ -27,7 +27,7 @@ function next() {
 
 /** Answers the Tech questions on step 2 and moves on to step 3. */
 function fillStepTwo() {
-  type(/join the ecell tech team/i, "I want to keep the ECell site fast and useful.");
+  type(/feels slow to load/i, "Check the network tab for large images and slow requests.");
   type(/built or worked on/i, "A bot that tracks attendance for our club.");
   type(/github profile/i, "https://github.com/asha");
   type(/open-source contributions/i, "None");

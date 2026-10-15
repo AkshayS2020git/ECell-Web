@@ -25,6 +25,7 @@ import { scrollToElement } from "@/src/utils/lenis";
 import { padNumber as pad } from "@/src/utils/math";
 import { lockPageScroll } from "@/src/utils/scrollLock";
 import { submitApplication } from "./actions";
+import EventsLink from "./EventsLink";
 import {
   COLLEGE_EMAIL_DOMAIN,
   ERRORS,
@@ -439,6 +440,13 @@ function SuccessPanel({
           </li>
         ))}
       </ol>
+
+      <div className="rc-success__explore">
+        <p>While you wait, see what ECell has been up to.</p>
+        <EventsLink className="rc-button rc-button--solid">
+          Explore events <span aria-hidden="true">→</span>
+        </EventsLink>
+      </div>
 
       <p className="rc-success__help">
         Need to change something? Write to{" "}
