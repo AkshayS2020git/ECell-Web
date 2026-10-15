@@ -275,8 +275,8 @@
 
 /* Teams */
 
-/* Five cards on a six-column track: three across the top, the last two
-   sharing the bottom row, so no empty cell is left over. */
+/* Seven cards on a six-column track: three across the top, the rest two
+   to a row, so no empty cell is left over. */
 .rc-teams {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
