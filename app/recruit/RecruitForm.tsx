@@ -226,8 +226,13 @@ function QuestionField({
 }) {
   const name = questionFieldName(team.id, question.id);
   const [otherSelected, setOtherSelected] = useState(false);
+  const hintId = `${fieldId(name)}-hint`;
+  const describedBy =
+    [question.description && hintId, errors?.[name] && `${fieldId(name)}-error`].filter(Boolean).join(" ") ||
+    undefined;
   const props = {
     ...fieldProps(name, errors),
+    "aria-describedby": describedBy,
     required: question.required,
     maxLength: questionLimit(question),
     placeholder: question.placeholder,
@@ -238,13 +243,18 @@ function QuestionField({
       <label htmlFor={fieldId(name)}>
         {question.label} {!question.required && <span>Optional</span>}
       </label>
+      {question.description && (
+        <p className="rc-field__hint" id={hintId}>
+          {question.description}
+        </p>
+      )}
       {question.type === "textarea" && <textarea {...props} rows={4} />}
       {question.type === "text" && <input {...props} type="text" />}
       {question.type === "url" && (
         <input {...props} type="url" inputMode="url" autoCapitalize="none" spellCheck={false} />
       )}
       {question.type === "select" && (
-        <select {...fieldProps(name, errors)} required={question.required} defaultValue="">
+        <select {...fieldProps(name, errors)} aria-describedby={describedBy} required={question.required} defaultValue="">
           <option value="" disabled={question.required}>
             {question.required ? "Choose one" : "No answer"}
           </option>
@@ -256,7 +266,7 @@ function QuestionField({
         </select>
       )}
       {question.type === "checkboxes" && (
-        <div className="rc-choice-list" role="group" aria-describedby={errors?.[name] ? `${fieldId(name)}-error` : undefined}>
+        <div className="rc-choice-list" role="group" aria-describedby={describedBy}>
           {question.options?.map((option, index) => (
             <React.Fragment key={option}>
               <label className="rc-choice">
@@ -287,7 +297,7 @@ function QuestionField({
         </div>
       )}
       {question.type === "rating" && (
-        <div className="rc-rating" role="radiogroup" aria-label={question.label} aria-describedby={errors?.[name] ? `${fieldId(name)}-error` : undefined}>
+        <div className="rc-rating" role="radiogroup" aria-label={question.label} aria-describedby={describedBy}>
           {question.options?.map((option) => (
             <label className="rc-rating__option" key={option}>
               <input

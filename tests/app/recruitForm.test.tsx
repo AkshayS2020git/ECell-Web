@@ -27,8 +27,15 @@ function next() {
 
 /** Answers the Tech questions on step 2 and moves on to step 3. */
 function fillStepTwo() {
-  type(/languages or frameworks/i, "TypeScript");
+  type(/join the ecell tech team/i, "I want to keep the ECell site fast and useful.");
+  type(/built or worked on/i, "A bot that tracks attendance for our club.");
+  type(/github profile/i, "https://github.com/asha");
+  fireEvent.click(screen.getByLabelText("React"));
+  type(/git and github/i, "Basic: clone, commit, push");
+  type(/from scratch/i, "Next.js, because the site is mostly static pages.");
+  type(/improve on the current/i, "A search for past events.");
   type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
+  fireEvent.click(screen.getByLabelText("3"));
   fireEvent.click(screen.getByRole("button", { name: /next: final details/i }));
 }
 
@@ -87,6 +94,7 @@ describe("RecruitForm", () => {
     expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
     expect(screen.getByText("Tech", { selector: ".rc-chip" })).toBeInTheDocument();
     expect(screen.getByLabelText(/languages or frameworks/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/built or worked on/i)).toHaveAccessibleDescription(/haven't built anything yet/i);
     expect(screen.queryByLabelText(/recap/i)).toBeNull();
   });
 
@@ -107,14 +115,14 @@ describe("RecruitForm", () => {
     render(<RecruitForm />);
     fillStepOne();
     next();
-    type(/languages or frameworks/i, "TypeScript");
+    type(/built or worked on/i, "A bot that tracks attendance.");
 
     fireEvent.click(screen.getByRole("button", { name: /change team/i }));
     expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
     expect(screen.getByLabelText("Full name")).toHaveValue("Asha Rao");
 
     next();
-    expect(screen.getByLabelText(/languages or frameworks/i)).toHaveValue("TypeScript");
+    expect(screen.getByLabelText(/built or worked on/i)).toHaveValue("A bot that tracks attendance.");
   });
 
   it("shows a confirmation with next steps after a successful submission", async () => {
@@ -225,7 +233,8 @@ describe("RecruitForm", () => {
     fireEvent.click(screen.getByRole("button", { name: /next: final details/i }));
 
     expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
-    expect(screen.getAllByText("Please answer this one.")).toHaveLength(2);
+    // Every Tech question is required.
+    expect(screen.getAllByText("Please answer this one.")).toHaveLength(9);
   });
 
   it("asks every team the commitment and acknowledgement questions on step 3", () => {

@@ -15,6 +15,8 @@ export interface RecruitmentQuestion {
   type: "text" | "textarea" | "url" | "select" | "checkboxes" | "rating";
   required: boolean;
   placeholder?: string;
+  /** Shown under the label, for guidance the label is too short to give. */
+  description?: string;
   /** Choices for select, checkboxes, and rating fields. */
   options?: string[];
 }
@@ -446,11 +448,67 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
     skills: ["Web dev", "Automation", "Problem solving"],
     questions: [
       {
+        id: "motivation",
+        label: "Why do you want to join the ECell Tech team?",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "built",
+        label: "Tell us about something you've built or worked on: code, design, a club project, anything.",
+        description:
+          "Haven't built anything yet? Tell us about something technical you tried to learn, or what you want to build.",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "github",
+        label: "GitHub profile or a link to your project",
+        type: "url",
+        required: true,
+        placeholder: "https://github.com/…",
+      },
+      {
         id: "stack",
         label: "Which languages or frameworks are you comfortable with?",
-        type: "text",
+        type: "checkboxes",
         required: true,
-        placeholder: "e.g. JavaScript, React, Python",
+        options: [
+          "HTML & CSS",
+          "JavaScript / TypeScript",
+          "React",
+          "Next.js",
+          "Node.js",
+          "Python",
+          "SQL / databases",
+          "None yet",
+          "Other",
+        ],
+      },
+      {
+        id: "git",
+        label: "How comfortable are you with Git and GitHub?",
+        type: "select",
+        required: true,
+        options: [
+          "Never used them",
+          "Basic: clone, commit, push",
+          "Comfortable: branches and pull requests",
+          "Advanced: rebasing, resolving conflicts, reviewing code",
+        ],
+      },
+      {
+        id: "websiteStack",
+        label: "If you were building the ECell website from scratch, what tech would you use, and why?",
+        description: "There's no right answer. We want to see how you think about the choices.",
+        type: "textarea",
+        required: true,
+      },
+      {
+        id: "websiteImprovement",
+        label: "What's one thing you would improve on the current ECell website?",
+        type: "textarea",
+        required: true,
       },
       {
         id: "problem",
@@ -459,11 +517,11 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
         required: true,
       },
       {
-        id: "github",
-        label: "GitHub or a project you've built",
-        type: "url",
-        required: false,
-        placeholder: "https://github.com/…",
+        id: "webRating",
+        label: "Rate your web development skills",
+        type: "rating",
+        required: true,
+        options: ["1", "2", "3", "4", "5"],
       },
     ],
   },
