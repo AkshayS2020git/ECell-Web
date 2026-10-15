@@ -95,6 +95,9 @@ export function setupHeroAnimations({
     gsap.set(introParts, { opacity: 1 });
     if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
     setNavNudgeAlpha(1);
+    // The trigger's onUpdate only fires once the page scrolls, so turn the
+    // blend on now or the tagline stays black under the ink at the top.
+    setInkBlend(true);
 
     const mobileTimeline = gsap.timeline({
       scrollTrigger: {

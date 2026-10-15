@@ -375,7 +375,7 @@ export default function Events(): React.ReactElement {
             src={desktopTeamBg}
             alt="ECell team background"
             fill
-            sizes="(max-width: 768px) 0px, 100vw"
+            sizes="(max-width: 768px) and (orientation: portrait) 0px, 100vw"
             quality={85}
             priority
           />
@@ -385,7 +385,7 @@ export default function Events(): React.ReactElement {
             alt=""
             aria-hidden="true"
             fill
-            sizes="(max-width: 768px) 100vw, 0px"
+            sizes="(max-width: 768px) and (orientation: portrait) 100vw, 0px"
             quality={85}
             priority
           />
