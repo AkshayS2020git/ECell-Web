@@ -5,6 +5,8 @@
 // drive details before announcing recruitment. Flip `isOpen` to close
 // applications without touching any page code.
 
+import type { StaticImageData } from "next/image";
+
 export interface RecruitmentQuestion {
   /** Part of the form field name; keep it unique within its team. */
   id: string;
@@ -48,8 +50,9 @@ export const RECRUITMENT = {
   /** Shown as-is on the page. */
   deadline: "31 October 2026",
   contactEmail: "club_ecell@rvu.edu.in",
-  /** Who can apply, shown in the hero's details panel. */
-  openTo: "All RVU students",
+  /** Hero poster, imported from src/assets (square works best). Until one is
+   *  set, the hero shows an empty placeholder frame in its place. */
+  poster: null as StaticImageData | null,
 } as const;
 
 export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
@@ -425,8 +428,6 @@ export const RECRUITMENT_STEPS: RecruitmentStep[] = [
 ];
 
 /** The steps after applying; the page counts these as rounds. */
-export const RECRUITMENT_ROUNDS = RECRUITMENT_STEPS.slice(1);
-
 export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
   {
     question: "Who can apply?",
