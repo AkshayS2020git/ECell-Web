@@ -29,7 +29,10 @@ function formData(overrides: Record<string, string> = {}): FormData {
     "q.tech.motivation": "I want to keep the ECell site fast and useful.",
     "q.tech.built": "A bot that tracks attendance for our club.",
     "q.tech.github": "https://github.com/asha",
+    "q.tech.liveProject": "",
+    "q.tech.openSource": "None",
     "q.tech.stack": "React",
+    "q.tech.interests": "Frontend and UI",
     "q.tech.git": "Basic: clone, commit, push",
     "q.tech.websiteStack": "Next.js, because the site is mostly static pages.",
     "q.tech.websiteImprovement": "A search for past events.",
@@ -70,7 +73,10 @@ describe("validateApplication", () => {
               { question: expect.stringContaining("Tech team"), answer: expect.stringContaining("ECell site") },
               { question: expect.stringContaining("built or worked on"), answer: expect.stringContaining("bot") },
               { question: expect.stringContaining("GitHub profile"), answer: "https://github.com/asha" },
+              { question: expect.stringContaining("live project"), answer: "" },
+              { question: expect.stringContaining("open-source"), answer: "None" },
               { question: expect.stringContaining("languages"), answer: "React" },
+              { question: expect.stringContaining("interests you"), answer: "Frontend and UI" },
               { question: expect.stringContaining("Git and GitHub"), answer: "Basic: clone, commit, push" },
               { question: expect.stringContaining("from scratch"), answer: expect.stringContaining("Next.js") },
               { question: expect.stringContaining("improve"), answer: "A search for past events." },
@@ -94,11 +100,12 @@ describe("validateApplication", () => {
       formData({
         "q.tech.stack": "",
         "q.tech.github": "not a link",
+        "q.tech.liveProject": "not a link either",
       }),
     );
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(Object.keys(result.errors).sort()).toEqual(["q.tech.github", "q.tech.stack"]);
+    expect(Object.keys(result.errors).sort()).toEqual(["q.tech.github", "q.tech.liveProject", "q.tech.stack"]);
   });
 
   it("ignores questions for teams the applicant didn't pick", () => {

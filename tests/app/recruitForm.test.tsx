@@ -30,7 +30,9 @@ function fillStepTwo() {
   type(/join the ecell tech team/i, "I want to keep the ECell site fast and useful.");
   type(/built or worked on/i, "A bot that tracks attendance for our club.");
   type(/github profile/i, "https://github.com/asha");
+  type(/open-source contributions/i, "None");
   fireEvent.click(screen.getByLabelText("React"));
+  fireEvent.click(screen.getByLabelText("Frontend and UI"));
   type(/git and github/i, "Basic: clone, commit, push");
   type(/from scratch/i, "Next.js, because the site is mostly static pages.");
   type(/improve on the current/i, "A search for past events.");
@@ -233,8 +235,8 @@ describe("RecruitForm", () => {
     fireEvent.click(screen.getByRole("button", { name: /next: final details/i }));
 
     expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
-    // Every Tech question is required.
-    expect(screen.getAllByText("Please answer this one.")).toHaveLength(9);
+    // One message per required Tech question.
+    expect(screen.getAllByText("Please answer this one.")).toHaveLength(11);
   });
 
   it("asks every team the commitment and acknowledgement questions on step 3", () => {
