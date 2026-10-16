@@ -13,7 +13,7 @@ import { createPortal } from "react-dom";
 import {
   RECRUITMENT,
   RECRUITMENT_FINAL_SECTIONS,
-  RECRUITMENT_FUN_FACTS,
+  RECRUITMENT_LOADING_LINES,
   RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
   RECRUITMENT_YEARS,
@@ -25,6 +25,7 @@ import { scrollToElement } from "@/src/utils/lenis";
 import { padNumber as pad } from "@/src/utils/math";
 import { lockPageScroll } from "@/src/utils/scrollLock";
 import { submitApplication } from "./actions";
+import EventsLink from "./EventsLink";
 import {
   COLLEGE_EMAIL_DOMAIN,
   ERRORS,
@@ -43,7 +44,7 @@ type Step = 1 | 2 | 3;
 const STEPS: readonly Step[] = [1, 2, 3];
 const STEP_LABELS = ["About you & select your team", "Your answers", "Final details"];
 const STEP_COUNT = STEPS.length;
-const FACT_INTERVAL_MS = 5000;
+const LINE_INTERVAL_MS = 5000;
 
 type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
@@ -324,32 +325,32 @@ function QuestionField({
 function SavingOverlay() {
   // Only ever rendered in the browser after a submit, so picking at random
   // here can't cause a hydration mismatch.
-  const [factIndex, setFactIndex] = useState(() =>
-    Math.floor(Math.random() * RECRUITMENT_FUN_FACTS.length),
+  const [lineIndex, setLineIndex] = useState(() =>
+    Math.floor(Math.random() * RECRUITMENT_LOADING_LINES.length),
   );
 
   useEffect(() => lockPageScroll(), []);
 
   // A slow save shouldn't leave them staring at one line: move to a different
-  // fact every few seconds.
+  // line every few seconds.
   useEffect(() => {
-    if (RECRUITMENT_FUN_FACTS.length < 2) return;
+    if (RECRUITMENT_LOADING_LINES.length < 2) return;
     const timer = window.setInterval(() => {
-      setFactIndex((current) => {
-        const offset = 1 + Math.floor(Math.random() * (RECRUITMENT_FUN_FACTS.length - 1));
-        return (current + offset) % RECRUITMENT_FUN_FACTS.length;
+      setLineIndex((current) => {
+        const offset = 1 + Math.floor(Math.random() * (RECRUITMENT_LOADING_LINES.length - 1));
+        return (current + offset) % RECRUITMENT_LOADING_LINES.length;
       });
-    }, FACT_INTERVAL_MS);
+    }, LINE_INTERVAL_MS);
     return () => window.clearInterval(timer);
   }, []);
 
   return createPortal(
     <div className="rc-pending">
       <span className="rc-spinner" aria-hidden="true" />
-      <p className="rc-pending__fact" key={factIndex}>
-        {RECRUITMENT_FUN_FACTS[factIndex]}
+      <p className="rc-pending__line" key={lineIndex}>
+        {RECRUITMENT_LOADING_LINES[lineIndex]}
       </p>
-      {/* Only this line is announced; the rotating facts would be noise. */}
+      {/* Only this line is announced; the rotating lines would be noise. */}
       <p className="rc-pending__status" role="status">
         Saving your data…
       </p>
@@ -439,6 +440,13 @@ function SuccessPanel({
           </li>
         ))}
       </ol>
+
+      <div className="rc-success__explore">
+        <p>While you wait, see what ECell has been up to.</p>
+        <EventsLink className="rc-button rc-button--solid">
+          Explore events <span aria-hidden="true">→</span>
+        </EventsLink>
+      </div>
 
       <p className="rc-success__help">
         Need to change something? Write to{" "}

@@ -790,8 +790,8 @@
     }
 }
 
-/* Re-keyed on every change, so each new fact fades in. */
-.rc-pending__fact {
+/* Re-keyed on every change, so each new line fades in. */
+.rc-pending__line {
     max-width: 34ch;
     font-family: var(--font-fraunces), Georgia, serif;
     font-size: clamp(1.15rem, 2.6vw, 1.5rem);
@@ -923,6 +923,25 @@
 .rc-success .rc-success__steps p {
     margin-top: 4px;
     font-size: .85rem
+}
+
+.rc-success__explore {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+    margin-top: 30px
+}
+
+.rc-success .rc-success__explore p {
+    margin: 0
+}
+
+/* Undo the panel's underlined text-link style for the button. */
+.rc-success a.rc-button--solid {
+    color: #111;
+    text-decoration: none
 }
 
 .rc-success .rc-success__help {
@@ -1159,7 +1178,7 @@
     }
 
     .rc-pending,
-    .rc-pending__fact {
+    .rc-pending__line {
         animation: none
     }
 

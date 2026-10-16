@@ -1,5 +1,4 @@
 import { StaticImageData } from "next/image";
-import President from "@/src/assets/team/President.webp";
 import VicePresident from "@/src/assets/team/vicePres.webp";
 import HeadTech from "@/src/assets/team/HeadTech.webp";
 import HeadDesign from "@/src/assets/team/HeadDesign.webp";
@@ -7,6 +6,7 @@ import HeadDocumentation from "@/src/assets/team/HeadDocumentation.webp";
 import Advisory from "@/src/assets/team/Advisory.webp";
 import AdvisoryHead from "@/src/assets/team/AdvisoryHead.webp";
 import DirectorPr from "@/src/assets/team/DirectorPr.webp";
+import PrExecutive from "@/src/assets/team/PrExecutive.webp";
 
 export interface TeamMember {
   id: string;
@@ -47,14 +47,14 @@ const teamMembers: TeamMember[] = [
   },
   {
     id: "member-3",
-    name: "Dhruv Bhandari",
+    name: "Ayush S Kulkarni",
     role: "President",
     description:
       "Leading strategic growth and fostering an ecosystem of innovation and entrepreneurial leadership across campus initiatives.",
-    image: President,
-    imagePosition: "center 18%",
-    directoryImagePosition: "center 10%",
-    linkedin: "https://www.linkedin.com/in/dhruv-bhandari-b08041364/",
+    image: DirectorPr,
+    imagePosition: "center 22%",
+    directoryImagePosition: "center 30%",
+    linkedin: "https://www.linkedin.com/in/ayushsk",
     accentColor: "#F59E0B",
   },
   {
@@ -70,18 +70,6 @@ const teamMembers: TeamMember[] = [
     accentColor: "#F472B6",
   },
   {
-    id: "member-5",
-    name: "Ayush S Kulkarni",
-    role: "director of Partnerships and Engagements",
-    description:
-      "builds external relationships and drives member involvement to grow the club's presence and value.",
-    image: DirectorPr,
-    imagePosition: "center 22%",
-    directoryImagePosition: "center 30%",
-    linkedin: "https://www.linkedin.com/in/ayushsk",
-    accentColor: "#34D399",
-  },
-  {
     id: "member-6",
     name: "Akash Singh Bisht",
     role: "Head of Tech",
@@ -92,6 +80,18 @@ const teamMembers: TeamMember[] = [
     directoryImagePosition: "center 40%",
     linkedin: "https://www.linkedin.com/in/akash-bisht-601268322?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     accentColor: "#3B82F6",
+  },
+  {
+    id: "member-5",
+    name: "Suyash Chandra",
+    role: "PR Executive",
+    description:
+      "Executes tasks, supports team operations, and works towards team goals.",
+    image: PrExecutive,
+    imagePosition: "center 30%",
+    directoryImagePosition: "center 35%",
+    linkedin: "https://www.linkedin.com/in/suyash-chandra?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+    accentColor: "#34D399",
   },
   {
     id: "member-7",

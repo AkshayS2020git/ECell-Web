@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import RecruitForm from "@/app/recruit/RecruitForm";
 import { submitApplication } from "@/app/recruit/actions";
-import { RECRUITMENT_FUN_FACTS } from "@/src/data/recruitment";
+import { RECRUITMENT_LOADING_LINES } from "@/src/data/recruitment";
 
 vi.mock("@/app/recruit/actions", () => ({ submitApplication: vi.fn() }));
 
@@ -27,7 +27,7 @@ function next() {
 
 /** Answers the Tech questions on step 2 and moves on to step 3. */
 function fillStepTwo() {
-  type(/join the ecell tech team/i, "I want to keep the ECell site fast and useful.");
+  type(/feels slow to load/i, "Check the network tab for large images and slow requests.");
   type(/built or worked on/i, "A bot that tracks attendance for our club.");
   type(/github profile/i, "https://github.com/asha");
   type(/open-source contributions/i, "None");
@@ -196,7 +196,7 @@ describe("RecruitForm", () => {
     expect(within(panel).queryByText("Team")).toBeNull();
   });
 
-  it("shows a spinner with rotating fun facts while the application is saving", async () => {
+  it("shows a spinner with rotating loading lines while the application is saving", async () => {
     submitMock.mockReturnValue(new Promise(() => {}));
     render(<RecruitForm />);
     fillStepOne();
@@ -213,15 +213,15 @@ describe("RecruitForm", () => {
 
       expect(screen.getByText(/saving your data/i)).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /sending/i })).toBeDisabled();
-      const fact = () => document.querySelector(".rc-pending__fact")?.textContent;
-      const first = fact();
-      expect(RECRUITMENT_FUN_FACTS).toContain(first);
+      const line = () => document.querySelector(".rc-pending__line")?.textContent;
+      const first = line();
+      expect(RECRUITMENT_LOADING_LINES).toContain(first);
 
       act(() => {
         vi.advanceTimersByTime(5000);
       });
-      expect(RECRUITMENT_FUN_FACTS).toContain(fact());
-      expect(fact()).not.toBe(first);
+      expect(RECRUITMENT_LOADING_LINES).toContain(line());
+      expect(line()).not.toBe(first);
     } finally {
       vi.useRealTimers();
     }
