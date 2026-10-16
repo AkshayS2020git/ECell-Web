@@ -86,7 +86,7 @@ const teamMembers: TeamMember[] = [
     name: "Suyash Chandra",
     role: "PR Executive",
     description:
-      "Bringing sponsors, judges, and industry partners on board to power every event the club hosts.",
+      "Executes tasks, supports team operations, and works towards team goals.",
     image: PrExecutive,
     imagePosition: "center 30%",
     directoryImagePosition: "center 35%",
