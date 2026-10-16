@@ -752,15 +752,23 @@ export const RECRUITMENT_FAQ: RecruitmentFaq[] = [
   },
 ];
 
-/** Shown one at a time, in random order, while an application is saving. */
-export const RECRUITMENT_FUN_FACTS: string[] = [
-  "Pigs are physically unable to look up at the sky.",
-  "Scotland's official national animal is the unicorn.",
-  "A shrimp's heart is located inside its head.",
-  "Mosquitoes are reportedly attracted more often to people who have recently eaten bananas.",
-  "A single day on Venus is longer than a full year on Venus.",
-  "Lobsters have blue blood.",
-  "You cannot hum while holding your nose. Don't try it right now.",
+/**
+ * Painfully obvious "facts", shown one at a time in random order while an
+ * application is saving.
+ */
+export const RECRUITMENT_LOADING_LINES: string[] = [
+  "You can't see anything while your eyes are closed.",
+  "You can't speak when your mouth is shut.",
+  "You can't hum while holding your nose. Don't try it right now.",
+  "If you're reading this, you can read.",
+  "Every minute you spend waiting is exactly sixty seconds long.",
+  "You have never been older than you are right now.",
+  "Tomorrow is always one day away.",
+  "You're breathing manually now. You're welcome.",
+  "Your tongue is resting in your mouth. You can feel it now, can't you?",
+  "You can't lick your own elbow. Go on, try.",
+  "100% of people who drink water eventually die.",
+  "You're blinking right now. You just noticed, didn't you?",
 ];
 
 export function getTeamById(id: string): RecruitmentTeam | undefined {

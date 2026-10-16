@@ -790,8 +790,8 @@
     }
 }
 
-/* Re-keyed on every change, so each new fact fades in. */
-.rc-pending__fact {
+/* Re-keyed on every change, so each new line fades in. */
+.rc-pending__line {
     max-width: 34ch;
     font-family: var(--font-fraunces), Georgia, serif;
     font-size: clamp(1.15rem, 2.6vw, 1.5rem);
@@ -1178,7 +1178,7 @@
     }
 
     .rc-pending,
-    .rc-pending__fact {
+    .rc-pending__line {
         animation: none
     }
 
