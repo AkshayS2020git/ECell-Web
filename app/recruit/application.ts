@@ -233,9 +233,8 @@ export function validateApplication(formData: FormData): ValidationResult {
   }
 
   const link = text(formData, "link");
-  if (firstChoice?.id !== "design" && !link) {
-    errors.link = ERRORS.required;
-  } else if (link && (link.length > LIMITS.link || !isHttpUrl(link))) {
+
+  if (link && (link.length > LIMITS.link || !isHttpUrl(link))) {
     errors.link = ERRORS.link;
   }
 

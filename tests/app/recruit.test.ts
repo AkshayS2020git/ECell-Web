@@ -38,9 +38,15 @@ function formData(overrides: Record<string, string> = {}): FormData {
     "q.tech.websiteImprovement": "A search for past events.",
     "q.tech.problem": "Fixed a race in our club's attendance bot.",
     "q.tech.webRating": "3",
-    "q.design.portfolio": "https://behance.net/asha",
-    "q.design.tool": "Figma",
-    "q.design.admire": "The Stripe Press covers: calm, confident type.",
+    "q.design.designCritique": "The Stripe Press covers use calm, confident type and a clear focal point.",
+    "q.design.designWork": "https://behance.net/asha",
+    "q.design.tools": "Figma",
+    "q.design.experience": "Yes",
+    "q.design.deadline_comfort": "Comfortable",
+    "q.design.design_principles": "Strong hierarchy, readable typography, and clear contrast.",
+    "q.design.brand_consistency": "Use a shared colour, type, and layout system.",
+    "q.design.collaboration": "Yes",
+    "q.design.deadline_rating": "4",
     ...overrides,
   };
   const finalAnswers = Object.fromEntries(
@@ -175,6 +181,7 @@ describe("validateApplication", () => {
       formData({
         firstChoice: "design",
         "q.design.designCritique": "Bold type and one clear focal point.",
+        "q.design.designWork": "https://behance.net/asha",
         "q.design.tools": "Figma",
         "q.design.experience": "Yes",
         "q.design.deadline_comfort": "Comfortable",
@@ -196,8 +203,8 @@ describe("validateApplication", () => {
     ]);
   });
 
-  it("allows the optional fields to be empty", () => {
-    const result = validateApplication(formData({ link: "" }));
+  it("allows the link field to be empty for Design applicants", () => {
+    const result = validateApplication(formData({ firstChoice: "design", link: "" }));
     expect(result.ok).toBe(true);
   });
 
