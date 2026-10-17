@@ -228,8 +228,20 @@ describe("validateApplication", () => {
     );
   });
 
+  it("accepts either college email domain", () => {
+    for (const email of ["asha.rao@rvu.edu.in", "asha.rao@blr.rvu.edu.in", "Asha.Rao@BLR.rvu.edu.in"]) {
+      expect(validateApplication(formData({ email })).ok, email).toBe(true);
+    }
+  });
+
   it("rejects an email that isn't a college email", () => {
-    for (const email of ["asha.rao@gmail.com", "asha@rvu.edu.in.evil.com", "asha@notrvu.edu.in"]) {
+    for (const email of [
+      "asha.rao@gmail.com",
+      "asha@rvu.edu.in.evil.com",
+      "asha@notrvu.edu.in",
+      "asha@blr.rvu.edu.in.evil.com",
+      "asha@evil.blr.rvu.edu.in",
+    ]) {
       const result = validateApplication(formData({ email }));
       expect(result.ok, email).toBe(false);
       if (result.ok) continue;

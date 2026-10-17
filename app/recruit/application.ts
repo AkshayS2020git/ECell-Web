@@ -78,7 +78,8 @@ export interface ApplicationState {
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Only RV University students can apply, so only their college email counts. */
-export const COLLEGE_EMAIL_DOMAIN = "rvu.edu.in";
+export const COLLEGE_EMAIL_DOMAINS = ["rvu.edu.in", "blr.rvu.edu.in"] as const;
+export const COLLEGE_EMAIL_DOMAIN = COLLEGE_EMAIL_DOMAINS[0];
 
 /**
  * Every message an applicant can see under a field. The form checks answers in
@@ -90,7 +91,7 @@ export const ERRORS = {
   name: "Enter your full name.",
   emailMissing: "Enter your college email.",
   email: "Enter a valid college email address.",
-  collegeEmail: `Use your college email, ending in @${COLLEGE_EMAIL_DOMAIN}.`,
+  collegeEmail: `Use your college email, ending in ${COLLEGE_EMAIL_DOMAINS.map((domain) => `@${domain}`).join(" or ")}.`,
   alreadyApplied: `Already applied. To change your answers, email ${RECRUITMENT.contactEmail}.`,
   phoneMissing: "Enter your WhatsApp number.",
   phone: "Enter a 10-digit mobile number.",
@@ -106,7 +107,7 @@ export const tooLongError = (limit: number | string) => `Keep it under ${limit} 
 
 export function isCollegeEmail(value: string): boolean {
   const email = value.trim().toLowerCase();
-  return EMAIL_PATTERN.test(email) && email.endsWith(`@${COLLEGE_EMAIL_DOMAIN}`);
+  return EMAIL_PATTERN.test(email) && COLLEGE_EMAIL_DOMAINS.some((domain) => email.endsWith(`@${domain}`));
 }
 // Indian mobile numbers: 10 digits starting 6–9, with an optional +91 / 0 prefix.
 const PHONE_PATTERN = /^(?:\+?91|0)?([6-9]\d{9})$/;
