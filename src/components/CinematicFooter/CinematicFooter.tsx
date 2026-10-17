@@ -542,7 +542,7 @@ export function CinematicFooter(): React.ReactElement {
                 </MagneticButton>
                 <MagneticButton
                   as="a"
-                  href="https://www.linkedin.com/search/results/all/?keywords=ECell%2C%20RV%20University"
+                  href={SITE_LINKS.linkedin}
                   target="_blank"
                   rel="noreferrer"
                   className="ecell-footer-glass ecell-footer-link group flex items-center gap-2.5"
