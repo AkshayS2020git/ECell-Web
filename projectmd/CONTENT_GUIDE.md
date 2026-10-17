@@ -6,54 +6,51 @@ The website does not use a CMS or database. Text, links, dates, people, and medi
 
 ## Content locations
 
-| Content | Current source |
+Editable content lives in `src/content/`, separate from the components that display it. Components import from there and hold no copy of their own.
+
+| Content | Source |
 | --- | --- |
-| Event detail records | `src/data/events/<event>.ts` |
-| Event lookup, aliases, and route slugs | `src/data/eventsData.ts` |
-| Events archive cards/rows | `src/components/EventsArchive/EventsArchive.tsx` |
-| Homepage event showcase | `src/sections/Events/Events.tsx` |
-| Argonyx gallery catalog | `app/events/argonyx-26/gallery/_data/galleryData.ts` |
-| Team members | `src/sections/Team/data/TeamData.ts` |
-| Speaker content | `src/sections/Speakers/data/speakers.ts` |
-| Sponsor content | `src/sections/Sponsors/Sponsors.tsx` |
-| WhatsApp simulated responses | `src/sections/WhatsAppCommunity/WhatsAppCommunity.tsx` |
+| Event list (archive page, homepage cards, slugs, aliases) | `src/content/events/index.ts` |
+| Event page content | `src/content/events/<event>.ts` |
+| Event data types | `src/content/events/types.ts` |
+| About section timeline | `src/content/timeline.ts` |
+| Team members | `src/content/team.ts` |
+| Previous speakers | `src/content/speakers.ts` |
+| Sponsors and logos | `src/content/sponsors.ts` |
+| Why Join cards | `src/content/whyJoin.ts` |
+| WhatsApp community chat answers | `src/content/community.ts` |
+| Recruitment page, teams, questions, FAQ | `src/content/recruitment.ts` |
+| WhatsApp invite, Instagram, LinkedIn, GitHub, email | `src/content/site.ts` |
 | Root SEO and structured data | `app/layout.tsx` |
-| Route SEO | Relevant route `page.tsx` and event records |
+| Route SEO | Relevant route `page.tsx` and each event's `meta` |
 | Public icons/social preview | `public/` |
 
 ## Updating an event
 
-Event information is currently duplicated. A complete event edit may require all of these locations:
+Every event appears once in `EVENTS` in `src/content/events/index.ts`. Its title, category, status, dates, summary and images there feed both the `/events` archive and the homepage "Our Legacy" cards, so they cannot drift apart.
 
-1. `src/data/events/<event>.ts` for the canonical detail record and `src/data/eventsData.ts` for lookup and static slug registration.
-2. `src/components/EventsArchive/EventsArchive.tsx` for archive summaries, filters, calendar, and status.
-3. `src/sections/Events/Events.tsx` for the homepage card.
-4. Gallery data and media if the event has a gallery.
-5. `app/sitemap.ts` if the route should appear in the public sitemap.
-6. Redirects in `next.config.ts` if a legacy public URL must be preserved.
+1. Edit the event's entry in `EVENTS` for list-level facts. Dates are ISO strings (`startDate`, optional `endDate`); leave them out while the date is TBA.
+2. If the event has a page, edit its file in `src/content/events/` for the page content (hero, about, ledger, rounds, winners, sponsors, contacts, meta).
+3. When an upcoming event finishes, set `status: "past"` in `EVENTS` and `isCompleted: true` on its page data, then add `winners` and `gallery`.
+4. Add redirects in `next.config.ts` only if a legacy public URL must be preserved. Misspelt or short slugs go in the entry's `aliases`.
+
+The About section timeline (`src/content/timeline.ts`) is a separate history of milestones; update it when an event becomes part of that story.
 
 Check title, slug, date, timezone, venue, status, CTA label, destination URL, organizers, contacts, prize wording, image, metadata title/description, and structured data together.
 
 For completed events, remove or relabel registration actions rather than leaving an active-looking registration CTA. For future events with unknown dates, consistently use a TBA state and avoid machine-readable dates that imply certainty.
 
-## Adding an event detail route
+## Adding an event
 
-Add a typed record in its own module under `src/data/events/` and register it in `EVENTS_DATA` in `src/data/eventsData.ts`. `getAllEventSlugs()` automatically exposes its key to `generateStaticParams()`, and `/events/[slug]` uses the record for metadata and rendering. The key and `slug` field should match the canonical lowercase kebab-case path.
+Add an entry to `EVENTS` in `src/content/events/index.ts`, in the position it should appear on `/events` (upcoming first). That alone lists it on the archive page and, once it is `past`, on the homepage.
 
-Also add the corresponding archive/homepage representation as needed. Unknown slugs return not found.
+To give it a page, create `src/content/events/<event>.ts` exporting an `EventDetailData` object and set it as the entry's `detail`. `getAllEventSlugs()` then exposes the slug to `generateStaticParams()`, the sitemap picks it up, and `/events/<slug>` renders it. Sections are optional: leave out `rounds`, `sponsors`, `winners` or `gallery` and that part of the page is not shown. Slugs are lowercase kebab-case; unknown slugs return not found.
 
-## Images and gallery media
+## Images
 
-Use meaningful filenames and preserve correct orientation. Put imported event images under a feature folder in `src/assets/`; put stable public resources under `public/`. Provide accurate alt text or captions. Do not add duplicate full-resolution files when an optimized copy is sufficient.
+Keep imported images in `src/assets/<feature>/`, one folder per event (`src/assets/events/<slug>/poster.webp`, `photo.webp`, `winners/`). Use lowercase kebab-case filenames without spaces. Put files that need a stable public URL under `public/`. Provide accurate alt text or captions, and do not add duplicate full-resolution files when an optimized copy is enough.
 
-The Argonyx gallery statically imports a large catalog. When updating it:
-
-- preserve unique IDs;
-- use valid categories expected by the filters;
-- maintain chronological ordering used by the timeline;
-- verify previous/next navigation at both ends;
-- test special team-photo rendering;
-- check bundle/build impact of new media.
+Event photo galleries should not be added as hundreds of static imports: the previous Argonyx gallery imported about 340 photos one by one and weighed 46 MB in the repository. Host gallery photos externally (for example Cloudflare R2) and keep only a list of image URLs in the event's `gallery` data.
 
 ## People and organizations
 
@@ -67,7 +64,7 @@ External links should use HTTPS, have a clear destination, and be checked before
 
 Keep page titles concise and unique. Write descriptions for humans, not keyword lists. Ensure Open Graph/Twitter content agrees with visible event facts. Root metadata applies a title template, so review the final rendered title when child metadata already includes the site name.
 
-`app/sitemap.ts` lists the homepage, `/events`, every event in `EVENTS_DATA`, and the Argonyx gallery, with their images. New events are picked up automatically; a new standalone route must be added to the sitemap by hand. Every page should set its own `alternates.canonical`, otherwise it inherits the homepage canonical from the root layout.
+`app/sitemap.ts` lists the homepage, `/events`, `/recruit` and every event page, with their images. New events are picked up automatically; a new standalone route must be added to the sitemap by hand. Every page should set its own `alternates.canonical`, otherwise it inherits the homepage canonical from the root layout.
 
 ## Editorial checklist
 
@@ -79,7 +76,3 @@ Keep page titles concise and unique. Write descriptions for humans, not keyword 
 - Copy is readable on narrow layouts and does not break headings/buttons.
 - The sitemap and redirects were considered.
 - No credentials, private IDs, or internal notes were introduced.
-
-## Known inconsistency to resolve
-
-Current Argonyx wording, date/duration, and completion status are not uniform across all event datasets. Reconcile these sources with an approved event record before treating any one public summary as authoritative.

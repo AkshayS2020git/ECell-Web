@@ -15,9 +15,8 @@ src/
 ├── components/          # Shared components, one folder per component
 │   ├── FloatingLogo/
 │   ├── EventsArchive/
-│   ├── ...
-│   └── ui/              # Generic primitives
-├── data/                # Data shared by several features (events)
+│   └── ...
+├── content/             # All editable content: events, team, sponsors, links, ...
 ├── sections/            # Homepage sections, one folder per section
 │   ├── Hero/
 │   ├── Nav/
@@ -155,10 +154,10 @@ useHeroThing.ts     # Hook (inside hooks/)
 - Only used by one section → inside that section's folder.
 - Used by several sections or routes → `src/components/<Name>/<Name>.tsx`.
 - A shared helper with no React → `src/utils/<name>.ts`.
-- Data used in more than one place → `src/data/`.
+- Text, lists, links or images people will edit → `src/content/`.
 - A test → the matching path under `tests/`.
 
-Import across folders with the `@/` alias, for example `import { cn } from "@/src/utils/cn"`.
+Import across folders with the `@/` alias, for example `import { cn } from "@/src/utils/cn"`. ESLint rejects `../` imports.
 
 ---
 

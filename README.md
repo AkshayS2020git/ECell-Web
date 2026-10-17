@@ -122,8 +122,6 @@ src/sections/Team/
 ├── components/
 │   ├── Team.tsx               # 3D carousel and section wrapper
 │   └── TeamDirectory.tsx      # Filterable full-roster modal
-├── data/
-│   └── TeamData.ts            # Typed roster datasets
 ├── styles/
 │   ├── Team.css
 │   ├── TeamDirectory.css
@@ -131,6 +129,8 @@ src/sections/Team/
 │   └── TeamResponsive.css
 └── index.ts                   # Barrel: app/page.tsx imports "@/src/sections/Team"
 ```
+
+The roster itself lives in `src/content/team.ts`; sections render content, they don't own it.
 
 ### 2. Smooth Scrolling & Shared Lenis Lifecycle
 To prevent multiple competing scroll listeners or requestAnimationFrame loops during client-side navigation:
@@ -201,8 +201,7 @@ ECell-Web/
 ├── .github/workflows/          # CI (typecheck, lint, test, build) + Vercel preview/production
 ├── app/                        # Next.js 16 App Router (routes and metadata only)
 │   ├── events/
-│   │   ├── [slug]/             # Statically generated event detail pages
-│   │   ├── argonyx-26/gallery/ # Argonyx gallery (_components, _data, _hooks)
+│   │   ├── [slug]/             # Statically generated event pages (_components/ per section)
 │   │   └── page.tsx            # /events archive
 │   ├── globals.css             # Tailwind v4 import & global styles
 │   ├── layout.tsx              # Root HTML, fonts, JSON-LD, metadata, analytics
@@ -213,21 +212,23 @@ ECell-Web/
 ├── public/                     # Stable-URL files (favicons, logos, og-image, _headers)
 ├── scripts/                    # Cloudflare deploy wrapper
 ├── src/
-│   ├── assets/                 # Imported images, grouped by feature
+│   ├── assets/                 # Imported images: events/<slug>/, home/, sponsors/, team/, ...
 │   ├── components/             # Shared components, one folder each
+│   │   ├── CinematicFooter/    # Homepage footer
+│   │   ├── CircularTestimonials/ # Speakers carousel
 │   │   ├── EventsArchive/      # /events listing, filters, calendar
 │   │   ├── FloatingLogo/       # Scroll-driven SVG logo that docks into the nav
 │   │   ├── GameLauncher/       # In-browser arcade (Sprint, Snake, Memory, 2048)
 │   │   ├── HorizontalFlow/     # ScrollTrigger horizontal pinning container
-│   │   ├── InfiniteSpiral/     # Event-detail gallery preview
+│   │   ├── InfiniteSpiral/     # 3D image spiral for the upcoming event galleries
 │   │   ├── LaserFlow/          # Three.js GLSL laser/fog shader
 │   │   ├── LogoModal/          # Logo story dialog
 │   │   ├── PageTransition/     # Full-page curtain transition overlay
 │   │   ├── RouteScrollManager/ # Scroll reset between routes
 │   │   ├── SiteCredit/         # "Built by" credit
 │   │   ├── SmoothScroll/       # Shared Lenis lifecycle
-│   │   └── ui/                 # Generic primitives (timeline, footer, carousels)
-│   ├── data/                   # Shared event records and lookup (eventsData.ts, events/)
+│   │   └── Timeline/           # About-section journey
+│   ├── content/                # All editable content (events/, team, sponsors, site links, ...)
 │   ├── sections/               # Independent landing-page sections
 │   │   ├── About/  Events/  Footer/  Loader/  Speakers/  Sponsors/
 │   │   ├── Story/  Team/  WhatsAppCommunity/  WhyJoin/
@@ -235,7 +236,7 @@ ECell-Web/
 │   │   └── Nav/                # Nav, NavBar, LogoHint, ChaptersDropdown, hooks/
 │   ├── styles/                 # global.css tokens/reset, SectionTransitions.css
 │   ├── types/                  # Ambient asset module declarations
-│   └── utils/                  # gsapSetup, lenis, scrollLock, animations, math, wheel, cn
+│   └── utils/                  # gsapSetup, lenis, scrollLock, animations, math, wheel, cn, constants
 ├── tests/                      # Vitest suite (app/ and src/ mirror the source tree)
 ├── projectmd/                  # Project documentation
 ├── next.config.ts              # Images and legacy-route redirects
