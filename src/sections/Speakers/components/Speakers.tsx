@@ -2,10 +2,10 @@
 
 import type { ReactElement } from "react";
 import { CircularTestimonials } from "@/src/components/ui/circular-testimonials";
-import { PREVIOUS_SPEAKERS } from "../data/speakers";
+import { PREVIOUS_SPEAKERS } from "@/src/content/speakers";
 import "../styles/Speakers.css";
 
-export type { Speaker } from "../data/speakers";
+export type { Speaker } from "@/src/content/speakers";
 
 export default function Speakers(): ReactElement {
   return (
