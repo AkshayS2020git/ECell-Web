@@ -58,8 +58,9 @@
 }
 
 @media (min-width: 769px) {
+  /* Top padding keeps the header clear of the fixed nav bar. */
   .horizontal-flow-panel .speakers-reveal-panel {
-    padding: clamp(28px, 4.5vh, 56px) 0;
+    padding: clamp(80px, 11vh, 104px) 0 clamp(24px, 4.5vh, 56px);
   }
 
   .horizontal-flow-panel .speakers-header {
@@ -80,7 +81,7 @@
   justify-content: flex-end;
   box-sizing: border-box;
   border-top: none;
-  padding: 0 0 50px;
+  padding: clamp(84px, 11vh, 104px) 0 clamp(24px, 5vh, 50px);
 }
 
 .horizontal-flow-panel .community-bridge {
@@ -91,12 +92,24 @@
 
 @media (max-width: 768px) {
   .horizontal-flow-panel .speakers-reveal-panel {
-    padding: 20px 0;
+    padding: 76px 0 max(20px, env(safe-area-inset-bottom));
   }
 
   .horizontal-flow-panel .whatsapp-community {
-    padding: 0 0 50px;
+    padding: 80px 0 max(24px, env(safe-area-inset-bottom));
     justify-content: flex-end;
+  }
+}
+
+/* Sideways phones: only ~60px of height is spare once the nav is cleared. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .horizontal-flow-panel .speakers-reveal-panel {
+    padding: 64px 0 12px;
+  }
+
+  .horizontal-flow-panel .whatsapp-community {
+    padding: 64px 0 12px;
+    justify-content: center;
   }
 }
 

@@ -316,14 +316,14 @@ export function CircularTestimonials({
       }}
       className={cn("mx-auto! w-full max-w-5xl", className)}
     >
-      <div className="grid items-center gap-10 md:grid-cols-2 md:gap-[clamp(48px,6vw,80px)]">
+      <div data-carousel-grid className="grid items-center gap-6 md:grid-cols-2 md:gap-[clamp(48px,6vw,80px)]">
         {/* Photos */}
         <div
           ref={stageRef}
           data-carousel-stage
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          className="relative mt-12! h-[clamp(210px,32dvh,300px)] w-full perspective-[1000px] md:mt-10! md:h-[clamp(300px,46dvh,384px)]"
+          className="relative mt-8! h-[clamp(180px,30dvh,300px)] w-full perspective-[1000px] md:mt-10! md:h-[clamp(300px,46dvh,384px)]"
         >
           {testimonials.map((testimonial, index) => {
             const isActive = index === safeIndex;
@@ -350,7 +350,7 @@ export function CircularTestimonials({
         </div>
 
         {/* Copy */}
-        <div className="flex flex-col justify-between gap-8 md:gap-12">
+        <div className="flex flex-col justify-between gap-5 md:gap-12">
           <div ref={contentRef} aria-live={autoplayRunning ? "off" : "polite"}>
             <h3
               data-reveal
@@ -361,12 +361,12 @@ export function CircularTestimonials({
             </h3>
             <p
               data-reveal
-              className="mb-6! font-medium md:mb-8!"
+              className="mb-4! font-medium md:mb-8!"
               style={{ color: colorDesignation, fontSize: fontSizeDesignation }}
             >
               {active.designation}
             </p>
-            <p className="leading-[1.75]" style={{ color: colorTestimony, fontSize: fontSizeQuote }}>
+            <p data-carousel-quote className="leading-[1.6] md:leading-[1.75]" style={{ color: colorTestimony, fontSize: fontSizeQuote }}>
               {/* Screen readers get the sentence whole; the split words are visual only. */}
               <span className="sr-only">{active.quote}</span>
               <span aria-hidden="true">

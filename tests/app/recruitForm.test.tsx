@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import RecruitForm from "@/app/recruit/RecruitForm";
 import { submitApplication } from "@/app/recruit/actions";
-import { RECRUITMENT_FUN_FACTS } from "@/src/data/recruitment";
+import { RECRUITMENT_LOADING_LINES } from "@/src/data/recruitment";
 
 vi.mock("@/app/recruit/actions", () => ({ submitApplication: vi.fn() }));
 
@@ -25,6 +25,30 @@ function next() {
   fireEvent.click(screen.getByRole("button", { name: /next: your answers/i }));
 }
 
+/** Answers the Tech questions on step 2 and moves on to step 3. */
+function fillStepTwo() {
+  type(/feels slow to load/i, "Check the network tab for large images and slow requests.");
+  type(/built or worked on/i, "A bot that tracks attendance for our club.");
+  type(/github profile/i, "https://github.com/asha");
+  type(/open-source contributions/i, "None");
+  fireEvent.click(screen.getByLabelText("React"));
+  fireEvent.click(screen.getByLabelText("Frontend and UI"));
+  type(/git and github/i, "Basic: clone, commit, push");
+  type(/from scratch/i, "Next.js, because the site is mostly static pages.");
+  type(/improve on the current/i, "A search for past events.");
+  type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
+  fireEvent.click(screen.getByLabelText("3"));
+  fireEvent.click(screen.getByRole("button", { name: /next: final details/i }));
+}
+
+function fillStepThree() {
+  type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+  type(/hours per week/i, "3–5 hours");
+  type(/team meetings and on-ground events/i, "Yes");
+  type(/known clashes/i, "Nil");
+  for (const agree of screen.getAllByLabelText("Yes, I agree")) fireEvent.click(agree);
+}
+
 describe("RecruitForm", () => {
   beforeEach(() => {
     submitMock.mockReset();
@@ -33,7 +57,7 @@ describe("RecruitForm", () => {
 
   it("shows inline messages instead of moving on when step 1 is incomplete", () => {
     render(<RecruitForm />);
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
 
     next();
 
@@ -42,7 +66,7 @@ describe("RecruitForm", () => {
     expect(screen.getByLabelText("Full name")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText("Full name")).toHaveFocus();
     expect(screen.getByText(/6 answers need fixing/i)).toBeInTheDocument();
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
   });
 
   it("checks an answer on blur and clears the message once it's fixed", () => {
@@ -69,9 +93,10 @@ describe("RecruitForm", () => {
     fillStepOne();
     next();
 
-    expect(screen.getByText("Step 2 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
     expect(screen.getByText("Tech", { selector: ".rc-chip" })).toBeInTheDocument();
     expect(screen.getByLabelText(/languages or frameworks/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/built or worked on/i)).toHaveAccessibleDescription(/haven't built anything yet/i);
     expect(screen.queryByLabelText(/recap/i)).toBeNull();
   });
 
@@ -92,14 +117,14 @@ describe("RecruitForm", () => {
     render(<RecruitForm />);
     fillStepOne();
     next();
-    type(/languages or frameworks/i, "TypeScript");
+    type(/built or worked on/i, "A bot that tracks attendance.");
 
     fireEvent.click(screen.getByRole("button", { name: /change team/i }));
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
     expect(screen.getByLabelText("Full name")).toHaveValue("Asha Rao");
 
     next();
-    expect(screen.getByLabelText(/languages or frameworks/i)).toHaveValue("TypeScript");
+    expect(screen.getByLabelText(/built or worked on/i)).toHaveValue("A bot that tracks attendance.");
   });
 
   it("shows a confirmation with next steps after a successful submission", async () => {
@@ -107,9 +132,8 @@ describe("RecruitForm", () => {
     render(<RecruitForm />);
     fillStepOne("Asha.Rao@RVU.edu.in");
     next();
-    type(/languages or frameworks/i, "TypeScript");
-    type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
-    type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+    fillStepTwo();
+    fillStepThree();
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
@@ -131,9 +155,8 @@ describe("RecruitForm", () => {
     const { unmount } = render(<RecruitForm />);
     fillStepOne();
     next();
-    type(/languages or frameworks/i, "TypeScript");
-    type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
-    type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+    fillStepTwo();
+    fillStepThree();
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
     });
@@ -154,7 +177,7 @@ describe("RecruitForm", () => {
     next();
 
     expect(screen.getByText(/already applied/i)).toBeInTheDocument();
-    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
     expect(submitMock).toHaveBeenCalledOnce();
   });
 
@@ -173,14 +196,13 @@ describe("RecruitForm", () => {
     expect(within(panel).queryByText("Team")).toBeNull();
   });
 
-  it("shows a spinner with rotating fun facts while the application is saving", async () => {
+  it("shows a spinner with rotating loading lines while the application is saving", async () => {
     submitMock.mockReturnValue(new Promise(() => {}));
     render(<RecruitForm />);
     fillStepOne();
     next();
-    type(/languages or frameworks/i, "TypeScript");
-    type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
-    type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+    fillStepTwo();
+    fillStepThree();
     expect(screen.queryByText(/saving your data/i)).toBeNull();
 
     vi.useFakeTimers();
@@ -191,29 +213,48 @@ describe("RecruitForm", () => {
 
       expect(screen.getByText(/saving your data/i)).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /sending/i })).toBeDisabled();
-      const fact = () => document.querySelector(".rc-pending__fact")?.textContent;
-      const first = fact();
-      expect(RECRUITMENT_FUN_FACTS).toContain(first);
+      const line = () => document.querySelector(".rc-pending__line")?.textContent;
+      const first = line();
+      expect(RECRUITMENT_LOADING_LINES).toContain(first);
 
       act(() => {
         vi.advanceTimersByTime(5000);
       });
-      expect(RECRUITMENT_FUN_FACTS).toContain(fact());
-      expect(fact()).not.toBe(first);
+      expect(RECRUITMENT_LOADING_LINES).toContain(line());
+      expect(line()).not.toBe(first);
     } finally {
       vi.useRealTimers();
     }
   });
 
-  it("doesn't submit step 2 with a missing answer", () => {
+  it("doesn't move past step 2 with a missing answer", () => {
     render(<RecruitForm />);
     fillStepOne();
     next();
 
+    fireEvent.click(screen.getByRole("button", { name: /next: final details/i }));
+
+    expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
+    // One message per required Tech question.
+    expect(screen.getAllByText("Please answer this one.")).toHaveLength(11);
+  });
+
+  it("asks every team the commitment and acknowledgement questions on step 3", () => {
+    render(<RecruitForm />);
+    fillStepOne();
+    next();
+    expect(screen.getByRole("button", { name: /submit application/i, hidden: true })).not.toBeVisible();
+
+    fillStepTwo();
+    expect(screen.getByText("Step 3 of 3")).toBeInTheDocument();
+    expect(screen.getByLabelText(/hours per week/i)).toBeVisible();
+    expect(screen.getAllByLabelText("Yes, I agree")).toHaveLength(2);
+
     fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
 
     expect(submitMock).not.toHaveBeenCalled();
-    expect(screen.getAllByText("Please answer this one.")).toHaveLength(2);
+    // Hours, meetings, clashes and both acknowledgements.
+    expect(screen.getAllByText("Please answer this one.")).toHaveLength(5);
     expect(screen.getByText(/at least 50 characters/i)).toBeInTheDocument();
   });
 });

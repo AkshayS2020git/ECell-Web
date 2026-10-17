@@ -85,7 +85,7 @@ describe("TeamDirectory Component", () => {
     render(
       <TeamDirectory
         members={teamMembers}
-        activeIndex={2} // Dhruv Bhandari (President)
+        activeIndex={2} // Ayush S Kulkarni (President)
         onSelect={onSelectMock}
       />
     );

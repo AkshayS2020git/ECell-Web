@@ -1,9 +1,11 @@
 /**
  * Full-screen passes for the hero reveal.
  *
- * SIM_FRAG advances the ink simulation (density + velocity, ping-ponged);
- * FINAL_FRAG composites the flat white/black title with the 3D scene that
- * shows through the ink.
+ * The ink is a stable-fluids simulation (as on noth.in): the pointer splats
+ * velocity and dye, both are advected through the velocity field, and a
+ * pressure projection keeps the flow divergence-free, so the dye curls into
+ * smooth, smoky swirls. FINAL_FRAG thresholds the dye into a hard-edged mask
+ * that shows the 3D scene through the flat white/black title.
  */
 export const VERT = /* glsl */ `
 varying vec2 vUv;
@@ -13,104 +15,105 @@ void main() {
 }
 `;
 
-const NOISE = /* glsl */ `
-float hash(vec2 p) {
-  p = fract(p * vec2(123.34, 456.21));
-  p += dot(p, p + 45.32);
-  return fract(p.x * p.y);
-}
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);
-  return mix(
-    mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-    mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-    u.y
-  );
-}
-float fbm(vec2 p) {
-  float v = 0.0;
-  float a = 0.5;
-  for (int i = 0; i < 4; i++) {
-    v += a * noise(p);
-    p *= 2.03;
-    a *= 0.5;
-  }
-  return v;
-}
-`;
-
-// Ping-pong ink pass. R holds ink density, GB a velocity field. The pointer
-// pushes ink along its direction of travel, so fast strokes fling streaks
-// ahead of the cursor; curl noise drags the edges into fingers and drips.
-export const SIM_FRAG = /* glsl */ `
-uniform sampler2D uPrev;
-uniform vec2 uMouse;
-uniform vec2 uPrevMouse;
-uniform vec2 uMouseVel;
+// Semi-Lagrangian advection. Velocity is in texels of the advected field per
+// 60Hz frame, so uDt is the frame time in 60Hz frames. Manual bilinear
+// filtering keeps the sample exact whatever the render target's filter.
+export const ADVECT_FRAG = /* glsl */ `
+uniform sampler2D uVelocity;
+uniform sampler2D uSource;
 uniform vec2 uTexel;
-uniform float uAspect;
-uniform float uRadius;
-uniform float uStrength;
-uniform float uDecay;
-uniform float uVelDecay;
 uniform float uDt;
-uniform float uTime;
+uniform float uDissipation;
 varying vec2 vUv;
-${NOISE}
-float segDist(vec2 p, vec2 a, vec2 b) {
-  vec2 pa = p - a;
-  vec2 ba = b - a;
-  float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-6), 0.0, 1.0);
-  return length(pa - ba * h);
+vec4 bilerp(sampler2D sam, vec2 uv, vec2 tsize) {
+  vec2 st = uv / tsize - 0.5;
+  vec2 iuv = floor(st);
+  vec2 fuv = fract(st);
+  vec4 a = texture2D(sam, (iuv + vec2(0.5, 0.5)) * tsize);
+  vec4 b = texture2D(sam, (iuv + vec2(1.5, 0.5)) * tsize);
+  vec4 c = texture2D(sam, (iuv + vec2(0.5, 1.5)) * tsize);
+  vec4 d = texture2D(sam, (iuv + vec2(1.5, 1.5)) * tsize);
+  return mix(mix(a, b, fuv.x), mix(c, d, fuv.x), fuv.y);
 }
 void main() {
-  vec2 asp = vec2(uAspect, 1.0);
-
-  vec2 q = vUv * asp * 3.5 + vec2(uTime * 0.12, -uTime * 0.09);
-  float e = 0.02;
-  float n0 = noise(q);
-  vec2 curl = vec2(noise(q + vec2(0.0, e)) - n0, -(noise(q + vec2(e, 0.0)) - n0)) / e;
-
-  vec2 vel = texture2D(uPrev, vUv).gb;
-  vec2 back = vUv - (vel + curl * 0.06) * uDt;
-  vec4 s = texture2D(uPrev, back);
-  float spread = 0.25 * (
-    texture2D(uPrev, back + vec2(uTexel.x, 0.0)).r +
-    texture2D(uPrev, back - vec2(uTexel.x, 0.0)).r +
-    texture2D(uPrev, back + vec2(0.0, uTexel.y)).r +
-    texture2D(uPrev, back - vec2(0.0, uTexel.y)).r
-  );
-  float ink = mix(s.r, max(s.r, spread), 0.5) * uDecay;
-  vec2 v = s.gb * uVelDecay;
-
-  float d = segDist(vUv * asp, uPrevMouse * asp, uMouse * asp);
-  float wob = noise(vUv * asp * 5.0 + uTime * 0.6);
-  float r = uRadius * (0.6 + 0.8 * wob);
-  float stamp = exp(-pow(d / r, 2.0) * 2.0);
-
-  ink = clamp(ink + stamp * uStrength * (1.0 - ink), 0.0, 1.0);
-  v = mix(v, uMouseVel, clamp(stamp * 0.6, 0.0, 1.0));
-
-  gl_FragColor = vec4(ink, v, 1.0);
+  vec2 coord = vUv - uDt * texture2D(uVelocity, vUv).xy * uTexel;
+  gl_FragColor = uDissipation * bilerp(uSource, coord, uTexel);
 }
 `;
 
-// Flat text everywhere; inside the liquid mask, the nebula behind glass letters.
+// Adds a gaussian blob of uColor at uPoint (velocity or dye).
+export const SPLAT_FRAG = /* glsl */ `
+uniform sampler2D uTarget;
+uniform float uAspect;
+uniform vec2 uPoint;
+uniform vec3 uColor;
+uniform float uRadius;
+varying vec2 vUv;
+void main() {
+  vec2 p = vUv - uPoint;
+  p.x *= uAspect;
+  vec3 splat = exp(-dot(p, p) / uRadius) * uColor;
+  gl_FragColor = vec4(texture2D(uTarget, vUv).xyz + splat, 1.0);
+}
+`;
+
+export const DIVERGENCE_FRAG = /* glsl */ `
+uniform sampler2D uVelocity;
+uniform vec2 uTexel;
+varying vec2 vUv;
+void main() {
+  float L = texture2D(uVelocity, vUv - vec2(uTexel.x, 0.0)).x;
+  float R = texture2D(uVelocity, vUv + vec2(uTexel.x, 0.0)).x;
+  float T = texture2D(uVelocity, vUv + vec2(0.0, uTexel.y)).y;
+  float B = texture2D(uVelocity, vUv - vec2(0.0, uTexel.y)).y;
+  gl_FragColor = vec4(0.5 * (R - L + T - B), 0.0, 0.0, 1.0);
+}
+`;
+
+// One Jacobi iteration of the pressure solve.
+export const PRESSURE_FRAG = /* glsl */ `
+uniform sampler2D uPressure;
+uniform sampler2D uDivergence;
+uniform vec2 uTexel;
+varying vec2 vUv;
+void main() {
+  float L = texture2D(uPressure, vUv - vec2(uTexel.x, 0.0)).x;
+  float R = texture2D(uPressure, vUv + vec2(uTexel.x, 0.0)).x;
+  float T = texture2D(uPressure, vUv + vec2(0.0, uTexel.y)).x;
+  float B = texture2D(uPressure, vUv - vec2(0.0, uTexel.y)).x;
+  float C = texture2D(uDivergence, vUv).x;
+  gl_FragColor = vec4((L + R + B + T - C) * 0.25, 0.0, 0.0, 1.0);
+}
+`;
+
+export const GRADIENT_FRAG = /* glsl */ `
+uniform sampler2D uPressure;
+uniform sampler2D uVelocity;
+uniform vec2 uTexel;
+varying vec2 vUv;
+void main() {
+  float L = texture2D(uPressure, vUv - vec2(uTexel.x, 0.0)).x;
+  float R = texture2D(uPressure, vUv + vec2(uTexel.x, 0.0)).x;
+  float T = texture2D(uPressure, vUv + vec2(0.0, uTexel.y)).x;
+  float B = texture2D(uPressure, vUv - vec2(0.0, uTexel.y)).x;
+  vec2 velocity = texture2D(uVelocity, vUv).xy - vec2(R - L, T - B) * 0.5;
+  gl_FragColor = vec4(velocity, 0.0, 1.0);
+}
+`;
+
+// Flat text everywhere; inside the ink, the nebula behind glass letters.
 export const FINAL_FRAG = /* glsl */ `
 uniform sampler2D uText;
 uniform sampler2D uScene;
 uniform float uDark;
 // Fades the flat title out as the floating logo lands on the card.
 uniform float uTitleFade;
-// 0 once all ink has faded: skips the noise and 3D lookups entirely.
+// 0 once all ink has faded: skips the dye and 3D lookups entirely.
 uniform float uInk;
-uniform sampler2D uMask;
-uniform float uTime;
-uniform float uAspect;
+uniform sampler2D uDye;
+uniform float uRevealSize;
+uniform float uEdge;
 varying vec2 vUv;
-${NOISE}
 
 vec3 aces(vec3 x) {
   return clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0.0, 1.0);
@@ -120,7 +123,9 @@ vec3 toSRGB(vec3 c) {
 }
 
 void main() {
-  float textA = texture2D(uText, vUv).r;
+  // R: title, G: credit, B: the easter egg hidden under the credit.
+  vec3 layers = texture2D(uText, vUv).rgb;
+  float textA = max(layers.r, layers.g * 0.8);
   // White page / black title, easing into a dark card / light title as the
   // hero shrinks on scroll, so the card sits naturally on the dark site.
   vec3 paper = mix(vec3(1.0), vec3(0.045), uDark);
@@ -131,31 +136,15 @@ void main() {
     return;
   }
 
-  float m = texture2D(uMask, vUv).r;
-  // Domain-warped noise breaks the ink edge into fingers and stray droplets.
-  vec2 p = vec2(vUv.x * uAspect, vUv.y);
-  vec2 warp = vec2(fbm(p * 3.0 + uTime * 0.035), fbm(p * 3.0 + 5.2 - uTime * 0.03));
-  float n = fbm(p * 4.0 + warp * 1.6);
-  float fine = noise(p * 18.0 + warp * 3.0);
-  float field = m + (n - 0.5) * 0.5 + (fine - 0.5) * 0.05;
-  float aa = fwidth(field) * 0.75 + 1e-4;
-  float reveal = smoothstep(0.42 - aa, 0.42 + aa, field);
+  // Hard threshold on the dye: a crisp liquid edge, antialiased where the
+  // upscaled dye field is steep.
+  float raw = texture2D(uDye, vUv).r * uRevealSize;
+  float width = max(uEdge, fwidth(raw));
+  float reveal = smoothstep(0.5, 0.5 + width, raw);
 
-  // Treat the ink as a thick liquid: it bulges up from its edge, so the rim
-  // tilts outward, catches a highlight and bends what is seen through it.
-  float depth = smoothstep(0.42, 0.62, field);
-  float steep = 1.0 - depth;
-  vec2 g = vec2(dFdx(depth), dFdy(depth));
-  vec2 dir = g / (length(g) + 1e-5);
-  vec3 nrm = normalize(vec3(-dir * steep * 1.6, 1.0));
-  vec3 light = normalize(vec3(-0.45, 0.6, 0.65));
-  vec3 halfV = normalize(light + vec3(0.0, 0.0, 1.0));
-  float spec = pow(max(dot(nrm, halfV), 0.0), 70.0) * steep;
-  float rim = pow(steep, 3.0) * 0.06;
-
-  vec2 refractUv = vUv + nrm.xy * 0.018 * steep;
-  vec3 inner = toSRGB(aces(texture2D(uScene, refractUv).rgb));
-  inner += vec3(spec * 0.85 + rim);
+  vec3 inner = toSRGB(aces(texture2D(uScene, vUv).rgb));
+  // Easter egg: where the ink covers the credit, a glowing line of code.
+  inner = mix(inner, vec3(0.5, 0.72, 1.0), layers.b * (1.0 - uTitleFade));
   gl_FragColor = vec4(mix(base, inner, reveal), 1.0);
 }
 `;

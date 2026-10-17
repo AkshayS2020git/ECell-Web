@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import SubNav from "@/src/sections/Nav/SubNav";
 import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 import {
   RECRUITMENT,
   RECRUITMENT_FAQ,
-  RECRUITMENT_ROUNDS,
   RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
 } from "@/src/data/recruitment";
@@ -21,7 +21,7 @@ import "./Recruit.css";
 export const maxDuration = 60;
 
 const description =
-  "ECell RV University is recruiting. Join the PR, social media and content, design, documentation or tech team and help build the startup community on campus.";
+  "ECell RV University is recruiting. Join the PR, sponsorship and engagement, social media and content, design, photography, video editing, documentation or tech team and help build the startup community on campus.";
 
 export const metadata: Metadata = {
   title: "Join the Team",
@@ -96,30 +96,20 @@ export default function RecruitPage() {
             </div>
           </div>
 
-          <aside className="rc-status" aria-label="Recruitment details">
-            <p className={`rc-status__state${RECRUITMENT.isOpen ? " is-open" : ""}`}>
-              <i aria-hidden="true" />
-              {RECRUITMENT.isOpen ? "APPLICATIONS OPEN" : "APPLICATIONS CLOSED"}
-            </p>
-            <dl>
-              <div>
-                <dt>Deadline</dt>
-                <dd>{RECRUITMENT.deadline}</dd>
-              </div>
-              <div>
-                <dt>Teams hiring</dt>
-                <dd>{pad(RECRUITMENT_TEAMS.length)}</dd>
-              </div>
-              <div>
-                <dt>Rounds</dt>
-                <dd>{pad(RECRUITMENT_ROUNDS.length)}</dd>
-              </div>
-              <div>
-                <dt>Open to</dt>
-                <dd>{RECRUITMENT.openTo}</dd>
-              </div>
-            </dl>
-          </aside>
+          <figure
+            className={`rc-poster${RECRUITMENT.poster ? "" : " is-empty"}`}
+            aria-hidden={RECRUITMENT.poster ? undefined : true}
+          >
+            {RECRUITMENT.poster && (
+              <Image
+                src={RECRUITMENT.poster}
+                alt={`${RECRUITMENT.season} poster`}
+                sizes="(max-width: 900px) min(520px, 100vw), 420px"
+                placeholder="blur"
+                priority
+              />
+            )}
+          </figure>
         </section>
 
         <div className="rc-content">

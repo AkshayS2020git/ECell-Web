@@ -4,6 +4,16 @@ import { submitApplication } from "@/app/recruit/actions";
 
 const IDLE: ApplicationState = { status: "idle" };
 
+// Every team asks these on the last step, under its own field names.
+const FINAL_ANSWERS: Record<string, string> = {
+  weekly_hours: "3–5 hours",
+  availability: "Yes",
+  clashes: "Nil",
+  anything_else: "",
+  confirm_accurate: "Yes, I agree",
+  confirm_mismatch: "Yes, I agree",
+};
+
 function formData(overrides: Record<string, string> = {}): FormData {
   const data = new FormData();
   const values: Record<string, string> = {
@@ -16,15 +26,27 @@ function formData(overrides: Record<string, string> = {}): FormData {
     why: "I want to help run events and build tools that make the startup community on campus stronger.",
     experience: "",
     link: "https://github.com/asha",
-    "q.tech.stack": "TypeScript, React",
+    "q.tech.slowSite": "Check the network tab for large images and slow requests.",
+    "q.tech.built": "A bot that tracks attendance for our club.",
+    "q.tech.github": "https://github.com/asha",
+    "q.tech.liveProject": "",
+    "q.tech.openSource": "None",
+    "q.tech.stack": "React",
+    "q.tech.interests": "Frontend and UI",
+    "q.tech.git": "Basic: clone, commit, push",
+    "q.tech.websiteStack": "Next.js, because the site is mostly static pages.",
+    "q.tech.websiteImprovement": "A search for past events.",
     "q.tech.problem": "Fixed a race in our club's attendance bot.",
-    "q.tech.github": "",
+    "q.tech.webRating": "3",
     "q.design.portfolio": "https://behance.net/asha",
     "q.design.tool": "Figma",
     "q.design.admire": "The Stripe Press covers: calm, confident type.",
     ...overrides,
   };
-  for (const [key, value] of Object.entries(values)) data.set(key, value);
+  const finalAnswers = Object.fromEntries(
+    Object.entries(FINAL_ANSWERS).map(([id, answer]) => [`q.${values.firstChoice}.${id}`, answer]),
+  );
+  for (const [key, value] of Object.entries({ ...finalAnswers, ...values })) data.set(key, value);
   return data;
 }
 
@@ -48,9 +70,24 @@ describe("validateApplication", () => {
             team: "Tech",
             choice: "First",
             answers: [
-              { question: expect.stringContaining("languages"), answer: "TypeScript, React" },
+              { question: expect.stringContaining("feels slow to load"), answer: expect.stringContaining("network tab") },
+              { question: expect.stringContaining("built or worked on"), answer: expect.stringContaining("bot") },
+              { question: expect.stringContaining("GitHub profile"), answer: "https://github.com/asha" },
+              { question: expect.stringContaining("live project"), answer: "" },
+              { question: expect.stringContaining("open-source"), answer: "None" },
+              { question: expect.stringContaining("languages"), answer: "React" },
+              { question: expect.stringContaining("interests you"), answer: "Frontend and UI" },
+              { question: expect.stringContaining("Git and GitHub"), answer: "Basic: clone, commit, push" },
+              { question: expect.stringContaining("from scratch"), answer: expect.stringContaining("Next.js") },
+              { question: expect.stringContaining("improve"), answer: "A search for past events." },
               { question: expect.stringContaining("bug"), answer: expect.stringContaining("race") },
-              { question: expect.stringContaining("GitHub"), answer: "" },
+              { question: expect.stringContaining("web development"), answer: "3" },
+              { question: expect.stringContaining("hours per week"), answer: "3–5 hours" },
+              { question: expect.stringContaining("team meetings"), answer: "Yes" },
+              { question: expect.stringContaining("clashes"), answer: "Nil" },
+              { question: expect.stringContaining("Anything else"), answer: "" },
+              { question: expect.stringContaining("true to the best"), answer: "Yes, I agree" },
+              { question: expect.stringContaining("mismatch"), answer: "Yes, I agree" },
             ],
           },
         ],
@@ -63,11 +100,12 @@ describe("validateApplication", () => {
       formData({
         "q.tech.stack": "",
         "q.tech.github": "not a link",
+        "q.tech.liveProject": "not a link either",
       }),
     );
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(Object.keys(result.errors).sort()).toEqual(["q.tech.github", "q.tech.stack"]);
+    expect(Object.keys(result.errors).sort()).toEqual(["q.tech.github", "q.tech.liveProject", "q.tech.stack"]);
   });
 
   it("ignores questions for teams the applicant didn't pick", () => {
@@ -107,7 +145,7 @@ describe("validateApplication", () => {
   it("stores Social Media & Content Creation platform choices and its creative rating", () => {
     const data = formData({
       firstChoice: "social",
-      "q.social.motivation": "I want to turn ECell events into stories students want to share.",
+      "q.social.eventPromo": "A countdown reel with the founder's boldest quote as the hook.",
       "q.social.contentPreference": "Reels / Short Content",
       "q.social.managementExperience": "Yes",
       "q.social.contentLinks": "Nil.",
@@ -130,6 +168,32 @@ describe("validateApplication", () => {
         expect.objectContaining({ question: "Rate your creative ideation & brainstorming ability", answer: "5" }),
       ]),
     );
+  });
+
+  it("requires the commitment and acknowledgement answers for any team", () => {
+    const result = validateApplication(
+      formData({
+        firstChoice: "design",
+        "q.design.designCritique": "Bold type and one clear focal point.",
+        "q.design.tools": "Figma",
+        "q.design.experience": "Yes",
+        "q.design.deadline_comfort": "Comfortable",
+        "q.design.design_principles": "Hierarchy first.",
+        "q.design.brand_consistency": "A shared kit.",
+        "q.design.collaboration": "Yes",
+        "q.design.deadline_rating": "4",
+        "q.design.availability": "Maybe",
+        "q.design.clashes": "",
+        "q.design.confirm_mismatch": "",
+      }),
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(Object.keys(result.errors).sort()).toEqual([
+      "q.design.availability",
+      "q.design.clashes",
+      "q.design.confirm_mismatch",
+    ]);
   });
 
   it("allows the optional fields to be empty", () => {
@@ -234,14 +298,69 @@ describe("submitApplication", () => {
     expect(state.errors?.email).toMatch(/already applied/i);
   });
 
-  it("reports a retryable error when Apps Script fails or is unreachable", async () => {
+  it("doesn't retry when Apps Script rejects the request itself", async () => {
     scriptReplies({ ok: false, error: "unauthorized" });
-    expect((await submitApplication(IDLE, formData())).status).toBe("error");
 
-    fetchMock.mockRejectedValue(new TypeError("fetch failed"));
     const state = await submitApplication(IDLE, formData());
+
     expect(state.status).toBe("error");
     expect(state.message).toMatch(/try again/i);
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  describe("when Apps Script is overloaded", () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ["setTimeout"] });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    // Runs the action while skipping over the waits between retries.
+    const submit = async () => {
+      const pending = submitApplication(IDLE, formData());
+      await vi.runAllTimersAsync();
+      return pending;
+    };
+
+    it("retries until a save goes through", async () => {
+      fetchMock
+        .mockResolvedValueOnce(new Response(JSON.stringify({ ok: false, error: "busy" })))
+        .mockResolvedValueOnce(new Response("<html>Service unavailable</html>", { status: 503 }))
+        .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true })));
+
+      expect(await submit()).toEqual({ status: "success" });
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("tells the applicant to try again once retries run out", async () => {
+      fetchMock.mockImplementation(async () => new Response(JSON.stringify({ ok: false, error: "busy" })));
+
+      const state = await submit();
+
+      expect(state.status).toBe("error");
+      expect(state.message).toMatch(/lots of people are applying/i);
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("reports a retryable error when Apps Script stays unreachable", async () => {
+      fetchMock.mockRejectedValue(new TypeError("fetch failed"));
+
+      const state = await submit();
+
+      expect(state.status).toBe("error");
+      expect(state.message).toMatch(/try again/i);
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("treats a duplicate after an unclear failure as the first attempt saving", async () => {
+      fetchMock
+        .mockResolvedValueOnce(new Response("<html>Error</html>", { status: 500 }))
+        .mockResolvedValueOnce(new Response(JSON.stringify({ ok: false, error: "duplicate" })));
+
+      expect(await submit()).toEqual({ status: "success" });
+    });
   });
 
   it("doesn't claim a timed-out application was lost", async () => {
