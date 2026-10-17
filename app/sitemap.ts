@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import type { StaticImageData } from "next/image";
-import { EVENTS_DATA } from "@/src/data/eventsData";
+import { EVENTS_DATA } from "@/src/content/events";
 import { SITE_URL } from "@/src/utils/constants";
 
 // The sitemap is generated at build time, so this is the deploy date.

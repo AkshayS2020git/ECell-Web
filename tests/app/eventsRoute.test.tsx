@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { getAllEventSlugs, getEventBySlug } from "@/src/data/eventsData";
+import { getAllEventSlugs, getEventBySlug } from "@/src/content/events";
 
 describe("Events dynamic routes data", () => {
   it("returns all expected event slugs", () => {

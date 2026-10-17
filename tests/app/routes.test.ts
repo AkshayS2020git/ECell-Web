@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
-import { getAllEventSlugs } from "@/src/data/eventsData";
+import { getAllEventSlugs } from "@/src/content/events";
 
 const SITE_URL = "https://ecell-rvu.vercel.app";
 

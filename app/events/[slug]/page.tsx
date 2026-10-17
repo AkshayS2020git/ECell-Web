@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getEventBySlug, getAllEventSlugs } from "@/src/data/eventsData";
+import { getEventBySlug, getAllEventSlugs } from "@/src/content/events";
 import { SITE_URL } from "@/src/utils/constants";
 import EventDetailClient from "./EventDetailClient";
 

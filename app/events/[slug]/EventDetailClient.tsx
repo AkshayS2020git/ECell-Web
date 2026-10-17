@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { EventDetailData } from "@/src/data/eventsData";
+import type { EventDetailData } from "@/src/content/events";
 import { scrollToElement } from "@/src/utils/lenis";
 import "./EventDetail.css";
 import SiteCredit from "@/src/components/SiteCredit/SiteCredit";

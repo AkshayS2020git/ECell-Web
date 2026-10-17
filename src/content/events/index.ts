@@ -1,10 +1,10 @@
-import { argonyx26Event } from "./events/argonyx26";
-import { pitchEThonEvent } from "./events/pitchEThon";
-import { eSummitEvent } from "./events/eSummit";
-import { hacktoberfest26Event } from "./events/hacktoberfest26";
-import type { EventDetailData } from "./events/types";
+import { argonyx26Event } from "./argonyx26";
+import { pitchEThonEvent } from "./pitchEThon";
+import { eSummitEvent } from "./eSummit";
+import { hacktoberfest26Event } from "./hacktoberfest26";
+import type { EventDetailData } from "./types";
 
-export * from "./events/types";
+export * from "./types";
 
 export const EVENTS_DATA: Record<string, EventDetailData> = {
   "argonyx-26": argonyx26Event,
