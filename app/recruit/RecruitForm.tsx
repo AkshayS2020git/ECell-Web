@@ -836,7 +836,7 @@ export default function RecruitForm(): React.ReactElement {
 
           <div className="rc-field">
             <label htmlFor="rc-link">
-              Portfolio or LinkedIn{chosenTeam?.id === "design" ? " (Add any design work you have done)" : ""} <span>Optional</span>
+              Portfolio or LinkedIn <span>Optional</span>
             </label>
             <input
               {...fieldProps("link", errors)}
