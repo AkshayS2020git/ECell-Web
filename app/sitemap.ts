@@ -28,7 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: event.isCompleted ? 0.7 : 0.8,
     images: imageUrls([
       event.image,
-      ...(event.winners ?? []).flatMap((winner) =>
+      ...(event.winners?.items ?? []).flatMap((winner) =>
         winner.photo ? [winner.photo] : [],
       ),
     ]),

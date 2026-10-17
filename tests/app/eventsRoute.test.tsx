@@ -22,7 +22,7 @@ describe("Events dynamic routes data", () => {
     expect(event).toBeDefined();
     expect(event?.title).toContain("ARGONYX");
     expect(event?.venue).toBe("RV University, Bengaluru");
-    expect(event?.registrationUrl).toContain("unstop.com");
+    expect(event?.registration.url).toContain("unstop.com");
     expect(event?.ledger.length).toBeGreaterThan(0);
     expect(event?.organizers.length).toBeGreaterThan(0);
     expect(event?.contacts.length).toBeGreaterThan(0);
@@ -55,11 +55,11 @@ describe("Events dynamic routes data", () => {
     expect(event?.venue).toBe("RV University, Bengaluru");
     expect(event?.organizers).toContain("AWS SBG, RV University");
     expect(event?.organizers).toContain("The Entrepreneurship Cell, RV University");
-    expect(event?.registrationUrl).toBe("https://share.google/4J3aOAZrHKNAcyaAF");
-    expect(event?.rounds?.length).toBe(2);
-    expect(event?.sponsorsPoweredBy?.length).toBeGreaterThan(0);
-    expect(event?.sponsorsPresenting?.name).toBe("DigitalOcean");
-    expect(event?.sponsorsList?.length).toBeGreaterThan(15);
+    expect(event?.registration.url).toBe("https://share.google/4J3aOAZrHKNAcyaAF");
+    expect(event?.rounds?.items.length).toBe(2);
+    expect(event?.sponsors?.poweredBy?.length).toBeGreaterThan(0);
+    expect(event?.sponsors?.presenting?.name).toBe("DigitalOcean");
+    expect(event?.sponsors?.list.length).toBeGreaterThan(15);
     expect(event?.contacts.length).toBe(2);
     expect(event?.contacts[0].name).toBe("Nishit");
     expect(event?.contacts[0].phone).toBe("+91 878 057 7400");

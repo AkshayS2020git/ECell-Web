@@ -4,29 +4,35 @@ import argonyx from "../../assets/events/events_photo/argonyx.webp";
 export const pitchEThonEvent: EventDetailData = {
   slug: "pitch-e-thon",
   title: "Pitch-e-thon '26",
-  eyebrow: "Flagship Startup Pitch Competition",
-  heroHeadline: "Pitch your vision.",
-  heroAccent: " Back your bold.",
-  heroBody:
-    "Pitch your startup idea, receive candid feedback from angel investors, venture capitalists, and serial operators, and secure the mentorship and backing you need to build what's next.",
-  aboutEyebrow: "About Pitch-e-thon",
-  aboutHeadline: "Where ideas meet",
-  aboutHeadlineAccent: " real venture backing.",
-  aboutDescription:
-    "Pitch-e-thon is RV University's premier competitive pitch platform. Teams pitch directly to active investors, defense leaders, and startup operators. Skip the theory and test your market thesis against experienced builders who look for real traction and vision.",
-  aboutNote:
-    "Eligibility guidelines, pitch deck submission formats, and preliminary screening stages will be announced through the ECell community.",
+  hero: {
+    eyebrow: "Flagship Startup Pitch Competition",
+    headline: "Pitch your vision.",
+    accent: " Back your bold.",
+    body:
+      "Pitch your startup idea, receive candid feedback from angel investors, venture capitalists, and serial operators, and secure the mentorship and backing you need to build what's next.",
+  },
+  about: {
+    eyebrow: "About Pitch-e-thon",
+    headline: "Where ideas meet",
+    accent: " real venture backing.",
+    description:
+      "Pitch-e-thon is RV University's premier competitive pitch platform. Teams pitch directly to active investors, defense leaders, and startup operators. Skip the theory and test your market thesis against experienced builders who look for real traction and vision.",
+    note:
+      "Eligibility guidelines, pitch deck submission formats, and preliminary screening stages will be announced through the ECell community.",
+  },
   format: "Multi-stage pitch competition — deck evaluation, live pitching & founder Q&A",
   date: "Coming 2026 (Dates TBA)",
   dateBadge: "DATE TBA · RV UNIVERSITY, BENGALURU",
   venue: "RV University, Bengaluru",
   prizePool: "Cash grants, incubation opportunities & credits",
-  registrationUrl: "https://chat.whatsapp.com/G4YxR5Q7u2n2QeY18b0kHh",
-  registrationCtaText: "Join WhatsApp for Updates ↗",
-  registrationHeadline: "Got an ambitious idea?",
-  registrationAccent: "Pitch it to the ecosystem.",
-  registrationHint:
-    "Join the official WhatsApp community for registration drops, rules, and track announcements.",
+  registration: {
+    url: "https://chat.whatsapp.com/G4YxR5Q7u2n2QeY18b0kHh",
+    ctaText: "Join WhatsApp for Updates ↗",
+    headline: "Got an ambitious idea?",
+    accent: "Pitch it to the ecosystem.",
+    hint:
+      "Join the official WhatsApp community for registration drops, rules, and track announcements.",
+  },
   image: argonyx,
   ledger: [
     {
@@ -64,7 +70,9 @@ export const pitchEThonEvent: EventDetailData = {
       phone: "+91 86606 97430",
     },
   ],
-  metaTitle: "Pitch-e-thon '26 | ECell RV University",
-  metaDescription:
-    "Pitch-e-thon at RV University — pitch your startup idea to active venture capitalists, founders, and angel investors in Bengaluru.",
+  meta: {
+    title: "Pitch-e-thon '26 | ECell RV University",
+    description:
+      "Pitch-e-thon at RV University — pitch your startup idea to active venture capitalists, founders, and angel investors in Bengaluru.",
+  },
 };

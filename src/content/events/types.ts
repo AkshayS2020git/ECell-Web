@@ -37,63 +37,85 @@ export interface EventRoundItem {
   description: string;
 }
 
+export interface EventSponsor {
+  name: string;
+  tag?: string;
+  url?: string;
+  logo?: string;
+}
+
+/** A section heading: `headline` runs straight into the highlighted `accent`,
+ *  so the accent usually starts with a space. */
+interface SectionHeading {
+  headline: string;
+  accent?: string;
+  subhead?: string;
+}
+
 export interface EventDetailData {
   slug: string;
   title: string;
   isCompleted?: boolean;
-  heroHeadline: string;
-  heroAccent: string;
-  heroBody: string;
-  eyebrow: string;
-  aboutEyebrow: string;
-  aboutHeadline: string;
-  aboutHeadlineAccent: string;
-  aboutDescription: string;
-  aboutNote?: string;
+  image: StaticImageData;
+  /** The image is a designed poster: show it whole at its own proportions
+   *  instead of cropping it to the photo frame. */
+  imageIsPoster?: boolean;
   format: string;
   dateBadge: string;
   date: string;
   venue: string;
   prizePool?: string;
-  registrationUrl: string;
-  registrationCtaText: string;
-  registrationHeadline: string;
-  registrationAccent: string;
-  registrationHint: string;
-  image: StaticImageData;
-  /** The image is a designed poster: show it whole at its own proportions
-   *  instead of cropping it to the photo frame. */
-  imageIsPoster?: boolean;
+  meta: {
+    title: string;
+    description: string;
+  };
+  hero: {
+    eyebrow: string;
+    headline: string;
+    accent: string;
+    body: string;
+  };
+  about: {
+    eyebrow: string;
+    headline: string;
+    accent: string;
+    description: string;
+    note?: string;
+  };
   ledger: LedgerItem[];
   organizers: string[];
   contacts: ContactItem[];
-  metaTitle: string;
-  metaDescription: string;
-  winnersHeadline?: string;
-  winnersAccent?: string;
-  winnersSubhead?: string;
-  winners?: WinnerItem[];
-  /** Small pills under each winner, e.g. the edition and format. */
-  winnersBadges?: string[];
-  /** Line above the gallery headline. Defaults to "Captured Moments". */
-  galleryEyebrow?: string;
-  galleryHeadline?: string;
-  galleryAccent?: string;
-  gallerySubhead?: string;
-  gallerySpaces?: GallerySpace[];
-  galleryDriveUrl?: string;
-  roundsHeadline?: string;
-  roundsAccent?: string;
-  roundsSubhead?: string;
-  rounds?: EventRoundItem[];
-  expectedOutcomes?: string[];
-  logisticsNotice?: string;
-  sponsorsHeadline?: string;
-  sponsorsAccent?: string;
-  sponsorsSubhead?: string;
-  sponsorsPoweredBy?: { name: string; tag?: string; logo?: string }[];
-  sponsorsPresenting?: { name: string; tag?: string; logo?: string };
-  sponsorsList?: { name: string; tag?: string; url?: string; logo?: string }[];
+  /** Shown while the event is upcoming. */
+  registration: {
+    url: string;
+    ctaText: string;
+    headline: string;
+    accent: string;
+    hint: string;
+  };
+  rounds?: SectionHeading & {
+    items: EventRoundItem[];
+    expectedOutcomes?: string[];
+    logisticsNotice?: string;
+  };
+  /** Shown once the event is completed. */
+  winners?: SectionHeading & {
+    items: WinnerItem[];
+    /** Small pills under each winner, e.g. the edition and format. */
+    badges?: string[];
+  };
+  /** Shown once the event is completed. */
+  gallery?: SectionHeading & {
+    /** Line above the headline. Defaults to "Captured Moments". */
+    eyebrow?: string;
+    spaces?: GallerySpace[];
+    driveUrl?: string;
+  };
+  sponsors?: SectionHeading & {
+    poweredBy?: EventSponsor[];
+    presenting?: EventSponsor;
+    list: EventSponsor[];
+  };
 }
 
 export type EventCategory = "Hackathons" | "Talks" | "Competitions";

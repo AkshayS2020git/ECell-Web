@@ -16,7 +16,9 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
 
-  const winnersList = event.winners || [];
+  const { rounds, sponsors } = event;
+  const winnersList = event.winners?.items ?? [];
+  const winnerBadges = event.winners?.badges ?? [];
   const safeWinnerIndex = activeWinnerIndex >= winnersList.length ? 0 : activeWinnerIndex;
   const currentWinner = winnersList[safeWinnerIndex] || winnersList[0];
 
@@ -104,9 +106,9 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
           </Link>
           <nav className="topbar__nav">
             <a href="#about">About</a>
-            {event.rounds && <a href="#rounds">Rounds</a>}
+            {rounds && <a href="#rounds">Rounds</a>}
             <a href="#details">Details</a>
-            {event.sponsorsList && <a href="#sponsors">Sponsors</a>}
+            {sponsors && <a href="#sponsors">Sponsors</a>}
             {event.isCompleted ? (
               <>
                 <a href="#winners">Winners</a>
@@ -130,15 +132,15 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
             <div className="hero__copy">
               <p className="eyebrow">
                 <span className="eyebrow__rule" />
-                {event.eyebrow}
+                {event.hero.eyebrow}
               </p>
 
               <h1 className="hero__headline">
-                {event.heroHeadline}
-                <span className="hero__accent">{event.heroAccent}</span>
+                {event.hero.headline}
+                <span className="hero__accent">{event.hero.accent}</span>
               </h1>
 
-              <p className="hero__body">{event.heroBody}</p>
+              <p className="hero__body">{event.hero.body}</p>
 
               <div className="hero__actions">
                 {event.isCompleted ? (
@@ -212,25 +214,25 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
           <div className="about__inner">
             <p className="eyebrow">
               <span className="eyebrow__rule" />
-              {event.aboutEyebrow}
+              {event.about.eyebrow}
             </p>
 
             <div className="about__grid">
               <h2 className="about__headline">
-                {event.aboutHeadline}
-                <span className="hero__accent">{event.aboutHeadlineAccent}</span>
+                {event.about.headline}
+                <span className="hero__accent">{event.about.accent}</span>
               </h2>
 
               <div className="about__text">
-                <p>{event.aboutDescription}</p>
+                <p>{event.about.description}</p>
 
-                {event.aboutNote && <p className="muted">{event.aboutNote}</p>}
+                {event.about.note && <p className="muted">{event.about.note}</p>}
               </div>
             </div>
           </div>
         </section>
 
-        {event.rounds && event.rounds.length > 0 && (
+        {rounds && rounds.items.length > 0 && (
           <section
             className="event-rounds"
             id="rounds"
@@ -246,23 +248,23 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                 <h2
                   className="event-rounds__headline"
                   id="event-rounds-heading"
-                  aria-label={`${event.roundsHeadline || "Two rounds."} ${(
-                    event.roundsAccent || " From idea to defense."
+                  aria-label={`${rounds.headline} ${(
+                    rounds.accent ?? ""
                   ).trimStart()}`}
                 >
-                  {event.roundsHeadline || "Two rounds."}
+                  {rounds.headline}
                   <span className="hero__accent">
                     {"\u00A0"}
-                    {(event.roundsAccent || " From idea to defense.").trimStart()}
+                    {(rounds.accent ?? "").trimStart()}
                   </span>
                 </h2>
-                {event.roundsSubhead && (
-                  <p className="event-rounds__subhead">{event.roundsSubhead}</p>
+                {rounds.subhead && (
+                  <p className="event-rounds__subhead">{rounds.subhead}</p>
                 )}
               </header>
 
               <ol className="event-progression" aria-label="Event stages">
-                {event.rounds.map((round) => (
+                {rounds.items.map((round) => (
                   <li className="event-progression__item" key={round.number}>
                     <article className="event-progression__stage">
                       <div className="event-progression__sequence">
@@ -279,7 +281,7 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                 ))}
               </ol>
 
-              {event.expectedOutcomes && event.expectedOutcomes.length > 0 && (
+              {rounds.expectedOutcomes && rounds.expectedOutcomes.length > 0 && (
                 <section className="event-outcomes" aria-labelledby="event-outcomes-heading">
                   <header className="event-outcomes__header">
                     <p className="event-outcomes__kicker">KEY TAKEAWAYS</p>
@@ -288,7 +290,7 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                     </h3>
                   </header>
                   <ul className="event-outcomes__list">
-                    {event.expectedOutcomes.map((outcome, idx) => (
+                    {rounds.expectedOutcomes.map((outcome, idx) => (
                       <li key={idx} className="event-outcomes__item">
                         {outcome}
                       </li>
@@ -297,12 +299,12 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                 </section>
               )}
 
-              {event.logisticsNotice && (
+              {rounds.logisticsNotice && (
                 <aside className="event-guidelines" aria-labelledby="event-guidelines-heading">
                   <h3 className="event-guidelines__title" id="event-guidelines-heading">
                     EVENT GUIDELINES
                   </h3>
-                  <p className="event-guidelines__text">{event.logisticsNotice}</p>
+                  <p className="event-guidelines__text">{rounds.logisticsNotice}</p>
                 </aside>
               )}
             </div>
@@ -350,13 +352,13 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                   </p>
 
                   <h2 className="winners-section__headline">
-                    {event.winnersHeadline || "Champions."}
-                    {event.winnersAccent && (
-                      <span className="hero__accent">{event.winnersAccent}</span>
+                    {event.winners?.headline || "Champions."}
+                    {event.winners?.accent && (
+                      <span className="hero__accent">{event.winners?.accent}</span>
                     )}
                   </h2>
-                  {event.winnersSubhead && (
-                    <p className="winners-section__subhead">{event.winnersSubhead}</p>
+                  {event.winners?.subhead && (
+                    <p className="winners-section__subhead">{event.winners?.subhead}</p>
                   )}
                 </div>
 
@@ -494,9 +496,9 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                         </p>
                       )}
 
-                      {event.winnersBadges && event.winnersBadges.length > 0 && (
+                      {winnerBadges.length > 0 && (
                         <div className="winner-spotlight__footer-badges">
-                          {event.winnersBadges.map((badge) => (
+                          {winnerBadges.map((badge) => (
                             <span className="winner-spotlight__foot-pill" key={badge}>
                               {badge}
                             </span>
@@ -517,27 +519,27 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
             </p>
 
             <h2 className="register__headline">
-              {event.registrationHeadline}
+              {event.registration.headline}
               <br />
               <span className="hero__accent hero__accent--onwhite">
-                {event.registrationAccent}
+                {event.registration.accent}
               </span>
             </h2>
 
             <a
               className="btn btn--invert"
-              href={event.registrationUrl}
+              href={event.registration.url}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {event.registrationCtaText}
+              {event.registration.ctaText}
             </a>
 
-            <p className="register__hint">{event.registrationHint}</p>
+            <p className="register__hint">{event.registration.hint}</p>
           </section>
         )}
 
-        {event.sponsorsList && event.sponsorsList.length > 0 && (
+        {sponsors && sponsors.list.length > 0 && (
           <section className="event-sponsors-section" id="sponsors">
             <div className="event-sponsors-section__inner">
               <p className="eyebrow">
@@ -547,28 +549,28 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
 
               <div className="event-sponsors-section__header">
                 <h2 className="event-sponsors-section__headline">
-                  {event.sponsorsHeadline || "Backed by"}
+                  {sponsors.headline}
                   <span className="hero__accent">
-                    {event.sponsorsAccent || " open source giants."}
+                    {sponsors.accent}
                   </span>
                 </h2>
-                {event.sponsorsSubhead && (
+                {sponsors.subhead && (
                   <p className="event-sponsors-section__subhead">
-                    {event.sponsorsSubhead}
+                    {sponsors.subhead}
                   </p>
                 )}
               </div>
 
               <div className="event-sponsors-wrapper">
                 {/* Featured Sponsors Row: Powered By + Presenting Partner */}
-                {((event.sponsorsPoweredBy && event.sponsorsPoweredBy.length > 0) || event.sponsorsPresenting) && (
+                {((sponsors.poweredBy && sponsors.poweredBy.length > 0) || sponsors.presenting) && (
                   <div className="event-sponsors-featured-row">
                     {/* Tier 1: Powered by */}
-                    {event.sponsorsPoweredBy && event.sponsorsPoweredBy.length > 0 && (
+                    {sponsors.poweredBy && sponsors.poweredBy.length > 0 && (
                       <div className="event-sponsor-tier event-sponsor-tier--powered">
                         <span className="event-sponsor-tier-label">POWERED BY</span>
                         <div className="event-sponsors-tier-cards event-sponsors-tier-cards--duo">
-                          {event.sponsorsPoweredBy.map((partner) => (
+                          {sponsors.poweredBy.map((partner) => (
                             <div className="event-sponsor-card event-sponsor-card--featured" key={partner.name}>
                               <span className="event-sponsor-card__glow" aria-hidden="true" />
                               <span className="event-sponsor-card__corner corner--tl" aria-hidden="true" />
@@ -603,7 +605,7 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                     )}
 
                     {/* Tier 2: Presenting Partner */}
-                    {event.sponsorsPresenting && (
+                    {sponsors.presenting && (
                       <div className="event-sponsor-tier event-sponsor-tier--presenting">
                         <span className="event-sponsor-tier-label">PRESENTING PARTNER</span>
                         <div className="event-sponsors-tier-cards event-sponsors-tier-cards--single">
@@ -615,23 +617,23 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                             <span className="event-sponsor-card__corner corner--br" aria-hidden="true" />
                             <span className="event-sponsor-card__beacon" aria-hidden="true" />
                             <div className="event-sponsor-card__logo-frame event-sponsor-card__logo-frame--lg">
-                              {event.sponsorsPresenting.logo ? (
+                              {sponsors.presenting.logo ? (
                                 <Image
-                                  src={event.sponsorsPresenting.logo}
-                                  alt={`${event.sponsorsPresenting.name} logo`}
+                                  src={sponsors.presenting.logo}
+                                  alt={`${sponsors.presenting.name} logo`}
                                   className="event-sponsor-card__logo event-sponsor-card__logo--lg"
                                   width={200}
                                   height={100}
                                   loading="lazy"
                                 />
                               ) : (
-                                <span className="event-sponsor-card__logo-text event-sponsor-card__logo-text--lg">{event.sponsorsPresenting.name}</span>
+                                <span className="event-sponsor-card__logo-text event-sponsor-card__logo-text--lg">{sponsors.presenting.name}</span>
                               )}
                             </div>
                             <div className="event-sponsor-card__info">
-                              <span className="event-sponsor-card__name event-sponsor-card__name--featured">{event.sponsorsPresenting.name}</span>
-                              {event.sponsorsPresenting.tag && (
-                                <span className="event-sponsor-card__tag">{event.sponsorsPresenting.tag}</span>
+                              <span className="event-sponsor-card__name event-sponsor-card__name--featured">{sponsors.presenting.name}</span>
+                              {sponsors.presenting.tag && (
+                                <span className="event-sponsor-card__tag">{sponsors.presenting.tag}</span>
                               )}
                             </div>
                           </div>
@@ -647,7 +649,7 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                     <span className="tier-title">SPONSORS &amp; PARTNERS</span>
                   </div>
                   <div className="event-sponsors-card-grid">
-                    {event.sponsorsList.map((sponsor) => (
+                    {sponsors.list.map((sponsor) => (
                       <div
                         className="event-sponsor-card"
                         key={sponsor.name}
@@ -697,16 +699,16 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                 <div className="event-gallery__title-wrap">
                   <p className="eyebrow">
                     <span className="eyebrow__rule" />
-                    {event.galleryEyebrow || "Captured Moments"}
+                    {event.gallery?.eyebrow || "Captured Moments"}
                   </p>
                   <h2 className="event-gallery__headline">
-                    {event.galleryHeadline || "View Images"}
-                    {event.galleryAccent && (
-                      <span className="hero__accent">{event.galleryAccent}</span>
+                    {event.gallery?.headline || "View Images"}
+                    {event.gallery?.accent && (
+                      <span className="hero__accent">{event.gallery?.accent}</span>
                     )}
                   </h2>
-                  {event.gallerySubhead && (
-                    <p className="event-gallery__subhead">{event.gallerySubhead}</p>
+                  {event.gallery?.subhead && (
+                    <p className="event-gallery__subhead">{event.gallery?.subhead}</p>
                   )}
                 </div>
               </div>

@@ -24,12 +24,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    // metaTitle already ends with the site name, so skip the layout template.
-    title: { absolute: event.metaTitle },
-    description: event.metaDescription,
+    // meta.title already ends with the site name, so skip the layout template.
+    title: { absolute: event.meta.title },
+    description: event.meta.description,
     openGraph: {
-      title: event.metaTitle,
-      description: event.metaDescription,
+      title: event.meta.title,
+      description: event.meta.description,
       url: `${SITE_URL}/events/${event.slug}`,
       images: [
         {
@@ -43,8 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: event.metaTitle,
-      description: event.metaDescription,
+      title: event.meta.title,
+      description: event.meta.description,
     },
     alternates: {
       canonical: `${SITE_URL}/events/${event.slug}`,
