@@ -10,14 +10,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { gsap, ScrollTrigger } from "@/src/utils/gsapSetup";
-
-type JourneyItem = {
-  id: string;
-  order: number;
-  dateLabel: string;
-  title: string;
-  content: string;
-};
+import { TIMELINE, type TimelineItem } from "@/src/content/timeline";
 
 export type TimelineProps = {
   /** Existing About copy that opens the horizontal journey. */
@@ -54,65 +47,6 @@ function usePrefersReducedMotion() {
     () => false,
   );
 }
-
-const journeyItems: JourneyItem[] = [
-  {
-    id: "ecell-created",
-    order: 1,
-    dateLabel: "2023",
-    title: "ECell RVU is created",
-    content:
-      "A student-led home for founders, builders, and ambitious ideas begins at RV University.",
-  },
-  {
-    id: "argonyx-hackathon",
-    order: 2,
-    dateLabel: "18 Sep 2025",
-    title: "Argonyx Hackathon",
-    content:
-      "Students and builders gather to explore, build, and deploy ambitious technical solutions.",
-  },
-  {
-    id: "winter-tech-talk",
-    order: 3,
-    dateLabel: "12 Dec 2025",
-    title: "Winter Tech Talk",
-    content:
-      "Students come together to explore emerging technologies and the frameworks shaping what comes next.",
-  },
-  {
-    id: "talk-startup-with-me",
-    order: 4,
-    dateLabel: "24 Mar 2026",
-    title: "Talk Startup With Me",
-    content:
-      "Experienced founders share practical lessons from problem discovery through the first pitch.",
-  },
-  {
-    id: "pitch-e-thon-26",
-    order: 5,
-    dateLabel: "2026 · Upcoming",
-    title: "Pitch-e-thon ’26",
-    content:
-      "Ideas move from problem discovery to the stage through pitching, feedback, and founder-focused competition.",
-  },
-  {
-    id: "e-summit-26",
-    order: 6,
-    dateLabel: "2026 · Upcoming",
-    title: "E-Summit ’26",
-    content:
-      "The campus entrepreneurship community comes together for conversations, connections, and new ventures.",
-  },
-  {
-    id: "argonyx-26",
-    order: 7,
-    dateLabel: "Sep 2026",
-    title: "Argonyx ’26",
-    content:
-      "The flagship hackathon returns for another high-energy build sprint for student creators and engineers.",
-  },
-];
 
 export default function Timeline({
   intro,
@@ -182,7 +116,7 @@ export default function Timeline({
         },
       );
 
-      journeyItems.forEach((item) => {
+      TIMELINE.forEach((item) => {
         const stem = section.querySelector<HTMLElement>(
           `[data-timeline-stem="${item.id}"]`,
         );
@@ -260,7 +194,7 @@ export default function Timeline({
           className="relative mx-auto max-w-4xl list-none border-l pl-8"
           style={{ borderColor: activeColor }}
         >
-          {journeyItems.map((item) => (
+          {TIMELINE.map((item) => (
             <li key={item.id} className="relative pb-14 last:pb-0">
               <span
                 aria-hidden="true"
@@ -289,7 +223,7 @@ export default function Timeline({
     );
   }
 
-  const renderJourneyItem = (item: JourneyItem) => {
+  const renderTimelineItem = (item: TimelineItem) => {
     const isTop = item.order % 2 === 1;
 
     return (
@@ -362,7 +296,7 @@ export default function Timeline({
               style={activeStyle}
             />
             <ol className="m-0 flex h-full w-max list-none gap-[4vw] p-0 max-[768px]:gap-[8vw]">
-              {journeyItems.map(renderJourneyItem)}
+              {TIMELINE.map(renderTimelineItem)}
             </ol>
           </div>
         </div>
