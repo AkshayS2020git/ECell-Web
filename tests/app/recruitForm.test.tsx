@@ -43,6 +43,7 @@ function fillStepTwo() {
 
 function fillStepThree() {
   type("Why do you want to join ECell?", "I want to help run events and build tools for the startup community.");
+  type("LinkedIn", "https://www.linkedin.com/in/asha-rao");
   type(/hours per week/i, "3–5 hours");
   type(/team meetings and on-ground events/i, "Yes");
   type(/known clashes/i, "Nil");
@@ -253,8 +254,8 @@ describe("RecruitForm", () => {
     fireEvent.click(screen.getByRole("button", { name: /submit application/i }));
 
     expect(submitMock).not.toHaveBeenCalled();
-    // Hours, meetings, clashes and both acknowledgements.
-    expect(screen.getAllByText("Please answer this one.")).toHaveLength(5);
+    // LinkedIn, hours, meetings, clashes and both acknowledgements.
+    expect(screen.getAllByText("Please answer this one.")).toHaveLength(6);
     expect(screen.getByText(/at least 50 characters/i)).toBeInTheDocument();
   });
 });

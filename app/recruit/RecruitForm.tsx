@@ -834,21 +834,22 @@ export default function RecruitForm(): React.ReactElement {
             <ErrorLine name="experience" errors={errors} />
           </div>
 
-          <div className="rc-field">
-            <label htmlFor="rc-link">
-              Portfolio or LinkedIn <span>Optional</span>
-            </label>
-            <input
-              {...fieldProps("link", errors)}
-              type="url"
-              inputMode="url"
-              autoCapitalize="none"
-              spellCheck={false}
-              maxLength={LIMITS.link}
-              placeholder="https://"
-            />
-            <ErrorLine name="link" errors={errors} />
-          </div>
+          {chosenTeam?.id !== "design" && (
+            <div className="rc-field">
+              <label htmlFor="rc-link">LinkedIn</label>
+              <input
+                {...fieldProps("link", errors)}
+                type="url"
+                inputMode="url"
+                autoCapitalize="none"
+                spellCheck={false}
+                maxLength={LIMITS.link}
+                placeholder="https://"
+                required
+              />
+              <ErrorLine name="link" errors={errors} />
+            </div>
+          )}
         </fieldset>
 
         {chosenTeam &&

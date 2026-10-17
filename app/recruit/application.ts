@@ -233,6 +233,7 @@ export function validateApplication(formData: FormData): ValidationResult {
   }
 
   const link = text(formData, "link");
+
   if (link && (link.length > LIMITS.link || !isHttpUrl(link))) {
     errors.link = ERRORS.link;
   }

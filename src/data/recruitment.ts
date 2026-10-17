@@ -6,6 +6,7 @@
 // applications without touching any page code.
 
 import type { StaticImageData } from "next/image";
+import hiringPoster from "../assets/joinus/hiring_poster.webp";
 
 export interface RecruitmentQuestion {
   /** Part of the form field name; keep it unique within its team. */
@@ -57,9 +58,8 @@ export const RECRUITMENT = {
   /** Shown as-is on the page. */
   deadline: "24 October 2026",
   contactEmail: "club_ecell@rvu.edu.in",
-  /** Hero poster, imported from src/assets (square works best). Until one is
-   *  set, the hero shows an empty placeholder frame in its place. */
-  poster: null as StaticImageData | null,
+  /** Hero poster, imported from src/assets. */
+  poster: hiringPoster as StaticImageData,
 } as const;
 
 /**
@@ -289,6 +289,14 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
         description: "Add a link to it if you can.",
         type: "textarea",
         required: true,
+      },
+      {
+        id: "designWork",
+        label: "Portfolio",
+        // description: "Share a Google Drive, Behance, Figma, Instagram, or portfolio link. Make sure it is viewable by anyone.",
+        type: "url",
+        required: true,
+        placeholder: "https://",
       },
       {
         id: "tools",
@@ -720,7 +728,7 @@ export const RECRUITMENT_STEPS: RecruitmentStep[] = [
   },
   {
     title: "Interview",
-    description: "A relaxed conversation with the team leads. No trick questions.",
+    description: "Interview with the Core Team",
   },
   {
     title: "Onboarding",
