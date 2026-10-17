@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { CircularTestimonials } from "@/src/components/ui/circular-testimonials";
+import { CircularTestimonials } from "@/src/components/CircularTestimonials/CircularTestimonials";
 import { PREVIOUS_SPEAKERS } from "@/src/content/speakers";
 import "@/src/sections/Speakers/styles/Speakers.css";
 

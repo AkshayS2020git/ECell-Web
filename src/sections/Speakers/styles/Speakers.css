@@ -1,5 +1,5 @@
 /* Previous Speakers: section shell and header. The speaker card itself lives in
-   src/components/ui/circular-testimonials.tsx. */
+   src/components/CircularTestimonials/CircularTestimonials.tsx. */
 
 .speakers-section {
   position: relative;

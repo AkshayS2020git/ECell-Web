@@ -1,4 +1,4 @@
-import type { CircularTestimonial } from "@/src/components/ui/circular-testimonials";
+import type { CircularTestimonial } from "@/src/components/CircularTestimonials/CircularTestimonials";
 import ambikaPhoto from "@/src/assets/speakers/ambika.webp";
 import arshdeepPhoto from "@/src/assets/speakers/arshdeep.webp";
 import guhaPhoto from "@/src/assets/speakers/guha.webp";
