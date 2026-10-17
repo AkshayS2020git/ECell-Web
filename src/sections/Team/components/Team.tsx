@@ -9,12 +9,12 @@ import {
   selectMember,
   getIsAnimating,
   cleanupTeamAnimations,
-} from "../animations/TeamAnimations";
-import { setupTeamInteractions } from "../animations/TeamInteractions";
-import "../styles/Team.css";
-import "../styles/TeamLayout.css";
-import "../styles/TeamResponsive.css";
-import "../styles/TeamDirectory.css";
+} from "@/src/sections/Team/animations/TeamAnimations";
+import { setupTeamInteractions } from "@/src/sections/Team/animations/TeamInteractions";
+import "@/src/sections/Team/styles/Team.css";
+import "@/src/sections/Team/styles/TeamLayout.css";
+import "@/src/sections/Team/styles/TeamResponsive.css";
+import "@/src/sections/Team/styles/TeamDirectory.css";
 
 function getSpotlightAccent(member: (typeof teamMembers)[number]): string {
   const explicitAccents: Record<string, string> = {

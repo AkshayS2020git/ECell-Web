@@ -1,5 +1,5 @@
 import type { EventDetailData } from "./types";
-import hacktoberPoster from "../../assets/events/hacktoberfest-26/poster.png";
+import hacktoberPoster from "@/src/assets/events/hacktoberfest-26/poster.png";
 
 export const hacktoberfest26Event: EventDetailData = {
   slug: "hacktoberfest-26",

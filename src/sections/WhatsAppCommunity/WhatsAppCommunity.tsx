@@ -5,7 +5,7 @@ import { COMMUNITY_DEFAULT_REPLY, COMMUNITY_QA_RULES } from "@/src/content/commu
 import { SITE_LINKS } from "@/src/content/site";
 
 // WebGL beam (three.js) far down the page: load it in its own chunk.
-const LaserFlow = dynamic(() => import("../../components/LaserFlow"), { ssr: false });
+const LaserFlow = dynamic(() => import("@/src/components/LaserFlow"), { ssr: false });
 import "./WhatsAppCommunity.css";
 
 export interface Message {

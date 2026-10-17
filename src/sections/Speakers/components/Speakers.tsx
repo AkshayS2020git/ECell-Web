@@ -3,7 +3,7 @@
 import type { ReactElement } from "react";
 import { CircularTestimonials } from "@/src/components/ui/circular-testimonials";
 import { PREVIOUS_SPEAKERS } from "@/src/content/speakers";
-import "../styles/Speakers.css";
+import "@/src/sections/Speakers/styles/Speakers.css";
 
 export type { Speaker } from "@/src/content/speakers";
 

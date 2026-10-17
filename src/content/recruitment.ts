@@ -6,7 +6,7 @@
 // applications without touching any page code.
 
 import type { StaticImageData } from "next/image";
-import hiringPoster from "../assets/recruit/hiring-poster.webp";
+import hiringPoster from "@/src/assets/recruit/hiring-poster.webp";
 import { SITE_LINKS } from "./site";
 
 export interface RecruitmentQuestion {

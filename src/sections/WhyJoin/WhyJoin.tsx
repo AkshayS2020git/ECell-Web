@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { gsap } from "../../utils/gsapSetup";
-import { scrollToY } from "../../utils/lenis";
+import { gsap } from "@/src/utils/gsapSetup";
+import { scrollToY } from "@/src/utils/lenis";
 import { SITE_LINKS } from "@/src/content/site";
 import { WHY_JOIN_REASONS } from "@/src/content/whyJoin";
 import "./WhyJoin.css";

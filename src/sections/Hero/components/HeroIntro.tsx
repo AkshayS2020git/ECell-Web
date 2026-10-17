@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { SITE_LINKS } from "@/src/content/site";
-import "../styles/HeroIntro.css";
+import "@/src/sections/Hero/styles/HeroIntro.css";
 
 interface HeroIntroProps {
   ref?: React.Ref<HTMLDivElement>;

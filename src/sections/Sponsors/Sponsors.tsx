@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { gsap } from "../../utils/gsapSetup";
+import { gsap } from "@/src/utils/gsapSetup";
 import { SPONSORS, type SponsorItem } from "@/src/content/sponsors";
 import "./Sponsors.css";
 

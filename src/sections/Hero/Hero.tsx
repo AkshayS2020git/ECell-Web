@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { scrollToY } from "../../utils/lenis";
+import { scrollToY } from "@/src/utils/lenis";
 import { setupHeroAnimations } from "./HeroAnimations";
 import HeroIntro from "./components/HeroIntro";
 import HeroScrollHint from "./components/HeroScrollHint";

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { PENDING_SCROLL_KEY, navigateToSection } from "../navUtils";
+import { PENDING_SCROLL_KEY, navigateToSection } from "@/src/sections/Nav/navUtils";
 
 interface UseSectionNavigationOptions {
   closeMenu: () => void;

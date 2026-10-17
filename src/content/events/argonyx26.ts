@@ -1,9 +1,9 @@
 import type { EventDetailData } from "./types";
 // Official Argonyx '26 poster.
-import argonyx26Poster from "../../assets/events/argonyx-26/poster.webp";
-import winnerPhoto from "../../assets/events/argonyx-26/winners/winner.webp";
-import runnerUpPhoto from "../../assets/events/argonyx-26/winners/first-runner-up.webp";
-import secondRunnerUpPhoto from "../../assets/events/argonyx-26/winners/second-runner-up.webp";
+import argonyx26Poster from "@/src/assets/events/argonyx-26/poster.webp";
+import winnerPhoto from "@/src/assets/events/argonyx-26/winners/winner.webp";
+import runnerUpPhoto from "@/src/assets/events/argonyx-26/winners/first-runner-up.webp";
+import secondRunnerUpPhoto from "@/src/assets/events/argonyx-26/winners/second-runner-up.webp";
 
 export const argonyx26Event: EventDetailData = {
   slug: "argonyx-26",
