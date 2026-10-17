@@ -88,7 +88,8 @@ The Events section dispatches `ecell:events-transition`. The globally mounted `P
 There is no CMS. All editable content is typed TypeScript in `src/content/`:
 
 - events: `src/content/events/index.ts` lists every event once (`EVENTS`); the `/events` archive and the homepage cards derive from it, and entries with `detail` (their own file in that folder) get a page;
-- team, speakers, sponsors, timeline, Why Join cards, community chat answers and recruitment: one file each in `src/content/`;
+- team, speakers, sponsors, timeline, Why Join cards and community chat answers: one file each in `src/content/`;
+- recruitment: `src/data/recruitment.ts`, left where it was while the recruitment drive is live;
 - ECell's social, community and email links: `src/content/site.ts`.
 
 See the [Content Guide](./CONTENT_GUIDE.md) for where each piece lives and how to add an event.

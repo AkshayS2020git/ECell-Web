@@ -1,4 +1,4 @@
-// src/content/recruitment.ts
+// src/data/recruitment.ts
 //
 // Everything the /recruit page shows lives here. The teams, team questions,
 // dates, steps and FAQ below are PLACEHOLDER copy: replace them with the real
@@ -6,8 +6,7 @@
 // applications without touching any page code.
 
 import type { StaticImageData } from "next/image";
-import hiringPoster from "@/src/assets/recruit/hiring-poster.webp";
-import { SITE_LINKS } from "./site";
+import hiringPoster from "../assets/joinus/hiring_poster.webp";
 
 export interface RecruitmentQuestion {
   /** Part of the form field name; keep it unique within its team. */
@@ -58,7 +57,7 @@ export const RECRUITMENT = {
   season: "Recruitment 2026",
   /** Shown as-is on the page. */
   deadline: "24 October 2026",
-  contactEmail: SITE_LINKS.email,
+  contactEmail: "club_ecell@rvu.edu.in",
   /** Hero poster, imported from src/assets. */
   poster: hiringPoster as StaticImageData,
 } as const;

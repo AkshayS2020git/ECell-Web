@@ -6,6 +6,8 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
+    // Recruitment is live and frozen as-is, including its one ../ import.
+    ignores: ["src/data/recruitment.ts"],
     rules: {
       // Import across folders from the root ("@/src/utils/lenis"), not with
       // "../../" paths that break whenever a file moves.

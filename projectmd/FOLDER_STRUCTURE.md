@@ -35,7 +35,7 @@ ECell-Web/
 │   ├── assets/                     # Bundled, imported media, one folder per feature
 │   │   ├── events/<slug>/          # poster, photo, winners/ for each event
 │   │   ├── home/                   # Homepage section backgrounds
-│   │   ├── recruit/  speakers/  sponsors/  team/
+│   │   ├── joinus/  speakers/  sponsors/  team/
 │   ├── components/                 # Shared components, one folder each
 │   │   ├── CinematicFooter/        # Homepage footer
 │   │   ├── CircularTestimonials/   # Carousel used by Speakers
@@ -51,13 +51,14 @@ ECell-Web/
 │   │   ├── SiteCredit/             # "Built by" credit used on route pages
 │   │   ├── SmoothScroll/           # Shared Lenis lifecycle (root layout)
 │   │   └── Timeline/               # Horizontal journey in the About section
-│   ├── content/                    # All editable site content (see Content Guide)
+│   ├── content/                    # Editable site content (see Content Guide)
 │   │   ├── events/
 │   │   │   ├── index.ts            # EVENTS list, lookup, aliases, date labels
 │   │   │   ├── types.ts
 │   │   │   └── <event>.ts          # Page content for events that have a page
-│   │   ├── community.ts  recruitment.ts  site.ts  speakers.ts
+│   │   ├── community.ts  site.ts  speakers.ts
 │   │   └── sponsors.ts  team.ts  timeline.ts  whyJoin.ts
+│   ├── data/recruitment.ts         # Live recruitment content, left in place until the drive ends
 │   ├── sections/                   # Independent homepage feature domains
 │   │   ├── About/
 │   │   ├── Events/

@@ -1,6 +1,6 @@
 "use server";
 
-import { RECRUITMENT } from "@/src/content/recruitment";
+import { RECRUITMENT } from "@/src/data/recruitment";
 import { ERRORS, validateApplication, type ApplicationState } from "./application";
 
 // Apps Script is slow: even a trivial request takes 2–6s, and a write (lock,

@@ -20,7 +20,7 @@ import {
   getTeamById,
   type RecruitmentQuestion,
   type RecruitmentTeam,
-} from "@/src/content/recruitment";
+} from "@/src/data/recruitment";
 import { scrollToElement } from "@/src/utils/lenis";
 import { padNumber as pad } from "@/src/utils/math";
 import { lockPageScroll } from "@/src/utils/scrollLock";

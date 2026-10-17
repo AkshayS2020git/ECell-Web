@@ -19,7 +19,7 @@ Editable content lives in `src/content/`, separate from the components that disp
 | Sponsors and logos | `src/content/sponsors.ts` |
 | Why Join cards | `src/content/whyJoin.ts` |
 | WhatsApp community chat answers | `src/content/community.ts` |
-| Recruitment page, teams, questions, FAQ | `src/content/recruitment.ts` |
+| Recruitment page, teams, questions, FAQ | `src/data/recruitment.ts` (kept in place while recruitment is live; move it into `src/content/` afterwards) |
 | WhatsApp invite, Instagram, LinkedIn, GitHub, email | `src/content/site.ts` |
 | Root SEO and structured data | `app/layout.tsx` |
 | Route SEO | Relevant route `page.tsx` and each event's `meta` |
