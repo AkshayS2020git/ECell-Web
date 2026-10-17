@@ -663,7 +663,11 @@
 .row-5 { grid-template-columns: repeat(3, var(--sponsor-card-w)); }
 .row-2,
 .row-4 { grid-template-columns: repeat(5, var(--sponsor-card-w)); }
-.row-3 { grid-template-columns: repeat(6, var(--sponsor-card-w)); }
+/* Seven partners belong in row 3. Scale only this row's cards as needed so
+   they remain on a single line within the constellation container. */
+.row-3 {
+  grid-template-columns: repeat(7, min(var(--sponsor-card-w), calc((100% - 6 * var(--sponsor-gap-x)) / 7)));
+}
 
 /* Subtle micro-offsets for organic constellation feeling while preserving grid alignment */
 .node-nokia {
