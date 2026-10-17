@@ -12,7 +12,7 @@ import Story from "@/src/sections/Story/Story";
 import Events from "@/src/sections/Events/Events";
 import Sponsors from "@/src/sections/Sponsors/Sponsors";
 import HorizontalFlow from "@/src/components/HorizontalFlow/HorizontalFlow";
-import Speakers from "@/src/sections/Speakers/components/Speakers";
+import Speakers from "@/src/sections/Speakers/Speakers";
 import WhatsAppCommunity from "@/src/sections/WhatsAppCommunity/WhatsAppCommunity";
 import { CinematicFooter } from "@/src/components/CinematicFooter/CinematicFooter";
 import FloatingLogo from "@/src/components/FloatingLogo/FloatingLogo";
