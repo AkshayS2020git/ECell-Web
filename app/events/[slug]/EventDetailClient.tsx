@@ -350,15 +350,14 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                   </p>
 
                   <h2 className="winners-section__headline">
-                    {event.winnersHeadline || "Champions of"}
-                    <span className="hero__accent">
-                      {event.winnersAccent || " Argonyx '26."}
-                    </span>
+                    {event.winnersHeadline || "Champions."}
+                    {event.winnersAccent && (
+                      <span className="hero__accent">{event.winnersAccent}</span>
+                    )}
                   </h2>
-                  <p className="winners-section__subhead">
-                    {event.winnersSubhead ||
-                      "Honoring the builders and visionary teams who shipped real working solutions in 24 continuous hours."}
-                  </p>
+                  {event.winnersSubhead && (
+                    <p className="winners-section__subhead">{event.winnersSubhead}</p>
+                  )}
                 </div>
 
                 {/* Nav controls: Counter, Tabs, Arrows (like Previous Speakers) */}
@@ -495,14 +494,15 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                         </p>
                       )}
 
-                      <div className="winner-spotlight__footer-badges">
-                        <span className="winner-spotlight__foot-pill">
-                          ARGONYX &apos;26
-                        </span>
-                        <span className="winner-spotlight__foot-pill">
-                          24-HR NATIONAL HACKATHON
-                        </span>
-                      </div>
+                      {event.winnersBadges && event.winnersBadges.length > 0 && (
+                        <div className="winner-spotlight__footer-badges">
+                          {event.winnersBadges.map((badge) => (
+                            <span className="winner-spotlight__foot-pill" key={badge}>
+                              {badge}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </article>
                 </div>
@@ -697,18 +697,17 @@ export default function EventDetailClient({ event }: EventDetailClientProps): Re
                 <div className="event-gallery__title-wrap">
                   <p className="eyebrow">
                     <span className="eyebrow__rule" />
-                    Captured Moments · Argonyx &apos;26
+                    {event.galleryEyebrow || "Captured Moments"}
                   </p>
                   <h2 className="event-gallery__headline">
                     {event.galleryHeadline || "View Images"}
-                    <span className="hero__accent">
-                      {event.galleryAccent || " Moments from the floor."}
-                    </span>
+                    {event.galleryAccent && (
+                      <span className="hero__accent">{event.galleryAccent}</span>
+                    )}
                   </h2>
-                  <p className="event-gallery__subhead">
-                    {event.gallerySubhead ||
-                      "Highlights from the 24-hour sprint — from opening keynotes and midnight builds to jury defenses and the podium ceremony."}
-                  </p>
+                  {event.gallerySubhead && (
+                    <p className="event-gallery__subhead">{event.gallerySubhead}</p>
+                  )}
                 </div>
               </div>
 

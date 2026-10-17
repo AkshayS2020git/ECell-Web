@@ -112,6 +112,8 @@ export const argonyx26Event: EventDetailData = {
       photo: secondRunnerUpPhoto,
     },
   ],
+  winnersBadges: ["ARGONYX '26", "24-HR NATIONAL HACKATHON"],
+  galleryEyebrow: "Captured Moments · Argonyx '26",
   galleryHeadline: "View Images",
   galleryAccent: " Moments from the floor.",
   gallerySubhead:

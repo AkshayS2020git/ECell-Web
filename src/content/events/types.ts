@@ -73,6 +73,10 @@ export interface EventDetailData {
   winnersAccent?: string;
   winnersSubhead?: string;
   winners?: WinnerItem[];
+  /** Small pills under each winner, e.g. the edition and format. */
+  winnersBadges?: string[];
+  /** Line above the gallery headline. Defaults to "Captured Moments". */
+  galleryEyebrow?: string;
   galleryHeadline?: string;
   galleryAccent?: string;
   gallerySubhead?: string;
