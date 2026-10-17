@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { startPageTransition } from "@/src/components/PageTransition/PageTransition";
-import { RECRUITMENT } from "@/src/data/recruitment";
+import { RECRUITMENT } from "@/src/content/recruitment";
 import ChaptersDropdown from "./ChaptersDropdown";
 import { useChaptersMenu } from "./hooks/useChaptersMenu";
 import { useSectionNavigation } from "./hooks/useSectionNavigation";

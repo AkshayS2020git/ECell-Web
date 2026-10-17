@@ -1,4 +1,4 @@
-// src/data/recruitment.ts
+// src/content/recruitment.ts
 //
 // Everything the /recruit page shows lives here. The teams, team questions,
 // dates, steps and FAQ below are PLACEHOLDER copy: replace them with the real

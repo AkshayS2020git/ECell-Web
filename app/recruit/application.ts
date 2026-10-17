@@ -5,7 +5,7 @@ import {
   teamQuestions,
   type RecruitmentQuestion,
   type RecruitmentTeam,
-} from "@/src/data/recruitment";
+} from "@/src/content/recruitment";
 
 /**
  * Server-side validation for the recruitment form. The browser checks the same

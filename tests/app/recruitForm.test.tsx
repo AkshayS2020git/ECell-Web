@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import RecruitForm from "@/app/recruit/RecruitForm";
 import { submitApplication } from "@/app/recruit/actions";
-import { RECRUITMENT_LOADING_LINES } from "@/src/data/recruitment";
+import { RECRUITMENT_LOADING_LINES } from "@/src/content/recruitment";
 
 vi.mock("@/app/recruit/actions", () => ({ submitApplication: vi.fn() }));
 
