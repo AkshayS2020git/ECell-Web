@@ -1,12 +1,12 @@
 import { StaticImageData } from "next/image";
-import VicePresident from "@/src/assets/team/vicePres.webp";
-import HeadTech from "@/src/assets/team/HeadTech.webp";
-import HeadDesign from "@/src/assets/team/HeadDesign.webp";
-import HeadDocumentation from "@/src/assets/team/HeadDocumentation.webp";
-import Advisory from "@/src/assets/team/Advisory.webp";
-import AdvisoryHead from "@/src/assets/team/AdvisoryHead.webp";
-import DirectorPr from "@/src/assets/team/DirectorPr.webp";
-import PrExecutive from "@/src/assets/team/PrExecutive.webp";
+import VicePresident from "@/src/assets/team/vice-president.webp";
+import HeadTech from "@/src/assets/team/head-tech.webp";
+import HeadDesign from "@/src/assets/team/head-design.webp";
+import HeadDocumentation from "@/src/assets/team/head-documentation.webp";
+import Advisory from "@/src/assets/team/advisory.webp";
+import AdvisoryHead from "@/src/assets/team/advisory-head.webp";
+import DirectorPr from "@/src/assets/team/director-pr.webp";
+import PrExecutive from "@/src/assets/team/pr-executive.webp";
 
 export interface TeamMember {
   id: string;

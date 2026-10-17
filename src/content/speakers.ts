@@ -1,9 +1,9 @@
 import type { CircularTestimonial } from "@/src/components/ui/circular-testimonials";
-import ambikaPhoto from "@/src/assets/prevSpeakers/ambika.webp";
-import arshdeepPhoto from "@/src/assets/prevSpeakers/arshdeep.webp";
-import guhaPhoto from "@/src/assets/prevSpeakers/guha.webp";
-import harpreetPhoto from "@/src/assets/prevSpeakers/harpreet.webp";
-import shariffPhoto from "@/src/assets/prevSpeakers/shariff.webp";
+import ambikaPhoto from "@/src/assets/speakers/ambika.webp";
+import arshdeepPhoto from "@/src/assets/speakers/arshdeep.webp";
+import guhaPhoto from "@/src/assets/speakers/guha.webp";
+import harpreetPhoto from "@/src/assets/speakers/harpreet.webp";
+import shariffPhoto from "@/src/assets/speakers/shariff.webp";
 
 export type Speaker = CircularTestimonial;
 
