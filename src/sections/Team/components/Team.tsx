@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
-import teamMembers from "../data/TeamData";
+import teamMembers from "@/src/content/team";
 import TeamDirectory from "./TeamDirectory";
 import {
   setupTeamAnimations,

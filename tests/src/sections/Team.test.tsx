@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TeamDirectory from "@/src/sections/Team/components/TeamDirectory";
 import Team from "@/src/sections/Team/components/Team";
-import teamMembers from "@/src/sections/Team/data/TeamData";
+import teamMembers from "@/src/content/team";
 
 // Mock next/image
 vi.mock("next/image", () => ({

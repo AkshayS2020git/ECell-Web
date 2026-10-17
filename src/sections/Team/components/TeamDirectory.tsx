@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
-import type { TeamMember } from "../data/TeamData";
+import type { TeamMember } from "@/src/content/team";
 
 interface TeamDirectoryProps {
   members: TeamMember[];
