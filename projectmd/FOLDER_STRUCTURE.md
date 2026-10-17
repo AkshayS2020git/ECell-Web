@@ -10,7 +10,6 @@ ECell-Web/
 │       ├── pr-cd.yml               # Pull-request preview deployments (Vercel)
 │       └── vercel-cd.yml           # Production deployment on main (Vercel)
 ├── app/                            # Next.js App Router: routes and route metadata only
-│   ├── Argonyx-26/page.tsx         # Legacy redirect route
 │   ├── events/
 │   │   ├── [slug]/
 │   │   │   ├── _components/        # One component + stylesheet per page section (hero, rounds, winners, ...)
@@ -62,7 +61,6 @@ ECell-Web/
 │   ├── sections/                   # Independent homepage feature domains
 │   │   ├── About/
 │   │   ├── Events/
-│   │   ├── Footer/
 │   │   ├── Hero/                   # Hero.tsx + HeroAnimations.ts (scroll shrink)
 │   │   │   ├── components/         # HeroReveal (WebGL), HeroIntro, HeroScrollHint, HeroSocials
 │   │   │   ├── webgl/              # Shaders, title layout, glass letters, nebula

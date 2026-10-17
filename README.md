@@ -230,13 +230,13 @@ ECell-Web/
 │   │   └── Timeline/           # About-section journey
 │   ├── content/                # All editable content (events/, team, sponsors, site links, ...)
 │   ├── sections/               # Independent landing-page sections
-│   │   ├── About/  Events/  Footer/  Loader/  Speakers/  Sponsors/
+│   │   ├── About/  Events/  Loader/  Speakers/  Sponsors/
 │   │   ├── Story/  Team/  WhatsAppCommunity/  WhyJoin/
 │   │   ├── Hero/               # components/, webgl/ (ink, nebula, glass letters), styles/
 │   │   └── Nav/                # Nav, NavBar, LogoHint, ChaptersDropdown, hooks/
 │   ├── styles/                 # global.css tokens/reset, SectionTransitions.css
 │   ├── types/                  # Ambient asset module declarations
-│   └── utils/                  # gsapSetup, lenis, scrollLock, animations, math, wheel, cn, constants
+│   └── utils/                  # gsapSetup, lenis, scrollLock, math, wheel, cn, constants
 ├── tests/                      # Vitest suite (app/ and src/ mirror the source tree)
 ├── projectmd/                  # Project documentation
 ├── next.config.ts              # Images and legacy-route redirects

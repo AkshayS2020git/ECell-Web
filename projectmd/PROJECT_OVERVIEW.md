@@ -62,7 +62,7 @@ Unknown slugs return the Next.js not-found response. Argonyx aliases are accepte
 - `/manifest.webmanifest` from `app/manifest.ts`
 - `/robots.txt` from `app/robots.ts`
 - `/sitemap.xml` from `app/sitemap.ts`
-- Legacy event paths redirect to lowercase `/events/...` routes through `next.config.ts`; `/Argonyx-26` also has an App Router redirect page.
+- Legacy event paths redirect to lowercase `/events/...` routes through `next.config.ts`, including `/Argonyx-26`.
 
 ## Technology summary
 
