@@ -1,5 +1,5 @@
 import type { EventDetailData } from "./types";
-import argonyx from "../../assets/events/events_photo/argonyx.webp";
+import argonyx from "../../assets/events/argonyx-hackathon/photo.webp";
 
 export const eSummitEvent: EventDetailData = {
   slug: "e-summit",

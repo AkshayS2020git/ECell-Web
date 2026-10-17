@@ -2,9 +2,9 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "../../utils/gsapSetup";
 // The "Explore all events" card shows the latest event poster.
-import moreEvents from "../../assets/events/Posters/Hackotber.png";
-import desktopTeamBg from "../../assets/events/background/pcTeam.webp";
-import mobileTeamBg from "../../assets/events/background/phone.webp";
+import moreEvents from "../../assets/events/hacktoberfest-26/poster.png";
+import desktopTeamBg from "../../assets/home/events-background-desktop.webp";
+import mobileTeamBg from "../../assets/home/events-background-mobile.webp";
 import { EVENTS, formatEventDays, formatEventMonth } from "@/src/content/events";
 import { padNumber } from "@/src/utils/math";
 import "./Events.css";

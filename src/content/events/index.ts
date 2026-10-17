@@ -1,9 +1,9 @@
-import argonyxPhoto from "@/src/assets/events/events_photo/argonyx.webp";
-import argonyx26Photo from "@/src/assets/events/events_photo/argoynx2.webp";
-import argonyx26Poster from "@/src/assets/events/events_photo/cta.webp";
-import hacktoberPoster from "@/src/assets/events/Posters/Hackotber.png";
-import talkStartupWithMePhoto from "@/src/assets/events/events_photo/TalkStartupWithMe.webp";
-import winterTechTalkPhoto from "@/src/assets/events/events_photo/WinterTechTalk.webp";
+import argonyxPhoto from "@/src/assets/events/argonyx-hackathon/photo.webp";
+import argonyx26Photo from "@/src/assets/events/argonyx-26/photo.webp";
+import argonyx26Poster from "@/src/assets/events/argonyx-26/poster.webp";
+import hacktoberPoster from "@/src/assets/events/hacktoberfest-26/poster.png";
+import talkStartupWithMePhoto from "@/src/assets/events/talk-startup-with-me/photo.webp";
+import winterTechTalkPhoto from "@/src/assets/events/winter-tech-talk/photo.webp";
 import { argonyx26Event } from "./argonyx26";
 import { pitchEThonEvent } from "./pitchEThon";
 import { eSummitEvent } from "./eSummit";
