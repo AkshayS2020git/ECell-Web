@@ -91,8 +91,3 @@ export const SPACING = {
 // Canonical origin used by metadata, robots.txt and the sitemap. Change it here
 // when the site moves to a custom domain.
 export const SITE_URL = "https://ecell-rvu.vercel.app";
-
-export const INSTAGRAM = {
-  handle: "@ecell_rvu",
-  url: "https://www.instagram.com/ecell_rvu/",
-} as const;

@@ -7,6 +7,7 @@ import PageTransition from "@/src/components/PageTransition/PageTransition";
 import RouteScrollManager from "@/src/components/RouteScrollManager/RouteScrollManager";
 import SmoothScroll from "@/src/components/SmoothScroll/SmoothScroll";
 import { SITE_URL } from "@/src/utils/constants";
+import { SITE_LINKS } from "@/src/content/site";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -186,7 +187,7 @@ const jsonLd = {
       image: `${SITE_URL}/og-image.webp`,
       description:
         "The official entrepreneurship cell at RV University, Bengaluru — building a thriving campus community for founders, innovators, and future entrepreneurs.",
-      email: "club_ecell@rvu.edu.in",
+      email: SITE_LINKS.email,
       foundingDate: "2023",
       address: {
         "@type": "PostalAddress",
@@ -200,8 +201,8 @@ const jsonLd = {
         url: "https://www.rvu.edu.in",
       },
       sameAs: [
-        "https://www.instagram.com/ecell_rvu/",
-        "https://www.linkedin.com/company/ecell-rvu",
+        SITE_LINKS.instagram,
+        SITE_LINKS.linkedin,
       ],
     },
   ],

@@ -3,10 +3,9 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "../../utils/gsapSetup";
 import { scrollToY } from "../../utils/lenis";
+import { SITE_LINKS } from "@/src/content/site";
 import { WHY_JOIN_REASONS } from "@/src/content/whyJoin";
 import "./WhyJoin.css";
-
-const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
 
 export default function WhyJoin(): React.ReactElement {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -290,7 +289,7 @@ export default function WhyJoin(): React.ReactElement {
               {reason.cta && (
                 <a
                   className="why-card__cta"
-                  href={WHATSAPP_GROUP_URL}
+                  href={SITE_LINKS.whatsappGroup}
                   target="_blank"
                   rel="noreferrer"
                 >

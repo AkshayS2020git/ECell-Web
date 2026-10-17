@@ -2,13 +2,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { COMMUNITY_DEFAULT_REPLY, COMMUNITY_QA_RULES } from "@/src/content/community";
+import { SITE_LINKS } from "@/src/content/site";
 
 // WebGL beam (three.js) far down the page: load it in its own chunk.
 const LaserFlow = dynamic(() => import("../../components/LaserFlow"), { ssr: false });
 import "./WhatsAppCommunity.css";
-
-// this is the url for the whatsapp student community.
-const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
 
 export interface Message {
   id: string;
@@ -134,7 +132,7 @@ export default function WhatsAppCommunity(): React.ReactElement {
             </p>
             <a
               className="whatsapp-community-cta"
-              href={WHATSAPP_GROUP_URL}
+              href={SITE_LINKS.whatsappGroup}
               target="_blank"
               rel="noreferrer"
             >

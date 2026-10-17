@@ -9,7 +9,8 @@ import {
   RECRUITMENT_STEPS,
   RECRUITMENT_TEAMS,
 } from "@/src/content/recruitment";
-import { INSTAGRAM, SITE_URL } from "@/src/utils/constants";
+import { SITE_URL } from "@/src/utils/constants";
+import { INSTAGRAM } from "@/src/content/site";
 import { padNumber as pad } from "@/src/utils/math";
 import EventsLink from "./EventsLink";
 import RecruitForm from "./RecruitForm";

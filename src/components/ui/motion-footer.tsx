@@ -6,6 +6,7 @@ import { cn } from "@/src/utils/cn";
 import { gsap } from "@/src/utils/gsapSetup";
 import { scrollToY } from "@/src/utils/lenis";
 import { navigateToSection } from "@/src/sections/Nav/navUtils";
+import { SITE_LINKS } from "@/src/content/site";
 
 const STYLES = `
 .cinematic-footer-wrapper {
@@ -499,7 +500,7 @@ export function CinematicFooter(): React.ReactElement {
               <div className="flex w-full flex-wrap justify-center gap-3 md:gap-4">
                 <MagneticButton
                   as="a"
-                  href="https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ"
+                  href={SITE_LINKS.whatsappGroup}
                   target="_blank"
                   rel="noreferrer"
                   className="ecell-footer-glass ecell-footer-primary ecell-footer-primary-accent group flex items-center gap-4"
@@ -509,7 +510,7 @@ export function CinematicFooter(): React.ReactElement {
                 </MagneticButton>
                 <MagneticButton
                   as="a"
-                  href="mailto:club_ecell@rvu.edu.in"
+                  href={`mailto:${SITE_LINKS.email}`}
                   className="ecell-footer-glass ecell-footer-primary ecell-footer-primary-dark group flex items-center gap-4"
                 >
                   <span className="ecell-footer-button-label">Start a conversation</span>
@@ -532,7 +533,7 @@ export function CinematicFooter(): React.ReactElement {
                 ))}
                 <MagneticButton
                   as="a"
-                  href="https://www.instagram.com/ecell_rvu/"
+                  href={SITE_LINKS.instagram}
                   target="_blank"
                   rel="noreferrer"
                   className="ecell-footer-glass ecell-footer-link group flex items-center gap-2.5"
