@@ -13,8 +13,9 @@ ECell-Web/
 │   ├── Argonyx-26/page.tsx         # Legacy redirect route
 │   ├── events/
 │   │   ├── [slug]/
-│   │   │   ├── _components/        # One component per page section (hero, rounds, winners, ...)
-│   │   │   ├── EventDetail.css
+│   │   │   ├── _components/        # One component + stylesheet per page section (hero, rounds, winners, ...)
+│   │   │   ├── EventDetail.css     # Only @imports: shared styles, then each section's CSS in page order
+│   │   │   ├── EventDetailShared.css  # Page shell, buttons, eyebrows, accents
 │   │   │   ├── EventDetailClient.tsx  # Top bar, anchor scrolling, section order
 │   │   │   └── page.tsx
 │   │   └── page.tsx                # Events archive route
