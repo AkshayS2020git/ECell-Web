@@ -292,8 +292,8 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
       },
       {
         id: "designWork",
-        label: "Add any design work you have done",
-        description: "Share a Google Drive, Behance, Figma, Instagram, or portfolio link. Make sure it is viewable by anyone.",
+        label: "Portfolio",
+        // description: "Share a Google Drive, Behance, Figma, Instagram, or portfolio link. Make sure it is viewable by anyone.",
         type: "url",
         required: true,
         placeholder: "https://",
