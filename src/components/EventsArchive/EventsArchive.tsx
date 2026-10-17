@@ -7,12 +7,13 @@ import { gsap } from "@/src/utils/gsapSetup";
 import { refreshScroll, scrollToElement } from "@/src/utils/lenis";
 import { SITE_URL } from "@/src/utils/constants";
 import { TRANSITION_REVEAL_EVENT } from "@/src/components/PageTransition/PageTransition";
-import talkStartupWithMe from "@/src/assets/events/events_photo/TalkStartupWithMe.webp";
-import winterTechTalk from "@/src/assets/events/events_photo/WinterTechTalk.webp";
-import argonyx from "@/src/assets/events/events_photo/argonyx.webp";
-// Official Argonyx '26 poster.
-import argonyx26Poster from "@/src/assets/events/events_photo/cta.webp";
-import hacktoberPoster from "@/src/assets/events/Posters/Hackotber.png";
+import {
+  EVENTS,
+  formatEventDays,
+  formatEventMonth,
+  getEventHref,
+  type EventCategory,
+} from "@/src/content/events";
 import "./EventsArchive.css";
 import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
 
@@ -20,12 +21,12 @@ import SiteCredit from "@/src/components/SiteCredit/SiteCredit";
    DATA
 ===================================================== */
 
-type EventType = "Hackathons" | "Talks" | "Competitions";
-
 interface EventItem {
   date: string;
   month: string;
-  type: EventType;
+  /** ISO start date, for structured data. */
+  startDate?: string;
+  type: EventCategory;
   title: string;
   description: string;
   image: StaticImageData;
@@ -35,83 +36,18 @@ interface EventItem {
   link?: string;
 }
 
-const EVENTS: EventItem[] = [
-  {
-    date: "31",
-    month: "OCT 2026",
-    type: "Hackathons",
-    title: "Hacktoberfest '26",
-    description:
-      "A hands-on mini-hackathon celebrating open source with open-source AI and open-weight models, hosted by ECell and AWS SBG RVU.",
-    image: hacktoberPoster,
-    imageIsPoster: true,
-    status: "UPCOMING",
-    link: "/events/hacktoberfest-26",
-  },
-  {
-    date: "TBA",
-    month: "DATE TBA",
-    type: "Competitions",
-    title: "Pitch-e-thon",
-    description:
-      "Pitch your idea, get real feedback, and take your next step as a builder.",
-    image: argonyx,
-    status: "UPCOMING",
-    link: "/events/pitch-e-thon",
-  },
-  {
-    date: "TBA",
-    month: "DATE TBA",
-    type: "Talks",
-    title: "E-Summit",
-    description:
-      "A flagship gathering for ideas, founders, and the people building what comes next.",
-    image: argonyx,
-    status: "UPCOMING",
-    link: "/events/e-summit",
-  },
-  {
-    date: "25–26",
-    month: "SEP 2026",
-    type: "Hackathons",
-    title: "Argonyx '26",
-    description:
-      "A 24-hour national hackathon for ambitious builders. Build, break and ship.",
-    image: argonyx26Poster,
-    status: "ARCHIVE",
-    link: "/events/argonyx-26",
-  },
-  {
-    date: "TBA",
-    month: "SEP 2025",
-    type: "Hackathons",
-    title: "Argonyx Hackathon",
-    description:
-      "A hands-on hackathon for ambitious builders and bold ideas.",
-    image: argonyx,
-    status: "ARCHIVE",
-  },
-  {
-    date: "TBA",
-    month: "WINTER 2025",
-    type: "Talks",
-    title: "Winter Tech Talk",
-    description:
-      "Builders and operators unpack the technologies shaping what comes next.",
-    image: winterTechTalk,
-    status: "ARCHIVE",
-  },
-  {
-    date: "TBA",
-    month: "SPRING 2026",
-    type: "Talks",
-    title: "Talk Startup With Me",
-    description:
-      "From problem discovery to your first pitch — learn by building with people who have done it.",
-    image: talkStartupWithMe,
-    status: "ARCHIVE",
-  },
-];
+const EVENT_ITEMS: EventItem[] = EVENTS.map((event) => ({
+  date: formatEventDays(event) ?? "TBA",
+  month: formatEventMonth(event),
+  startDate: event.startDate,
+  type: event.category,
+  title: event.title,
+  description: event.summary,
+  image: event.poster ?? event.image,
+  imageIsPoster: Boolean(event.poster),
+  status: event.status === "upcoming" ? "UPCOMING" : "ARCHIVE",
+  link: getEventHref(event),
+}));
 
 const FILTERS = ["All", "Hackathons", "Talks", "Competitions"] as const;
 
@@ -182,17 +118,7 @@ function buildStructuredData(upcoming: EventItem[]) {
         },
       },
 
-      ...(event.date !== "TBA"
-        ? {
-            startDate: `2026-${
-              event.month.includes("SEP")
-                ? "09"
-                : event.month.includes("OCT")
-                ? "10"
-                : "01"
-            }-${String(event.date).padStart(2, "0")}`,
-          }
-        : {}),
+      ...(event.startDate ? { startDate: event.startDate } : {}),
     })),
   };
 }
@@ -214,12 +140,12 @@ export default function EventsArchive(): React.ReactElement {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const upcomingEvents = useMemo(
-    () => EVENTS.filter((event) => event.status === "UPCOMING"),
+    () => EVENT_ITEMS.filter((event) => event.status === "UPCOMING"),
     [],
   );
 
   const archivedEvents = useMemo(
-    () => EVENTS.filter((event) => event.status === "ARCHIVE"),
+    () => EVENT_ITEMS.filter((event) => event.status === "ARCHIVE"),
     [],
   );
 

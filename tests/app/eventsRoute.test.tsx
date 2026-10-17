@@ -1,5 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { getAllEventSlugs, getEventBySlug } from "@/src/content/events";
+import {
+  EVENTS,
+  formatEventDays,
+  formatEventMonth,
+  getAllEventSlugs,
+  getEventBySlug,
+  getEventHref,
+} from "@/src/content/events";
 
 describe("Events dynamic routes data", () => {
   it("returns all expected event slugs", () => {
@@ -70,6 +77,25 @@ describe("Events dynamic routes data", () => {
 
   it("returns undefined for unknown event slugs", () => {
     expect(getEventBySlug("non-existent-event")).toBeUndefined();
+  });
+
+  it("only gives pages to events with detail content", () => {
+    const winterTechTalk = EVENTS.find((event) => event.slug === "winter-tech-talk");
+    expect(winterTechTalk).toBeDefined();
+    expect(getEventHref(winterTechTalk!)).toBeUndefined();
+    expect(getEventBySlug("winter-tech-talk")).toBeUndefined();
+    expect(getAllEventSlugs()).not.toContain("winter-tech-talk");
+    expect(getEventHref(EVENTS[0])).toBe(`/events/${EVENTS[0].slug}`);
+  });
+
+  it("formats single-day, multi-day and TBA event dates", () => {
+    const bySlug = (slug: string) => EVENTS.find((event) => event.slug === slug)!;
+    expect(formatEventDays(bySlug("hacktoberfest-26"))).toBe("31");
+    expect(formatEventMonth(bySlug("hacktoberfest-26"))).toBe("OCT 2026");
+    expect(formatEventDays(bySlug("argonyx-26"))).toBe("25–26");
+    expect(formatEventMonth(bySlug("argonyx-26"))).toBe("SEP 2026");
+    expect(formatEventDays(bySlug("pitch-e-thon"))).toBeUndefined();
+    expect(formatEventMonth(bySlug("pitch-e-thon"))).toBe("DATE TBA");
   });
 
   it("renders EventDetailClient for completed Argonyx 26 with closed status, winners, and view images", async () => {

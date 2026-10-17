@@ -91,3 +91,27 @@ export interface EventDetailData {
   sponsorsPresenting?: { name: string; tag?: string; logo?: string };
   sponsorsList?: { name: string; tag?: string; url?: string; logo?: string }[];
 }
+
+export type EventCategory = "Hackathons" | "Talks" | "Competitions";
+
+/** One entry in the events list. Drives the /events archive and the homepage
+ *  cards; entries with `detail` also get a page at /events/<slug>. */
+export interface EventSummary {
+  slug: string;
+  title: string;
+  category: EventCategory;
+  status: "upcoming" | "past";
+  /** ISO date (YYYY-MM-DD). Leave out while the date is TBA. */
+  startDate?: string;
+  /** ISO date of the last day, for events that run over several days. */
+  endDate?: string;
+  /** One or two sentences for event cards. */
+  summary: string;
+  /** Photo used on cards and in previews. */
+  image: StaticImageData;
+  /** Designed poster, shown whole (never cropped) where cards support it. */
+  poster?: StaticImageData;
+  /** Other slugs that should resolve to this event, e.g. common misspellings. */
+  aliases?: string[];
+  detail?: EventDetailData;
+}
