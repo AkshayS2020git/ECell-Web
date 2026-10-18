@@ -60,8 +60,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      # This workflow doesn't wait for ci.yml, so gate the deploy here.
+      # `vercel build` below does the build.
+      - name: Typecheck and test
+        run: npm run typecheck && npm test
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
