@@ -22,13 +22,13 @@ A change should not be considered release-ready until these checks pass.
 
 ## Pull-request previews
 
-`.github/workflows/pr-cd.yml` runs when a pull request to `main` is opened, synchronized, or reopened. It creates a GitHub deployment, installs dependencies, performs a normal Next build, pulls Vercel preview settings, runs a Vercel build, deploys the prebuilt output, updates deployment status, and comments the preview URL on the pull request.
+`.github/workflows/pr-cd.yml` runs when a pull request to `main` is opened, synchronized, or reopened. It creates a GitHub deployment, installs dependencies, pulls Vercel preview settings, runs a Vercel build, deploys the prebuilt output, updates deployment status, and comments the preview URL on the pull request.
 
 Use the preview to review responsive layout, interactions, external links, metadata, event facts, and animation behavior before merge.
 
 ## Production
 
-`.github/workflows/vercel-cd.yml` runs on pushes to `main`. It follows the Vercel pull/build/deploy flow with the Production environment and `--prod`, then reports deployment status to GitHub.
+`.github/workflows/vercel-cd.yml` runs on pushes to `main`. It runs the typecheck and tests first (it does not wait for `ci.yml`), then follows the Vercel pull/build/deploy flow with the Production environment and `--prod`, then reports deployment status to GitHub.
 
 Do not push directly to `main`. Merge a reviewed pull request after CI and preview validation.
 
