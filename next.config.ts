@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
       new URL("https://cdn.simpleicons.org/**"),
       new URL("https://bookface-images.s3.amazonaws.com/small_logos/**"),
       new URL("https://upload.wikimedia.org/wikipedia/commons/**"),
+      // Hackathon logos on /opportunities, one host per source
+      // (app/opportunities/_data/sources.ts): Devpost, Devfolio, Unstop, Hack Club.
+      new URL("https://d112y698adiu2z.cloudfront.net/photos/**"),
+      new URL("https://assets.devfolio.co/**"),
+      new URL("https://d8it4huxumps7.cloudfront.net/uploads/**"),
+      new URL("https://dash.hackathons.hackclub.com/**"),
     ],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",

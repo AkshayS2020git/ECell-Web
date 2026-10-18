@@ -57,5 +57,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
       images: [`${SITE_URL}/og-image.webp`],
     },
+    {
+      url: `${SITE_URL}/opportunities`,
+      lastModified,
+      // The listings refresh hourly from Devpost.
+      changeFrequency: "daily",
+      priority: 0.7,
+      images: [`${SITE_URL}/og-image.webp`],
+    },
   ];
 }

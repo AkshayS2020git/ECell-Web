@@ -19,6 +19,10 @@ ECell-Web/
 │   │   │   ├── EventDetailClient.tsx  # Top bar, anchor scrolling, section order
 │   │   │   └── page.tsx
 │   │   └── page.tsx                # Events archive route
+│   ├── opportunities/              # Live hackathon listings, refreshed hourly
+│   │   ├── _components/            # Globe (three.js) + generated land mask
+│   │   ├── _data/                  # One parser per source, merge/sort, globe places
+│   │   └── page.tsx
 │   ├── globals.css                 # Tailwind and global style imports
 │   ├── layout.tsx                  # Root shell, metadata, fonts, telemetry
 │   ├── manifest.ts                 # Web app manifest

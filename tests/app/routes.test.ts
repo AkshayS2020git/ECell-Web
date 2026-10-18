@@ -22,6 +22,7 @@ describe("SEO routes", () => {
       expect.arrayContaining([
         `${SITE_URL}/events`,
         `${SITE_URL}/recruit`,
+        `${SITE_URL}/opportunities`,
         ...getAllEventSlugs().map((slug) => `${SITE_URL}/events/${slug}`),
       ]),
     );

@@ -1,0 +1,436 @@
+/* /opportunities — same look as /recruit and the events archive: dark page,
+   tracked uppercase labels, hairline rules and Fraunces italics for emphasis. */
+
+.op-page {
+    --op-paper: var(--fg, #f4f4f2);
+    --op-muted: rgba(244, 244, 242, .6);
+    --op-line: rgba(244, 244, 242, .14);
+    --op-line-strong: rgba(244, 244, 242, .32);
+    --op-accent: var(--primarycolor, #bababa);
+    --op-hot: var(--color-red, #ff001a);
+    --op-open: #8bce5d;
+    --op-globe-fill: #141414;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background: var(--bg, #1a1a1a);
+    color: var(--op-paper)
+}
+
+.op-page em {
+    color: var(--op-accent);
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -.04em
+}
+
+.op-hero,
+.op-content {
+    max-width: 1360px;
+    margin: auto;
+    padding-inline: clamp(16px, 6vw, 88px)
+}
+
+/* ============ HERO ============ */
+
+.op-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4vw;
+    align-items: center;
+    padding-top: clamp(135px, 17vh, 190px);
+    padding-bottom: clamp(64px, 9vh, 100px)
+}
+
+.op-hero-copy {
+    position: relative;
+    z-index: 1;
+    min-width: 0
+}
+
+.op-hero-globe {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px
+}
+
+.op-globe {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 1;
+    /* Vertical swipes still scroll the page; sideways ones spin the globe. */
+    touch-action: pan-y
+}
+
+/* Soft halo behind the globe; the sphere fills about 78% of the canvas. */
+.op-globe::before {
+    content: "";
+    position: absolute;
+    inset: 4%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(186, 186, 186, .16) 52%, rgba(186, 186, 186, 0) 70%);
+    pointer-events: none
+}
+
+.op-globe canvas {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%
+}
+
+.op-globe__label {
+    position: absolute;
+    z-index: 1;
+    max-width: 240px;
+    padding: 6px 10px;
+    border: 1px solid var(--op-line-strong);
+    border-radius: 8px;
+    background: rgba(17, 17, 17, .92);
+    color: var(--op-paper);
+    font-size: .78rem;
+    line-height: 1.35;
+    pointer-events: none;
+    transform: translate(12px, -50%)
+}
+
+.op-globe-hint {
+    color: var(--op-muted);
+    font-size: .62rem;
+    letter-spacing: .22em;
+    text-transform: uppercase
+}
+
+.op-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-width: 560px;
+    margin-top: 40px;
+    border-top: 1px solid var(--op-line)
+}
+
+.op-stats div {
+    padding: 16px 12px 0 0
+}
+
+.op-stats div+div {
+    padding-left: 14px;
+    border-left: 1px solid var(--op-line)
+}
+
+.op-stats dt {
+    color: var(--op-muted);
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase
+}
+
+.op-stats dd {
+    margin-top: 6px;
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1
+}
+
+.op-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--op-muted);
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .28em
+}
+
+.op-eyebrow span {
+    width: 26px;
+    height: 1px;
+    background: var(--op-muted)
+}
+
+.op-hero h1 {
+    margin-top: 30px;
+    /* Capped so "somewhere." fits its half of the hero on wide screens
+       instead of running under the globe. */
+    font-size: clamp(3.4rem, 7.6vw, 7rem);
+    white-space: nowrap;
+    letter-spacing: -.075em;
+    word-spacing: .14em;
+    line-height: .82
+}
+
+.op-hero-intro {
+    max-width: 560px;
+    margin-top: 34px;
+    color: var(--op-muted);
+    font-size: clamp(.95rem, 1.2vw, 1.05rem);
+    line-height: 1.7
+}
+
+/* ============ LISTS ============ */
+
+.op-content {
+    padding-bottom: 90px
+}
+
+.op-section+.op-section {
+    margin-top: 80px
+}
+
+.op-section-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 17px 0;
+    border-top: 1px solid var(--op-line);
+    color: var(--op-muted);
+    font-size: .64rem;
+    letter-spacing: .22em
+}
+
+.op-section-head h2 {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 400;
+    letter-spacing: inherit;
+    line-height: inherit
+}
+
+.op-list {
+    list-style: none
+}
+
+.op-card {
+    border-top: 1px solid var(--op-line)
+}
+
+.op-list .op-card:last-child {
+    border-bottom: 1px solid var(--op-line)
+}
+
+.op-card a {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: clamp(14px, 2vw, 28px);
+    align-items: center;
+    padding: 22px 0;
+    transition: background-color .25s, padding .25s
+}
+
+.op-card a:focus-visible {
+    outline: 1px solid var(--op-paper);
+    outline-offset: 4px
+}
+
+.op-card__thumb {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    border: 1px solid var(--op-line);
+    border-radius: 12px;
+    background: var(--bg-2, #111);
+    color: var(--op-accent);
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-size: 1.6rem
+}
+
+.op-card__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+.op-card__body,
+.op-card__side {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0
+}
+
+.op-card__title {
+    font-family: var(--font-archivo), sans-serif;
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.15
+}
+
+.op-card__meta {
+    color: var(--op-muted);
+    font-size: .85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.op-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px
+}
+
+.op-card__tags span {
+    padding: 3px 9px;
+    border: 1px solid var(--op-line-strong);
+    border-radius: 999px;
+    color: var(--op-muted);
+    font-size: .62rem;
+    letter-spacing: .08em;
+    text-transform: uppercase
+}
+
+.op-card__tags .op-card__source {
+    border-color: transparent;
+    background: rgba(244, 244, 242, .08);
+    color: var(--op-paper)
+}
+
+.op-card__side {
+    align-items: flex-end;
+    text-align: right
+}
+
+.op-card__dates {
+    color: var(--op-muted);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    white-space: nowrap
+}
+
+.op-card__prize {
+    color: var(--op-paper);
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-size: 1.25rem
+}
+
+.op-card__arrow {
+    color: var(--op-muted);
+    transition: color .25s, transform .25s
+}
+
+/* The soonest deadline gets the big treatment. */
+.op-list--next .op-card a {
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    padding: 30px 0
+}
+
+.op-list--next .op-card__thumb {
+    width: 96px;
+    height: 96px;
+    border-radius: 18px;
+    border-color: var(--op-hot)
+}
+
+.op-list--next .op-card__title {
+    font-size: clamp(1.6rem, 3.4vw, 2.8rem)
+}
+
+.op-list--next .op-card__dates {
+    color: var(--op-hot)
+}
+
+.op-empty,
+.op-source {
+    color: var(--op-muted);
+    font-size: .9rem;
+    line-height: 1.7
+}
+
+.op-empty {
+    padding: 40px 0;
+    border-top: 1px solid var(--op-line);
+    border-bottom: 1px solid var(--op-line)
+}
+
+.op-empty a,
+.op-source a {
+    color: var(--op-paper);
+    text-decoration: underline;
+    text-underline-offset: 3px
+}
+
+.op-source {
+    margin-top: 48px;
+    font-size: .78rem
+}
+
+@media (hover: hover) {
+    .op-card a:hover {
+        padding-inline: 14px;
+        background: rgba(244, 244, 242, .04)
+    }
+
+    .op-card a:hover .op-card__arrow {
+        color: var(--op-paper);
+        transform: translate(3px, -3px)
+    }
+}
+
+@media (max-width: 900px) {
+    .op-hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 48px
+    }
+
+    .op-globe {
+        max-width: 440px
+    }
+}
+
+@media (max-width: 640px) {
+    .op-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .op-stats div:nth-child(3) {
+        padding-left: 0;
+        border-left: 0
+    }
+
+    .op-card a,
+    .op-list--next .op-card a {
+        grid-template-columns: 48px minmax(0, 1fr)
+    }
+
+    .op-card__thumb,
+    .op-list--next .op-card__thumb {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        font-size: 1.3rem
+    }
+
+    /* Dates and prize drop under the title instead of squeezing it. */
+    .op-card__side {
+        grid-column: 2;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 12px;
+        text-align: left
+    }
+
+    .op-card__arrow {
+        display: none
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .op-card a,
+    .op-card__arrow {
+        transition: none
+    }
+}

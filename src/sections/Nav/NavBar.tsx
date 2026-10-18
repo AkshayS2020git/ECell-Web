@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { startPageTransition } from "@/src/components/PageTransition/PageTransition";
+import { startPageTransition, type TransitionPath } from "@/src/components/PageTransition/PageTransition";
 import { RECRUITMENT } from "@/src/data/recruitment";
 import ChaptersDropdown from "./ChaptersDropdown";
 import { useChaptersMenu } from "./hooks/useChaptersMenu";
@@ -36,6 +36,14 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
   const isSubNav = onLogoClick === undefined;
 
   useHomeScroll();
+
+  // Same curtain as Events; it navigates once the screen is covered.
+  // New-tab and modified clicks never reach here.
+  const navigateWithCurtain = (path: TransitionPath) => (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    close();
+    if (pathname !== path) startPageTransition(path);
+  };
 
   return (
     <>
@@ -73,16 +81,18 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
             Events
           </button>
           <Link
+            href="/opportunities"
+            className={`nav-events-link ${pathname === "/opportunities" ? "is-active" : ""}`}
+            aria-current={pathname === "/opportunities" ? "page" : undefined}
+            onNavigate={navigateWithCurtain("/opportunities")}
+          >
+            Opportunities
+          </Link>
+          <Link
             href="/recruit"
             className={`nav-events-link ${pathname === "/recruit" ? "is-active" : ""}`}
             aria-current={pathname === "/recruit" ? "page" : undefined}
-            onNavigate={(event) => {
-              // Same curtain as Events; it navigates once the screen is covered.
-              // New-tab and modified clicks never reach here.
-              event.preventDefault();
-              close();
-              if (pathname !== "/recruit") startPageTransition("/recruit");
-            }}
+            onNavigate={navigateWithCurtain("/recruit")}
           >
             Join Us
             {/* Home only, while recruiting: a doodled arrow curling up to
