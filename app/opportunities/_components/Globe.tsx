@@ -75,9 +75,9 @@ function landDots(count: number, radius: number): THREE.Vector3[] {
 }
 
 /**
- * Dotted globe with a marker for every in-person hackathon we could place.
- * Drag to spin; hover a marker for its name, click to open it. The list
- * below has the same hackathons for keyboard and screen-reader users.
+ * Dotted globe with red markers. Drag to spin; hover a marker for its name,
+ * click to open it. Every marker's link must also be on the page as a normal
+ * link, for keyboard and screen-reader users.
  */
 export default function Globe({ markers }: { markers: GlobeMarker[] }): React.ReactElement {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -234,7 +234,7 @@ export default function Globe({ markers }: { markers: GlobeMarker[] }): React.Re
         className="op-globe"
         ref={mountRef}
         role="img"
-        aria-label={`Globe showing ${markers.length} in-person hackathons. Every one is also in the list below.`}
+        aria-label={`Globe with red dots: ${markers.map((marker) => marker.title).join(", ")}.`}
       >
         {hovered && (
           <span className="op-globe__label" style={{ left: hovered.x, top: hovered.y }} aria-hidden="true">
@@ -243,7 +243,7 @@ export default function Globe({ markers }: { markers: GlobeMarker[] }): React.Re
         )}
       </div>
       <p className="op-globe-hint" aria-hidden="true">
-        Drag to spin · tap a red dot
+        Drag to spin · tap the red dot
       </p>
     </div>
   );

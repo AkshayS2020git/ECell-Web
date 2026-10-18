@@ -37,7 +37,7 @@ const TRANSITION_COPY = {
   "/opportunities": {
     eyebrow: "Opportunities",
     lines: ["Go build", "somewhere."],
-    meta: "Loading hackathons",
+    meta: "Loading opportunities",
   },
 } satisfies Record<string, TransitionCopy>;
 

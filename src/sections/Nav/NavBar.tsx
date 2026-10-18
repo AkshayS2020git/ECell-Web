@@ -51,7 +51,7 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
         <div className="nav__logo-group">
           {isSubNav ? (
             <Link href="/" className="nav-events-link nav-home-link">
-              ← Home
+              ← <span className="nav-home-label">Home</span>
             </Link>
           ) : (
             <>
