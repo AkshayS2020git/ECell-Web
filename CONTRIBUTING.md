@@ -219,6 +219,8 @@ done
 
 # Pull Requests
 
+New PRs start from [`.github/pull_request_template.md`](./.github/pull_request_template.md). Fill in every section and tick the checklist.
+
 Before opening a PR ensure all checks pass:
 
 ```bash

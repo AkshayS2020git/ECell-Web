@@ -5,6 +5,7 @@
 ```text
 ECell-Web/
 ├── .github/
+│   ├── pull_request_template.md    # Questions and checklist every new PR starts with
 │   └── workflows/
 │       ├── ci.yml                  # Typecheck, lint, tests, and production build
 │       ├── pr-cd.yml               # Pull-request preview deployments (Vercel)
