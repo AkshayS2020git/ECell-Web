@@ -267,13 +267,29 @@
   }
 }
 
-/* Narrow phones can't fit Events, Join Us and Chapters on one line. The
+/* Narrow phones can't fit Events, Opportunities, Join Us and Chapters on one line. The
    "Chapters" text and the menu icon open the same menu, so swap the text for
    the icon here. The base icon's lines are inset to zero width, so give them
    a visible width at this size. */
-@media (max-width: 400px) {
+@media (max-width: 540px) {
   .chapters-toggle {
     display: none;
+  }
+
+  /* Events, Opportunities and Join Us leave no room for "← Home" too: show
+     just the arrow. The word stays readable to screen readers. */
+  .nav-home-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .nav-home-link {
+    padding-inline: 4px 8px;
+    font-size: 1.2em;
   }
 
   .menu-icon span {

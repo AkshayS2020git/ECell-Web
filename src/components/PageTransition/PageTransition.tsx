@@ -34,6 +34,11 @@ const TRANSITION_COPY = {
     lines: ["Your seat", "is waiting."],
     meta: "Loading recruitment",
   },
+  "/opportunities": {
+    eyebrow: "Opportunities",
+    lines: ["Go build", "somewhere."],
+    meta: "Loading opportunities",
+  },
 } satisfies Record<string, TransitionCopy>;
 
 export type TransitionPath = keyof typeof TRANSITION_COPY;

@@ -76,3 +76,19 @@ describe("Join Us link", () => {
     expect((onTransition.mock.calls[0][0] as CustomEvent).detail).toEqual({ path: "/recruit" });
   });
 });
+
+describe("Opportunities link", () => {
+  it("goes to /opportunities through the page transition curtain", () => {
+    render(<Nav />);
+    const onTransition = vi.fn();
+    window.addEventListener(PAGE_TRANSITION_EVENT, onTransition);
+
+    const link = screen.getByRole("link", { name: "Opportunities" });
+    expect(link).toHaveAttribute("href", "/opportunities");
+    fireEvent.click(link);
+
+    window.removeEventListener(PAGE_TRANSITION_EVENT, onTransition);
+    expect(onTransition).toHaveBeenCalledTimes(1);
+    expect((onTransition.mock.calls[0][0] as CustomEvent).detail).toEqual({ path: "/opportunities" });
+  });
+});

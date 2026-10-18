@@ -1,0 +1,296 @@
+/* /opportunities — same look as /recruit and the events archive: dark page,
+   tracked uppercase labels, hairline rules and Fraunces italics for emphasis. */
+
+.op-page {
+    --op-paper: var(--fg, #f4f4f2);
+    --op-muted: rgba(244, 244, 242, .6);
+    --op-line: rgba(244, 244, 242, .14);
+    --op-line-strong: rgba(244, 244, 242, .32);
+    --op-accent: var(--primarycolor, #bababa);
+    --op-hot: var(--color-red, #ff001a);
+    --op-globe-fill: #141414;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background: var(--bg, #1a1a1a);
+    color: var(--op-paper)
+}
+
+.op-page em {
+    color: var(--op-accent);
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -.04em
+}
+
+.op-hero,
+.op-content {
+    max-width: 1360px;
+    margin: auto;
+    padding-inline: clamp(16px, 6vw, 88px)
+}
+
+/* ============ HERO ============ */
+
+.op-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4vw;
+    align-items: center;
+    padding-top: clamp(135px, 17vh, 190px);
+    padding-bottom: clamp(56px, 8vh, 90px)
+}
+
+.op-hero-copy {
+    position: relative;
+    z-index: 1;
+    min-width: 0
+}
+
+.op-hero-globe {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px
+}
+
+.op-globe {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 1;
+    /* Vertical swipes still scroll the page; sideways ones spin the globe. */
+    touch-action: pan-y
+}
+
+/* Soft halo behind the globe; the sphere fills about 78% of the canvas. */
+.op-globe::before {
+    content: "";
+    position: absolute;
+    inset: 4%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(186, 186, 186, .16) 52%, rgba(186, 186, 186, 0) 70%);
+    pointer-events: none
+}
+
+.op-globe canvas {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%
+}
+
+.op-globe__label {
+    position: absolute;
+    z-index: 1;
+    max-width: 240px;
+    padding: 6px 10px;
+    border: 1px solid var(--op-line-strong);
+    border-radius: 8px;
+    background: rgba(17, 17, 17, .92);
+    color: var(--op-paper);
+    font-size: .78rem;
+    line-height: 1.35;
+    pointer-events: none;
+    transform: translate(12px, -50%)
+}
+
+.op-globe-hint {
+    color: var(--op-muted);
+    font-size: .62rem;
+    letter-spacing: .22em;
+    text-transform: uppercase
+}
+
+.op-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--op-muted);
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .28em
+}
+
+.op-eyebrow span {
+    width: 26px;
+    height: 1px;
+    background: var(--op-muted)
+}
+
+.op-hero h1 {
+    margin-top: 30px;
+    /* Capped so "somewhere." fits its half of the hero on wide screens
+       instead of running under the globe. */
+    font-size: clamp(3.4rem, 7.6vw, 7rem);
+    white-space: nowrap;
+    letter-spacing: -.075em;
+    word-spacing: .14em;
+    line-height: .82
+}
+
+.op-hero-intro {
+    max-width: 560px;
+    margin-top: 34px;
+    color: var(--op-muted);
+    font-size: clamp(.95rem, 1.2vw, 1.05rem);
+    line-height: 1.7
+}
+
+/* ============ PICK ============ */
+
+.op-content {
+    padding-bottom: 90px
+}
+
+.op-section-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 17px 0;
+    border-top: 1px solid var(--op-line);
+    color: var(--op-muted);
+    font-size: .64rem;
+    letter-spacing: .22em
+}
+
+.op-section-head h2 {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 400;
+    letter-spacing: inherit;
+    line-height: inherit
+}
+
+.op-feature {
+    display: grid;
+    gap: 22px;
+    padding: clamp(28px, 4vw, 48px) 0;
+    border-top: 1px solid var(--op-line);
+    border-bottom: 1px solid var(--op-line);
+    transition: background-color .25s, padding .25s
+}
+
+.op-feature:focus-visible {
+    outline: 1px solid var(--op-paper);
+    outline-offset: 4px
+}
+
+.op-feature__name {
+    display: flex;
+    align-items: flex-start;
+    font-family: var(--font-archivo), sans-serif;
+    font-size: clamp(2.4rem, 7vw, 5.6rem);
+    font-weight: 800;
+    letter-spacing: -.05em;
+    line-height: .95;
+    overflow-wrap: anywhere
+}
+
+.op-feature__arrow {
+    margin-left: auto;
+    padding-left: .4em;
+    color: var(--op-muted);
+    font-size: .5em;
+    transition: color .25s, transform .25s
+}
+
+.op-feature__text {
+    max-width: 620px;
+    color: var(--op-muted);
+    font-size: clamp(.95rem, 1.3vw, 1.1rem);
+    line-height: 1.7
+}
+
+.op-feature__cta {
+    justify-self: start;
+    padding: 12px 22px;
+    border: 1px solid var(--op-line-strong);
+    border-radius: 999px;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    transition: background-color .25s, color .25s
+}
+
+.op-points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    padding-top: 28px;
+    list-style: none
+}
+
+.op-points h3 {
+    color: var(--op-muted);
+    font-size: .64rem;
+    font-weight: 700;
+    letter-spacing: .22em;
+    text-transform: uppercase
+}
+
+.op-points p {
+    margin-top: 10px;
+    font-size: .95rem;
+    line-height: 1.6
+}
+
+.op-source {
+    margin-top: 56px;
+    color: var(--op-muted);
+    font-size: .78rem;
+    line-height: 1.7
+}
+
+.op-source a {
+    color: var(--op-paper);
+    text-decoration: underline;
+    text-underline-offset: 3px
+}
+
+@media (hover: hover) {
+    .op-feature:hover {
+        padding-inline: 18px;
+        background: rgba(244, 244, 242, .04)
+    }
+
+    .op-feature:hover .op-feature__arrow {
+        color: var(--op-paper);
+        transform: translate(4px, -4px)
+    }
+
+    .op-feature:hover .op-feature__cta {
+        background: var(--op-paper);
+        color: var(--bg, #1a1a1a)
+    }
+}
+
+@media (max-width: 900px) {
+    .op-hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 48px
+    }
+
+    .op-globe {
+        max-width: 440px
+    }
+}
+
+@media (max-width: 720px) {
+    .op-points {
+        grid-template-columns: minmax(0, 1fr)
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .op-feature,
+    .op-feature__arrow,
+    .op-feature__cta {
+        transition: none
+    }
+}
