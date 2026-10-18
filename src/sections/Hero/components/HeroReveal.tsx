@@ -10,10 +10,10 @@ import {
   PRESSURE_FRAG,
   SPLAT_FRAG,
   VERT,
-} from "../webgl/shaders";
-import { CREDIT_TEXT, drawFlatText, layoutText } from "../webgl/text";
-import { buildLetter, type Letter } from "../webgl/letters";
-import { GALAXY_FRAG, GALAXY_VERT, buildGalaxy } from "../webgl/galaxy";
+} from "@/src/sections/Hero/webgl/shaders";
+import { CREDIT_TEXT, drawFlatText, layoutText } from "@/src/sections/Hero/webgl/text";
+import { buildLetter, type Letter } from "@/src/sections/Hero/webgl/letters";
+import { GALAXY_FRAG, GALAXY_VERT, buildGalaxy } from "@/src/sections/Hero/webgl/galaxy";
 import { isPageScrollLocked } from "@/src/utils/scrollLock";
 
 // Fraction of the hero height the nebula's core is raised above centre

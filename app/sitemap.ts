@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import type { StaticImageData } from "next/image";
-import { EVENTS_DATA } from "@/src/data/eventsData";
-import { GALLERY_SECTIONS } from "@/app/events/argonyx-26/gallery/_data/galleryData";
+import { EVENTS_DATA } from "@/src/content/events";
 import { SITE_URL } from "@/src/utils/constants";
 
 // The sitemap is generated at build time, so this is the deploy date.
@@ -29,7 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: event.isCompleted ? 0.7 : 0.8,
     images: imageUrls([
       event.image,
-      ...(event.winners ?? []).flatMap((winner) =>
+      ...(event.winners?.items ?? []).flatMap((winner) =>
         winner.photo ? [winner.photo] : [],
       ),
     ]),
@@ -57,17 +56,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
       images: [`${SITE_URL}/og-image.webp`],
-    },
-    {
-      url: `${SITE_URL}/events/argonyx-26/gallery`,
-      lastModified,
-      changeFrequency: "monthly",
-      priority: 0.6,
-      images: imageUrls(
-        GALLERY_SECTIONS.flatMap((section) =>
-          section.photos.map((photo) => photo.src),
-        ),
-      ),
     },
   ];
 }

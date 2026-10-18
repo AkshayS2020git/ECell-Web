@@ -1,0 +1,353 @@
+/* ==========================================================================
+   EVENT ROUNDS & TIMELINE
+   ========================================================================== */
+.event-detail-page .event-rounds {
+  position: relative;
+  width: 100%;
+  padding: 7rem 1.5rem;
+  border-top: 1px solid var(--event-line);
+  background: var(--event-black);
+}
+
+.event-detail-page .event-rounds__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.event-detail-page .event-rounds__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.7fr);
+  align-items: end;
+  gap: 4.5rem;
+  margin-bottom: 4.5rem;
+}
+
+.event-detail-page .event-rounds__headline {
+  margin: 0;
+  max-width: 14ch;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-size: clamp(2.4rem, 1.6rem + 2.8vw, 3.8rem);
+  line-height: 1.08;
+}
+
+.event-detail-page .event-rounds__headline .hero__accent {
+  white-space: nowrap;
+}
+
+.event-detail-page .event-rounds__subhead {
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--event-gray);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.event-detail-page .event-progression {
+  list-style: none;
+  margin: 0 0 5rem;
+  padding: 0;
+  border-top: 1px solid var(--event-line);
+}
+
+.event-detail-page .event-progression__item {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--event-line);
+}
+
+.event-detail-page .event-progression__stage {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.55fr) minmax(15rem, 0.9fr) minmax(20rem, 1.55fr);
+  gap: 2.5rem;
+  align-items: start;
+  padding: 2.5rem 0 2.75rem;
+}
+
+.event-detail-page .event-progression__sequence,
+.event-detail-page .event-progression__summary {
+  min-width: 0;
+}
+
+.event-detail-page .event-progression__sequence {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.event-detail-page .event-progression__number {
+  color: var(--event-white);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.event-detail-page .event-progression__badge,
+.event-detail-page .event-progression__type,
+.event-detail-page .event-outcomes__kicker,
+.event-detail-page .event-guidelines__title {
+  color: var(--event-gray);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.event-detail-page .event-progression__badge {
+  max-width: 12rem;
+}
+
+.event-detail-page .event-progression__type {
+  margin: 0 0 0.65rem;
+}
+
+.event-detail-page .event-progression__title {
+  margin: 0;
+  font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.event-detail-page .event-progression__description {
+  margin: 0;
+  max-width: var(--measure);
+  color: rgba(244, 243, 239, 0.84);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.event-detail-page .event-outcomes {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.6fr);
+  gap: 4.5rem;
+  padding: 0 0 4rem;
+}
+
+.event-detail-page .event-outcomes__header {
+  align-self: start;
+}
+
+.event-detail-page .event-outcomes__kicker {
+  margin: 0 0 0.65rem;
+}
+
+.event-detail-page .event-outcomes__title {
+  margin: 0;
+  max-width: 16ch;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.event-detail-page .event-outcomes__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: outcome;
+  border-top: 1px solid var(--event-line);
+}
+
+.event-detail-page .event-outcomes__item {
+  counter-increment: outcome;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--event-line);
+  color: rgba(244, 243, 239, 0.88);
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.event-detail-page .event-outcomes__item::before {
+  content: "0" counter(outcome);
+  color: var(--event-gray);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.event-detail-page .event-guidelines {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.6fr);
+  gap: 4.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--event-line);
+}
+
+.event-detail-page .event-guidelines__title {
+  margin: 0;
+}
+
+.event-detail-page .event-guidelines__text {
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--event-gray);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 960px) {
+  .event-detail-page .event-rounds {
+      padding-block: 5.5rem;
+  }
+
+  .event-detail-page .event-rounds__header {
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.75fr);
+      gap: 2.5rem;
+      margin-bottom: 3.5rem;
+  }
+
+  .event-detail-page .event-progression {
+      margin-bottom: 4rem;
+  }
+
+  .event-detail-page .event-progression__stage {
+      grid-template-columns: 8rem minmax(14rem, 0.9fr) minmax(0, 1.3fr);
+      gap: 1.75rem;
+  }
+
+  .event-detail-page .event-outcomes,
+  .event-detail-page .event-guidelines {
+      grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.5fr);
+      gap: 2.5rem;
+  }
+
+}
+@media (max-width: 640px) {
+  .event-detail-page .event-rounds {
+      padding: 4rem 1rem;
+  }
+
+  .event-detail-page .event-rounds__header {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+  }
+
+  .event-detail-page .event-rounds__headline {
+      max-width: 16ch;
+      font-size: clamp(1.9rem, 1.2rem + 3vw, 2.6rem);
+  }
+
+  .event-detail-page .event-rounds__headline .hero__accent {
+      white-space: normal;
+  }
+
+  .event-detail-page .event-rounds__subhead {
+      font-size: 0.95rem;
+  }
+
+  .event-detail-page .event-progression {
+      margin-bottom: 3.5rem;
+      border-top: 0;
+  }
+
+  .event-detail-page .event-progression__stage {
+      position: relative;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      padding: 0 0 2.5rem 2rem;
+  }
+
+  .event-detail-page .event-progression__item {
+      border-bottom: 0;
+  }
+
+  .event-detail-page .event-progression__item:not(:last-child) .event-progression__stage {
+      margin-bottom: 2.5rem;
+  }
+
+  .event-detail-page .event-progression__stage::before {
+      content: "";
+      position: absolute;
+      top: 0.2rem;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: var(--event-line);
+  }
+
+  .event-detail-page .event-progression__stage::after {
+      content: "";
+      position: absolute;
+      top: 0.2rem;
+      left: -0.2rem;
+      width: 0.45rem;
+      height: 0.45rem;
+      background: var(--event-white);
+  }
+
+  .event-detail-page .event-progression__sequence {
+      gap: 0.55rem;
+  }
+
+  .event-detail-page .event-progression__description {
+      font-size: 0.92rem;
+      line-height: 1.7;
+  }
+
+  .event-detail-page .event-outcomes,
+  .event-detail-page .event-guidelines {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+  }
+
+  .event-detail-page .event-outcomes {
+      padding-bottom: 3rem;
+  }
+
+  .event-detail-page .event-outcomes__title {
+      max-width: none;
+      font-size: 1.3rem;
+  }
+
+}
+@media (max-width: 420px) {
+  .event-detail-page .event-rounds {
+      padding: 3rem 0.75rem;
+  }
+
+  .event-detail-page .event-rounds__header {
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+  }
+
+  .event-detail-page .event-rounds__headline {
+      font-size: 1.65rem;
+  }
+
+  .event-detail-page .event-progression {
+      margin-bottom: 3rem;
+  }
+
+  .event-detail-page .event-progression__stage {
+      gap: 1rem;
+      padding-left: 1.5rem;
+  }
+
+  .event-detail-page .event-progression__item:not(:last-child) .event-progression__stage {
+      margin-bottom: 2rem;
+  }
+
+  .event-detail-page .event-progression__title {
+      font-size: 1.3rem;
+  }
+
+  .event-detail-page .event-progression__description,
+  .event-detail-page .event-outcomes__item,
+  .event-detail-page .event-guidelines__text {
+      overflow-wrap: anywhere;
+  }
+
+  .event-detail-page .event-outcomes__item {
+      grid-template-columns: 1.8rem minmax(0, 1fr);
+      gap: 0.65rem;
+      font-size: 0.88rem;
+  }
+
+}

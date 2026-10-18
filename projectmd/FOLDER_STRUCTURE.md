@@ -10,18 +10,12 @@ ECell-Web/
 │       ├── pr-cd.yml               # Pull-request preview deployments (Vercel)
 │       └── vercel-cd.yml           # Production deployment on main (Vercel)
 ├── app/                            # Next.js App Router: routes and route metadata only
-│   ├── Argonyx-26/page.tsx         # Legacy redirect route
 │   ├── events/
 │   │   ├── [slug]/
-│   │   │   ├── EventDetail.css
-│   │   │   ├── EventDetailClient.tsx
-│   │   │   └── page.tsx
-│   │   ├── argonyx-26/gallery/
-│   │   │   ├── _components/        # Gallery-specific UI
-│   │   │   ├── _data/              # Gallery image catalog
-│   │   │   ├── _hooks/             # Gallery behavior and animation
-│   │   │   ├── DepthCarousel.tsx
-│   │   │   ├── GalleryClient.tsx
+│   │   │   ├── _components/        # One component + stylesheet per page section (hero, rounds, winners, ...)
+│   │   │   ├── EventDetail.css     # Only @imports: shared styles, then each section's CSS in page order
+│   │   │   ├── EventDetailShared.css  # Page shell, buttons, eyebrows, accents
+│   │   │   ├── EventDetailClient.tsx  # Top bar, anchor scrolling, section order
 │   │   │   └── page.tsx
 │   │   └── page.tsx                # Events archive route
 │   ├── globals.css                 # Tailwind and global style imports
@@ -38,32 +32,36 @@ ECell-Web/
 ├── scripts/
 │   └── deploy-cloudflare.mjs       # Cloudflare deploy wrapper (see Deployment)
 ├── src/                            # All application source outside routing
-│   ├── assets/                     # Bundled, imported feature media
+│   ├── assets/                     # Bundled, imported media, one folder per feature
+│   │   ├── events/<slug>/          # poster, photo, winners/ for each event
+│   │   ├── home/                   # Homepage section backgrounds
+│   │   ├── joinus/  speakers/  sponsors/  team/
 │   ├── components/                 # Shared components, one folder each
-│   │   ├── EventsArchive/          # /events listing (archive data, filters, calendar)
+│   │   ├── CinematicFooter/        # Homepage footer
+│   │   ├── CircularTestimonials/   # Carousel used by Speakers
+│   │   ├── EventsArchive/          # /events listing (filters, calendar, archive rows)
 │   │   ├── FloatingLogo/           # Scroll-driven logo that docks into the nav
 │   │   ├── GameLauncher/           # Launcher and four minigames
 │   │   ├── HorizontalFlow/         # Pinned vertical-to-horizontal flow
-│   │   ├── InfiniteSpiral/         # Event-detail gallery preview effect
+│   │   ├── InfiniteSpiral/         # 3D image spiral, kept for the upcoming event galleries
 │   │   ├── LaserFlow/              # Three.js shader used by WhatsApp Community
 │   │   ├── LogoModal/              # Logo story dialog
 │   │   ├── PageTransition/         # Route transition overlay
 │   │   ├── RouteScrollManager/     # Scroll reset on pathname change (root layout)
 │   │   ├── SiteCredit/             # "Built by" credit used on route pages
 │   │   ├── SmoothScroll/           # Shared Lenis lifecycle (root layout)
-│   │   └── ui/                     # Generic presentational primitives (timeline, footer, carousels)
-│   ├── data/
-│   │   ├── eventsData.ts           # Event lookup and compatibility exports
-│   │   └── events/                 # Per-event records and shared types
-│   │       ├── types.ts
-│   │       ├── argonyx26.ts
-│   │       ├── eSummit.ts
-│   │       ├── hacktoberfest26.ts
-│   │       └── pitchEThon.ts
+│   │   └── Timeline/               # Horizontal journey in the About section
+│   ├── content/                    # Editable site content (see Content Guide)
+│   │   ├── events/
+│   │   │   ├── index.ts            # EVENTS list, lookup, aliases, date labels
+│   │   │   ├── types.ts
+│   │   │   └── <event>.ts          # Page content for events that have a page
+│   │   ├── community.ts  site.ts  speakers.ts
+│   │   └── sponsors.ts  team.ts  timeline.ts  whyJoin.ts
+│   ├── data/recruitment.ts         # Live recruitment content, left in place until the drive ends
 │   ├── sections/                   # Independent homepage feature domains
 │   │   ├── About/
 │   │   ├── Events/
-│   │   ├── Footer/
 │   │   ├── Hero/                   # Hero.tsx + HeroAnimations.ts (scroll shrink)
 │   │   │   ├── components/         # HeroReveal (WebGL), HeroIntro, HeroScrollHint, HeroSocials
 │   │   │   ├── webgl/              # Shaders, title layout, glass letters, nebula
@@ -71,15 +69,15 @@ ECell-Web/
 │   │   ├── Loader/
 │   │   ├── Nav/                    # Nav, NavBar, SubNav, LogoHint, ChaptersDropdown, navUtils
 │   │   │   └── hooks/              # useChaptersMenu, useHomeScroll, useSectionNavigation
-│   │   ├── Speakers/               # components/, data/, styles/
+│   │   ├── Speakers/               # Speakers.tsx + styles/
 │   │   ├── Sponsors/
 │   │   ├── Story/
-│   │   ├── Team/                   # animations/, components/, data/, styles/, index.ts
+│   │   ├── Team/                   # animations/, components/, styles/, index.ts
 │   │   ├── WhatsAppCommunity/
 │   │   └── WhyJoin/
 │   ├── styles/                     # Global tokens and shared transitions
 │   ├── types/                      # Ambient asset declarations
-│   └── utils/                      # Shared helpers: animation, scroll, input, math, `cn`
+│   └── utils/                      # Shared helpers: scroll, input, math, `cn`, site constants
 ├── tests/
 │   ├── app/                        # Route and metadata tests
 │   ├── src/                        # Component, section, and utility tests (mirrors src/)
@@ -106,9 +104,9 @@ Generated/local directories such as `.next/`, `.open-next/`, `.wrangler/`, `dist
 | Folder | Holds | Does not hold |
 | --- | --- | --- |
 | `app/` | Routes, layouts, metadata files, and route-only code in `_components/`, `_data/`, `_hooks/` | Code reused by other routes |
-| `src/sections/` | One folder per homepage section, owning its markup, styles, data, hooks, and animation | Code another section imports |
+| `src/sections/` | One folder per homepage section, owning its markup, styles, hooks, and animation | Content, or code another section imports |
 | `src/components/` | Components used by more than one route or section, or mounted globally | Section-only UI |
-| `src/data/` | Content shared by several areas (events) | Data only one feature reads |
+| `src/content/` | Every piece of editable content: text, lists, links, and the images they reference | JSX or behaviour |
 | `src/utils/` | Framework-agnostic helpers and shared runtime singletons | React components |
 | `tests/` | Tests, mirroring the path of the code under test | Test helpers inside `src/` |
 
@@ -118,7 +116,7 @@ There is no top-level `lib/`: shared helpers live in `src/utils/`, so everything
 
 ### New route
 
-Create a route directory under `app/`. Keep its server `page.tsx` responsible for route data, metadata, and not-found behavior. Place interactive browser UI in a nearby client component when it is route-specific (using `_components/`, `_data/`, `_hooks/` as the gallery does), or in `src/components/` when reusable.
+Create a route directory under `app/`. Keep its server `page.tsx` responsible for route data, metadata, and not-found behavior. Place interactive browser UI in a nearby client component when it is route-specific (in `_components/` or `_hooks/`, as `app/events/[slug]/` does), or in `src/components/` when reusable.
 
 ### New homepage section
 
@@ -129,7 +127,6 @@ src/sections/NewSection/
 ├── NewSection.tsx      # Or components/NewSection.tsx once there are several components
 ├── NewSection.css      # Or styles/ once there are several stylesheets
 ├── components/         # Optional section-only UI
-├── data/               # Optional section-only content
 ├── hooks/              # Optional behavior (see Nav/hooks)
 ├── animations/         # Optional complex timelines
 └── index.ts            # Optional barrel when the entry component lives in a subfolder
@@ -139,11 +136,11 @@ When the entry component moves into `components/`, add an `index.ts` that re-exp
 
 ### New shared component
 
-Place it in its own PascalCase folder, `src/components/<ComponentName>/<ComponentName>.tsx`, even when it is a single file, and keep its CSS and internal helpers inside that folder. Loose files directly under `src/components/` are not used. Generic, design-system-style primitives with no product logic go in `src/components/ui/`.
+Place it in its own PascalCase folder, `src/components/<ComponentName>/<ComponentName>.tsx`, even when it is a single file, and keep its CSS and internal helpers inside that folder. Loose files directly under `src/components/` are not used.
 
-### New data
+### New content
 
-Use `src/data/` for data consumed by multiple application areas. Keep truly feature-specific datasets in that feature's `data/` or `_data/` directory. Prefer typed exported records over untyped object literals.
+Put text, lists, links and the images they use in `src/content/`, one file per topic, as typed exports. Components import it; they never keep their own copy. A list shown in two places (like events) is defined once and the second place derives from it. Links to ECell's own channels come from `SITE_LINKS` in `src/content/site.ts`.
 
 ### New helper
 
@@ -155,7 +152,9 @@ Use shared CSS only for tokens, reset behavior, or genuinely reusable primitives
 
 ### New assets
 
-- Use `src/assets/<feature>/` when importing media from TypeScript/TSX so Next/build tooling owns it.
+- Use `src/assets/<feature>/` when importing media from TypeScript/TSX so Next/build tooling owns it. Event media goes in `src/assets/events/<slug>/`.
+- Name files in lowercase kebab-case without spaces (`red-bull.webp`, not `Red Bull LOGO .webp`).
+- Host large photo galleries outside the repository and reference them by URL.
 - Use `public/` when a file needs a stable URL, such as favicons, verification files, social images, or `<video>` sources.
 - Do not duplicate the same large media file across both locations.
 
@@ -165,13 +164,13 @@ Mirror the implementation path under `tests/app/` or `tests/src/` (for example `
 
 ## Import conventions
 
-The only path alias is `@/*`, which resolves from the repository root in both TypeScript and Vitest. Import across folders with it, and use relative imports only within the same feature folder:
+The only path alias is `@/*`, which resolves from the repository root in both TypeScript and Vitest. Import across folders with it, and use relative `./` imports only within the same folder. ESLint rejects parent-relative `../` imports:
 
 ```ts
 import Nav from "@/src/sections/Nav/Nav";
 import Team from "@/src/sections/Team";
 import EventsArchive from "@/src/components/EventsArchive/EventsArchive";
-import { getEventBySlug } from "@/src/data/eventsData";
+import { getEventBySlug } from "@/src/content/events";
 import { cn } from "@/src/utils/cn";
 ```
 

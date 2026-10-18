@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { scrollToElement } from "@/src/utils/lenis";
 import { isPageScrollLocked } from "@/src/utils/scrollLock";
-import { PENDING_SCROLL_KEY, navigateToSection } from "../navUtils";
+import { PENDING_SCROLL_KEY, navigateToSection } from "@/src/sections/Nav/navUtils";
 
 export function useHomeScroll(): void {
   const pathname = usePathname();

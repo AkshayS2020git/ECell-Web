@@ -1,14 +1,12 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import { gsap } from "../../utils/gsapSetup";
-import talkStartupWithMe from "../../assets/events/events_photo/TalkStartupWithMe.webp";
-import winterTechTalk from "../../assets/events/events_photo/WinterTechTalk.webp";
-import argonyx from "../../assets/events/events_photo/argonyx.webp";
-import argonyx2 from "../../assets/events/events_photo/argoynx2.webp";
+import { gsap } from "@/src/utils/gsapSetup";
 // The "Explore all events" card shows the latest event poster.
-import moreEvents from "../../assets/events/Posters/Hackotber.png";
-import desktopTeamBg from "../../assets/events/background/pcTeam.webp";
-import mobileTeamBg from "../../assets/events/background/phone.webp";
+import moreEvents from "@/src/assets/events/hacktoberfest-26/poster.png";
+import desktopTeamBg from "@/src/assets/home/events-background-desktop.webp";
+import mobileTeamBg from "@/src/assets/home/events-background-mobile.webp";
+import { EVENTS, formatEventDays, formatEventMonth } from "@/src/content/events";
+import { padNumber } from "@/src/utils/math";
 import "./Events.css";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
@@ -25,53 +23,24 @@ export interface GalleryItem {
   isCta?: boolean;
 }
 
+// Past events, oldest first, followed by the "explore all" card.
+const PAST_EVENTS = EVENTS.filter((event) => event.status === "past").sort((a, b) =>
+  (a.startDate ?? "").localeCompare(b.startDate ?? ""),
+);
+
 const GALLERY_ITEMS: GalleryItem[] = [
-  {
-    number: "01",
+  ...PAST_EVENTS.map((event, index) => ({
+    number: padNumber(index + 1),
     category: "EVENT",
-    title: "ARGONYX HACKATHON",
-    description:
-      "A technical hackathon bringing students and builders together to explore, build, and deploy ambitious solutions.",
-    date: "18 SEP 2025",
+    title: event.title.toUpperCase(),
+    description: event.summary,
+    date: `${formatEventDays(event) ?? "TBA"} ${formatEventMonth(event)}`,
     venue: "RV UNIVERSITY",
-    src: argonyx,
-    alt: "Argonyx Hackathon",
-  },
+    src: event.image,
+    alt: event.title,
+  })),
   {
-    number: "02",
-    category: "EVENT",
-    title: "WINTER TECH TALK",
-    description:
-      "A technical session bringing students together to explore emerging technologies and frameworks shaping the future.",
-    date: "12 DEC 2025",
-    venue: "RV UNIVERSITY",
-    src: winterTechTalk,
-    alt: "Winter Tech Talk",
-  },
-  {
-    number: "03",
-    category: "EVENT",
-    title: "TALK STARTUP WITH ME",
-    description:
-      "From problem discovery to your first pitch — learn practical venture building directly from experienced founders.",
-    date: "24 MAR 2026",
-    venue: "RV UNIVERSITY",
-    src: talkStartupWithMe,
-    alt: "Talk Startup With Me",
-  },
-  {
-    number: "04",
-    category: "EVENT",
-    title: "ARGONYX 2.0",
-    description:
-      "Build, break and reimagine. A 36-hour sprint for visionary student creators, engineers, and designers.",
-    date: "18 SEP 2026",
-    venue: "RV UNIVERSITY",
-    src: argonyx2,
-    alt: "Argonyx 2.0",
-  },
-  {
-    number: "05",
+    number: padNumber(PAST_EVENTS.length + 1),
     category: "ARCHIVE",
     title: "EXPLORE ALL EVENTS",
     description:

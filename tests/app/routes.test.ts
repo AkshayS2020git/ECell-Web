@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
-import { getAllEventSlugs } from "@/src/data/eventsData";
+import { getAllEventSlugs } from "@/src/content/events";
 
 const SITE_URL = "https://ecell-rvu.vercel.app";
 
@@ -21,7 +21,6 @@ describe("SEO routes", () => {
     expect(urls).toEqual(
       expect.arrayContaining([
         `${SITE_URL}/events`,
-        `${SITE_URL}/events/argonyx-26/gallery`,
         `${SITE_URL}/recruit`,
         ...getAllEventSlugs().map((slug) => `${SITE_URL}/events/${slug}`),
       ]),

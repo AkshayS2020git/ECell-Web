@@ -12,13 +12,12 @@ Next.js App Router (`app/`)
   ├── root layout, metadata, fonts, analytics, global runtime helpers
   ├── homepage composition
   ├── events archive
-  ├── static event-detail routes
-  └── Argonyx gallery
+  └── static event-detail routes
         │
         ▼
 Feature layer (`src/sections`, `src/components`)
         │
-        ├── content/data (`src/data`, feature-local data)
+        ├── content (`src/content`)
         ├── animation/scroll utilities (`src/utils`)
         ├── styles (`app/globals.css`, `src/styles`, feature CSS)
         └── media (`src/assets`, `public`)
@@ -47,15 +46,14 @@ Add `"use client"` only where browser APIs, effects, event handlers, or client s
 | --- | --- | --- |
 | `/` | `app/page.tsx` | `src/sections/*` and shared interactive components |
 | `/events` | `app/events/page.tsx` | `src/components/EventsArchive/EventsArchive.tsx` |
-| `/events/[slug]` | `app/events/[slug]/page.tsx` | `EventDetailClient.tsx`, `src/data/eventsData.ts`, and per-event records in `src/data/events/` |
-| `/events/argonyx-26/gallery` | gallery `page.tsx` | `GalleryClient`, `_components`, `_hooks`, and `_data` |
+| `/events/[slug]` | `app/events/[slug]/page.tsx` | `EventDetailClient.tsx`, its section components in `_components/`, and `src/content/events/` |
 | legacy event paths | redirect page/config | canonical `/events/...` destinations |
 
-`generateStaticParams()` builds canonical event-detail paths from `getAllEventSlugs()`. `getEventBySlug()` resolves the shared event records and normalizes case and supported aliases. Argonyx and Hacktoberfest use this same detail route; Argonyx has a separate route only for its gallery.
+`generateStaticParams()` builds canonical event-detail paths from `getAllEventSlugs()`. `getEventBySlug()` resolves the shared event records and normalizes case and supported aliases. Every event page, upcoming or completed, uses this one route; sections render only when the event's data includes them.
 
 ## Component boundaries
 
-`src/sections/` contains homepage domains. A section should encapsulate its markup, styles, local animation, local data, hooks, and nested components. `src/components/` contains experiences reused across routes or that operate outside one homepage section, such as smooth scrolling, transitions, the logo overlay, event archive, horizontal flow, and games. Each shared component lives in its own folder; `src/components/ui/` holds generic presentational primitives.
+`src/sections/` contains homepage domains. A section should encapsulate its markup, styles, local animation, hooks, and nested components; its content comes from `src/content/`. `src/components/` contains experiences reused across routes or that operate outside one homepage section, such as smooth scrolling, transitions, the logo overlay, event archive, horizontal flow, and games. Each shared component lives in its own PascalCase folder.
 
 Avoid placing general utilities in a section. Move genuinely shared animation, constants, math, scrolling, input normalization, and class-name helpers to `src/utils/`. All non-routing source lives under `src/`; there is no top-level `lib/`. See [Folder structure](./FOLDER_STRUCTURE.md) for placement rules.
 
@@ -87,16 +85,14 @@ The Events section dispatches `ecell:events-transition`. The globally mounted `P
 
 ## Data architecture
 
-There is no centralized content service. The principal sources are:
+There is no CMS. All editable content is typed TypeScript in `src/content/`:
 
-- event detail records: `src/data/events/` with lookup and aliases in `src/data/eventsData.ts`;
-- event archive records: local data in `src/components/EventsArchive/EventsArchive.tsx`;
-- homepage event cards: local data in `src/sections/Events/Events.tsx`;
-- gallery records: gallery `_data/galleryData.ts`;
-- team data: `src/sections/Team/data/TeamData.ts`;
-- speakers, sponsors, and community responses: currently colocated with their feature implementations.
+- events: `src/content/events/index.ts` lists every event once (`EVENTS`); the `/events` archive and the homepage cards derive from it, and entries with `detail` (their own file in that folder) get a page;
+- team, speakers, sponsors, timeline, Why Join cards and community chat answers: one file each in `src/content/`;
+- recruitment: `src/data/recruitment.ts`, left where it was while the recruitment drive is live;
+- ECell's social, community and email links: `src/content/site.ts`.
 
-Event datasets are not normalized and may disagree. Treat detail records as canonical for detail-route rendering, but reconcile all three event surfaces during editorial updates.
+See the [Content Guide](./CONTENT_GUIDE.md) for where each piece lives and how to add an event.
 
 ## Styling architecture
 
@@ -112,7 +108,7 @@ Root and route metadata use Next.js metadata APIs. The layout supplies Organizat
 
 - No backend, authentication, CMS, or database exists in this repository.
 - Application content changes require a code deployment.
-- Large static gallery imports affect bundle/build workload.
+- Images imported from `src/assets` are bundled, so large photo sets belong in external storage.
 - Global CSS requires disciplined selector naming.
 - Scroll-pinned features are sensitive to layout and media dimension changes.
 - Browser-dependent features need cleanup and reduced-motion fallbacks.

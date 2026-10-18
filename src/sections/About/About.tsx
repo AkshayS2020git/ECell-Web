@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
-import Timeline from "@/src/components/ui/timeline";
+import Timeline from "@/src/components/Timeline/Timeline";
 import { refreshScroll } from "@/src/utils/lenis";
-import { gsap } from "../../utils/gsapSetup";
+import { gsap } from "@/src/utils/gsapSetup";
 import "./About.css";
 
 export default function About(): React.ReactElement {

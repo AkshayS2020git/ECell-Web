@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import LogoModal from "../../components/LogoModal/LogoModal";
+import LogoModal from "@/src/components/LogoModal/LogoModal";
 import NavBar from "./NavBar";
 import LogoHint from "./LogoHint";
 export default function Nav(): React.ReactElement {

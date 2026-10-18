@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { ArrowDown } from "lucide-react";
 import HeroSocials from "./HeroSocials";
-import "../styles/HeroScrollHint.css";
+import "@/src/sections/Hero/styles/HeroScrollHint.css";
 
 interface HeroScrollHintProps {
   ref?: React.Ref<HTMLDivElement>;

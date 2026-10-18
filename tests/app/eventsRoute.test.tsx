@@ -1,5 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { getAllEventSlugs, getEventBySlug } from "@/src/data/eventsData";
+import {
+  EVENTS,
+  formatEventDays,
+  formatEventMonth,
+  getAllEventSlugs,
+  getEventBySlug,
+  getEventHref,
+} from "@/src/content/events";
 
 describe("Events dynamic routes data", () => {
   it("returns all expected event slugs", () => {
@@ -15,7 +22,7 @@ describe("Events dynamic routes data", () => {
     expect(event).toBeDefined();
     expect(event?.title).toContain("ARGONYX");
     expect(event?.venue).toBe("RV University, Bengaluru");
-    expect(event?.registrationUrl).toContain("unstop.com");
+    expect(event?.registration.url).toContain("unstop.com");
     expect(event?.ledger.length).toBeGreaterThan(0);
     expect(event?.organizers.length).toBeGreaterThan(0);
     expect(event?.contacts.length).toBeGreaterThan(0);
@@ -48,11 +55,11 @@ describe("Events dynamic routes data", () => {
     expect(event?.venue).toBe("RV University, Bengaluru");
     expect(event?.organizers).toContain("AWS SBG, RV University");
     expect(event?.organizers).toContain("The Entrepreneurship Cell, RV University");
-    expect(event?.registrationUrl).toBe("https://share.google/4J3aOAZrHKNAcyaAF");
-    expect(event?.rounds?.length).toBe(2);
-    expect(event?.sponsorsPoweredBy?.length).toBeGreaterThan(0);
-    expect(event?.sponsorsPresenting?.name).toBe("DigitalOcean");
-    expect(event?.sponsorsList?.length).toBeGreaterThan(15);
+    expect(event?.registration.url).toBe("https://share.google/4J3aOAZrHKNAcyaAF");
+    expect(event?.rounds?.items.length).toBe(2);
+    expect(event?.sponsors?.poweredBy?.length).toBeGreaterThan(0);
+    expect(event?.sponsors?.presenting?.name).toBe("DigitalOcean");
+    expect(event?.sponsors?.list.length).toBeGreaterThan(15);
     expect(event?.contacts.length).toBe(2);
     expect(event?.contacts[0].name).toBe("Nishit");
     expect(event?.contacts[0].phone).toBe("+91 878 057 7400");
@@ -70,6 +77,25 @@ describe("Events dynamic routes data", () => {
 
   it("returns undefined for unknown event slugs", () => {
     expect(getEventBySlug("non-existent-event")).toBeUndefined();
+  });
+
+  it("only gives pages to events with detail content", () => {
+    const winterTechTalk = EVENTS.find((event) => event.slug === "winter-tech-talk");
+    expect(winterTechTalk).toBeDefined();
+    expect(getEventHref(winterTechTalk!)).toBeUndefined();
+    expect(getEventBySlug("winter-tech-talk")).toBeUndefined();
+    expect(getAllEventSlugs()).not.toContain("winter-tech-talk");
+    expect(getEventHref(EVENTS[0])).toBe(`/events/${EVENTS[0].slug}`);
+  });
+
+  it("formats single-day, multi-day and TBA event dates", () => {
+    const bySlug = (slug: string) => EVENTS.find((event) => event.slug === slug)!;
+    expect(formatEventDays(bySlug("hacktoberfest-26"))).toBe("31");
+    expect(formatEventMonth(bySlug("hacktoberfest-26"))).toBe("OCT 2026");
+    expect(formatEventDays(bySlug("argonyx-26"))).toBe("25–26");
+    expect(formatEventMonth(bySlug("argonyx-26"))).toBe("SEP 2026");
+    expect(formatEventDays(bySlug("pitch-e-thon"))).toBeUndefined();
+    expect(formatEventMonth(bySlug("pitch-e-thon"))).toBe("DATE TBA");
   });
 
   it("renders EventDetailClient for completed Argonyx 26 with closed status, winners, and view images", async () => {

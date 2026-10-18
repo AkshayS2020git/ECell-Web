@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
-import { frameLerp, smoothstep, lerp } from "../../utils/math";
+import { gsap, ScrollTrigger } from "@/src/utils/gsapSetup";
+import { frameLerp, smoothstep, lerp } from "@/src/utils/math";
 import "./FloatingLogo.css";
 
 /* Ease-out cubic for a more natural deceleration feel */

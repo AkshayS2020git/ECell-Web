@@ -5,6 +5,25 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    // Recruitment is live and frozen as-is, including its one ../ import.
+    ignores: ["src/data/recruitment.ts"],
+    rules: {
+      // Import across folders from the root ("@/src/utils/lenis"), not with
+      // "../../" paths that break whenever a file moves.
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["../*", "../**"],
+              message: 'Use the "@/" root alias instead of a parent-relative path.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

@@ -1,6 +1,6 @@
 import { RefObject } from "react";
-import { gsap, ScrollTrigger } from "../../utils/gsapSetup";
-import { frameLerp, lerp, smoothstep } from "../../utils/math";
+import { gsap, ScrollTrigger } from "@/src/utils/gsapSetup";
+import { frameLerp, lerp, smoothstep } from "@/src/utils/math";
 
 export interface SetupHeroAnimationsOptions {
   heroRef: RefObject<HTMLElement | null>;

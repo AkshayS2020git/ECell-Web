@@ -1,8 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
-import "../styles/HeroIntro.css";
-
-const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/J0MfKUwIZ6J8WfemIBbdlJ";
+import { SITE_LINKS } from "@/src/content/site";
+import "@/src/sections/Hero/styles/HeroIntro.css";
 
 interface HeroIntroProps {
   ref?: React.Ref<HTMLDivElement>;
@@ -16,7 +15,7 @@ export default function HeroIntro({ ref }: HeroIntroProps): React.ReactElement {
         <span className="hero__heading-line">It all starts from an idea.</span>
         <span className="hero__heading-line">ECell RV University.</span>
       </h1>
-      <a className="hero__cta" href={WHATSAPP_GROUP_URL} target="_blank" rel="noopener noreferrer">
+      <a className="hero__cta" href={SITE_LINKS.whatsappGroup} target="_blank" rel="noopener noreferrer">
         <span>Join now</span>
         <ArrowRight aria-hidden="true" size={18} strokeWidth={1.5} />
       </a>

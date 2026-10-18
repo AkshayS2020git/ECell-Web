@@ -55,18 +55,14 @@ Canonical statically generated slugs are:
 - `/events/e-summit`
 - `/events/hacktoberfest-26`
 
-Unknown slugs return the Next.js not-found response. Argonyx aliases are accepted by data lookup, while only canonical slugs are generated. Upcoming events show registration/contact content; completed Argonyx content includes winners and a gallery preview.
-
-### Argonyx gallery (`/events/argonyx-26/gallery`)
-
-The gallery supports category filters, a chronological timeline, special team-photo layouts, a finale sequence, and a keyboard/touch-capable lightbox with wrapping navigation.
+Unknown slugs return the Next.js not-found response. Argonyx aliases are accepted by data lookup, while only canonical slugs are generated. Upcoming events show registration/contact content; completed events show winners and a gallery section (its View Images button is a placeholder until event galleries return).
 
 ### Metadata routes and redirects
 
 - `/manifest.webmanifest` from `app/manifest.ts`
 - `/robots.txt` from `app/robots.ts`
 - `/sitemap.xml` from `app/sitemap.ts`
-- Legacy event paths redirect to lowercase `/events/...` routes through `next.config.ts`; `/Argonyx-26` also has an App Router redirect page.
+- Legacy event paths redirect to lowercase `/events/...` routes through `next.config.ts`, including `/Argonyx-26`.
 
 ## Technology summary
 

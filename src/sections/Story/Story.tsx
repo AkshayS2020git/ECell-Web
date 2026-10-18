@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import { gsap } from "../../utils/gsapSetup";
-import { refreshScroll } from "../../utils/lenis";
+import { gsap } from "@/src/utils/gsapSetup";
+import { refreshScroll } from "@/src/utils/lenis";
 
-import storyBackground from "../../assets/story/lib.webp";
+import storyBackground from "@/src/assets/home/story-background.webp";
 import "./Story.css";
 
 export interface StoryProps {
