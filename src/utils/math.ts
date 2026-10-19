@@ -41,6 +41,14 @@ export function smoothstep(edge0: number, edge1: number, x: number): number {
 }
 
 /**
+ * Cubic ease-in-out for t in 0-1.
+ * easeInOutCubic(0.5) -> 0.5
+ */
+export function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/**
  * Maps a value from one range to another.
  */
 export function mapRange(
