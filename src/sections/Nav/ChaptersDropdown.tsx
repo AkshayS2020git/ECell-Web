@@ -24,12 +24,14 @@ interface ChaptersDropdownProps {
   isOpen: boolean;
   menuRef: React.Ref<HTMLDivElement>;
   onSelect: (id: string) => void;
+  children?: React.ReactNode;
 }
 
 export default function ChaptersDropdown({
   isOpen,
   menuRef,
   onSelect,
+  children,
 }: ChaptersDropdownProps): React.ReactElement {
   return (
     <div
@@ -38,6 +40,7 @@ export default function ChaptersDropdown({
       className={`chapters-dropdown ${isOpen ? "open" : ""}`}
       aria-hidden={!isOpen}
     >
+      {children}
       {CHAPTER_LINKS.map(({ id, label, className }) => (
         <Link
           key={id}

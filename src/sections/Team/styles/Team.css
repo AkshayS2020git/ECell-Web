@@ -65,29 +65,8 @@
       transparent 360deg
     ) border-box;
   overflow: visible;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.62), 0 0 10px color-mix(in srgb, var(--team-spotlight-accent, #EF4444) 8%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
   animation: team-border-rotation 24s linear infinite;
-}
-
-.team__card[data-spotlight="true"] .team__image-wrapper {
-  position: relative;
-  isolation: isolate;
-}
-
-.team__card[data-spotlight="true"] .team__image-wrapper::before {
-  content: "";
-  position: absolute;
-  inset: 8% 2%;
-  z-index: -1;
-  border-radius: 30px;
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in srgb, var(--team-spotlight-accent, #EF4444) 15%, transparent) 0%,
-    color-mix(in srgb, var(--team-spotlight-accent, #EF4444) 8%, transparent) 38%,
-    transparent 72%
-  );
-  filter: blur(28px);
-  opacity: 0.9;
 }
 
 /* ─── Header & Navigation Controls ─── */

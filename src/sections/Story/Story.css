@@ -153,10 +153,11 @@
 }
 
 .story-reveal-text h2 {
-  font-family: var(--font-bebas-neue), sans-serif;
+  /* charlesleclerc.com uses clamp(190px, 27.778vw, 500px); kept smaller so the skew reads. */
+  font-family: var(--font-anton), sans-serif;
   font-weight: 400;
-  font-size: clamp(5rem, 17vw, 18rem);
-  letter-spacing: 0.01em;
+  font-size: clamp(110px, 18vw, 320px);
+  letter-spacing: 0;
   line-height: 0.85;
   color: #ffffff;
   padding: 0 4vw;
@@ -172,8 +173,5 @@
 @media (max-width: 767px) {
   .story-reveal-base h2 {
     font-size: clamp(2rem, 9vw, 3.2rem);
-  }
-  .story-reveal-text h2 {
-    font-size: clamp(3rem, 15vw, 6.5rem);
   }
 }
