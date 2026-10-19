@@ -13,36 +13,9 @@ export interface StoryProps {
   headlineAccent?: string;
 }
 
-function renderJigglyText(text: string, keyPrefix: string): React.ReactNode {
-  if (!text) return null;
-  const words = text.split(" ");
-  return words.map((word, wordIdx) => (
-    <span
-      key={`${keyPrefix}-w-${wordIdx}`}
-      className="jiggle-word"
-      style={{ display: "inline-block", whiteSpace: "nowrap" }}
-    >
-      {word.split("").map((char, charIdx) => (
-        <span
-          key={`${keyPrefix}-w-${wordIdx}-c-${charIdx}`}
-          className="jiggle-char"
-          style={{ display: "inline-block", willChange: "transform" }}
-        >
-          {char}
-        </span>
-      ))}
-      {wordIdx < words.length - 1 && (
-        <span className="jiggle-space" style={{ display: "inline-block" }}>
-          &nbsp;
-        </span>
-      )}
-    </span>
-  ));
-}
-
 export default function Story({
   eyebrow = "ECELL",
-  headlineMain = "IT'S THE MIND",
+  headlineMain = "IT’S THE MIND",
   headlineAccent = "THAT MAKES THE DIFFERENCE",
 }: StoryProps): React.ReactElement {
   const revealRef = useRef<HTMLElement | null>(null);
@@ -118,92 +91,20 @@ export default function Story({
           });
         }
 
-        // --- JIGGLY TEXT ANIMATION SETUP ---
-        const chars = revealTextInner.querySelectorAll(".jiggle-char");
-        const eyebrowChars = eyebrowEl ? eyebrowEl.querySelectorAll(".jiggle-char") : [];
-
-        let targetVel = 0;
-        let currentVel = 0;
-        let wobbleTime = 0;
-        let charsAtRest = true;
-
-        tickerCallback = (time, deltaTime) => {
+        // Same as charlesleclerc.com's quote: skewX (deg) chases the line's own
+        // movement in px per 60fps frame, clamped to ±15, eased with dt * 10.
+        // Tracking the text (not the page scroll) keeps the lean in sync with the scrub lag.
+        let skew = 0;
+        let lastX = gsap.getProperty(revealTextInner, "x") as number;
+        tickerCallback = (_time, deltaTime) => {
           if (disposed) return;
-
-          const dtSec = Math.min(deltaTime / 1000, 0.05);
-          const lerpFactor = 1 - Math.pow(0.0001, dtSec);
-          currentVel += (targetVel - currentVel) * lerpFactor;
-
-          targetVel *= Math.pow(0.90, dtSec * 60);
-
-          const velMag = Math.abs(currentVel);
-          const isMoving = velMag > 0.5;
-
-          if (isMoving || Math.abs(targetVel) > 0.5) {
-            wobbleTime += (0.016 + velMag * 0.00012) * (dtSec * 60);
-          }
-
-          const normVel = gsap.utils.clamp(-1400, 1400, currentVel) / 1400;
-          const absNorm = Math.abs(normVel);
-
-          if (absNorm > 0.0005 || isMoving) {
-            charsAtRest = false;
-            chars.forEach((char, idx) => {
-              const phase = idx * 0.42 + wobbleTime * 4.5;
-              const sinWave = Math.sin(phase);
-              const cosWave = Math.cos(phase);
-
-              const yOffset = sinWave * absNorm * 8 + normVel * 5;
-              const skewX = normVel * 6 + cosWave * absNorm * 4;
-              const rotation = sinWave * absNorm * 3 + normVel * 2;
-              const scaleY = 1 - absNorm * 0.05 + sinWave * absNorm * 0.04;
-              const scaleX = 1 + absNorm * 0.05 - sinWave * absNorm * 0.04;
-
-              gsap.set(char, {
-                y: yOffset,
-                skewX: skewX,
-                rotation: rotation,
-                scaleY: scaleY,
-                scaleX: scaleX,
-                transformOrigin: "50% 100%",
-              });
-            });
-
-            eyebrowChars.forEach((char, idx) => {
-              const phase = idx * 0.5 + wobbleTime * 5;
-              const sinWave = Math.sin(phase);
-              const yOffset = sinWave * absNorm * 3.5 + normVel * 2.2;
-              const skewX = normVel * 3 + sinWave * absNorm * 2;
-              const rotation = sinWave * absNorm * 1.2 + normVel * 1;
-
-              gsap.set(char, {
-                y: yOffset,
-                skewX: skewX,
-                rotation: rotation,
-                transformOrigin: "50% 100%",
-              });
-            });
-          } else if (!charsAtRest) {
-            // Reset once when motion stops instead of re-setting every
-            // character on every frame while idle.
-            charsAtRest = true;
-            chars.forEach((char) => {
-              gsap.set(char, {
-                y: 0,
-                skewX: 0,
-                rotation: 0,
-                scaleY: 1,
-                scaleX: 1,
-              });
-            });
-            eyebrowChars.forEach((char) => {
-              gsap.set(char, {
-                y: 0,
-                skewX: 0,
-                rotation: 0,
-              });
-            });
-          }
+          const dt = Math.min(deltaTime / 1000, 1 / 30);
+          const x = gsap.getProperty(revealTextInner, "x") as number;
+          const dxPerFrame = dt > 0 ? ((x - lastX) / dt) / 60 : 0;
+          lastX = x;
+          const target = gsap.utils.clamp(-15, 15, dxPerFrame);
+          skew += (target - skew) * dt * 10;
+          gsap.set(revealTextInner, { skewX: skew });
         };
 
         gsap.ticker.add(tickerCallback);
@@ -216,9 +117,6 @@ export default function Story({
             scrub: 0.8,
             pin: true,
             anticipatePin: 1,
-            onUpdate: (self) => {
-              targetVel = self.getVelocity();
-            },
           },
         });
 
@@ -342,12 +240,11 @@ export default function Story({
 
       <div className="story-reveal-text" ref={storyRevealTextRef}>
         <div className="eyebrow" ref={eyebrowRef}>
-          {renderJigglyText(eyebrow, "eyebrow")}
+          {eyebrow}
         </div>
         <div className="story-reveal-text-inner" ref={revealTextInnerRef}>
           <h2>
-            {renderJigglyText(headlineMain, "main")}{" "}
-            <em>{renderJigglyText(headlineAccent, "accent")}</em>
+            {headlineMain} <em>{headlineAccent}</em>
           </h2>
         </div>
       </div>

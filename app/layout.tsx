@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Bebas_Neue, Fraunces, Inter } from "next/font/google";
+import { Anton, Archivo, Bebas_Neue, Fraunces, Inter } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -14,6 +14,14 @@ import "./globals.css";
 const archivo = Archivo({
   subsets: ["latin"],
   variable: "--font-archivo",
+  display: "swap",
+});
+
+// Closest free match to Coign 87 Bold used on charlesleclerc.com's quote.
+const anton = Anton({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-anton",
   display: "swap",
 });
 
@@ -220,7 +228,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${archivo.variable} ${bebasNeue.variable} ${fraunces.variable} ${inter.variable}`}
+        className={`${anton.variable} ${archivo.variable} ${bebasNeue.variable} ${fraunces.variable} ${inter.variable}`}
         suppressHydrationWarning
       >
         <Script
