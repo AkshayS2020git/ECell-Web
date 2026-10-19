@@ -101,3 +101,39 @@
   outline: 2px solid var(--fg);
   outline-offset: 3px;
 }
+
+/* Events / Opportunities page links: only shown on phones, where the bar hides them. */
+.chapters-dropdown .dropdown-page-link {
+  display: none;
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.chapters-dropdown .dropdown-page-link[aria-current="page"] {
+  background: var(--nav-accent-hover);
+}
+
+/* Full-width sheet below the bar (the home logo row is ~82px tall), scrollable
+   on short landscape screens. */
+@media (max-width: 540px) {
+  .chapters-dropdown {
+    top: 84px;
+    right: max(16px, env(safe-area-inset-right));
+    left: max(16px, env(safe-area-inset-left));
+    min-width: 0;
+    max-height: calc(100dvh - 100px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .chapters-dropdown .dropdown-page-link {
+    display: block;
+  }
+
+  /* Divider between the page links and the chapters. */
+  .chapters-dropdown .dropdown-page-link + a:not(.dropdown-page-link) {
+    margin-top: 6px;
+    border-top: 1px solid rgba(197, 197, 197, 0.16);
+    border-radius: 0 0 7px 7px;
+  }
+}

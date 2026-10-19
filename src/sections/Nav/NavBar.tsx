@@ -73,7 +73,7 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
 
         <div className="nav-right">
           <button
-            className={`nav-events-link ${pathname === "/events" ? "is-active" : ""}`}
+            className={`nav-events-link nav-collapsible ${pathname === "/events" ? "is-active" : ""}`}
             onClick={openEvents}
             type="button"
             aria-current={pathname === "/events" ? "page" : undefined}
@@ -82,7 +82,7 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
           </button>
           <Link
             href="/opportunities"
-            className={`nav-events-link ${pathname === "/opportunities" ? "is-active" : ""}`}
+            className={`nav-events-link nav-collapsible ${pathname === "/opportunities" ? "is-active" : ""}`}
             aria-current={pathname === "/opportunities" ? "page" : undefined}
             onNavigate={navigateWithCurtain("/opportunities")}
           >
@@ -158,7 +158,28 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
         </div>
       </nav>
 
-      <ChaptersDropdown isOpen={isOpen} menuRef={dropdownRef} onSelect={scrollToSection} />
+      <ChaptersDropdown isOpen={isOpen} menuRef={dropdownRef} onSelect={scrollToSection}>
+        {/* Phones only: the bar has no room for these, so they move in here. */}
+        <Link
+          href="/events"
+          className="dropdown-page-link"
+          aria-current={pathname === "/events" ? "page" : undefined}
+          onNavigate={(event) => {
+            event.preventDefault();
+            openEvents();
+          }}
+        >
+          EVENTS PAGE
+        </Link>
+        <Link
+          href="/opportunities"
+          className="dropdown-page-link"
+          aria-current={pathname === "/opportunities" ? "page" : undefined}
+          onNavigate={navigateWithCurtain("/opportunities")}
+        >
+          OPPORTUNITIES
+        </Link>
+      </ChaptersDropdown>
     </>
   );
 }
