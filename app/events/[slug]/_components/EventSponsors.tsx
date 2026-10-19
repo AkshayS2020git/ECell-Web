@@ -26,6 +26,8 @@ function FeaturedSponsorCard({ sponsor, presenting }: FeaturedSponsorCardProps):
             width={200}
             height={100}
             loading="lazy"
+            // Vercel's optimizer rejects cdn.simpleicons.org (502); logos are SVGs anyway.
+            unoptimized
           />
         ) : (
           <span className="event-sponsor-card__logo-text event-sponsor-card__logo-text--lg">{sponsor.name}</span>
@@ -128,6 +130,7 @@ export default function EventSponsors({ sponsors }: EventSponsorsProps): React.R
                         width={200}
                         height={100}
                         loading="lazy"
+                        unoptimized
                       />
                     ) : (
                       <span className="event-sponsor-card__logo-text" aria-hidden="true">
