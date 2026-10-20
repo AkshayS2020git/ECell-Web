@@ -4,7 +4,6 @@
   background: var(--bg);
   overflow: hidden;
   will-change: transform, opacity;
-  border-top: none;
   isolation: isolate;
   perspective: 1200px;
   perspective-origin: 50% 40%;
@@ -20,7 +19,6 @@
   height: 240px;
   transform: translateX(-50%);
   border-radius: 50%;
-  border-top: 1px solid rgba(244, 244, 242, 0.22);
   background: radial-gradient(ellipse at 50% 0%, rgba(244, 244, 242, 0.09), transparent 70%);
   pointer-events: none;
 }
@@ -951,7 +949,6 @@
 @media (max-width: 768px) {
   .sponsors-section {
     padding: 68px 0 76px;
-    border-top: 0;
   }
 
   .sponsors-section::before,

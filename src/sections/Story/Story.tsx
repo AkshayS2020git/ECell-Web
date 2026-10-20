@@ -209,6 +209,10 @@ export default function Story({
           2.52
         );
 
+        // Hold the empty frame so the image has fully left (scrub lag included)
+        // before the pin releases; otherwise Team scrolls in against its edge.
+        tl.to({}, { duration: 0.3 });
+
         return () => {
           if (tickerCallback) gsap.ticker.remove(tickerCallback);
           if (tl.scrollTrigger) tl.scrollTrigger.kill();
