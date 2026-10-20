@@ -47,7 +47,7 @@ export default function NavBar({ onLogoClick, logoHint, logoReady = true }: NavB
 
   return (
     <>
-      <nav className={`site-nav${isSubNav ? " site-nav--sub" : ""}`}>
+      <nav className={`site-nav${isSubNav ? " site-nav--sub" : ""}${!isSubNav && logoReady ? " is-docked" : ""}`}>
         <div className="nav__logo-group">
           {isSubNav ? (
             <Link href="/" className="nav-events-link nav-home-link">

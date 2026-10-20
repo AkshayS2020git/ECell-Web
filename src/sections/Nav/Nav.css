@@ -230,6 +230,19 @@
   }
 }
 
+/* Home, past the hero: content scrolls under the links, so each link gets a
+   soft dark halo instead of any box. It vanishes on the dark sections and only
+   shows over photos and text. Every section after the white hero is dark, so
+   plain blending with --fg reads everywhere. drop-shadow also covers the
+   chevron and the menu-icon bars, which text-shadow would miss. */
+.site-nav.is-docked {
+  mix-blend-mode: normal;
+}
+
+.site-nav.is-docked .nav-right {
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 14px rgba(0, 0, 0, 0.55));
+}
+
 /* Events sub-nav: content scrolls under the fixed bar, and difference
    blending made "HOME / EVENTS" collide unreadably with card titles. Give it
    a frosted backdrop the same colour as the page (invisible at the top) and
