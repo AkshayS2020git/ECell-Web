@@ -28,7 +28,9 @@ export default function HorizontalFlow({ children }: HorizontalFlowProps): React
         ease: "none",
         scrollTrigger: {
           trigger: container,
-          start: "top top",
+          // A panel taller than the screen (Team) is read vertically first; the
+          // slide starts once its bottom reaches the viewport's bottom.
+          start: "bottom bottom",
           end: () => `+=${getScrollAmount()}`,
           pin: true,
           scrub: 0.8,
@@ -53,7 +55,10 @@ export default function HorizontalFlow({ children }: HorizontalFlowProps): React
         // A pinned horizontal track has one vertical scroll position for every
         // panel. Translate the requested panel into its ScrollTrigger progress.
         const progress = panelIndex / lastPanelIndex;
-        const scrollPosition = scrollTrigger.start + (scrollTrigger.end - scrollTrigger.start) * progress;
+        // The first panel is entered from its top, which sits above the pin start when it is tall.
+        const scrollPosition = panelIndex === 0
+          ? scrollTrigger.start - Math.max(0, container.offsetHeight - window.innerHeight)
+          : scrollTrigger.start + (scrollTrigger.end - scrollTrigger.start) * progress;
         event.preventDefault();
         // Native smooth scroll here used to fight Lenis: the browser animated
         // toward the panel while Lenis, whose target was untouched, pulled back.

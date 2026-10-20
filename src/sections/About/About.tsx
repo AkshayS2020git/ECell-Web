@@ -182,8 +182,8 @@ export default function About(): React.ReactElement {
       </div>
 
       <div ref={transitionRef} className="about-transition" aria-hidden="true">
-        <span className="about-transition__count">01 — 05</span>
-        <span className="about-transition__label">Reasons to join ECell</span>
+        <span className="about-transition__count">Up next</span>
+        <span className="about-transition__label">Our events</span>
         <span className="about-transition__line">
           <i />
         </span>

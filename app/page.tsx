@@ -57,13 +57,13 @@ export default function Home() {
       <GameLauncher />
       <Hero />
       <About />
+      <Events />
+      <Speakers />
+      <Sponsors />
       <WhyJoin />
       <Story />
-      <Team />
-      <Events />
-      <Sponsors />
       <HorizontalFlow>
-        <Speakers />
+        <Team />
         <WhatsAppCommunity />
       </HorizontalFlow>
       <CinematicFooter />
