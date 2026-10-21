@@ -33,8 +33,8 @@ vi.mock("@/src/utils/gsapSetup", () => ({
 }));
 
 describe("Team Data", () => {
-  it("contains all 8 core team members with valid image positions", () => {
-    expect(teamMembers.length).toBe(8);
+  it("contains all 9 core team members with valid image positions", () => {
+    expect(teamMembers.length).toBe(9);
     teamMembers.forEach((member) => {
       expect(member.name).toBeTruthy();
       expect(member.role).toBeTruthy();
@@ -44,7 +44,7 @@ describe("Team Data", () => {
   });
 
   it("assigns Akash his accent color", () => {
-    const akash = teamMembers.find((m) => m.name.toLowerCase().includes("akash"));
+    const akash = teamMembers.find((m) => m.name.toLowerCase().includes("akash singh"));
     expect(akash?.accentColor).toBe("#3B82F6");
   });
 
@@ -74,7 +74,7 @@ describe("TeamDirectory Component", () => {
     );
 
     expect(screen.getByText("TEAM DIRECTORY")).toBeInTheDocument();
-    expect(screen.getByText("8 Core Members")).toBeInTheDocument();
+    expect(screen.getByText("9 Core Members")).toBeInTheDocument();
 
     teamMembers.forEach((member) => {
       expect(screen.getByText(member.name)).toBeInTheDocument();
