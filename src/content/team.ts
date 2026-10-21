@@ -7,6 +7,7 @@ import Advisory from "@/src/assets/team/advisory.webp";
 import AdvisoryHead from "@/src/assets/team/advisory-head.webp";
 import DirectorPr from "@/src/assets/team/director-pr.webp";
 import PrExecutive from "@/src/assets/team/pr-executive.webp";
+import PrLead from "@/src/assets/team/pr-lead.webp";
 
 export interface TeamMember {
   id: string;
@@ -82,18 +83,6 @@ const teamMembers: TeamMember[] = [
     accentColor: "#3B82F6",
   },
   {
-    id: "member-5",
-    name: "Suyash Chandra",
-    role: "PR Executive",
-    description:
-      "Executes tasks, supports team operations, and works towards team goals.",
-    image: PrExecutive,
-    imagePosition: "center 30%",
-    directoryImagePosition: "center 35%",
-    linkedin: "https://www.linkedin.com/in/suyash-chandra?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-    accentColor: "#34D399",
-  },
-  {
     id: "member-7",
     name: "Anagha Anish",
     role: "Head of Design",
@@ -104,6 +93,30 @@ const teamMembers: TeamMember[] = [
     directoryImagePosition: "center 25%",
     linkedin: "https://www.linkedin.com/in/anagha-anish/",
     accentColor: "#A78BFA",
+  },
+  {
+    id: "member-9",
+    name: "Aakash K",
+    role: "PR Lead",
+    description:
+      "Leading public relations and outreach, building the club's voice and connections across campus and beyond.",
+    image: PrLead,
+    imagePosition: "center 30%",
+    directoryImagePosition: "center 30%",
+    linkedin: "",
+    accentColor: "#FB923C",
+  },
+  {
+    id: "member-5",
+    name: "Suyash Chandra",
+    role: "PR Executive",
+    description:
+      "Executes tasks, supports team operations, and works towards team goals.",
+    image: PrExecutive,
+    imagePosition: "center 30%",
+    directoryImagePosition: "center 35%",
+    linkedin: "https://www.linkedin.com/in/suyash-chandra?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+    accentColor: "#34D399",
   },
   {
     id: "member-8",
