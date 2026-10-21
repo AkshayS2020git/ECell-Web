@@ -65,7 +65,7 @@
       transparent 360deg
     ) border-box;
   overflow: visible;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.62), 0 0 18px color-mix(in srgb, var(--team-spotlight-accent, #EF4444) 20%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
   animation: team-border-rotation 24s linear infinite;
 }
 

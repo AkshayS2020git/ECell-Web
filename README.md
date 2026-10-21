@@ -279,7 +279,7 @@ ECell-Web/
 ├── src/
 │   ├── assets/                 # Imported images (events, home, sponsors, team…)
 │   ├── components/             # Shared components, one folder each
-│   │   ├── CinematicFooter/  CircularTestimonials/  EventsArchive/
+│   │   ├── HalftoneWordmarkFooter/  CircularTestimonials/  EventsArchive/
 │   │   ├── FloatingLogo/  GameLauncher/  HorizontalFlow/  InfiniteSpiral/
 │   │   ├── LaserFlow/  LogoModal/  PageTransition/  RouteScrollManager/
 │   │   └── SiteCredit/  SmoothScroll/  Timeline/

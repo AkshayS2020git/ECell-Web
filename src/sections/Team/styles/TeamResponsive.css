@@ -277,7 +277,7 @@
   }
 
   .team:has(.team__stack--spotlight) .team__focus-veil {
-    backdrop-filter: blur(8px) saturate(0.75) brightness(0.84);
-    -webkit-backdrop-filter: blur(8px) saturate(0.75) brightness(0.84);
+    backdrop-filter: blur(8px) saturate(0.75);
+    -webkit-backdrop-filter: blur(8px) saturate(0.75);
   }
 }

@@ -130,8 +130,10 @@
       rgba(142, 220, 255, 0.08) 70%,
       rgba(142, 220, 255, 0.04) 100%
     ) border-box;
+  /* The drop shadow stays within the section's 50px bottom padding; a longer
+     one was clipped by overflow: hidden and left a hard line above the footer. */
   box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.65),
+    0 16px 34px rgba(0, 0, 0, 0.55),
     0 -8px 40px rgba(142, 220, 255, 0.12),
     0 -4px 20px rgba(142, 220, 255, 0.08),
     inset 0 1px 0 rgba(142, 220, 255, 0.4),
@@ -178,7 +180,7 @@
 
 .whatsapp-community-card:hover {
   box-shadow:
-    0 35px 100px rgba(0, 0, 0, 0.75),
+    0 18px 32px rgba(0, 0, 0, 0.65),
     0 -10px 60px rgba(142, 220, 255, 0.2),
     0 -4px 24px rgba(142, 220, 255, 0.15),
     0 0 50px rgba(142, 220, 255, 0.1),

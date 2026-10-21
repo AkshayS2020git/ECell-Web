@@ -1,0 +1,19 @@
+/* What a sinking chapter sits on: darker than --bg so its card edge reads. */
+html.has-chapter-stack main {
+  background: #0b0b0b;
+}
+
+/* About is a centred .wrap; run its background to the edges so it covers
+   the hero fully, keeping the content box where .wrap put it
+   (1180px minus 2 × 32px padding). */
+@media (min-width: 769px) {
+  html.has-chapter-stack #aboutSection {
+    max-width: none;
+    padding-inline: max(32px, calc((100% - 1116px) / 2));
+  }
+}
+
+/* Speakers is transparent and leaned on the body colour. */
+html.has-chapter-stack #speakers {
+  background: var(--bg);
+}
