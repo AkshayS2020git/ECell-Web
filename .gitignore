@@ -62,3 +62,6 @@ CLAUDE.md
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# Review evidence from the /jury skill
+.jury/

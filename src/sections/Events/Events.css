@@ -37,7 +37,7 @@
   object-fit: cover;
   display: block;
   backface-visibility: hidden;
-  filter: grayscale(100%);
+  /* The source images are already grayscale; a live filter here repainted every scroll frame. */
 }
 
 .events-bg-panel img.events-bg-mobile {

@@ -11,11 +11,11 @@ interface ChapterLink {
 
 const CHAPTER_LINKS: ChapterLink[] = [
   { id: "aboutSection", label: "ABOUT ECELL", className: "dropdown-about-link" },
+  { id: "eventsSection", label: "EVENTS", className: "dropdown-events-link" },
+  { id: "speakers", label: "PREVIOUS SPEAKERS", className: "dropdown-speakers-link" },
+  { id: "sponsors", label: "PARTNERS & SPONSORS", className: "dropdown-sponsors-link" },
   { id: "why-join", label: "WHY JOIN ECELL", className: "dropdown-team-link" },
   { id: "teamSection", label: "THE TEAM", className: "dropdown-team-link" },
-  { id: "eventsSection", label: "EVENTS", className: "dropdown-events-link" },
-  { id: "sponsors", label: "PARTNERS & SPONSORS", className: "dropdown-sponsors-link" },
-  { id: "speakers", label: "PREVIOUS SPEAKERS", className: "dropdown-speakers-link" },
   { id: "community", label: "WHATSAPP COMMUNITY", className: "dropdown-footer-link" },
   { id: "footer", label: "FOOTER", className: "dropdown-footer-link" },
 ];

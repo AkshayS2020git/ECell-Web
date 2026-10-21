@@ -68,6 +68,8 @@ export default function Story({
         const isMobileCond = context.conditions?.isMobile ?? false;
         const containerWidth = reveal.offsetWidth || window.innerWidth;
         const textWidth = revealTextInner.scrollWidth;
+        // An animated box-shadow repaints the full-screen panel every frame; phones skip it.
+        const panelShadow = isMobileCond ? "none" : "0 25px 70px rgba(0, 0, 0, 0.45)";
 
         gsap.set(revealTextInner, { x: containerWidth });
         if (storyRevealText) gsap.set(storyRevealText, { opacity: 0 });
@@ -79,7 +81,7 @@ export default function Story({
           rotate: 0,
           rotateY: 0,
           borderRadius: isMobileCond ? "20px" : "28px",
-          boxShadow: "0 25px 70px rgba(0, 0, 0, 0.45)",
+          boxShadow: panelShadow,
           opacity: 0,
           transformOrigin: "center right",
         });
@@ -137,7 +139,7 @@ export default function Story({
             y: "0%",
             scale: 1,
             borderRadius: "0px",
-            boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
+            boxShadow: isMobileCond ? "none" : "0 0 0 rgba(0, 0, 0, 0)",
             duration: 1.0,
             ease: "power2.out",
           },
@@ -201,13 +203,17 @@ export default function Story({
             y: "0%",
             scale: isMobileCond ? 0.8 : 0.85,
             borderRadius: isMobileCond ? "20px" : "28px",
-            boxShadow: "0 25px 70px rgba(0, 0, 0, 0.45)",
+            boxShadow: panelShadow,
             opacity: 0,
             duration: 0.5,
             ease: "power2.in",
           },
           2.52
         );
+
+        // Hold the empty frame so the image has fully left (scrub lag included)
+        // before the pin releases; otherwise Team scrolls in against its edge.
+        tl.to({}, { duration: 0.3 });
 
         return () => {
           if (tickerCallback) gsap.ticker.remove(tickerCallback);
@@ -233,7 +239,7 @@ export default function Story({
     <section className="story-reveal" ref={revealRef} id="storyReveal">
       <div className="story-image-panel" ref={imagePanelRef} id="imagePanel">
         <div ref={imageRef} className="story-image-inner" style={{ position: "relative", width: "100%", height: "100%" }}>
-          <Image src={storyBackground} alt="Story background" fill sizes="100vw" quality={100} style={{ objectFit: "cover" }} />
+          <Image src={storyBackground} alt="Story background" fill sizes="100vw" quality={85} style={{ objectFit: "cover" }} />
         </div>
         <div className="grain"></div>
       </div>

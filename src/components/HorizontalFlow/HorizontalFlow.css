@@ -10,8 +10,10 @@
   flex-direction: row;
   flex-wrap: nowrap;
   width: max-content;
-  height: 100vh;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Screen-height panels line up with the bottom of a taller one. */
+  align-items: flex-end;
   will-change: transform;
 }
 
@@ -41,36 +43,19 @@
 }
 
 /* Specific Panel Adjustments */
-.horizontal-flow-panel .speakers-section {
-  width: 100%;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  box-sizing: border-box;
-  border-top: none;
+/* Team keeps its natural height. contain makes its fixed focus veil cover this
+   panel instead of the whole sliding track; clip trims the veil's bleed. */
+.horizontal-flow-panel:has(> .team) {
+  height: auto;
+  min-height: 100dvh;
+  overflow: clip;
+  contain: layout;
 }
 
-.horizontal-flow-panel .speakers-reveal-panel {
-  width: 100%;
-  padding: clamp(40px, 5vh, 80px) 0;
-  border-top: none;
-}
-
-@media (min-width: 769px) {
-  /* Top padding keeps the header clear of the fixed nav bar. */
-  .horizontal-flow-panel .speakers-reveal-panel {
-    padding: clamp(80px, 11vh, 104px) 0 clamp(24px, 4.5vh, 56px);
-  }
-
-  .horizontal-flow-panel .speakers-header {
-    margin-bottom: clamp(20px, 3.5vh, 36px);
-  }
-
-  /* Keep header + carousel inside one pinned 100dvh panel on short screens. */
-  .horizontal-flow-panel .speakers-headline {
-    font-size: clamp(34px, min(5.5vw, 7.5dvh), 72px);
-  }
+/* The veil now stops at the panel, so fade its top instead of drawing a dim edge
+   against the section above. */
+.horizontal-flow-panel .team__focus-veil {
+  mask-image: linear-gradient(to bottom, transparent, #000 40vh);
 }
 
 .horizontal-flow-panel .whatsapp-community {
@@ -80,7 +65,6 @@
   flex-direction: column;
   justify-content: flex-end;
   box-sizing: border-box;
-  border-top: none;
   padding: clamp(84px, 11vh, 104px) 0 clamp(24px, 5vh, 50px);
 }
 
@@ -91,10 +75,6 @@
 }
 
 @media (max-width: 768px) {
-  .horizontal-flow-panel .speakers-reveal-panel {
-    padding: 76px 0 max(20px, env(safe-area-inset-bottom));
-  }
-
   .horizontal-flow-panel .whatsapp-community {
     padding: 80px 0 max(24px, env(safe-area-inset-bottom));
     justify-content: flex-end;
@@ -103,10 +83,6 @@
 
 /* Sideways phones: only ~60px of height is spare once the nav is cleared. */
 @media (max-height: 500px) and (orientation: landscape) {
-  .horizontal-flow-panel .speakers-reveal-panel {
-    padding: 64px 0 12px;
-  }
-
   .horizontal-flow-panel .whatsapp-community {
     padding: 64px 0 12px;
     justify-content: center;
