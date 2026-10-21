@@ -1,157 +1,220 @@
-# ECell RV University Website
-
 <div align="center">
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.3-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![GSAP](https://img.shields.io/badge/GSAP-3.14-88CE02?style=for-the-badge&logo=greensock)](https://greensock.com/)
-[![Three.js](https://img.shields.io/badge/Three.js-0.185-white?style=for-the-badge&logo=three.js&logoColor=black)](https://threejs.org/)
-[![Vitest](https://img.shields.io/badge/Vitest-4.1-FCC72B?style=for-the-badge&logo=vitest&logoColor=black)](https://vitest.dev/)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel)](https://ecell-rvu.vercel.app)
+<a href="https://ecell-rvu.vercel.app">
+  <img src="./public/og-image.webp" alt="The Entrepreneurship Cell, RV University" width="560" />
+</a>
 
-**The official digital experience of the Entrepreneurship Cell at RV University, Bengaluru.**  
-An Awwwards-inspired, high-performance web platform engineered with Next.js 16 App Router, React 19, GSAP ScrollTrigger choreography, custom WebGL GLSL shaders, and interactive micro-experiences.
+<h3>Where campus ideas become companies.</h3>
 
-[🌐 Live Website](https://ecell-rvu.vercel.app) • [📖 Contributing Guide](./CONTRIBUTING.md) • [🚀 Deployments](#-cicd--deployment-workflows)
+<p>
+  The official website of the <b>Entrepreneurship Cell at RV University, Bengaluru</b>:<br />
+  a scroll-driven, shader-lit home for the startup community on campus.
+</p>
+
+<p>
+  <a href="https://ecell-rvu.vercel.app"><b>Visit the site</b></a>
+  &nbsp;·&nbsp;
+  <a href="#-run-it-locally"><b>Run it locally</b></a>
+  &nbsp;·&nbsp;
+  <a href="./CONTRIBUTING.md"><b>Contribute</b></a>
+  &nbsp;·&nbsp;
+  <a href="#-shipping"><b>Deployments</b></a>
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js 16.3" />
+  <img src="https://img.shields.io/badge/React-19.2-149ECA?style=flat-square&logo=react&logoColor=white" alt="React 19.2" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript 5" />
+  <img src="https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4" />
+  <img src="https://img.shields.io/badge/GSAP-3.14-0AE448?style=flat-square&logo=greensock&logoColor=black" alt="GSAP 3.14" />
+  <img src="https://img.shields.io/badge/Three.js-0.185-000000?style=flat-square&logo=three.js&logoColor=white" alt="Three.js 0.185" />
+  <img src="https://img.shields.io/badge/Vitest-4.1-6E9F18?style=flat-square&logo=vitest&logoColor=white" alt="Vitest 4.1" />
+</p>
 
 </div>
 
----
+<br />
 
 ## 🎬 Demo
 
 https://github.com/user-attachments/assets/9ab5ec05-6a5e-4ba2-923c-7685b89def26
 
----
+<br />
 
-## 📌 Overview
+## ✦ What this is
 
-The **ECell RV University Website** serves as the central flagship platform for RV University's student entrepreneurial ecosystem. Built to move past standard university club websites, it delivers an immersive, motion-rich narrative that showcases:
+Most club websites are a list of links. We wanted ours to feel like walking into the room: you move your cursor and ink pours across the title, the logo draws itself and flies into the nav, the story scrolls sideways, and there's an arcade tucked in the corner for when you should be studying.
 
-- **Flagship Initiatives & Hackathons** (Argonyx Hackathon, Winter Tech Talks, Talk Startup With Me).
-- **Interactive Community Simulator** with live conversational bot Q&A and direct WhatsApp group onboarding.
-- **In-Browser Arcade** with four custom retro and reflex games.
-- **Interactive Sponsor Constellation** featuring animated network graphs and dynamic node connections.
-- **Team & Speaker Spotlights** with 3D carousel stacks, domain filtering, and dedicated director views.
-- **Events Archive Route** (`/events`) with a featured event, calendar strip, event-type filters, and per-event detail pages.
+Underneath the motion it's a working site for students:
 
----
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h4>🗓️ Events</h4>
+      Flagship events like the Argonyx Hackathon, Winter Tech Talks and Talk Startup With Me, plus a full <code>/events</code> archive with filters, a calendar strip and a page for every event.
+    </td>
+    <td width="50%" valign="top">
+      <h4>🙋 Recruitment</h4>
+      <code>/recruit</code> takes applications for PR, sponsorship, social media, design, photography, video, documentation and tech, and saves them straight to the team's sheet.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <h4>🌍 Opportunities</h4>
+      <code>/opportunities</code> points students to open hackathons, framed by an interactive globe.
+    </td>
+    <td valign="top">
+      <h4>💬 Community</h4>
+      A simulated WhatsApp chat answers the usual questions, then hands you a one-tap invite to the real group.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <h4>👥 People</h4>
+      The team in a 3D card stack with a filterable directory, and past speakers in a circular carousel.
+    </td>
+    <td valign="top">
+      <h4>🤝 Sponsors</h4>
+      Every partner, from Nokia and Red Bull to the local bakery, mapped as a constellation that lights up as you hover.
+    </td>
+  </tr>
+</table>
 
-## ✨ Key Features & Experience Highlights
+<br />
 
-### 1. 🫧 Liquid Ink Reveal Hero with Scroll Scrubbing
-- Three.js hero: moving the pointer pours liquid ink over a giant "ECELL RVU" title, revealing glass balloon letters floating over a particle nebula (touch screens get a wandering blob, and a dragging finger takes over).
-- Power-efficient rendering: paused when offscreen or in background tabs, idles once the ink has faded, and caps the pixel count on large and mobile screens.
-- GSAP ScrollTrigger pin sequence that scales the hero down into a curved container card, unlocking headline typography and dynamic marquees.
+## ✨ The details we're proud of
 
-### 2. 🌀 Morphing SVG Floating Logo
-- Central brand mark constructed from hand-calculated SVG curves and stroke paths.
-- Animates dynamically across the Hero scroll journey using dynamic `getTotalLength()` stroke offsets (`strokeDasharray` / `strokeDashoffset`).
-- Seamlessly flies and docks directly into the sticky top navigation bar (`ecell:logo-in-nav` custom event). The nav logo button and its "Click to explore" hint only become interactive once the logo has settled.
-- Clickable brand mark opens an interactive **Logo Breakdown Modal** illustrating the brand geometry and symbolism.
+**🫧 Liquid ink hero.** Moving your pointer pours ink over a giant "ECELL RVU", revealing glass balloon letters floating in a particle nebula. On touch screens a blob wanders on its own until your finger takes over. The scene pauses when it's off screen or the tab is hidden, goes idle once the ink fades, and caps its resolution on big and small screens.
 
-### 3. ↔️ Pinned Horizontal Flow Section
-- Seamless horizontal viewport scroll chaining **Speakers**, **WhatsApp Community**, and **Footer** into a continuous side-scrolling track.
-- Navigation links translate vertical page scroll coordinates into the horizontal track's exact ScrollTrigger progress through the custom `horizontal-flow:navigate` event.
+**🌀 A logo that draws itself.** The brand mark is built from hand-tuned SVG paths, traced stroke by stroke as you scroll, then flies into the navigation bar and docks there. Click it to open a breakdown of the logo's geometry and meaning.
 
-### 4. ⚡ Live Three.js WebGL Laser & Fog Shader (`LaserFlow`)
-- Custom GLSL vertex and fragment shaders embedded directly in the WhatsApp Community section.
-- Procedural volumetric light rays, dynamic fog wisps, mouse-tilt parallax, noise perturbation, and ray decay rendered at native device pixel ratio.
+**↔️ Sideways storytelling.** Speakers, the community chat and the footer sit on one pinned horizontal track. Nav links still land on the right panel because each one converts its target into the track's exact scroll position.
 
-### 5. 💬 Interactive WhatsApp Community Simulator
-- Real-time simulated WhatsApp interface with pre-configured Q&A matching rules (`COMMUNITY_QA_RULES`).
-- Suggested topic prompt chips ("Say Hello", "What is ECell?", "How to join?", "Upcoming events", "Who can join?").
-- Direct one-click invite into the official RV University WhatsApp community group.
+**⚡ Laser light, written by hand.** The community section glows with a custom GLSL shader: volumetric beams, drifting fog and noise, tilting gently toward your mouse.
 
-### 6. 🕹️ Built-in Arcade Launcher
-Floating interactive game launcher with 4 fully playable, state-managed minigames:
-1. **Founder Sprint**: Fast-paced reflex minigame catching moving sparks against the clock.
-2. **Signal Snake**: Classic grid-based retro snake with smooth controls and score tracking.
-3. **Memory Match**: Card-flipping pattern matching game with fewest-move calculations.
-4. **2048**: Sliding tile puzzle with swipe/arrow key inputs and dynamic tile merging.
+**🕹️ An arcade in the corner.** Four small games, each fully playable:
 
-### 7. 🌌 Interactive Sponsor Constellation Network
-- Dynamic network topology organizing sponsors (Nokia, Red Bull, The Belgian Waffle Co., TVS, Herody, Akshaya Motors / Mercedes-Benz, etc.) across 4 tiers.
-- Real-time SVG line connection rendering that illuminates adjacent nodes upon cursor hover.
+| | Game | The idea |
+|:-:|---|---|
+| ✦ | **Founder Sprint** | Catch every spark before the clock runs out |
+| 🐍 | **Signal Snake** | Classic snake, smooth controls, high score |
+| 🃏 | **Memory Match** | Flip cards, find pairs, use as few moves as you can |
+| 🔢 | **2048** | Slide and merge tiles with arrows or swipes |
 
-### 8. 👥 3D Team Stack & Directory
-- Fluid 3D card carousel with depth translation, touch swipe gestures, and keyboard navigation.
-- Dedicated spotlight detail modal and an expandable, comprehensive **Team Directory** filterable by departments (Presidential, Advisory, Tech, PR, Partnerships, Logistics).
+**🌊 Scrolling that feels like butter.** Lenis momentum scrolling, shared through one reference-counted instance so pages never fight over animation loops.
 
-### 9. 🌊 Smooth Momentum Scrolling (`Lenis`)
-- Custom reference-counted Lenis singleton wrapper (`acquireLenis`) ensuring zero memory leaks or competing `requestAnimationFrame` loops across route transitions.
+**♿ Calm when you need it.** Every animation respects `prefers-reduced-motion` and jumps straight to its final state.
 
----
+<br />
 
-## 🛠️ Tools & Technology Stack
+## 🧰 Built with
 
-| Category | Technology | Purpose |
-|---|---|---|
-| **Core Framework** | [Next.js 16 (App Router)](https://nextjs.org/) | Server rendering, file-based routing, SEO, static asset optimization |
-| **UI Library** | [React 19](https://react.dev/) | Component architecture, React hooks, concurrent features |
-| **Language** | [TypeScript 5](https://www.typescriptlang.org/) | Strict static typing, interfaces for data models and animation options |
-| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) + PostCSS | Modern CSS utility tokens, `@theme` integration, responsive design |
-| **Custom Styling** | Feature-colocated vanilla CSS | Section-prefixed global selectors, GPU-accelerated motion classes, CSS variables |
-| **Animation Engine** | [GSAP 3.14](https://greensock.com/) + ScrollTrigger | Timeline choreography, scroll-pinned scenes, kinetic typography |
-| **3D & Shaders** | [Three.js 0.185](https://threejs.org/) | Interactive WebGL canvas, custom GLSL vertex/fragment shaders |
-| **Smooth Scrolling** | [Lenis 1.3](https://github.com/darkroomengineering/lenis) | Momentum-based smooth wheel scrolling synchronized with GSAP |
-| **Typography** | [Next Font Google](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) | Variable font loading (`Archivo`, `Bebas Neue`, `Fraunces`, `Inter`) |
-| **Analytics & Web Vitals** | `@vercel/analytics` & `@vercel/speed-insights` | Real-time traffic analytics and Core Web Vitals telemetry |
-| **Testing** | [Vitest 4](https://vitest.dev/) + React Testing Library + JSDOM | Fast unit and component testing suite |
-| **Code Quality** | ESLint 9 (`eslint-config-next`) + TypeScript Compiler | Static code analysis, linting, zero TypeScript emit verification |
-| **CI/CD** | GitHub Actions | Automated lint, typecheck, test, preview, and production deploy |
-| **Hosting** | Vercel + Cloudflare Workers ([OpenNext](https://opennext.js.org/cloudflare)) | Vercel via GitHub Actions; Cloudflare via npm scripts |
+| | |
+|---|---|
+| **Framework** | [Next.js 16](https://nextjs.org/) App Router · [React 19](https://react.dev/) · [TypeScript 5](https://www.typescriptlang.org/) |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) and plain CSS kept next to each section |
+| **Motion** | [GSAP 3.14](https://gsap.com/) + ScrollTrigger · [Lenis](https://github.com/darkroomengineering/lenis) smooth scroll |
+| **3D** | [Three.js](https://threejs.org/) with custom GLSL shaders |
+| **Type** | Archivo, Bebas Neue, Fraunces and Inter via `next/font` |
+| **Quality** | [Vitest](https://vitest.dev/) + Testing Library · ESLint 9 · strict `tsc` |
+| **Insights** | Vercel Analytics and Speed Insights |
+| **Hosting** | Vercel through GitHub Actions · Cloudflare Workers through [OpenNext](https://opennext.js.org/cloudflare) |
 
----
+<br />
 
-## 🏗️ Architecture: How We Are Doing Things
+## 🚀 Run it locally
 
-### 1. Section Independence Pattern
-To allow multi-contributor collaboration without merge conflicts or layout degradation:
-- Every section is an isolated directory inside `src/sections/<SectionName>/`.
-- Each section encapsulates its own component (`.tsx`), scoped styles (`.css`), and animations (`*Animations.ts`).
-- Sections **never** rely on negative margins or layout assumptions from sibling components.
-- Any section can be mounted independently or re-ordered inside `app/page.tsx` without breaking layout flow.
+You'll need **Node 24** (pinned in `.nvmrc`) and **npm 10+**.
 
+```bash
+git clone https://github.com/ECell-RVUniversity/ECell-Web.git
+cd ECell-Web
+nvm use        # or: fnm use
+npm install
+npm run dev
 ```
+
+Then open **[localhost:3000](http://localhost:3000)** and move your mouse over the title.
+
+<details>
+<summary><b>All npm scripts</b></summary>
+<br />
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Development server with Turbopack |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build locally |
+| `npm run lint` | ESLint across the project |
+| `npm run typecheck` | Type-check everything with `tsc --noEmit` |
+| `npm run test` | Run the Vitest suite once |
+| `npm run test:watch` | Re-run tests as you edit |
+| `npm run preview` | Build with OpenNext and preview in the Cloudflare Workers runtime |
+| `npm run deploy` | Build with OpenNext and deploy to Cloudflare Workers |
+
+</details>
+
+<br />
+
+## 🏗️ How it's put together
+
+Routes live in `app/`. Everything else lives in `src/`. Every homepage section is self-contained, so several people can work on the site at once without stepping on each other.
+
+<details>
+<summary><b>Sections own themselves</b></summary>
+<br />
+
+Each section in `src/sections/<Name>/` carries its own component, styles and animations. No section leans on its neighbours' margins or layout, so any of them can be reordered or removed in `app/page.tsx` without breaking the page.
+
+```text
 src/sections/Team/
 ├── animations/
-│   └── TeamAnimations.ts      # Dedicated GSAP logic
+│   └── TeamAnimations.ts      # GSAP for this section only
 ├── components/
-│   ├── Team.tsx               # 3D carousel and section wrapper
-│   └── TeamDirectory.tsx      # Filterable full-roster modal
+│   ├── Team.tsx               # 3D card stack
+│   └── TeamDirectory.tsx      # Filterable full roster
 ├── styles/
 │   ├── Team.css
 │   ├── TeamDirectory.css
 │   ├── TeamLayout.css
 │   └── TeamResponsive.css
-└── index.ts                   # Barrel: app/page.tsx imports "@/src/sections/Team"
+└── index.ts                   # app/page.tsx imports "@/src/sections/Team"
 ```
 
-The roster itself lives in `src/content/team.ts`; sections render content, they don't own it.
+Content is kept apart from code. The roster, events, sponsors and links all live in `src/content/`, so updating the site rarely means touching a component.
 
-### 2. Smooth Scrolling & Shared Lenis Lifecycle
-To prevent multiple competing scroll listeners or requestAnimationFrame loops during client-side navigation:
-- `src/utils/lenis.ts` manages an app-wide singleton instance with **reference counting** (`consumerCount`).
-- Calling `acquireLenis()` increments the consumer count and activates the RAF loop.
-- The returned `release()` method decrements the counter; when zero consumers remain (e.g., when leaving to a page with native scrolling), the Lenis instance and animation loops are destroyed cleanly.
+</details>
 
-### 3. Centralized GSAP & ScrollTrigger Registration
-- Next.js client hydration can cause duplicated plugin registration warnings if `gsap.registerPlugin(ScrollTrigger)` is called inside multiple files.
-- `src/utils/gsapSetup.ts` handles single-point registration:
-  ```ts
-  import gsap from "gsap";
-  import { ScrollTrigger } from "gsap/ScrollTrigger";
+<details>
+<summary><b>One smooth-scroll instance, shared</b></summary>
+<br />
 
-  gsap.registerPlugin(ScrollTrigger);
-  export { gsap, ScrollTrigger };
-  ```
-- All components import `gsap` and `ScrollTrigger` from this single utility.
+`src/utils/lenis.ts` keeps a single Lenis instance with a consumer count. `acquireLenis()` starts it, and the `release()` it returns stops it. When the last consumer leaves, for example on a page with native scrolling, the instance and its animation loop are torn down cleanly.
 
-### 4. Pinned Horizontal Track & Navbar Coordinate Mapping
-`HorizontalFlow` embeds vertical-to-horizontal pinning using ScrollTrigger:
+</details>
+
+<details>
+<summary><b>GSAP registered once</b></summary>
+<br />
+
+Registering plugins in many files causes duplicate warnings during hydration, so `src/utils/gsapSetup.ts` does it once and everything imports from there:
+
+```ts
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+export { gsap, ScrollTrigger };
+```
+
+</details>
+
+<details>
+<summary><b>The horizontal track</b></summary>
+<br />
+
+`HorizontalFlow` pins its container and turns vertical scroll into sideways motion:
+
 ```ts
 const getScrollAmount = () => track.scrollWidth - window.innerWidth;
 
@@ -168,218 +231,146 @@ gsap.to(track, {
   },
 });
 ```
-When a user clicks a link in the Navbar targeting a panel inside the horizontal track (such as `#speakers` or `#footer`), a custom `horizontal-flow:navigate` event calculates the panel index progress (`progress = index / total`) and smoothly scrolls the window to the exact vertical trigger offset.
 
-### 5. WebGL Shader Architecture (`LaserFlow`)
-The interactive background in the WhatsApp Community section compiles custom GLSL shaders with Three.js:
-- **Vertex Shader**: Simple full-screen quad geometry passing normalized coordinates.
-- **Fragment Shader**: Computes multi-octave fractional noise, volumetric light falloff, beam convergence points, and dynamic smoke wisps in real-time.
-- Mouse movement smoothly tilts the projection vectors using lerped damping values (`mouseSmoothTime`).
+When a nav link targets a panel inside the track, such as `#speakers` or `#footer`, a `horizontal-flow:navigate` event works out that panel's progress (`index / total`) and scrolls the window to the matching vertical offset.
 
-### 6. Kinetic Typography & SVG Path Drawing
-- **Kinetic Jiggle**: Words in the Story section are split into individual characters wrapped in `<span className="jiggle-char">`, animated with randomized micro-rotations and translations as the user scrolls.
-- **Stroke Drawing**: SVG strokes on the loader and floating logo use the `prepareSVG` helper to set `strokeDasharray` and `strokeDashoffset` to the exact path length, animating the offset to `0` for an organic hand-drawn appearance.
+</details>
 
-### 7. Performance & Reduced Motion
-- Every GSAP animation checks `window.matchMedia("(prefers-reduced-motion: reduce)").matches`. If active, animations immediately resolve to their final visible state with zero motion overhead.
-- Continuous WebGL rendering (hero reveal, `LaserFlow`) pauses when offscreen or in background tabs, using `IntersectionObserver` and `document.hidden`.
-- Styles use GPU-accelerated properties (`transform`, `opacity`, `filter`) to avoid layout thrashing.
+<details>
+<summary><b>Shaders and drawn strokes</b></summary>
+<br />
 
-### 8. SEO, OpenGraph & Structured Schema
-- Built-in Schema.org `WebSite` and `Organization` JSON-LD graphs in `app/layout.tsx`.
-- Auto-generated `manifest.webmanifest`, `robots.txt`, and `sitemap.xml`.
-- Rich metadata tags for Twitter Cards and OpenGraph with high-resolution WebP banners.
+- **LaserFlow** renders a full-screen quad. The fragment shader layers fractal noise, light falloff, converging beams and smoke wisps, and the mouse tilts it with damped easing.
+- **Stroke drawing**: the `prepareSVG` helper sets `strokeDasharray` and `strokeDashoffset` to each path's exact length, then animates the offset to `0` so lines appear to be drawn by hand.
+- **Kinetic type**: words in the Story section are split into characters that wobble slightly as you scroll.
 
----
+</details>
 
-## 📁 Project Structure
+<details>
+<summary><b>Performance and SEO</b></summary>
+<br />
 
-Routing lives in `app/`; everything else lives in `src/`. Each shared component and each homepage section gets its own folder. See [`projectmd/FOLDER_STRUCTURE.md`](./projectmd/FOLDER_STRUCTURE.md) for the full map and placement rules.
+- WebGL scenes pause off screen and in background tabs, using `IntersectionObserver` and `document.hidden`.
+- Animations stick to `transform`, `opacity` and `filter` so the browser never has to re-lay out the page.
+- `app/layout.tsx` ships Schema.org `WebSite` and `Organization` JSON-LD, plus OpenGraph and Twitter card metadata.
+- The manifest, `robots.txt` and `sitemap.xml` are generated from `app/`.
+
+</details>
+
+<details>
+<summary><b>Full folder map</b></summary>
+<br />
+
+See [`projectmd/FOLDER_STRUCTURE.md`](./projectmd/FOLDER_STRUCTURE.md) for the placement rules.
 
 ```text
 ECell-Web/
-├── .github/workflows/          # CI (typecheck, lint, test, build) + Vercel preview/production
-├── app/                        # Next.js 16 App Router (routes and metadata only)
-│   ├── events/
-│   │   ├── [slug]/             # Statically generated event pages (_components/ per section)
-│   │   └── page.tsx            # /events archive
-│   ├── globals.css             # Tailwind v4 import & global styles
-│   ├── layout.tsx              # Root HTML, fonts, JSON-LD, metadata, analytics
-│   ├── manifest.ts             # Web App Manifest
-│   ├── page.tsx                # Landing page composition
-│   ├── robots.ts               # robots.txt
-│   └── sitemap.ts              # sitemap.xml
-├── public/                     # Stable-URL files (favicons, logos, og-image, _headers)
+├── .github/workflows/          # CI, Vercel preview and production
+├── app/                        # Routes and metadata only
+│   ├── events/                 # /events archive and [slug] event pages
+│   ├── opportunities/          # /opportunities with the globe
+│   ├── recruit/                # /recruit application form
+│   ├── layout.tsx              # Fonts, JSON-LD, metadata, analytics
+│   ├── page.tsx                # Homepage composition
+│   ├── manifest.ts  robots.ts  sitemap.ts
+│   └── globals.css
+├── public/                     # Favicons, logos, og-image, _headers
 ├── scripts/                    # Cloudflare deploy wrapper
 ├── src/
-│   ├── assets/                 # Imported images: events/<slug>/, home/, sponsors/, team/, ...
+│   ├── assets/                 # Imported images (events, home, sponsors, team…)
 │   ├── components/             # Shared components, one folder each
-│   │   ├── CinematicFooter/    # Homepage footer
-│   │   ├── CircularTestimonials/ # Speakers carousel
-│   │   ├── EventsArchive/      # /events listing, filters, calendar
-│   │   ├── FloatingLogo/       # Scroll-driven SVG logo that docks into the nav
-│   │   ├── GameLauncher/       # In-browser arcade (Sprint, Snake, Memory, 2048)
-│   │   ├── HorizontalFlow/     # ScrollTrigger horizontal pinning container
-│   │   ├── InfiniteSpiral/     # 3D image spiral for the upcoming event galleries
-│   │   ├── LaserFlow/          # Three.js GLSL laser/fog shader
-│   │   ├── LogoModal/          # Logo story dialog
-│   │   ├── PageTransition/     # Full-page curtain transition overlay
-│   │   ├── RouteScrollManager/ # Scroll reset between routes
-│   │   ├── SiteCredit/         # "Built by" credit
-│   │   ├── SmoothScroll/       # Shared Lenis lifecycle
-│   │   └── Timeline/           # About-section journey
-│   ├── content/                # All editable content (events/, team, sponsors, site links, ...)
-│   ├── sections/               # Independent landing-page sections
-│   │   ├── About/  Events/  Loader/  Speakers/  Sponsors/
-│   │   ├── Story/  Team/  WhatsAppCommunity/  WhyJoin/
-│   │   ├── Hero/               # components/, webgl/ (ink, nebula, glass letters), styles/
-│   │   └── Nav/                # Nav, NavBar, LogoHint, ChaptersDropdown, hooks/
-│   ├── styles/                 # global.css tokens/reset, SectionTransitions.css
-│   ├── types/                  # Ambient asset module declarations
-│   └── utils/                  # gsapSetup, lenis, scrollLock, math, wheel, cn, constants
-├── tests/                      # Vitest suite (app/ and src/ mirror the source tree)
-├── projectmd/                  # Project documentation
-├── next.config.ts              # Images and legacy-route redirects
-├── open-next.config.ts         # OpenNext (Cloudflare) adapter config
-├── wrangler.jsonc              # Cloudflare Worker config
-├── vercel.json                 # Vercel framework/output settings
-├── tsconfig.json               # Strict TypeScript, `@/*` → repo root
-└── vitest.config.mts           # Vitest + JSDOM
+│   │   ├── HalftoneWordmarkFooter/  CircularTestimonials/  EventsArchive/
+│   │   ├── FloatingLogo/  GameLauncher/  HorizontalFlow/  InfiniteSpiral/
+│   │   ├── LaserFlow/  LogoModal/  PageTransition/  RouteScrollManager/
+│   │   └── SiteCredit/  SmoothScroll/  Timeline/
+│   ├── content/                # Everything editable: team, events, sponsors, links
+│   ├── sections/               # Homepage sections
+│   │   ├── About/  Events/  Hero/  Loader/  Nav/  Speakers/
+│   │   └── Sponsors/  Story/  Team/  WhatsAppCommunity/  WhyJoin/
+│   ├── styles/                 # Global tokens and section transitions
+│   ├── types/                  # Asset module declarations
+│   └── utils/                  # gsapSetup, lenis, scrollLock, math, cn, constants
+├── tests/                      # Vitest suite, mirroring app/ and src/
+├── projectmd/                  # Project docs
+└── next.config.ts  open-next.config.ts  wrangler.jsonc  vercel.json  vitest.config.mts
 ```
 
----
+</details>
 
-## 🚀 Getting Started
+<br />
 
-### Prerequisites
+## 🧪 Tests
 
-- **Node.js**: `24.x` (as specified in `.nvmrc` and `package.json engines`).
-- **npm**: `10.x` or higher.
+Vitest with Testing Library and jsdom covers routes and metadata, the events archive and event pages, the main sections (Nav, Speakers, Team, WhatsApp Community) including keyboard access, the arcade games, and the math helpers.
 
-If you use `nvm` or `fnm`, switch to the compatible Node version:
 ```bash
-nvm use
+npm run test          # once
+npm run test:watch    # while you work
 ```
 
-### Installation
+<br />
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/ECell-RVUniversity/ECell-Web.git
-   cd ECell-Web
-   ```
+## 🚢 Shipping
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+| Workflow | When it runs | What it does |
+|---|---|---|
+| **CI** · `ci.yml` | Pushes and pull requests to `main` | `npm ci` → typecheck → lint → test → build, on Node 24 |
+| **Preview** · `pr-cd.yml` | Pull requests to `main` | Deploys a Vercel preview and comments the link on the PR |
+| **Production** · `vercel-cd.yml` | Pushes to `main` | Typechecks, tests and deploys to Vercel production |
+| **Cloudflare** | By hand | `npm run deploy`, see [`projectmd/DEPLOYMENT.md`](./projectmd/DEPLOYMENT.md) |
 
-3. **Start the local development server:**
-   ```bash
-   npm run dev
-   ```
+<details>
+<summary><b>Repository secrets for Vercel</b></summary>
+<br />
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Add these under **Settings → Secrets and variables → Actions**:
 
----
+- `VERCEL_TOKEN`: a Vercel access token with project permissions
+- `VERCEL_ORG_ID`: your Vercel organisation or user ID
+- `VERCEL_PROJECT_ID`: the Vercel project ID
 
-## 📜 Available NPM Scripts
+</details>
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Starts the Next.js development server with Turbopack |
-| `npm run build` | Compiles the production-ready Next.js application bundle |
-| `npm run start` | Boots the Next.js production server locally |
-| `npm run lint` | Runs ESLint 9 across all TypeScript and React files |
-| `npm run typecheck` | Validates TypeScript types across the entire codebase (`tsc --noEmit`) |
-| `npm run test` | Executes the Vitest automated test suite once |
-| `npm run test:watch` | Runs Vitest in interactive watch mode for TDD |
-| `npm run preview` | Builds with OpenNext and previews locally in the Cloudflare Workers runtime |
-| `npm run deploy` | Builds with OpenNext and deploys to Cloudflare Workers |
-
----
-
-## 🧪 Testing & Quality Assurance
-
-The repository uses [Vitest](https://vitest.dev/) along with `@testing-library/react` and `jsdom`.
-
-To run the complete test suite:
-```bash
-npm run test
-```
-
-To run tests continuously during feature development:
-```bash
-npm run test:watch
-```
-
-Automated tests cover:
-- **App Routes**: Route mounting and metadata validation (`tests/app/routes.test.ts`).
-- **Events**: Event lookup, the `/events` archive, detail pages, and route scroll reset (`tests/app/eventsRoute.test.tsx`).
-- **Sections**: Renders, interactions, and keyboard accessibility for `Nav`, `Speakers`, `Team`, and `WhatsAppCommunity`.
-- **Arcade Launcher**: Minigame mounting, score progression, and window lifecycle.
-- **Math & Utilities**: Pure math algorithms (`lerp`, `clamp`, `smoothstep`).
-
----
-
-## 🚢 CI/CD & Deployment Workflows
-
-The repository includes a 3-workflow GitHub Actions continuous integration and continuous deployment pipeline:
-
-### 1. Continuous Integration (`.github/workflows/ci.yml`)
-Triggered on every push and pull request to the `main` branch. Executes:
-1. `npm ci` on Node 24.
-2. `npm run typecheck` (TypeScript type validation).
-3. `npm run lint` (ESLint rule enforcement).
-4. `npm run test -- --run` (Vitest test suite).
-5. `npm run build` (Next.js production compilation).
-
-### 2. Pull Request Preview Deployments (`.github/workflows/pr-cd.yml`)
-- Automatically builds a staging preview environment on Vercel for incoming pull requests.
-- Attaches the preview URL directly to the GitHub deployment status for testing.
-
-### 3. Production Deployment (`.github/workflows/vercel-cd.yml`)
-- Triggered automatically on merge/push to `main`.
-- Pre-builds and ships the optimized production build directly to Vercel production.
-
-### 4. Cloudflare Workers (OpenNext)
-- `open-next.config.ts`, `wrangler.jsonc`, and `public/_headers` configure a Cloudflare Workers deployment.
-- Deployed with `npm run deploy` (or `npm run deploy:cloudflare` for an existing build) rather than a GitHub workflow. See [`projectmd/DEPLOYMENT.md`](./projectmd/DEPLOYMENT.md).
-
-#### Setting up Deployment Secrets in GitHub
-To configure Vercel deployments, configure these secrets in **Repository Settings → Secrets and variables → Actions**:
-- `VERCEL_TOKEN`: Vercel personal access token with project permissions.
-- `VERCEL_ORG_ID`: Vercel organization or user ID.
-- `VERCEL_PROJECT_ID`: Vercel project ID.
-
----
+<br />
 
 ## 🤝 Contributing
 
-We welcome contributions from RV University students, club members, and open-source enthusiasts!
+Students, club members and anyone who likes building things are welcome here.
 
-Before opening a pull request, please make sure you:
-1. Read our complete [CONTRIBUTING.md](./CONTRIBUTING.md) guide.
-2. Create a dedicated branch: `feature/<feature-name>` or `fix/<fix-name>`.
-3. Keep changes scoped inside your section without modifying shared styles unless coordinated.
-4. Verify that the build, linter, and tests pass:
-   ```bash
-   npm run typecheck && npm run lint && npm run test && npm run build
-   ```
+1. Read the [contributing guide](./CONTRIBUTING.md).
+2. Branch off as `feature/<name>` or `fix/<name>`.
+3. Keep your change inside your section. Talk to the team before touching shared styles.
+4. Make sure everything passes before you open a PR:
 
----
+```bash
+npm run typecheck && npm run lint && npm run test && npm run build
+```
 
-## 👥 Built and Maintained by
+<br />
 
-Built and maintained with ❤️ by the **ECell RV University** Tech Team:
+## 💛 The people behind it
 
-- **Akash Bisht** — [@akash0-real](https://github.com/akash0-real)
-- **Akshay Sujesh** — [@AkshayS2020git](https://github.com/AkshayS2020git)
-- **Shrisha Poojary** — [@shrisha77-boop](https://github.com/shrisha77-boop)
-- **Aditya Dixit** — [@aditya-dixit](https://github.com/Hootsworth)
+Designed, built and looked after by the **ECell RV University tech team**:
 
----
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <a href="https://github.com/akash0-real"><img src="https://github.com/akash0-real.png" width="72" alt="Akash Bisht" /><br /><b>Akash Bisht</b></a>
+    </td>
+    <td align="center" width="25%">
+      <a href="https://github.com/AkshayS2020git"><img src="https://github.com/AkshayS2020git.png" width="72" alt="Akshay Sujesh" /><br /><b>Akshay Sujesh</b></a>
+    </td>
+    <td align="center" width="25%">
+      <a href="https://github.com/shrisha77-boop"><img src="https://github.com/shrisha77-boop.png" width="72" alt="Shrisha Poojary" /><br /><b>Shrisha Poojary</b></a>
+    </td>
+    <td align="center" width="25%">
+      <a href="https://github.com/Hootsworth"><img src="https://github.com/Hootsworth.png" width="72" alt="Aditya Dixit" /><br /><b>Aditya Dixit</b></a>
+    </td>
+  </tr>
+</table>
+
+<br />
 
 <div align="center">
-  <sub>© 2025 - 2026 Entrepreneurship Cell, RV University. All rights reserved.</sub>
+  <sub>Made with care in Bengaluru · © 2025–2026 Entrepreneurship Cell, RV University</sub>
 </div>

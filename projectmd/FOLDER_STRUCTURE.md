@@ -41,7 +41,7 @@ ECell-Web/
 │   │   ├── home/                   # Homepage section backgrounds
 │   │   ├── joinus/  speakers/  sponsors/  team/
 │   ├── components/                 # Shared components, one folder each
-│   │   ├── CinematicFooter/        # Homepage footer
+│   │   ├── HalftoneWordmarkFooter/ # Homepage footer
 │   │   ├── CircularTestimonials/   # Carousel used by Speakers
 │   │   ├── EventsArchive/          # /events listing (filters, calendar, archive rows)
 │   │   ├── FloatingLogo/           # Scroll-driven logo that docks into the nav

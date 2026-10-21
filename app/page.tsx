@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { refreshScroll, resetScrollToTop } from "@/src/utils/lenis";
-import { hasPendingSectionTarget } from "@/src/sections/Nav/navUtils";
+import { hasPendingSectionTarget, navigateToSection } from "@/src/sections/Nav/navUtils";
+import { SITE_LINKS } from "@/src/content/site";
 import Loader from "@/src/sections/Loader/Loader";
 import Nav from "@/src/sections/Nav/Nav";
 import Hero from "@/src/sections/Hero/Hero";
@@ -14,7 +15,7 @@ import Sponsors from "@/src/sections/Sponsors/Sponsors";
 import HorizontalFlow from "@/src/components/HorizontalFlow/HorizontalFlow";
 import Speakers from "@/src/sections/Speakers/Speakers";
 import WhatsAppCommunity from "@/src/sections/WhatsAppCommunity/WhatsAppCommunity";
-import { CinematicFooter } from "@/src/components/CinematicFooter/CinematicFooter";
+import HalftoneWordmarkFooter, { type FooterColumn } from "@/src/components/HalftoneWordmarkFooter/HalftoneWordmarkFooter";
 import FloatingLogo from "@/src/components/FloatingLogo/FloatingLogo";
 import GameLauncher from "@/src/components/GameLauncher/GameLauncher";
 import Team from "@/src/sections/Team";
@@ -24,6 +25,31 @@ import Team from "@/src/sections/Team";
 // module alive) skips it. A full reload starts fresh and plays it again.
 // The server always renders the loader, which matches a first client render.
 let introPlayed = false;
+
+const sectionLink = (label: string, target: string) => ({
+  label,
+  href: `#${target}`,
+  onClick: (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    navigateToSection(target);
+  },
+});
+
+const FOOTER_COLUMNS: FooterColumn[] = [
+  {
+    title: "Explore",
+    links: [sectionLink("About", "aboutSection"), sectionLink("Events", "eventsSection"), sectionLink("Speakers", "speakers")],
+  },
+  {
+    title: "Community",
+    links: [
+      { label: "WhatsApp", href: SITE_LINKS.whatsappGroup },
+      { label: "Instagram", href: SITE_LINKS.instagram },
+      { label: "LinkedIn", href: SITE_LINKS.linkedin },
+      { label: "GitHub", href: SITE_LINKS.github },
+    ],
+  },
+];
 
 export default function Home() {
   const [loading, setLoading] = useState(() => !introPlayed);
@@ -66,7 +92,29 @@ export default function Home() {
         <Team />
         <WhatsAppCommunity />
       </HorizontalFlow>
-      <CinematicFooter />
+      {/* id="footer" is the nav Chapters → Footer target. */}
+      <div id="footer">
+        <HalftoneWordmarkFooter
+          wordmark="ecell"
+          label="Entrepreneurship Cell · RV University"
+          headline="Build what's next."
+          tagline="A community of student founders turning ideas into ventures, one event, mentor and late-night build at a time."
+          cta={{ label: SITE_LINKS.email, href: `mailto:${SITE_LINKS.email}` }}
+          meta={
+            <>
+              © 2026 ECell RVU · Crafted with <span style={{ color: "#ff4d6d", fontSize: "13px" }}>♥</span> by ECell Tech Team
+            </>
+          }
+          columns={FOOTER_COLUMNS}
+          // Same as --bg (src/styles/global.css); the canvas needs a literal colour, not a var.
+          palette={{ background: "#1a1a1a", ink: "#f4f4f2", warm: "#8edcff" }}
+          fontFamily="var(--font-archivo), sans-serif"
+          fontWeight={900}
+          crop={0.18}
+          bodyFamily="var(--font-inter), sans-serif"
+          height="100dvh"
+        />
+      </div>
     </main>
   );
 }
