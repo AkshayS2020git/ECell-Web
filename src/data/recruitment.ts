@@ -693,6 +693,12 @@ export const RECRUITMENT_TEAMS: RecruitmentTeam[] = [
         required: true,
       },
       {
+        id: "websiteLike",
+        label: "What do you like about the current ECell website?",
+        type: "textarea",
+        required: true,
+      },
+      {
         id: "websiteImprovement",
         label: "What's one thing you would improve on the current ECell website?",
         type: "textarea",

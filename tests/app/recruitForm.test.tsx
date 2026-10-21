@@ -35,6 +35,7 @@ function fillStepTwo() {
   fireEvent.click(screen.getByLabelText("Frontend and UI"));
   type(/git and github/i, "Basic: clone, commit, push");
   type(/from scratch/i, "Next.js, because the site is mostly static pages.");
+  type(/like about the current/i, "The halftone footer.");
   type(/improve on the current/i, "A search for past events.");
   type(/bug or technical problem/i, "Fixed a race in the attendance bot.");
   fireEvent.click(screen.getByLabelText("3"));
@@ -237,7 +238,7 @@ describe("RecruitForm", () => {
 
     expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
     // One message per required Tech question.
-    expect(screen.getAllByText("Please answer this one.")).toHaveLength(11);
+    expect(screen.getAllByText("Please answer this one.")).toHaveLength(12);
   });
 
   it("asks every team the commitment and acknowledgement questions on step 3", () => {
